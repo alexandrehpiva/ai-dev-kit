@@ -27,6 +27,18 @@ O arquivo `SKILL.md` sempre vive dentro de uma subpasta de locale para skills of
 
 Ao criar ou atualizar uma skill, leia `docs/conventions.md` e a skill `write-a-skill` — ambos são obrigatórios.
 
+## CLI (resumo operacional)
+
+Detalhes em [`cli/README.md`](cli/README.md) e [`docs/usage.md`](docs/usage.md). Atalho global: `aidk` ≡ `ai-dev-kit`.
+
+| Comando | Comportamento relevante |
+|---|---|
+| `aidk skills install` | Interativo: uma linha por nome; colisão oficial/custom → `select` de variante; skills **já instaladas** no target não aparecem. Flags `--all` / `--skills` / `--bucket` sem TUI. |
+| `aidk skills uninstall` | Interativo: primeira opção **Todas as skills**. Não interativo: `--all` ou `--skills` (+ `--target` opcional). Remove symlinks do projeto; não apaga o store. |
+| `aidk skills switch` | Troca variante custom ↔ oficial quando ambas existem. |
+| `aidk update` | `git pull` do store, reconstrói o CLI (`dist` limpo + bins), atualiza skills nos projetos rastreados. Não exige `./install.sh` de novo. |
+| `aidk uninstall` | Remove config/cache/bins do **kit** (diferente de `skills uninstall`). |
+
 ---
 
 # Engineering
@@ -225,7 +237,7 @@ Skills que leem/mantêm conhecimento persistente: template de Knowledge Base com
 
 **Arquivo:** `skills/knowledge/knowledge-base/pt-BR/SKILL.md` (também disponível em `en-US`)
 
-**Descrição:** Template e bootstrap para criar uma skill **custom** de Knowledge Base compartilhada. Na primeira execução: detecta ausência de custom, cria via `write-a-skill`, desinstala o template do projeto (`ai-dev-kit skills uninstall`), instala a custom (`ai-dev-kit skills install --skills custom/<nome>`), e passa a usá-la. Inclui incremento contínuo da KB só com autorização explícita e portão de segurança (sem secrets/PII/paths pessoais). Distingue KB do time de `agent-memory` / `memory`.
+**Descrição:** Template e bootstrap para criar uma skill **custom** de Knowledge Base compartilhada. Na primeira execução: detecta ausência de custom, cria via `write-a-skill`, desinstala o template do projeto (`ai-dev-kit skills uninstall --skills knowledge/knowledge-base`), instala a custom (`ai-dev-kit skills install --skills custom/<nome>`), e passa a usá-la. Inclui incremento contínuo da KB só com autorização explícita e portão de segurança (sem secrets/PII/paths pessoais). Distingue KB do time de `agent-memory` / `memory`.
 
 **Quando usar:** criar/montar KB ou skill de KB; bootstrap; atualizar a KB; ou quando ainda não existir skill custom de KB.
 

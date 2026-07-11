@@ -4,11 +4,18 @@ import { removeSymlink } from '../../core/symlinks.js';
 import type { InstalledSkill } from '../../types.js';
 import { cancel, intro, isCancel, multiselect, outro, spinner } from '../../utils/ui.js';
 
+import {
+  buildUninstallMultiselectOptions,
+  resolveUninstallSelection,
+} from './uninstall-selection.js';
+
 interface UninstallSkillsOptions {
   /** Comma-separated skill names or bucket/name selectors (non-interactive). */
   skills?: string;
   /** When set with --skills, only remove entries for this target. */
   target?: string;
+  /** Remove every skill installed in the current project (non-interactive). */
+  all?: boolean;
 }
 
 function matchInstalled(
@@ -53,7 +60,13 @@ export async function uninstallSkills(options: UninstallSkillsOptions = {}): Pro
 
   let toRemove: InstalledSkill[];
 
-  if (options.skills) {
+  if (options.all) {
+    if (options.skills || options.target) {
+      console.error('--all não combina com --skills nem --target.');
+      process.exit(1);
+    }
+    toRemove = [...project.skills];
+  } else if (options.skills) {
     const selectors = options.skills
       .split(',')
       .map((s) => s.trim())
@@ -89,11 +102,7 @@ export async function uninstallSkills(options: UninstallSkillsOptions = {}): Pro
 
     const selected = await multiselect({
       message: 'Selecione as skills para remover:',
-      options: project.skills.map((s) => ({
-        value: s.symlinkPath,
-        label: s.bucket ? `${s.bucket}/${s.name}` : s.name,
-        hint: `${s.target} — ${s.symlinkPath}`,
-      })),
+      options: buildUninstallMultiselectOptions(project.skills),
       required: true,
     });
 
@@ -102,7 +111,8 @@ export async function uninstallSkills(options: UninstallSkillsOptions = {}): Pro
       process.exit(1);
     }
 
-    const selectedPaths = new Set(selected as string[]);
+    const allPaths = project.skills.map((s) => s.symlinkPath);
+    const selectedPaths = new Set(resolveUninstallSelection(selected as string[], allPaths));
     toRemove = project.skills.filter((sk) => selectedPaths.has(sk.symlinkPath));
   }
 

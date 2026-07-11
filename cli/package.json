@@ -1,6 +1,6 @@
 {
   "name": "ai-dev-kit",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "CLI for managing AI Dev Kit skills and resources",
   "type": "module",
   "bin": {

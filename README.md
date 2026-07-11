@@ -3,7 +3,7 @@
 Kit de desenvolvimento assistido por agentes de IA — **skills**, agentes e o CLI
 `ai-dev-kit` (ver [`cli/`](cli/README.md)) que os instala nos projetos via symlinks.
 
-> **Status:** 🚧 em construção. Versão atual do CLI: **0.1.3**.
+> **Status:** 🚧 em construção. Versão atual do CLI: **0.1.4**.
 
 ## O que é
 
@@ -80,6 +80,7 @@ ai-dev-kit skills install
 ai-dev-kit skills install --target claude --skills grill-me,task-writing
 ai-dev-kit skills install --target cursor --skills custom/minha-kb
 ai-dev-kit skills uninstall --skills knowledge/knowledge-base
+aidk skills uninstall --all
 ai-dev-kit update
 ai-dev-kit projects list
 ```
@@ -104,8 +105,12 @@ ai-dev-kit skills switch --skills custom/dev-python-fastapi
 ## Desinstalar
 
 ```bash
+# Interativo (primeira opção: Todas as skills)
+aidk skills uninstall
+
 # Symlinks deste projeto (não interativo)
 ai-dev-kit skills uninstall --skills grill-me,study
+aidk skills uninstall --all
 
 # Tudo: config, symlinks rastreados e binário
 ai-dev-kit uninstall --yes

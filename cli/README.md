@@ -106,19 +106,23 @@ Without arguments, shows an interactive select of installed skills and locale op
 
 ### `ai-dev-kit skills uninstall`
 
-Removes skill symlinks from the current project. Does not touch the store or cache.
+Removes skill symlinks from the current project.
 
 ```
 Options:
-  --skills <names>                 Comma-separated skill names or bucket/name  e.g. knowledge-base,knowledge/knowledge-base
-  --target <claude|cursor|custom>  Only remove entries for this target (requires --skills)
+  --skills <names>                 Comma-separated names or bucket/name (non-interactive)
+  --target <claude|cursor|custom>  Only remove entries for this target (with --skills)
+  --all                            Remove every skill installed in this project
 ```
 
-Without `--skills`, shows an interactive checkbox of installed skills.
+Without `--skills` / `--all`, shows an interactive checkbox. The first option is
+**Todas as skills** — selecting it removes every installed skill in the project
+(even if other rows are also checked).
 
 ```bash
 ai-dev-kit skills uninstall --skills knowledge/knowledge-base
 ai-dev-kit skills uninstall --skills grill-me,study --target cursor
+ai-dev-kit skills uninstall --all
 ```
 
 ---

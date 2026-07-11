@@ -20,7 +20,7 @@ const program = new Command();
 program
   .name('ai-dev-kit')
   .description('CLI for managing AI Dev Kit skills and resources')
-  .version('0.1.3');
+  .version('0.1.4');
 
 // --- init ---
 program
@@ -68,6 +68,7 @@ skills
     'Comma-separated skill names or bucket/name selectors (non-interactive)',
   )
   .option('--target <claude|cursor|custom>', 'Only remove entries for this target (with --skills)')
+  .option('--all', 'Remove all skills installed in the current project')
   .action(uninstallSkills);
 
 // --- update ---

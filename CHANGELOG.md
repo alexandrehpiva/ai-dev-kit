@@ -9,6 +9,16 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.1.4] — 2026-07-11
+
+### Added
+
+- **`skills uninstall`:** opção interativa **Todas as skills** no multiselect e flag
+  `--all` para remover todas as skills instaladas no projeto atual (sem combinar
+  com `--skills` / `--target`).
+
+---
+
 ## [0.1.3] — 2026-07-11
 
 ### Changed
