@@ -20,5 +20,7 @@ mattpocock `CONTEXT.md` habit).
   security gate.
 - **Agent memory** — skill `knowledge/agent-memory`: durable learning about how to serve *this*
   user/project well (preferences, corrections, decisions) — distinct from a team knowledge base.
+- **TUI** — interactive terminal UI for the CLI (`confirm` / `select` / `multiselect` / …),
+  implemented with React + Ink behind `cli/src/utils/ui.ts` (as of **0.2.0**).
 
 > Add a term here when it starts being used loosely in skills/docs. Keep entries one line.

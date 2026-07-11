@@ -33,11 +33,13 @@ Detalhes em [`cli/README.md`](cli/README.md) e [`docs/usage.md`](docs/usage.md).
 
 | Comando | Comportamento relevante |
 |---|---|
-| `aidk skills install` | Interativo: uma linha por nome; colisão oficial/custom → `select` de variante; skills **já instaladas** no target não aparecem. Flags `--all` / `--skills` / `--bucket` sem TUI. |
-| `aidk skills uninstall` | Interativo: primeira opção **Todas as skills**. Não interativo: `--all` ou `--skills` (+ `--target` opcional). Remove symlinks do projeto; não apaga o store. |
+| `aidk skills install` | Interativo (TUI **Ink**): uma linha por nome; colisão oficial/custom → `select` de variante; skills **já instaladas** no target não aparecem. Flags `--all` / `--skills` / `--bucket` sem TUI. |
+| `aidk skills uninstall` | Interativo (Ink): primeira opção **Todas as skills** (`a` = toggle all). Não interativo: `--all` ou `--skills` (+ `--target` opcional). Remove symlinks do projeto; não apaga o store. |
 | `aidk skills switch` | Troca variante custom ↔ oficial quando ambas existem. |
 | `aidk update` | `git pull` do store, reconstrói o CLI (`dist` limpo + bins), atualiza skills nos projetos rastreados. `--no-pull` / `--cli-only` para rebuild local (rollback). Não exige `./install.sh` de novo. |
 | `aidk uninstall` | Remove config/cache/bins do **kit** (diferente de `skills uninstall`). |
+
+Prompts interativos: React + Ink (`cli/src/utils/ui.ts`). Separadores não focáveis; hint estável; summary compacto.
 
 ---
 

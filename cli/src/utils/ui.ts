@@ -1,18 +1,12 @@
-import {
-  Separator,
-  checkbox,
-  confirm as inquirerConfirm,
-  input,
-  select as inquirerSelect,
-} from '@inquirer/prompts';
+import React from 'react';
 
-import {
-  fitDescriptionLine,
-  fitTerminal,
-  promptListPageSize,
-  summarizeSelectedChoices,
-  terminalColumns,
-} from './terminal-text.js';
+import { ConfirmPrompt } from '../ui/ink/ConfirmPrompt.js';
+import { MultiSelectPrompt, type MultiSelectPromptProps } from '../ui/ink/MultiSelectPrompt.js';
+import { runInkPrompt } from '../ui/ink/run-prompt.js';
+import { SelectPrompt, type SelectPromptProps } from '../ui/ink/SelectPrompt.js';
+import { TextPrompt } from '../ui/ink/TextPrompt.js';
+
+import { fitTerminal, summarizeSelectedChoices, terminalColumns } from './terminal-text.js';
 
 export {
   fitDescriptionLine,
@@ -23,16 +17,10 @@ export {
   terminalColumns,
 } from './terminal-text.js';
 
-/** Shared cancel sentinel — keeps call sites compatible with the old clack `isCancel`. */
+/** Shared cancel sentinel — keeps call sites compatible with prior `isCancel` APIs. */
 export const CANCEL = Symbol('aidk.cancel');
 
 export const isTTY = Boolean(process.stdout.isTTY && process.stdin.isTTY);
-
-function isExitPromptError(err: unknown): boolean {
-  if (!err || typeof err !== 'object') return false;
-  const name = (err as { name?: string }).name;
-  return name === 'ExitPromptError' || name === 'AbortPromptError';
-}
 
 export function intro(title: string): void {
   console.log(`\n▸ ${title}\n`);
@@ -92,15 +80,14 @@ export async function confirm(opts: {
   initialValue?: boolean;
 }): Promise<boolean | typeof CANCEL> {
   if (!isTTY) return opts.initialValue ?? false;
-  try {
-    return await inquirerConfirm({
+  const result = await runInkPrompt<'cancel' | boolean>((done) =>
+    React.createElement(ConfirmPrompt, {
       message: opts.message,
-      default: opts.initialValue ?? false,
-    });
-  } catch (err) {
-    if (isExitPromptError(err)) return CANCEL;
-    throw err;
-  }
+      initialValue: opts.initialValue,
+      onDone: done,
+    }),
+  );
+  return result === 'cancel' ? CANCEL : result;
 }
 
 export interface SelectOption<T> {
@@ -119,32 +106,27 @@ export async function select<T>(opts: {
       `Interactive prompt required but stdin is not a TTY. Use flags to skip prompts.`,
     );
   }
-  try {
-    return await inquirerSelect({
-      message: opts.message,
-      default: opts.initialValue,
-      choices: opts.options.map((o) => {
-        const name = fitTerminal(o.label, terminalColumns() - 8);
-        return {
-          name,
-          value: o.value,
-          short: name,
-          description: o.hint?.trim() ? fitDescriptionLine(o.hint) : undefined,
-        };
-      }),
-      pageSize: promptListPageSize(),
-    });
-  } catch (err) {
-    if (isExitPromptError(err)) return CANCEL;
-    throw err;
-  }
+  const props: SelectPromptProps<T> = {
+    message: opts.message,
+    options: opts.options,
+    initialValue: opts.initialValue,
+    onDone: (value) => {
+      /* settled inside runInkPrompt */
+      void value;
+    },
+  };
+  const result = await runInkPrompt<T | 'cancel'>((done) => {
+    props.onDone = done;
+    return React.createElement(SelectPrompt as React.ComponentType<SelectPromptProps<T>>, props);
+  });
+  return result === 'cancel' ? CANCEL : result;
 }
 
 export interface MultiselectOption<T = string> {
   value: T;
   label: string;
   hint?: string;
-  /** When true, rendered as a non-selectable section header (Inquirer Separator). */
+  /** When true, rendered as a non-selectable section header. */
   separator?: boolean;
 }
 
@@ -158,40 +140,31 @@ export async function multiselect<T>(opts: {
       `Interactive prompt required but stdin is not a TTY. Use flags to skip prompts.`,
     );
   }
-
-  const choices = opts.options.map((o) => {
-    if (o.separator) {
-      return new Separator(fitTerminal(o.label, terminalColumns() - 4));
-    }
-    const name = fitTerminal(String(o.label), terminalColumns() - 8);
-    return {
-      name,
-      value: o.value,
-      // Answer line uses `short` / renderSelectedChoices — keep short = label only.
-      short: name,
-      description: o.hint?.trim() ? fitDescriptionLine(o.hint) : undefined,
-    };
+  const props: MultiSelectPromptProps<T> = {
+    message: opts.message,
+    options: opts.options,
+    required: opts.required,
+    onDone: (value) => {
+      void value;
+    },
+  };
+  const result = await runInkPrompt<T[] | 'cancel'>((done) => {
+    props.onDone = done;
+    return React.createElement(
+      MultiSelectPrompt as React.ComponentType<MultiSelectPromptProps<T>>,
+      props,
+    );
   });
+  if (result === 'cancel') return CANCEL;
 
-  try {
-    const selected = await checkbox({
-      message: opts.message,
-      required: opts.required ?? false,
-      pageSize: promptListPageSize(),
-      choices,
-      theme: {
-        style: {
-          renderSelectedChoices: (
-            selection: ReadonlyArray<{ short?: string; name?: string }>,
-          ): string => summarizeSelectedChoices(selection),
-        },
-      },
-    });
-    return selected as T[];
-  } catch (err) {
-    if (isExitPromptError(err)) return CANCEL;
-    throw err;
-  }
+  const summary = summarizeSelectedChoices(
+    result.map((value) => {
+      const opt = opts.options.find((o) => !o.separator && Object.is(o.value, value));
+      return { short: opt?.label ?? String(value) };
+    }),
+  );
+  console.log(`✔ ${fitTerminal(opts.message, terminalColumns() - 12)}  ${summary}`);
+  return result;
 }
 
 export async function text(opts: {
@@ -205,18 +178,14 @@ export async function text(opts: {
       `Interactive prompt required but stdin is not a TTY. Use flags to skip prompts.`,
     );
   }
-  try {
-    return await input({
+  const result = await runInkPrompt<string | 'cancel'>((done) =>
+    React.createElement(TextPrompt, {
       message: opts.message,
-      default: opts.initialValue,
-      validate: (v) => {
-        if (!opts.validate) return true;
-        const err = opts.validate(v);
-        return err === undefined ? true : err;
-      },
-    });
-  } catch (err) {
-    if (isExitPromptError(err)) return CANCEL;
-    throw err;
-  }
+      placeholder: opts.placeholder,
+      initialValue: opts.initialValue,
+      validate: opts.validate,
+      onDone: done,
+    }),
+  );
+  return result === 'cancel' ? CANCEL : result;
 }

@@ -30,4 +30,4 @@ Checklist vivo pós-fork pessoal (`ai-dev-kit`). Versionamento reinicia em **0.1
 ## Notas
 
 - **2026-07-11** — fork pessoal; CLI 0.1.0; uninstall não interativo; auditoria de skills oficiais e docs raiz.
-- **2026-07-11** — …; `0.1.4` uninstall Todas/`--all`; `0.1.5` (local, sem commit) TUI `@inquirer/prompts` + `update --no-pull/--cli-only`.
+- **2026-07-11** — …; `0.1.4` uninstall Todas/`--all`; `0.1.5` Inquirer TUI + `update --no-pull/--cli-only`; **`0.2.0`** React+Ink TUI (minor; mesma fachada `ui.ts`).

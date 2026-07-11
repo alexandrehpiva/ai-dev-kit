@@ -1,6 +1,6 @@
 {
   "name": "ai-dev-kit",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "description": "CLI for managing AI Dev Kit skills and resources",
   "type": "module",
   "bin": {
@@ -9,18 +9,20 @@
   "scripts": {
     "build": "rm -rf dist && tsc && chmod +x dist/index.js",
     "dev": "node --experimental-strip-types src/index.ts",
-    "lint": "eslint src --ext .ts",
-    "lint:fix": "eslint src --ext .ts --fix",
-    "format": "prettier --write src",
-    "format:check": "prettier --check src",
+    "lint": "eslint src --ext .ts,.tsx",
+    "lint:fix": "eslint src --ext .ts,.tsx --fix",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx}\"",
     "prepare": "cd .. && husky cli/.husky",
     "typecheck": "tsc --noEmit",
     "test": "node --experimental-strip-types --test $(find src -name '*.test.ts' | sort)"
   },
   "dependencies": {
-    "@inquirer/prompts": "^8.5.2",
+    "@inkjs/ui": "^2.0.0",
     "commander": "^13.1.0",
     "diff": "^8.0.3",
+    "ink": "^7.1.0",
+    "react": "^19.2.7",
     "simple-git": "^3.27.0"
   },
   "devDependencies": {
@@ -29,6 +31,7 @@
     "@eslint/js": "^10.0.1",
     "@types/diff": "^7.0.2",
     "@types/node": "^22.15.21",
+    "@types/react": "^19.2.17",
     "@typescript-eslint/eslint-plugin": "^8.32.1",
     "@typescript-eslint/parser": "^8.32.1",
     "eslint": "^9.27.0",
@@ -49,7 +52,7 @@
     ]
   },
   "lint-staged": {
-    "*.ts": [
+    "*.{ts,tsx}": [
       "eslint --fix",
       "prettier --write"
     ]

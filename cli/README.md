@@ -157,8 +157,8 @@ Options:
 3. Unless `--cli-only`: compares store vs cache and updates registered project skills
    (locale migration / local edits / discontinued skills — same rules as before).
 
-Interactive prompts use `@inquirer/prompts` (non-selectable section separators;
-labels truncated to terminal width).
+Interactive prompts use **React + Ink** (non-selectable section separators;
+stable hint panel under the list; compact selection summary; `a` toggles all).
 
 ---
 

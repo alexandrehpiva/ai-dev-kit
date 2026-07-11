@@ -13,7 +13,7 @@ export function fitTerminal(text: string, maxWidth: number): string {
 }
 
 /**
- * Single-line description for Inquirer (below the list). Collapses whitespace and
+ * Single-line description under list prompts. Collapses whitespace and
  * truncates at a word boundary when possible so it never wraps into a clipped 2nd line.
  */
 export function fitDescriptionLine(text: string, maxWidth?: number): string {
@@ -47,7 +47,7 @@ export function formatOptionName(label: string, hint?: string): string {
 }
 
 /**
- * Compact answer line for Inquirer checkbox (avoids dumping every selected name).
+ * Compact answer/summary line for multiselect (avoids dumping every selected name).
  * Examples: `grill-me` | `grill-me, study` | `grill-me +11`
  */
 export function summarizeSelectedChoices(

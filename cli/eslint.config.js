@@ -11,13 +11,14 @@ export default [
     ignores: ['src/**/*.test.ts'],
   },
   {
-    files: ['src/**/*.ts'],
+    files: ['src/**/*.{ts,tsx}'],
     languageOptions: {
       parser: tsParser,
       parserOptions: {
         ecmaVersion: 'latest',
         sourceType: 'module',
         project: './tsconfig.json',
+        ecmaFeatures: { jsx: true },
       },
       globals: {
         ...globals.node,

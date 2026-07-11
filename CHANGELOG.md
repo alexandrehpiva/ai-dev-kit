@@ -9,6 +9,33 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.2.0] — 2026-07-11
+
+Minor (não patch): troca de stack da TUI interativa (arquitetura/UX), sem breaking
+das flags nem da superfície de comandos. Major `1.0.0` fica para estabilizar a API pública.
+
+### Changed
+
+- **TUI:** `@inquirer/prompts` → **React + Ink** (`ink`, `@inkjs/ui` + select/multiselect próprios).
+  Mesma fachada `cli/src/utils/ui.ts` (`confirm` / `select` / `multiselect` / `text` / `spinner` / `cancel`).
+  Separadores de seção **não selecionáveis**; hint em painel estável abaixo da lista;
+  summary compacto (`grill-me +11`); atalho `a` = toggle all no multiselect; Esc cancela.
+- Docs: README, `docs/usage.md`, `cli/README.md`, `AGENTS.md` (tabela CLI) alinhados à TUI Ink.
+
+### Rollback
+
+```bash
+cd ~/Projects/ai-dev-kit   # ou o path do seu store
+git checkout 0.1.5 -- .
+cd cli && pnpm install && pnpm build
+# ou, com a árvore já em 0.1.5:
+aidk update --no-pull --cli-only
+```
+
+Release anterior estável: **0.1.5**.
+
+---
+
 ## [0.1.5] — 2026-07-11
 
 ### Changed
