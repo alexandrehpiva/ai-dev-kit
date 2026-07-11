@@ -20,7 +20,7 @@ const program = new Command();
 program
   .name('ai-dev-kit')
   .description('CLI for managing AI Dev Kit skills and resources')
-  .version('0.1.4');
+  .version('0.1.5');
 
 // --- init ---
 program
@@ -75,6 +75,8 @@ skills
 program
   .command('update')
   .description('Pull store, rebuild CLI (pnpm), refresh bins, and update registered project skills')
+  .option('--no-pull', 'Skip git pull; rebuild from the current store tree (rollback-friendly)')
+  .option('--cli-only', 'Only rebuild/relink the CLI; skip skill symlink sync')
   .action(update);
 
 // --- uninstall (the whole tool) ---

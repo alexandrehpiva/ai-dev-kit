@@ -1,6 +1,6 @@
 {
   "name": "ai-dev-kit",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "CLI for managing AI Dev Kit skills and resources",
   "type": "module",
   "bin": {
@@ -18,7 +18,7 @@
     "test": "node --experimental-strip-types --test $(find src -name '*.test.ts' | sort)"
   },
   "dependencies": {
-    "@clack/prompts": "^0.9.1",
+    "@inquirer/prompts": "^8.5.2",
     "commander": "^13.1.0",
     "diff": "^8.0.3",
     "simple-git": "^3.27.0"

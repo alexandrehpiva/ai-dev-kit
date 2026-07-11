@@ -9,6 +9,19 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.1.5] — 2026-07-11
+
+### Changed
+
+- **TUI:** troca `@clack/prompts` → `@inquirer/prompts` (checkbox/select/confirm/input).
+  Separadores de seção (ex. Custom Skills) usam `Separator` **não selecionável**.
+  Labels/hints truncados; summary do checkbox compacto (`grill-me +11`);
+  description em uma linha (corte em palavra); `pageSize` com margem inferior.
+- **`aidk update --no-pull`:** rebuild a partir da árvore atual do store (rollback-friendly).
+- **`aidk update --cli-only`:** só reconstrói/religa o CLI; não sincroniza skills.
+
+---
+
 ## [0.1.4] — 2026-07-11
 
 ### Added

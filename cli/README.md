@@ -141,21 +141,24 @@ ai-dev-kit config set-locale en-US
 
 Pulls the latest framework store, rebuilds the CLI, and refreshes registered projects.
 
+```
+Options:
+  --no-pull    Skip git pull; rebuild from the current store tree (rollback-friendly)
+  --cli-only   Only rebuild/relink the CLI; skip skill symlink sync
+```
+
 **What it does:**
-1. Runs `git pull` in the framework store
+1. Runs `git pull` in the framework store (unless `--no-pull`)
 2. Rebuilds the CLI (`pnpm install`, clean `cli/dist`, `pnpm build`) and refreshes
    `~/.local/bin/ai-dev-kit` and `aidk`. Extra PATH entries that still point at an
    old `…/cli/dist/index.js` are redirected; unknown files with those names are
    left alone. **Does not** touch the projects registry, skill symlinks, or
-   `config.json` (skill removals still ask for confirmation as before).
-3. Compares the new store state against the local cache
-4. Checks each registered project (removes tracking if directory missing)
-5. For each changed skill:
-   - **Flat → locale migration:** re-links to the locale subfolder automatically, logs per skill (`grill-me  flat → pt-BR`)
-   - **Locale changed (global locale switch):** re-links `"default"` skills to the new locale
-   - **Symlink intact:** updated automatically
-   - **Symlink replaced by real file (dev edited locally):** asks before overwriting; shows a diff summary
-6. Skills removed from the framework are listed; asks if you want to remove them from projects
+   `config.json` during the CLI step (skill removals still ask for confirmation as before).
+3. Unless `--cli-only`: compares store vs cache and updates registered project skills
+   (locale migration / local edits / discontinued skills — same rules as before).
+
+Interactive prompts use `@inquirer/prompts` (non-selectable section separators;
+labels truncated to terminal width).
 
 ---
 

@@ -21,7 +21,6 @@ import {
 import {
   buildInteractiveSkillEntries,
   collectInstalledNamesForTarget,
-  CUSTOM_SEP,
   pickSkillForVariant,
   resolveDefaultVariant,
   resolveSkillFromEntry,
@@ -199,7 +198,7 @@ export async function installSkills(options: InstallOptions): Promise<void> {
       process.exit(1);
     }
 
-    const selectedNames = (selected as string[]).filter((v) => v !== CUSTOM_SEP);
+    const selectedNames = selected as string[];
     const byName = new Map(entries.map((e) => [e.name, e]));
     skillsToInstall = [];
 

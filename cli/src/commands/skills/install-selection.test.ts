@@ -9,7 +9,6 @@ import {
   resolveDefaultVariant,
   resolveSkillFromEntry,
   toMultiselectOptions,
-  CUSTOM_SEP,
 } from './install-selection.ts';
 
 function skill(partial: Partial<SkillInfo> & Pick<SkillInfo, 'name' | 'bucket'>): SkillInfo {
@@ -102,7 +101,7 @@ describe('buildInteractiveSkillEntries', () => {
 });
 
 describe('toMultiselectOptions', () => {
-  it('Given collision When mapping Then hint shows default custom and custom-only under separator', () => {
+  it('Given collision When mapping Then hint is short and custom section is separator', () => {
     // Given
     const entries = buildInteractiveSkillEntries(
       [
@@ -118,8 +117,8 @@ describe('toMultiselectOptions', () => {
 
     // Then
     assert.equal(options[0]?.label, 'productivity/grill-me');
-    assert.equal(options[0]?.hint, '→ custom (oficial disponível)');
-    assert.equal(options[1]?.value, CUSTOM_SEP);
+    assert.equal(options[0]?.hint, 'custom+oficial');
+    assert.equal(options[1]?.separator, true);
     assert.equal(options[2]?.label, 'custom/bot-wake');
   });
 });

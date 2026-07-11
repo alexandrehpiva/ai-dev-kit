@@ -1,6 +1,13 @@
 /** Sentinel value for “select all” in interactive uninstall multiselect. */
 export const UNINSTALL_ALL = '__all__';
 
+export interface UninstallMultiselectOption {
+  value: string;
+  label: string;
+  hint?: string;
+  separator?: boolean;
+}
+
 /**
  * Resolve multiselect values to symlink paths to remove.
  * If the “all” sentinel is present, every installed path is returned
@@ -18,17 +25,17 @@ export function resolveUninstallSelection(
 
 export function buildUninstallMultiselectOptions(
   skills: Array<{ symlinkPath: string; bucket: string; name: string; target: string }>,
-): Array<{ value: string; label: string; hint: string }> {
+): UninstallMultiselectOption[] {
   return [
     {
       value: UNINSTALL_ALL,
       label: 'Todas as skills',
-      hint: `remover as ${skills.length} instalada(s) neste projeto`,
+      hint: `${skills.length} instalada(s)`,
     },
     ...skills.map((s) => ({
       value: s.symlinkPath,
       label: s.bucket ? `${s.bucket}/${s.name}` : s.name,
-      hint: `${s.target} — ${s.symlinkPath}`,
+      hint: s.target,
     })),
   ];
 }

@@ -24,7 +24,14 @@ import { skillDiffSummary } from '../utils/diff-summary.js';
 import { fileLink } from '../utils/terminal-link.js';
 import { confirm, intro, isCancel, log, outro, spinner } from '../utils/ui.js';
 
-export default async function update(): Promise<void> {
+export interface UpdateOptions {
+  /** Skip `git pull` — rebuild CLI/skills from the current store tree (rollback-friendly). */
+  noPull?: boolean;
+  /** Only rebuild/relink the CLI; do not sync project skill symlinks. */
+  cliOnly?: boolean;
+}
+
+export default async function update(options: UpdateOptions = {}): Promise<void> {
   await runInitWizardIfNeeded();
 
   intro('ai-dev-kit update');
@@ -38,11 +45,15 @@ export default async function update(): Promise<void> {
     return;
   }
 
-  // 1. git pull (snapshot on disk still reflects the pre-pull state)
-  const s = spinner();
-  s.start('Atualizando store (git pull)...');
-  const pullSummary = await gitPull(storePath);
-  s.stop(`Store: ${pullSummary}`);
+  // 1. git pull (optional — skip for local rollback / rebuild-from-tree)
+  if (options.noPull) {
+    log('Store: git pull pulado (--no-pull)');
+  } else {
+    const s = spinner();
+    s.start('Atualizando store (git pull)...');
+    const pullSummary = await gitPull(storePath);
+    s.stop(`Store: ${pullSummary}`);
+  }
 
   // 2. Rebuild CLI from store/cli and refresh ~/.local/bin links (same as install.sh)
   const cliSpinner = spinner();
@@ -75,6 +86,11 @@ export default async function update(): Promise<void> {
     log('  Corrija o build (pnpm no PATH, store/cli) e rode `aidk update` de novo.');
     outro('Update interrompido.');
     process.exit(1);
+  }
+
+  if (options.cliOnly) {
+    outro('Update CLI concluído (--cli-only; skills não sincronizadas).');
+    return;
   }
 
   // 3. Diff the freshly-pulled store against the cached baseline

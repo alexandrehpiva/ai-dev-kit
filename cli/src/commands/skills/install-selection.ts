@@ -1,6 +1,15 @@
 import type { InstalledSkill, SkillInfo, Target } from '../../types.js';
 
-export const CUSTOM_SEP = '__sep__custom__';
+function terminalColumns(fallback = 80): number {
+  const cols = process.stdout.columns;
+  return typeof cols === 'number' && cols > 20 ? cols : fallback;
+}
+
+function fitTerminal(text: string, maxWidth: number): string {
+  if (maxWidth < 4) return text.slice(0, Math.max(0, maxWidth));
+  if (text.length <= maxWidth) return text;
+  return `${text.slice(0, maxWidth - 1)}…`;
+}
 
 export type VariantChoice = 'official' | 'custom';
 
@@ -14,6 +23,7 @@ export interface MultiselectOption {
   value: string;
   label: string;
   hint: string;
+  separator?: boolean;
 }
 
 /** Names already present on this target with a usable symlink (valid|replaced). */
@@ -43,17 +53,14 @@ export function groupSkillsByName(skills: SkillInfo[]): Map<string, SkillInfo[]>
   return map;
 }
 
-function descriptionHint(skill: SkillInfo): string {
-  return skill.localeHint
-    ? `(${skill.localeHint}) ${skill.description.slice(0, 45)}`
-    : skill.description.slice(0, 60);
+function shortHint(skill: SkillInfo): string {
+  if (skill.localeHint) return skill.localeHint;
+  // Prefer short fragment; terminal fit happens again in ui.formatOptionName.
+  return skill.description.replace(/\s+/g, ' ').trim().slice(0, 40);
 }
 
 function variantHint(defaultVariant: VariantChoice): string {
-  if (defaultVariant === 'custom') {
-    return '→ custom (oficial disponível)';
-  }
-  return '→ oficial (custom disponível)';
+  return defaultVariant === 'custom' ? 'custom+oficial' : 'oficial+custom';
 }
 
 /**
@@ -116,6 +123,7 @@ export function toMultiselectOptions(
 ): MultiselectOption[] {
   const officialEntries = entries.filter((e) => e.official);
   const customOnly = entries.filter((e) => !e.official && e.custom);
+  const sepWidth = Math.min(40, Math.max(20, terminalColumns() - 10));
 
   const options: MultiselectOption[] = officialEntries.map((entry) => {
     const hasVariant = Boolean(entry.official && entry.custom);
@@ -127,17 +135,22 @@ export function toMultiselectOptions(
     return {
       value: entry.name,
       label: `${entry.official!.bucket}/${entry.name}`,
-      hint: hasVariant ? variantHint(defaultVariant) : descriptionHint(entry.official!),
+      hint: hasVariant ? variantHint(defaultVariant) : shortHint(entry.official!),
     };
   });
 
   if (customOnly.length > 0) {
-    options.push({ value: CUSTOM_SEP, label: '── Custom Skills ──────────────────', hint: '' });
+    options.push({
+      value: '__sep__custom__',
+      label: fitTerminal('── Custom Skills ──', sepWidth),
+      hint: '',
+      separator: true,
+    });
     for (const entry of customOnly) {
       options.push({
         value: entry.name,
         label: `custom/${entry.name}`,
-        hint: descriptionHint(entry.custom!),
+        hint: shortHint(entry.custom!),
       });
     }
   }

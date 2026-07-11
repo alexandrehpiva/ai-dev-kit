@@ -40,9 +40,13 @@ aidk skills uninstall --skills knowledge-base --target cursor
 
 ```bash
 aidk update
+# Rollback / rebuild sem puxar remote:
+aidk update --no-pull --cli-only
 ```
 
-Faz `git pull` no store, reconstrói o CLI e atualiza skills nos projetos rastreados. Depois do bootstrap (`./install.sh`), não é necessário reinstalar o binário só para pegar código novo.
+Faz `git pull` no store (salvo `--no-pull`), reconstrói o CLI e, salvo `--cli-only`, atualiza skills nos projetos rastreados. Depois do bootstrap (`./install.sh`), não é necessário reinstalar o binário só para pegar código novo.
+
+Prompts interativos usam `@inquirer/prompts` (separadores não selecionáveis; texto truncado à largura do terminal).
 
 ## Locale
 
