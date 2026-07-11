@@ -3,7 +3,7 @@
 Kit de desenvolvimento assistido por agentes de IA — **skills**, agentes e o CLI
 `ai-dev-kit` (ver [`cli/`](cli/README.md)) que os instala nos projetos via symlinks.
 
-> **Status:** 🚧 em construção. Versão atual do CLI: **0.1.0**.
+> **Status:** 🚧 em construção. Versão atual do CLI: **0.1.1**.
 
 ## O que é
 
@@ -72,6 +72,8 @@ cd ai-dev-kit && ./install.sh
 
 ```bash
 ai-dev-kit skills list
+# atalho equivalente:
+aidk skills list
 ai-dev-kit skills install
 ai-dev-kit skills install --target claude --skills grill-me,task-writing
 ai-dev-kit skills install --target cursor --skills custom/minha-kb

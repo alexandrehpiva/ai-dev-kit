@@ -9,6 +9,15 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.1.1] — 2026-07-11
+
+### Added
+
+- Atalho global **`aidk`** → mesmo binário que `ai-dev-kit` (`./install.sh` cria
+  symlink em `~/.local/bin/aidk`). `ai-dev-kit uninstall` remove os dois links.
+
+---
+
 ## [0.1.0] — 2026-07-11
 
 Primeira release do **AI Dev Kit** como repositório pessoal público (fork sanitizado).

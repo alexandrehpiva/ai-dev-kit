@@ -8,12 +8,15 @@ import { checkSymlinkStatus, removeSymlink } from '../core/symlinks.js';
 import { confirm, intro, isCancel, log, outro } from '../utils/ui.js';
 
 function removeBinary(): void {
-  const candidates = [path.join(os.homedir(), '.local', 'bin', 'ai-dev-kit')];
-  try {
-    const fromWhich = execSync('which ai-dev-kit', { encoding: 'utf-8' }).trim();
-    if (fromWhich && !candidates.includes(fromWhich)) candidates.push(fromWhich);
-  } catch {
-    /* not in PATH */
+  const binDir = path.join(os.homedir(), '.local', 'bin');
+  const candidates = [path.join(binDir, 'ai-dev-kit'), path.join(binDir, 'aidk')];
+  for (const name of ['ai-dev-kit', 'aidk']) {
+    try {
+      const fromWhich = execSync(`which ${name}`, { encoding: 'utf-8' }).trim();
+      if (fromWhich && !candidates.includes(fromWhich)) candidates.push(fromWhich);
+    } catch {
+      /* not in PATH */
+    }
   }
 
   let removed = false;

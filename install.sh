@@ -17,10 +17,12 @@ pnpm run build
 
 mkdir -p "$BIN_DIR"
 ln -sf "$SCRIPT_DIR/cli/dist/index.js" "$BIN_PATH"
+ln -sf "$SCRIPT_DIR/cli/dist/index.js" "$BIN_DIR/aidk"
 chmod +x "$SCRIPT_DIR/cli/dist/index.js"
 
 echo ""
 echo "✅ ai-dev-kit instalado: $BIN_PATH"
+echo "✅ atalho aidk:          $BIN_DIR/aidk"
 echo ""
 
 # Configure store path automatically using the repo location — no wizard on first install.
@@ -34,3 +36,4 @@ if [[ ":$PATH:" != *":$BIN_DIR:"* ]]; then
 fi
 echo "Pronto! Para instalar skills no projeto atual:"
 echo "  ai-dev-kit skills install"
+echo "  # ou: aidk skills install"
