@@ -1,0 +1,19 @@
+# macOS
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+
+# Logs / temp
+*.log
+tmp/
+.cache/
+
+# Extensions
+.specstory/
+.cursorindexingignore
+
+# Custom skills — local-only, not part of the official kit.
+# Users can git-init this folder independently to version their own skills.
+skills/custom/
