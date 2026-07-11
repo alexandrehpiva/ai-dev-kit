@@ -4,8 +4,8 @@ import { buildCache, readCache, writeCache, writeSnapshot } from '../../core/cac
 import { getLocale, readConfig, readProjects, writeProjects } from '../../core/config.js';
 import { runInitWizardIfNeeded } from '../../core/init.js';
 import { getCurrentCommit, listAvailableSkills } from '../../core/store.js';
-import { createSymlink, getTargetDir } from '../../core/symlinks.js';
-import type { Target } from '../../types.js';
+import { checkSymlinkStatus, createSymlink, getTargetDir } from '../../core/symlinks.js';
+import type { InstalledSkill, SkillInfo, Target } from '../../types.js';
 import {
   cancel,
   confirm,
@@ -17,6 +17,18 @@ import {
   spinner,
   text,
 } from '../../utils/ui.js';
+
+import {
+  buildInteractiveSkillEntries,
+  collectInstalledNamesForTarget,
+  CUSTOM_SEP,
+  pickSkillForVariant,
+  resolveDefaultVariant,
+  resolveSkillFromEntry,
+  toMultiselectOptions,
+  type InteractiveSkillEntry,
+  type VariantChoice,
+} from './install-selection.js';
 
 interface InstallOptions {
   target?: string;
@@ -99,83 +111,87 @@ export async function installSkills(options: InstallOptions): Promise<void> {
     }
   }
 
-  // Resolve skills to install
-  // allSkills: with suppression — used for flag-based paths (backward-compat)
-  // allSkillsForDisplay: without suppression — used for interactive multiselect
   const locale = getLocale();
-  const allSkills = listAvailableSkills(storePath, { locale });
-  const allSkillsForDisplay = listAvailableSkills(storePath, {
-    suppressCustomDuplicates: false,
-    locale,
-  });
-  let skillsToInstall = allSkills;
+  const projectPath = process.cwd();
+  let skillsToInstall: SkillInfo[];
 
-  if (options.all) {
-    // use all (suppressed list — custom takes precedence)
-  } else if (options.bucket) {
-    skillsToInstall = allSkills.filter((s) => s.bucket === options.bucket);
-    if (!skillsToInstall.length) {
-      console.error(`Bucket "${options.bucket}" não encontrado ou sem skills.`);
-      process.exit(1);
-    }
-  } else if (options.skills) {
-    const selectors = options.skills.split(',').map((s) => s.trim());
-    skillsToInstall = selectors.flatMap((selector) => {
-      // Supports both "name" and "bucket/name" formats.
-      const slashIdx = selector.indexOf('/');
-      if (slashIdx !== -1) {
-        const bucket = selector.slice(0, slashIdx);
-        const name = selector.slice(slashIdx + 1);
-        const match = allSkillsForDisplay.find((s) => s.bucket === bucket && s.name === name);
-        if (!match) {
+  if (options.all || options.bucket || options.skills) {
+    // Flag paths: custom suppresses official (may print ℹ); short --skills prefers custom.
+    const allSkills = listAvailableSkills(storePath, { locale });
+    const allSkillsForDisplay = listAvailableSkills(storePath, {
+      suppressCustomDuplicates: false,
+      locale,
+    });
+
+    if (options.all) {
+      skillsToInstall = allSkills;
+    } else if (options.bucket) {
+      skillsToInstall = allSkills.filter((s) => s.bucket === options.bucket);
+      if (!skillsToInstall.length) {
+        console.error(`Bucket "${options.bucket}" não encontrado ou sem skills.`);
+        process.exit(1);
+      }
+    } else {
+      const selectors = options.skills!.split(',').map((s) => s.trim());
+      skillsToInstall = selectors.flatMap((selector) => {
+        const slashIdx = selector.indexOf('/');
+        if (slashIdx !== -1) {
+          const bucket = selector.slice(0, slashIdx);
+          const name = selector.slice(slashIdx + 1);
+          const match = allSkillsForDisplay.find((s) => s.bucket === bucket && s.name === name);
+          if (!match) {
+            console.error(`Skill não encontrada: ${selector}`);
+            process.exit(1);
+          }
+          return [match];
+        }
+        const matches = allSkillsForDisplay.filter((s) => s.name === selector);
+        if (!matches.length) {
           console.error(`Skill não encontrada: ${selector}`);
           process.exit(1);
         }
-        return [match];
-      }
-      // Short name: warn if ambiguous (both custom and official exist), use custom.
-      const matches = allSkillsForDisplay.filter((s) => s.name === selector);
-      if (!matches.length) {
-        console.error(`Skill não encontrada: ${selector}`);
-        process.exit(1);
-      }
-      const custom = matches.find((s) => s.bucket === 'custom');
-      if (custom && matches.length > 1) {
-        console.log(
-          `⚠  "${selector}" é ambíguo (custom e oficial disponíveis); usando custom/${selector}. Use bucket/${selector} para ser explícito.`,
-        );
-        return [custom];
-      }
-      return [matches[0]];
-    });
+        const custom = matches.find((s) => s.bucket === 'custom');
+        if (custom && matches.length > 1) {
+          console.log(
+            `⚠  "${selector}" é ambíguo (custom e oficial disponíveis); usando custom/${selector}. Use bucket/${selector} para ser explícito.`,
+          );
+          return [custom];
+        }
+        return [matches[0]];
+      });
+    }
   } else {
-    const officialSkills = allSkillsForDisplay.filter((s) => s.bucket !== 'custom');
-    const customSkills = allSkillsForDisplay.filter((s) => s.bucket === 'custom');
+    // Interactive: no suppress (no ℹ), one row per name, hide already installed on target.
+    const allSkillsForDisplay = listAvailableSkills(storePath, {
+      suppressCustomDuplicates: false,
+      locale,
+    });
+    const registry = readProjects();
+    const project = registry.projects.find((p) => p.path === projectPath);
+    const installedOnTarget = project?.skills.filter((s) => s.target === target) ?? [];
+    const installedNames = collectInstalledNamesForTarget(
+      installedOnTarget,
+      target,
+      (s) => checkSymlinkStatus(s).status,
+    );
+    const installedByName = new Map(installedOnTarget.map((s) => [s.name, s]));
 
-    const CUSTOM_SEP = '__sep__custom__';
-    const skillKey = (s: { bucket: string; name: string }): string => `${s.bucket}/${s.name}`;
-    const officialOptions = officialSkills.map((s) => ({
-      value: skillKey(s),
-      label: `${s.bucket}/${s.name}`,
-      hint: s.localeHint
-        ? `(${s.localeHint}) ${s.description.slice(0, 45)}`
-        : s.description.slice(0, 60),
-    }));
-    const customOptions =
-      customSkills.length > 0
-        ? [
-            { value: CUSTOM_SEP, label: '── Custom Skills ──────────────────', hint: '' },
-            ...customSkills.map((s) => ({
-              value: skillKey(s),
-              label: `custom/${s.name}`,
-              hint: s.description.slice(0, 60),
-            })),
-          ]
-        : [];
+    const entries = buildInteractiveSkillEntries(allSkillsForDisplay, installedNames);
+    if (!entries.length) {
+      if (installedNames.size > 0) {
+        console.log(
+          'Todas as skills disponíveis já estão instaladas neste target. Use "ai-dev-kit skills switch" ou "skills uninstall" para alterar.',
+        );
+      } else {
+        console.log('Nenhuma skill disponível no store.');
+      }
+      outro('');
+      return;
+    }
 
     const selected = await multiselect({
       message: 'Selecione as skills para instalar:',
-      options: [...officialOptions, ...customOptions],
+      options: toMultiselectOptions(entries, installedByName),
       required: true,
     });
     if (isCancel(selected)) {
@@ -183,15 +199,26 @@ export async function installSkills(options: InstallOptions): Promise<void> {
       process.exit(1);
     }
 
-    const selectedKeys = new Set((selected as string[]).filter((v) => v !== CUSTOM_SEP));
-    skillsToInstall = allSkillsForDisplay.filter((s) => selectedKeys.has(skillKey(s)));
+    const selectedNames = (selected as string[]).filter((v) => v !== CUSTOM_SEP);
+    const byName = new Map(entries.map((e) => [e.name, e]));
+    skillsToInstall = [];
+
+    for (const name of selectedNames) {
+      const entry = byName.get(name);
+      if (!entry) continue;
+      const resolved = await resolveInteractiveEntry(entry, installedByName.get(name));
+      if (!resolved) {
+        cancel('Cancelado.');
+        process.exit(1);
+      }
+      skillsToInstall.push(resolved);
+    }
   }
 
   // Install
   const s = spinner();
   s.start('Criando symlinks...');
 
-  const projectPath = process.cwd();
   const targetDir = getTargetDir(projectPath, target, customPath);
   const installedSkills = [];
 
@@ -228,4 +255,32 @@ export async function installSkills(options: InstallOptions): Promise<void> {
   s.stop(`${installedSkills.length} skill(s) instalada(s) em ${targetDir}`);
 
   outro('Pronto! Use "ai-dev-kit update" para manter as skills atualizadas.');
+}
+
+async function resolveInteractiveEntry(
+  entry: InteractiveSkillEntry,
+  installedForName: InstalledSkill | undefined,
+): Promise<SkillInfo | null> {
+  if (entry.official && entry.custom) {
+    const defaultVariant = resolveDefaultVariant(entry.official, entry.custom, installedForName);
+    const choice = await select({
+      message: `Variante de "${entry.name}":`,
+      initialValue: defaultVariant,
+      options: [
+        {
+          value: 'custom' satisfies VariantChoice,
+          label: `custom/${entry.name}`,
+          hint: entry.custom.description.slice(0, 50),
+        },
+        {
+          value: 'official' satisfies VariantChoice,
+          label: `${entry.official.bucket}/${entry.name}`,
+          hint: entry.official.description.slice(0, 50),
+        },
+      ],
+    });
+    if (isCancel(choice)) return null;
+    return pickSkillForVariant(entry, choice as VariantChoice);
+  }
+  return resolveSkillFromEntry(entry);
 }

@@ -8,6 +8,9 @@ import globals from 'globals';
 export default [
   js.configs.recommended,
   {
+    ignores: ['src/**/*.test.ts'],
+  },
+  {
     files: ['src/**/*.ts'],
     languageOptions: {
       parser: tsParser,

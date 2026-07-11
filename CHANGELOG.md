@@ -9,6 +9,27 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.1.2] — 2026-07-11
+
+### Changed
+
+- **`skills install` interativo:** uma linha por skill (nome); quando existem
+  oficial e custom, um `select` escolhe a variante (default: já instalada no
+  target, senão custom). Colisões aparecem no bucket oficial com hint; a seção
+  Custom lista só skills sem oficial.
+- Skills **já instaladas** no target escolhido (symlink `valid`/`replaced`)
+  deixam de aparecer no multiselect — use `skills switch` ou `skills uninstall`
+  para alterar. Flags `--all` / `--bucket` / `--skills` mantêm o comportamento
+  anterior (custom ganha em ambiguidade).
+- Caminho interativo não imprime mais `ℹ custom/X substitui …` antes do prompt.
+
+### Added
+
+- Helpers e testes unitários (`install-selection`) para dedupe, variante e filtro
+  de instaladas (`pnpm test` no CLI).
+
+---
+
 ## [0.1.1] — 2026-07-11
 
 ### Added
