@@ -3,7 +3,7 @@
 Kit de desenvolvimento assistido por agentes de IA — **skills**, agentes e o CLI
 `ai-dev-kit` (ver [`cli/`](cli/README.md)) que os instala nos projetos via symlinks.
 
-> **Status:** 🚧 em construção. Versão atual do CLI: **0.1.2**.
+> **Status:** 🚧 em construção. Versão atual do CLI: **0.1.3**.
 
 ## O que é
 
@@ -67,6 +67,8 @@ cd ai-dev-kit && ./install.sh
 ```
 
 **Pré-requisitos:** Node ≥ 20 e pnpm.
+
+Depois do bootstrap, `ai-dev-kit update` (ou `aidk update`) faz `git pull`, reconstrói o CLI e atualiza skills — sem precisar rodar `./install.sh` de novo.
 
 ## Uso rápido
 

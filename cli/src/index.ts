@@ -20,7 +20,7 @@ const program = new Command();
 program
   .name('ai-dev-kit')
   .description('CLI for managing AI Dev Kit skills and resources')
-  .version('0.1.2');
+  .version('0.1.3');
 
 // --- init ---
 program
@@ -73,7 +73,7 @@ skills
 // --- update ---
 program
   .command('update')
-  .description('Pull latest changes from the framework store and update registered projects')
+  .description('Pull store, rebuild CLI (pnpm), refresh bins, and update registered project skills')
   .action(update);
 
 // --- uninstall (the whole tool) ---

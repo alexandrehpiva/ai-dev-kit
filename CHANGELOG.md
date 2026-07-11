@@ -9,6 +9,21 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.1.3] — 2026-07-11
+
+### Changed
+
+- **`aidk update` / `ai-dev-kit update`:** além do `git pull` do store e refresh das
+  skills, reconstrói o CLI (`pnpm install` + limpa `cli/dist` + `pnpm build`) e
+  atualiza os symlinks em `~/.local/bin` (`ai-dev-kit` e `aidk`). Bins extras no
+  PATH que ainda apontam para um `…/cli/dist/index.js` antigo são redirecionados;
+  arquivos desconhecidos com o mesmo nome são **mantidos** (sem delete cego).
+  **Não mexe** em registry de projetos, symlinks de skills nem `config.json` —
+  skills descontinuadas continuam pedindo confirmação como antes. `./install.sh`
+  segue só para bootstrap inicial.
+
+---
+
 ## [0.1.2] — 2026-07-11
 
 ### Changed

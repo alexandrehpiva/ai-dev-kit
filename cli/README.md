@@ -135,18 +135,23 @@ ai-dev-kit config set-locale en-US
 
 ### `ai-dev-kit update`
 
-Pulls the latest changes from the framework store and checks all registered projects.
+Pulls the latest framework store, rebuilds the CLI, and refreshes registered projects.
 
 **What it does:**
 1. Runs `git pull` in the framework store
-2. Compares the new store state against the local cache
-3. Checks each registered project (removes tracking if directory missing)
-4. For each changed skill:
+2. Rebuilds the CLI (`pnpm install`, clean `cli/dist`, `pnpm build`) and refreshes
+   `~/.local/bin/ai-dev-kit` and `aidk`. Extra PATH entries that still point at an
+   old `…/cli/dist/index.js` are redirected; unknown files with those names are
+   left alone. **Does not** touch the projects registry, skill symlinks, or
+   `config.json` (skill removals still ask for confirmation as before).
+3. Compares the new store state against the local cache
+4. Checks each registered project (removes tracking if directory missing)
+5. For each changed skill:
    - **Flat → locale migration:** re-links to the locale subfolder automatically, logs per skill (`grill-me  flat → pt-BR`)
    - **Locale changed (global locale switch):** re-links `"default"` skills to the new locale
    - **Symlink intact:** updated automatically
    - **Symlink replaced by real file (dev edited locally):** asks before overwriting; shows a diff summary
-5. Skills removed from the framework are listed; asks if you want to remove them from projects
+6. Skills removed from the framework are listed; asks if you want to remove them from projects
 
 ---
 

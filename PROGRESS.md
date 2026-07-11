@@ -30,4 +30,4 @@ Checklist vivo pós-fork pessoal (`ai-dev-kit`). Versionamento reinicia em **0.1
 ## Notas
 
 - **2026-07-11** — fork pessoal; CLI 0.1.0; uninstall não interativo; auditoria de skills oficiais e docs raiz.
-- **2026-07-11** — `0.1.1` atalho `aidk`; `0.1.2` install interativo com variante oficial|custom e ocultar já instaladas.
+- **2026-07-11** — `0.1.1` atalho `aidk`; `0.1.2` install interativo com variante oficial|custom e ocultar já instaladas; `0.1.3` `update` também reconstrói o CLI.

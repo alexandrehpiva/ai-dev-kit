@@ -9,6 +9,7 @@ import {
   writeSnapshot,
   type SkillDiff,
 } from '../core/cache.js';
+import { updateCliFromStore } from '../core/cli-self-update.js';
 import { getLocale, readConfig, readProjects, writeProjects } from '../core/config.js';
 import { runInitWizardIfNeeded } from '../core/init.js';
 import { SUPPORTED_LOCALES, gitPull, isGitRepo, listAvailableSkills } from '../core/store.js';
@@ -43,12 +44,45 @@ export default async function update(): Promise<void> {
   const pullSummary = await gitPull(storePath);
   s.stop(`Store: ${pullSummary}`);
 
-  // 2. Diff the freshly-pulled store against the cached baseline
+  // 2. Rebuild CLI from store/cli and refresh ~/.local/bin links (same as install.sh)
+  const cliSpinner = spinner();
+  cliSpinner.start('Atualizando CLI (pnpm install + build)...');
+  try {
+    const cliResult = await updateCliFromStore(storePath);
+    if (cliResult.status === 'updated') {
+      const ver = cliResult.version ? ` v${cliResult.version}` : '';
+      const cleaned = cliResult.cleanedDist ? ' (dist limpo)' : '';
+      cliSpinner.stop(`CLI${ver} reconstruída e bins atualizados${cleaned}`);
+      if (cliResult.redirectedBins?.length) {
+        for (const p of cliResult.redirectedBins) {
+          log(`  ↳ bin antigo redirecionado: ${p}`);
+        }
+      }
+      if (cliResult.leftAloneBins?.length) {
+        for (const p of cliResult.leftAloneBins) {
+          log(
+            `  ⚠  "${p}" no PATH não parece CLI do kit — mantido intacto (skills/registry não afetados).`,
+          );
+        }
+      }
+    } else {
+      cliSpinner.stop(`CLI: ${cliResult.reason ?? 'pulado'}`);
+    }
+  } catch (err) {
+    cliSpinner.stop('Falha ao atualizar o CLI');
+    const message = err instanceof Error ? err.message : String(err);
+    log(`✗ ${message}`);
+    log('  Corrija o build (pnpm no PATH, store/cli) e rode `aidk update` de novo.');
+    outro('Update interrompido.');
+    process.exit(1);
+  }
+
+  // 3. Diff the freshly-pulled store against the cached baseline
   const oldCache = readCache();
   const newCache = await buildCache(storePath);
   const diffs = diffCacheVsStore(oldCache, newCache);
 
-  // 3. Verify registered projects, dropping ones whose target no longer exists
+  // 4. Verify registered projects, dropping ones whose target no longer exists
   const registry = readProjects();
   const projectsToRemove = new Set<string>();
 
@@ -78,7 +112,7 @@ export default async function update(): Promise<void> {
     registry.projects = registry.projects.filter((p) => !projectsToRemove.has(p.path));
   }
 
-  // 4. Apply changed (still-existing) skills
+  // 5. Apply changed (still-existing) skills
   const locale = getLocale();
   const availableSkills = listAvailableSkills(storePath, { locale });
   const removedDiffs = diffs.filter((d) => d.isRemoved);
@@ -154,7 +188,7 @@ export default async function update(): Promise<void> {
     migrationLogs.forEach((l) => log(l));
   }
 
-  // 5. Handle skills removed from the framework
+  // 6. Handle skills removed from the framework
   if (removedDiffs.length) {
     log('\n  Skills descontinuadas no framework:');
     for (const diff of removedDiffs) {
@@ -204,7 +238,7 @@ export default async function update(): Promise<void> {
     }
   }
 
-  // 6. Persist the new baseline (registry, hash cache and file snapshot)
+  // 7. Persist the new baseline (registry, hash cache and file snapshot)
   writeProjects(registry);
   writeCache(newCache);
   writeSnapshot(storePath);

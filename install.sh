@@ -34,6 +34,8 @@ if [[ ":$PATH:" != *":$BIN_DIR:"* ]]; then
   echo "   echo 'export PATH=\"\$HOME/.local/bin:\$PATH\"' >> ~/.zshrc"
   echo ""
 fi
-echo "Pronto! Para instalar skills no projeto atual:"
+echo "Pronto! Depois do bootstrap, use \`ai-dev-kit update\` (ou \`aidk update\`)"
+echo "para puxar o store, reconstruir o CLI e atualizar skills nos projetos."
+echo "Para instalar skills no projeto atual:"
 echo "  ai-dev-kit skills install"
 echo "  # ou: aidk skills install"
