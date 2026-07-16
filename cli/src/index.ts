@@ -20,7 +20,7 @@ const program = new Command();
 program
   .name('ai-dev-kit')
   .description('CLI for managing AI Dev Kit skills and resources')
-  .version('0.2.0');
+  .version('0.3.0');
 
 // --- init ---
 program

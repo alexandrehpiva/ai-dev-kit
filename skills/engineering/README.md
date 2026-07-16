@@ -13,3 +13,5 @@ Skills focadas em código: construir, revisar, depurar e operar sistemas.
 | [`dev-ts-angular`](dev-ts-angular/en-US/SKILL.md) | Desenvolvimento TypeScript/Angular v17+ (`angular-patterns.md`) |
 | [`dev-ts-nest`](dev-ts-nest/pt-BR/SKILL.md) | Desenvolvimento NestJS/TypeScript — anatomia de módulo, DI, DTOs, RxJS, mapeamento de erro (`nest-patterns.md`) |
 | [`diagnose`](diagnose/pt-BR/SKILL.md) | Depurar via loop de reprodução + hipóteses falsificáveis |
+| [`write-a-dev-stack`](write-a-dev-stack/pt-BR/SKILL.md) | Desenhar/implementar CLI de orquestração de stacks locais (jornada, janelas, health, config em camadas) |
+| [`qa-e2e-testing`](qa-e2e-testing/pt-BR/SKILL.md) | Mapear telas/features, fechar plano de testes com `grill-me` e implementar/rodar e2e cobrindo estado de UI, cenários adversos e comportamento por tier de plano |

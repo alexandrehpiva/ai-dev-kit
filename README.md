@@ -3,7 +3,7 @@
 Kit de desenvolvimento assistido por agentes de IA — **skills**, agentes e o CLI
 `ai-dev-kit` (ver [`cli/`](cli/README.md)) que os instala nos projetos via symlinks.
 
-> **Status:** 🚧 em construção. Versão atual do CLI: **0.2.0**.
+> **Status:** 🚧 em construção. Versão atual do CLI: **0.3.0**.
 
 ## O que é
 
@@ -51,9 +51,9 @@ ai-dev-kit/
 ## Skills disponíveis
 
 **[engineering/](skills/engineering/README.md)** — `technical-refinement`, `task-context`, `task-writing`, `code-review`,
-`commit-guide`, `dev-python-fastapi`, `dev-ts-angular`, `dev-ts-nest`, `diagnose`
+`commit-guide`, `dev-python-fastapi`, `dev-ts-angular`, `dev-ts-nest`, `diagnose`, `write-a-dev-stack`, `qa-e2e-testing`
 
-**[productivity/](skills/productivity/README.md)** — `write-a-skill`, `handoff`, `grill-me`, `study`, `zoom-out`, `teach-to-build`, `open-pr`, `personal-gammaos`
+**[productivity/](skills/productivity/README.md)** — `write-a-skill`, `handoff`, `grill-me`, `study`, `zoom-out`, `teach-to-build`, `open-pr`
 
 **[knowledge/](skills/knowledge/README.md)** — `knowledge-base` (template → custom), `agent-memory`
 

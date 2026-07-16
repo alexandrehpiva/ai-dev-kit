@@ -9,6 +9,23 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.3.0] — 2026-07-16
+
+### Added
+
+- **Skill `engineering/write-a-dev-stack` (pt-BR):** protocolo para desenhar e
+  implementar CLIs de orquestração de stacks locais (jornada de apps/APIs/infra,
+  uma janela por serviço, health waves, config em camadas sem paths hardcoded).
+  Assets (nomes em inglês, conteúdo pt-BR): `DESIGN-CONTRACT.md`,
+  `CATALOG-SCHEMA.md`, `ANTI-PATTERNS.md`, `VALIDATION.md`.
+
+### Security
+
+- Varredura Gitleaks (`git` + `dir`) no store e na skill: **sem leaks**.
+
+---
+
+
 ## [0.2.0] — 2026-07-11
 
 Minor (não patch): troca de stack da TUI interativa (arquitetura/UX), sem breaking

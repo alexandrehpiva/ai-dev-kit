@@ -143,6 +143,26 @@ Skills focadas em código: construir, revisar, depurar e operar sistemas.
 
 ---
 
+## write-a-dev-stack
+
+**Arquivo:** `skills/engineering/write-a-dev-stack/pt-BR/SKILL.md`
+
+**Descrição:** Desenha e implementa um CLI/orquestrador de stacks locais para uma jornada (apps, APIs, workers, infra Docker): um processo por janela de terminal, hot reload, portas sincronizadas via templates, `depends_on` + health wait, `up`/`down`/`status`, config em camadas sem paths hardcoded. Assets: `DESIGN-CONTRACT.md`, `CATALOG-SCHEMA.md`, `ANTI-PATTERNS.md`, `VALIDATION.md`. Compõe com `study`, `grill-me` e `project-bootstrap`.
+
+**Quando usar:** o usuário pedir para "subir a stack", "orquestrar serviços locais", "CLI para subir o portal/jornada", "dev stack", "um terminal por serviço", "write-a-dev-stack", ou criar um orquestrador no estilo de stacks locais.
+
+---
+
+## qa-e2e-testing
+
+**Arquivo:** `skills/engineering/qa-e2e-testing/pt-BR/SKILL.md`
+
+**Descrição:** Mapeia toda tela/rota e ação com efeito colateral de uma aplicação, fecha um plano de testes de QA completo via `grill-me` (golden path + consistência de estado de UI + propagação para outras telas + cenários adversos + fronteira + diferenciação por tier/plano + concorrência), salva o plano com `TEST-PLAN-TEMPLATE.md`, e implementa/estende a suíte e2e existente do projeto rodando um cenário por vez (corrige antes de avançar). Compõe com `grill-me`, `study` e a suíte e2e já existente do projeto.
+
+**Quando usar:** o usuário pedir "testes e2e", "revisão de QA completa", "mapear e testar cada tela", "testar como um QA faria", relatar que "os botões não refletem o estado real", ou quando o produto vai receber usuários reais e precisa de cobertura de regressão end-to-end.
+
+---
+
 # Productivity
 
 Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
