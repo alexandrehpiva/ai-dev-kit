@@ -51,7 +51,7 @@ ai-dev-kit/
 ## Skills disponíveis
 
 **[engineering/](skills/engineering/README.md)** — `technical-refinement`, `task-context`, `task-writing`, `code-review`,
-`commit-guide`, `dev-python-fastapi`, `dev-ts-angular`, `dev-ts-nest`, `diagnose`, `write-a-dev-stack`, `qa-e2e-testing`
+`commit-guide`, `dev-python-fastapi`, `dev-ts-angular`, `dev-ts-nest`, `dev-go`, `diagnose`, `write-a-dev-stack`, `qa-e2e-testing`
 
 **[productivity/](skills/productivity/README.md)** — `write-a-skill`, `handoff`, `grill-me`, `study`, `zoom-out`, `teach-to-build`, `open-pr`
 

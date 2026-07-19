@@ -133,6 +133,16 @@ Skills focadas em código: construir, revisar, depurar e operar sistemas.
 
 ---
 
+## dev-go
+
+**Arquivo:** `skills/engineering/dev-go/pt-BR/SKILL.md`
+
+**Descrição:** Desenvolver, refatorar e revisar código Go/Gin no padrão sênior, com foco em serviços multi-tenant sobre DynamoDB/AWS SDK. Cobre anatomia de serviço (`cmd/`, `internal/{config,model,repository,service,middleware,handler}`), `attributevalue` para DynamoDB, propagação de `context.Context`, migrations idempotentes e a regra de ouro multi-tenant (toda mutação por ID verifica organização; toda permissão vem do claim de role, nunca de wildcard fixo; todo `Scan` multi-tenant é suspeito até provar que tem GSI). Asset `go-patterns.md` contém pares Bom/Ruim canônicos derivados de achados reais de code review (autorização wildcard, JWT sem audience, Scan sem filtro de tenant, comparação de grupo por substring, entre outros) e uma tabela de qual padrão copiar entre serviços irmãos divergentes.
+
+**Quando usar:** o usuário for implementar, refatorar ou revisar handlers, services, repositories ou middleware Go; trabalhar em um serviço Go com Gin, DynamoDB ou Cognito; ou mencionar Go, Gin, AWS SDK v2, JWT/Cognito, DynamoDB ou código Go de backend.
+
+---
+
 ## diagnose
 
 **Arquivo:** `skills/engineering/diagnose/pt-BR/SKILL.md`
