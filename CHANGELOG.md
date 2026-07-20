@@ -9,6 +9,28 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.4.0] — 2026-07-20
+
+### Added
+
+- **Skill `engineering/dev-go` (pt-BR):** protocolo para desenvolvimento Go/Gin
+  multi-tenant — anatomia de serviço, regra de ouro multi-tenant e 10
+  anti-padrões de segurança (autorização wildcard, Scan sem filtro de tenant,
+  JWT sem audience, comparação de grupo por substring, entre outros), cada um
+  com exemplo Bom/Ruim. Asset `go-patterns.md`, no formato das skills irmãs
+  (`dev-python-fastapi`, `dev-ts-nest`).
+
+### Changed
+
+- **Skill `productivity/write-a-skill` (pt-BR):** nova regra de nomenclatura —
+  todo arquivo/pasta dentro de `skills/` deve ter nome em inglês (kebab-case,
+  `lowercase.md` ou `SCREAMING-CASE.md` conforme o conteúdo), mesmo quando o
+  conteúdo do arquivo é em outro idioma. Regra explícita no corpo e no
+  checklist final; corrige uma lacuna encontrada num asset criado com nome em
+  português.
+
+---
+
 ## [0.3.0] — 2026-07-16
 
 ### Added

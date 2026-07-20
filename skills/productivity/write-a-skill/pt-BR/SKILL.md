@@ -63,6 +63,7 @@ Apenas para skills que são um comando de voz do usuário (`zoom-out`, `grill-me
 - Mantenha o `SKILL.md` abaixo de ~100 linhas. Uma skill imperativa de um parágrafo é válida.
 - Quando crescer, o `SKILL.md` vira um **router**: decide e aponta para assets; os assets carregam o detalhe.
 - Nomenclatura de assets: `SCREAMING-CASE.md` = formato/contrato de saída; `lowercase.md` = guia de domínio.
+- **Nome de arquivo sempre em inglês** (pasta da skill, `SKILL.md`, todo asset) — `kebab-case` ou `lowercase.md`/`SCREAMING-CASE.md` conforme a regra acima, nunca em português. Vale para todo arquivo dentro de `skills/`, mesmo quando o **conteúdo** do arquivo é em português (idioma do cofre/projeto). Exemplo: `download-source-tools.md`, não `ferramentas-fonte-download.md`.
 - Crie assets **de forma lazy** — apenas quando houver conteúdo real.
 
 ## Técnicas de escrita
@@ -157,6 +158,7 @@ Se o target for `custom`, peça o path ao usuário antes de rodar. Não pergunte
 ## Checklist
 
 - [ ] `name` = nome da pasta pai (kebab-case), não o nome do locale
+- [ ] Todo nome de arquivo/pasta dentro de `skills/` está em inglês (conteúdo pode ser em português)
 - [ ] `description`: o que faz + "Usar quando" + gatilhos entre aspas, abaixo de ~1024 chars
 - [ ] `SKILL.md` abaixo de ~100 linhas; detalhe empurrado para assets
 - [ ] `disable-model-invocation` apenas se comando de voz do usuário ou setup perigoso
