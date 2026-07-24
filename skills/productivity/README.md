@@ -12,3 +12,4 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 | [`study`](study/SKILL.md) | Investigação técnica profunda: lê código, mapeia opções, forma opinião e entrega recomendação antes de implementar |
 | [`open-pr`](open-pr/pt-BR/SKILL.md) | Abrir Pull Request com descrição no padrão da skill, vínculo opcional com a task e publicação correta da branch |
 | [`recall-directives`](recall-directives/pt-BR/SKILL.md) | Antes da tarefa, recuperar do histórico (mesmo compactado) diretivas do usuário que o agente pode ter esquecido, e persistir na memória |
+| [`mine-skills`](mine-skills/pt-BR/SKILL.md) | Minerar o histórico de uma conversa em busca de padrões que valem virar skill, e devolver um relatório rankeado de candidatas |

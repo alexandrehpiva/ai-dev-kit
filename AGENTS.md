@@ -223,6 +223,16 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 
 ---
 
+## mine-skills
+
+**Arquivo:** `skills/productivity/mine-skills/pt-BR/SKILL.md`
+
+**Descrição:** Varre o histórico de uma conversa — inclusive além do que sobrou após compactações, reaproveitando o `transcript-sources.md` de `recall-directives` em vez de duplicar essa lógica — em busca de padrões que valem virar skill: trabalho manual repetido, reclamação recorrente, pedido explícito de "isso vira skill?", ou processo ad hoc que resolveu bem um problema estruturalmente recorrente. Só reporta como candidata o que tem evidência real (recorrência ou pedido explícito); cruza com `agent-memory` para não duplicar o que já está registrado. Devolve um relatório rankeado por confiança — não cria nenhuma skill sozinha, delega a construção da candidata aprovada para `write-a-skill`.
+
+**Quando usar:** o usuário pedir para identificar possíveis skills a partir do histórico do chat, perguntar "isso vira skill?", pedir um retro de sessão focado em automação/ferramentas.
+
+---
+
 ## recall-directives
 
 **Arquivo:** `skills/productivity/recall-directives/pt-BR/SKILL.md`

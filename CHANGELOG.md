@@ -9,6 +9,23 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.6.0] — 2026-07-24
+
+### Added
+
+- **Skill `productivity/mine-skills` (pt-BR):** varre o histórico de uma
+  conversa — inclusive além do que sobrou após compactações, reaproveitando
+  o `transcript-sources.md` de `recall-directives` em vez de duplicar essa
+  lógica — em busca de padrões que valem virar skill: trabalho manual
+  repetido, reclamação recorrente, pedido explícito de "isso vira skill?",
+  ou processo ad hoc que resolveu bem um problema estruturalmente
+  recorrente. Só reporta candidata com evidência real (recorrência ou
+  pedido explícito), cruza com `agent-memory` para não duplicar o que já
+  está registrado, e devolve um relatório rankeado sem criar nada sozinha —
+  a construção da candidata aprovada é sempre delegada a `write-a-skill`.
+
+---
+
 ## [0.5.0] — 2026-07-24
 
 ### Added
