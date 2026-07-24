@@ -9,6 +9,25 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.5.0] — 2026-07-24
+
+### Added
+
+- **Skill `productivity/recall-directives` (pt-BR):** antes de executar a
+  tarefa pedida, varre o histórico de prompts do usuário na conversa atual —
+  inclusive trechos perdidos em compactações/sumarizações automáticas — para
+  recuperar reclamações, diretivas de processo, vontades/objetivos e contexto
+  de decisão esquecidos, cruza com a memória do agente já existente e
+  persiste o que faltar antes de prosseguir. Reativa (recupera o que se
+  perdeu), complementar a `context-compaction` (previne a perda enquanto o
+  contexto ainda está presente). Agnóstica de harness: asset
+  `transcript-sources.md` traz pontos de partida para localizar o transcript
+  completo em disco por ferramenta (Claude Code, Cursor, Copilot Chat),
+  sempre como algo a verificar antes de confiar, com fallback explícito para
+  trabalhar só com o contexto atual quando nada disso se aplica.
+
+---
+
 ## [0.4.0] — 2026-07-20
 
 ### Added

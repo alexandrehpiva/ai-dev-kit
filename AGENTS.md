@@ -223,6 +223,16 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 
 ---
 
+## recall-directives
+
+**Arquivo:** `skills/productivity/recall-directives/pt-BR/SKILL.md`
+
+**Descrição:** Antes de executar a tarefa pedida, varre todo o histórico de prompts do usuário na conversa atual — inclusive trechos perdidos em compactações/sumarizações automáticas — para recuperar reclamações, diretivas de processo, vontades/objetivos e contexto de decisão que podem ter sido esquecidos, cruza com a memória do agente já existente e persiste o que faltar antes de prosseguir. **Agnóstica de harness:** `transcript-sources.md` traz pontos de partida para localizar o transcript completo em disco por ferramenta (Claude Code, Cursor, Copilot Chat), sempre como algo a verificar antes de confiar, com fallback explícito para trabalhar só com o contexto atual quando nada disso se aplica. Reativo (recupera o que se perdeu), em vez de proativo como `context-compaction` (previne a perda enquanto o contexto ainda está presente); usa o protocolo de leitura/escrita da skill de memória do projeto (`agent-memory` ou equivalente) em vez de reimplementá-lo.
+
+**Quando usar:** a conversa é longa, já foi compactada/sumarizada, ou é continuação de uma sessão anterior; ou o usuário pedir "revise o histórico antes de continuar", "não perca o que eu já pedi", "você lembra do que eu falei antes?".
+
+---
+
 ## study
 
 **Arquivo:** `skills/productivity/study/pt-BR/SKILL.md`
