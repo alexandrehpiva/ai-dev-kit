@@ -9,6 +9,31 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.7.0] — 2026-07-27
+
+### Added
+
+- **Skill `productivity/archive-session` (pt-BR):** cria um arquivo histórico
+  autossuficiente de uma sessão, fase ou projeto — um registro congelado no
+  tempo, não uma passagem de bastão. Distingue-se explicitamente do `handoff`:
+  memória é copiada como snapshot (não referenciada), documentos-chave são
+  incluídos por cópia, não há "próxima ação", e o resultado é sempre uma pasta.
+  Contém portão de decisão claro ("quando usar archive-session e não handoff"),
+  template de 9 seções, e checklist de fechamento.
+
+### Changed
+
+- **Skill `productivity/handoff`:** adicionado bloco "MODO DE FALHA CRÍTICO"
+  para sessões com Q&A/grills/decisões iterativas — nomeia o anti-padrão dos
+  três blocos separados (prompts / grills / o que foi feito) e define a
+  estrutura obrigatória do timeline cronológico único. Adicionada seção
+  `3.15. Assets de contexto` com portão de decisão, exemplos detalhados de
+  o que é e não é asset, lógica de pasta vs arquivo, e requisito de
+  detalhamento completo na descrição de cada asset (anti-padrão e exemplo
+  correto explícitos).
+
+---
+
 ## [0.6.0] — 2026-07-24
 
 ### Added
