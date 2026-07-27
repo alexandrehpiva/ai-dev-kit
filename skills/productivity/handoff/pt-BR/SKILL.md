@@ -229,7 +229,45 @@ Comandos exatos (não pseudocódigo) que o próximo agente vai precisar:
 
 Skills do framework que o próximo agente deve ler antes de continuar. Marcar quais são obrigatórias vs opcionais. Se alguma skill foi atualizada nesta sessão, mencionar.
 
-### 3.14. Próxima ação concreta
+### 3.14. Assets de contexto
+
+**O que é um asset:** conteúdo produzido ou extraído nesta sessão que um agente futuro, em uma sessão nova e limpa, **não consegue acessar por conta própria** — porque não existe no filesystem, não está no git, não é recuperável via API, ou vive em local temporário que não sobrevive ao fim da sessão (ex: `/tmp`).
+
+**Portão de decisão — fazer esta pergunta para cada candidato a asset:**
+> "Um agente novo, sem contexto desta conversa, consegue ler este conteúdo usando as ferramentas que tem disponíveis?"
+- Se **sim** → não é asset; referenciar por path ou URL na seção correta do handoff
+- Se **não** → é asset; incluir como arquivo dentro da pasta de handoff
+
+**Exemplos de assets reais:**
+- Resultado de processamento em `/tmp` (extração de JSONL, parse de transcrição, relatório gerado em sessão)
+- Resposta de API one-shot sem cache (ex: JSON bruto de uma chamada que não ficou salvo em nenhum lugar)
+- Conteúdo anotado/analisado de uma fonte que não estará disponível depois (URL com paywall, arquivo enviado por upload, vídeo temporário)
+- Diagrama ou tabela produzido inline que seria custoso regenerar
+
+**Exemplos do que NÃO é asset:**
+- Arquivos no repo ou cofre → referenciar por path
+- Histórico git → `git log` acessa
+- Páginas do ClickUp/Linear/GitHub → acessíveis via CLI ou API
+- Arquivos de memória em `memory/` → já persistidos
+- ADRs, specs, PRDs → já no repo
+
+**Quando há assets: o handoff vira pasta**
+
+Em vez de um arquivo `.md`, criar uma pasta com o mesmo nome (sem extensão), e dentro dela:
+
+```
+handoffs/
+  {YYYY-MM-DD HH-MM-SS} - {nome}/   ← pasta no lugar do arquivo
+    README.md                         ← o handoff principal (mesma estrutura)
+    {asset-1}.{ext}                   ← arquivo de asset
+    {asset-2}.{ext}
+```
+
+Se não há assets, o handoff continua como arquivo único `.md`. **Não criar pasta vazia** — a pasta só existe quando há assets reais para justificá-la.
+
+Incluir no `README.md` uma seção `## Assets de contexto` listando cada arquivo com: nome, o que contém, por que não era acessível de outra forma.
+
+### 3.15. Próxima ação concreta
 
 Última seção do documento. Uma única frase ou parágrafo dizendo **o que o próximo agente deve fazer primeiro**. Se há uma pergunta pendente para o usuário, deixar a pergunta literal aqui.
 
@@ -246,12 +284,14 @@ Skills do framework que o próximo agente deve ler antes de continuar. Marcar qu
 ## 5. Processo de criação
 
 1. **Perguntar ao usuário onde salvar** — obrigatório, não pular (ver seção 2).
-2. **Criar a pasta de destino** se não existir (`mkdir -p`).
-3. **Determinar nome do arquivo:** timestamp atual + nome curto descritivo do tema da sessão.
-4. **Varredura mental do contexto:** percorrer mentalmente toda a sessão — tudo que foi lido, tudo que foi discutido, todas as listas que foram apresentadas, todos os arquivos referenciados, todas as decisões tomadas. Inventariar antes de começar a escrever.
-5. **Redigir seguindo o template da seção 3** — adaptar seções ao tema, manter densidade.
-6. **Conferir contra o checklist da seção 6.**
-7. **Salvar com Write.**
+2. **Varredura de assets:** antes de criar qualquer arquivo, perguntar para cada candidato: "Um agente novo consegue acessar isso sem esta conversa?" Se não → listar como asset. Se sim → só referenciar.
+3. **Decidir forma:** se houver ≥1 asset → criar **pasta** `{timestamp} - {nome}/` com `README.md` dentro. Sem assets → criar arquivo `{timestamp} - {nome}.md`.
+4. **Criar o destino** se não existir (`mkdir -p`).
+5. **Varredura mental do contexto:** percorrer toda a sessão — leituras, discussões, listas, arquivos referenciados, decisões tomadas. Inventariar antes de começar a escrever.
+6. **Redigir seguindo o template da seção 3** — adaptar seções ao tema, manter densidade.
+7. **Salvar assets** nas extensões corretas dentro da pasta (quando existirem).
+8. **Conferir contra o checklist da seção 6.**
+9. **Salvar com Write.**
 
 ---
 
@@ -271,6 +311,9 @@ Skills do framework que o próximo agente deve ler antes de continuar. Marcar qu
 - [ ] Padrão de referência estudado (se houver) está com código real, não em prosa
 - [ ] Comandos úteis incluem workarounds conhecidos
 - [ ] Skills sugeridas listadas com obrigatórias vs opcionais
+- [ ] **Assets avaliados:** para cada conteúdo produzido na sessão, perguntou se um agente futuro consegue acessar sem esta conversa
+- [ ] **Sem assets:** handoff é arquivo único `.md`; **com assets:** handoff é pasta com `README.md` + arquivos de asset
+- [ ] Seção `## Assets de contexto` presente no README quando há assets, ausente quando não há
 - [ ] Próxima ação concreta no final
 - [ ] Conteúdo presente em outros artefatos referenciado por path/URL, não duplicado
 - [ ] Dados sensíveis ausentes do corpo do handoff; quando relevantes para a continuidade, agrupados na seção `## ⚠️ Dados sensíveis e credenciais` descrevendo o quê / onde / como obter — nunca o valor
