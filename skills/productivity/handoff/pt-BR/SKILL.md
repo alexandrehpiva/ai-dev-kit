@@ -265,7 +265,28 @@ handoffs/
 
 Se não há assets, o handoff continua como arquivo único `.md`. **Não criar pasta vazia** — a pasta só existe quando há assets reais para justificá-la.
 
-Incluir no `README.md` uma seção `## Assets de contexto` listando cada arquivo com: nome, o que contém, por que não era acessível de outra forma.
+Incluir no `README.md` uma seção `## Assets de contexto` com dois blocos:
+
+**Bloco 1 — Tabela de avaliação de candidatos:** todo conteúdo produzido na sessão avaliado explicitamente, mesmo os descartados. Isso permite ao agente futuro entender o que foi considerado e por quê ficou de fora.
+
+| Candidato | Acessível por agente futuro? | Decisão |
+|---|---|---|
+| `output.json` em `/tmp` | ❌ não — temporário de sessão | Asset — incluído como `output.json` |
+| Docs no repo | ✅ sim — `src/docs/*.md` | Referenciado por path |
+| Resposta da API X | ❌ não — one-shot sem cache | Asset — incluído como `api-response.json` |
+
+**Bloco 2 — Descrição detalhada de cada asset incluído:** para cada arquivo de asset, não sumarizar — detalhar completamente:
+- O que o arquivo contém (estrutura, campos, volume)
+- Como foi gerado (qual comando, qual extração, qual transformação)
+- Por que não é acessível de outra forma (o argumento concreto)
+- Como o próximo agente deve usá-lo (o que procurar, como interpretar)
+
+**Anti-padrão:** `grill_pairs.txt` — 64 pares de pergunta/resposta extraídos do JSONL." Isso é uma linha. Não serve.
+
+**Correto:**
+> `grill-pairs.txt` — extração dos 64 pares de grill do transcript JSONL da sessão. Gerado com `grep` sobre o arquivo `/Users/alexandredias/.claude/projects/.../86347d0a.jsonl` (513 turnos, 9MB). Contém blocos no formato `=== GRILL N [timestamp] ===` / mensagem do agente / `--- RESPOSTA [timestamp] ---` / resposta do usuário. O JSONL original ainda está em disco mas reextair os pares manualmente consumiria ~30min de parsing; este arquivo entrega os 64 pares prontos para leitura. Para usar: buscar por `=== GRILL N` para ir direto a uma rodada específica; a recomendação do agente está sempre no bloco do agente imediatamente antes do `--- RESPOSTA`.
+
+O nível de detalhe correto é: o agente que receber este handoff deve conseguir usar o asset sem precisar abri-lo primeiro para entender o que é.
 
 ### 3.15. Próxima ação concreta
 
