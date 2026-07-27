@@ -65,6 +65,49 @@ Criar a pasta de destino se não existir (`mkdir -p`).
 
 A ordem abaixo é o template. Omitir seções **só** quando não houver conteúdo para elas — não inventar conteúdo para preencher. Adicionar seções novas quando o tema da sessão exigir.
 
+---
+
+### ⚠️ MODO DE FALHA CRÍTICO — sessões com Q&A, grills ou decisões iterativas
+
+Quando a sessão tem rodadas de perguntas e respostas (grill-me, entrevistas de produto, refinamentos iterativos com o PO), o instinto natural do agente é criar **três blocos separados**:
+
+1. "Histórico de prompts do usuário" — todos os prompts em sequência
+2. "Registro de grills / Q&A" — todas as perguntas e respostas agrupadas
+3. "O que foi feito" — narrativa por fases do que o agente executou
+
+**Isso está errado.** O leitor precisa pular de seção em seção para entender o que aconteceu em qualquer troca. É como ler um roteiro com as falas do ator A numa página, as falas do ator B em outra, e as stage directions numa terceira.
+
+**O correto:** um único `## Timeline cronológico` onde cada evento aparece na posição real, com a estrutura:
+
+```
+#### [HH:MM] Título do evento
+
+**Prompt do usuário:**
+> [texto literal]
+
+**O que aconteceu:** [ações concretas do agente — documentos criados, código escrito, etc.]
+
+**Pergunta do grill:** (se houve)
+> [pergunta exata]
+
+**Recomendação:** [recomendação do agente com raciocínio breve]
+
+**Resposta do usuário:**
+> [resposta literal]
+
+**Conclusão / decisão:** [o que ficou decidido — ex: "D-42: MongoDB Atlas como hipótese de trabalho"]
+```
+
+Regras do timeline:
+- Eventos em **ordem cronológica estrita** — nunca agrupar por tipo
+- Prompts são **literais** em bloco de citação (`> texto`) — não parafrasear
+- Recomendação do agente é **obrigatória** em todo grill — a razão de uma decisão ter chegado onde chegou é tão importante quanto a decisão em si
+- Conclusão/decisão é **obrigatória** — "resposta do usuário" sem "conclusão do agente" é meio registro
+- Se um prompt gerou múltiplos grills, cada grill é um sub-evento dentro do mesmo bloco de timestamp
+- Seções de referência (estado de documentação, mapas de IDs, fatos técnicos, perguntas represadas) ficam **depois** do timeline — são conteúdo de consulta, não narrativa
+
+---
+
 ### 3.1. Cabeçalho com metadados
 
 Primeira coisa do documento, antes de qualquer prosa. Inclui no mínimo:
@@ -219,6 +262,9 @@ Skills do framework que o próximo agente deve ler antes de continuar. Marcar qu
 - [ ] Nome do arquivo segue `{YYYY-MM-DD HH-MM-SS} - {nome}.md` exatamente
 - [ ] Cabeçalho com metadados completo (data, branch, repo, task, links)
 - [ ] Resumo de onde paramos diz explicitamente o que foi e o que **não foi** feito
+- [ ] **Sessão com Q&A/grills/decisões:** timeline cronológico único — NÃO três blocos separados (prompts / grills / o que foi feito)
+- [ ] **Timeline:** cada evento tem prompt literal + o que aconteceu + (se grill) pergunta + recomendação + resposta literal + conclusão
+- [ ] **Timeline:** recomendação do agente presente em todo grill — não só a resposta do usuário
 - [ ] Todo finding/problema do contexto está reproduzido com severidade + arquivo:linha + trecho de código + explicação
 - [ ] Toda lista apresentada na sessão está reproduzida item a item (não resumida pelo total)
 - [ ] Trechos de código referenciados na sessão estão colados, não citados
