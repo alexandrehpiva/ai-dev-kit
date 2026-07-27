@@ -199,6 +199,16 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 
 ---
 
+## archive-session
+
+**Arquivo:** `skills/productivity/archive-session/pt-BR/SKILL.md`
+
+**Descrição:** Criar um arquivo histórico autossuficiente de uma sessão, fase ou projeto — um registro congelado no tempo, não uma passagem de bastão. Ao contrário do `handoff`, memórias são copiadas como snapshot (não referenciadas), documentos-chave são incluídos por cópia, não há "próxima ação", e o resultado é sempre uma pasta. O arquivo deve ser compreensível sem acesso a nenhum outro sistema.
+
+**Quando usar:** o usuário disser "arquive esta sessão", "fase concluída", "encerre o projeto", "quero um snapshot deste momento", ou quando a intenção for preservar o que era verdade agora, não continuar de onde parou.
+
+---
+
 ## grill-me
 
 **Arquivo:** `skills/productivity/grill-me/pt-BR/SKILL.md`
@@ -230,6 +240,16 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 **Descrição:** Varre o histórico de uma conversa — inclusive além do que sobrou após compactações, reaproveitando o `transcript-sources.md` de `recall-directives` em vez de duplicar essa lógica — em busca de padrões que valem virar skill: trabalho manual repetido, reclamação recorrente, pedido explícito de "isso vira skill?", ou processo ad hoc que resolveu bem um problema estruturalmente recorrente. Só reporta como candidata o que tem evidência real (recorrência ou pedido explícito); cruza com `agent-memory` para não duplicar o que já está registrado. Devolve um relatório rankeado por confiança — não cria nenhuma skill sozinha, delega a construção da candidata aprovada para `write-a-skill`.
 
 **Quando usar:** o usuário pedir para identificar possíveis skills a partir do histórico do chat, perguntar "isso vira skill?", pedir um retro de sessão focado em automação/ferramentas.
+
+---
+
+## subagent-orchestration
+
+**Arquivo:** `skills/productivity/subagent-orchestration/pt-BR/SKILL.md`
+
+**Descrição:** Orquestra trabalho com subagentes em paralelo quando fizer sentido: o agente principal parte lotes disjuntos, lança subagentes com protocolo explícito, monitora até conclusão, trata falhas recuperáveis e consolida resultado — sem criar scripts monolíticos para fazer o trabalho que agentes deveriam executar. Subagente que não resolve dentro do escopo devolve BLOCKED ao principal; o principal relança com outra abordagem no mesmo escopo ou pergunta ao usuário em bloqueios sérios. Agnóstica de domínio (código, backup, CI, etc.).
+
+**Quando usar:** tarefa grande ou paralelizável; usuário pedir subagentes, paralelismo ou autonomia até terminar; ou quando surgir tentação de script único no lugar de delegação.
 
 ---
 
