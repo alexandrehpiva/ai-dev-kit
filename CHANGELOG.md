@@ -9,6 +9,24 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.7.1] — 2026-07-24
+
+### Changed
+
+- **Skill `productivity/recall-directives` (pt-BR):** passa a também reler as
+  skills atualmente carregadas relevantes à tarefa, não só o histórico de
+  prompts — mesma disciplina de "reler mesmo já tendo lido" que `agent-memory`
+  já aplica à memória, estendida a skills. Duas razões: a instrução de uma
+  skill carregada cedo pode ter saído da janela visível como qualquer outro
+  conteúdo antigo; e o arquivo da skill pode ter sido **editado em disco**
+  depois de carregado nesta sessão (o próprio usuário ajustando a skill no
+  meio do trabalho, ou outra sessão mexendo no mesmo repositório) — caso que
+  reler só o histórico de prompts nunca cobre. Novo passo 2 no procedimento
+  (demais passos renumerados), nova frase na descrição/frontmatter, novo
+  anti-padrão e nota de composição com `agent-memory`.
+
+---
+
 ## [0.7.0] — 2026-07-27
 
 ### Added
