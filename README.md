@@ -51,7 +51,8 @@ ai-dev-kit/
 ## Skills disponíveis
 
 **[engineering/](skills/engineering/README.md)** — `technical-refinement`, `task-context`, `task-writing`, `code-review`,
-`commit-guide`, `dev-python-fastapi`, `dev-ts-angular`, `dev-ts-nest`, `dev-go`, `diagnose`, `write-a-dev-stack`, `qa-e2e-testing`
+`commit-guide`, `dev-python`, `dev-ts-angular`, `dev-ts-nest`, `dev-ts-react`, `dev-go`, `diagnose`, `write-a-dev-stack`, `qa-e2e-testing`
+(`dev-python-fastapi` está deprecated — substituída por `dev-python`)
 
 **[productivity/](skills/productivity/README.md)** — `write-a-skill`, `handoff`, `archive-session`, `grill-me`, `study`, `zoom-out`, `teach-to-build`, `open-pr`, `recall-directives`, `mine-skills`, `subagent-orchestration`
 

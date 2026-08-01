@@ -103,13 +103,15 @@ Skills focadas em código: construir, revisar, depurar e operar sistemas.
 
 ---
 
-## dev-python-fastapi
+## dev-python
 
-**Arquivo:** `skills/engineering/dev-python-fastapi/pt-BR/SKILL.md`
+**Arquivo:** `skills/engineering/dev-python/pt-BR/SKILL.md`
 
-**Descrição:** Desenvolver, refatorar e revisar código Python/FastAPI no padrão sênior. Princípio central: o código mais simples e claro que resolve o problema. Lê o projeto antes de implementar para coincidir com convenções já estabelecidas. Assets `poetry-fastapi.md` e `uv-fastapi.md` cobrem ambientes e convenções de estrutura FastAPI.
+**Descrição:** Desenvolver, refatorar e revisar código Python em qualquer framework, package manager ou arquitetura — não mais restrita a FastAPI. Detecta package manager (Poetry/uv), framework/arquitetura (FastAPI, Lambda) e, quando ambíguo, inspeciona `Makefile`/`Dockerfile` para confirmar o entrypoint. Assets: `poetry.md`, `uv.md`, `code-quality.md` (ruff/pre-commit/type checking, agnóstico de framework), `fastapi/fastapi.md`, `fastapi/sqlalchemy.md` (SQLAlchemy async + Alembic), `lambda/lambda.md` (handler, empacotamento sem venv, Dockerfile uv/Poetry). Django e pipelines de dados ainda não têm asset — a tabela-router do `SKILL.md` já reserva a entrada. Para projeto novo, compõe com `grill-me` (uma pergunta por vez, com recomendação) antes de criar/planejar: package manager → framework/arquitetura → decisões específicas.
 
-**Quando usar:** o usuário pedir para implementar, refatorar ou revisar código Python; trabalhar em projeto uv/Poetry/FastAPI; mencionar FastAPI, uv, Poetry ou serviços Python.
+**Quando usar:** o usuário pedir para implementar, refatorar ou revisar código Python; trabalhar em projeto uv/Poetry; mencionar FastAPI, Lambda, SQLAlchemy ou serviços Python.
+
+**Nota:** substitui e descontinua `dev-python-fastapi` (mantida em `skills/engineering/dev-python-fastapi/` e `skills/custom/dev-python-fastapi/` só como referência histórica, marcada `disable-model-invocation: true`).
 
 ---
 
@@ -130,6 +132,16 @@ Skills focadas em código: construir, revisar, depurar e operar sistemas.
 **Descrição:** Desenvolver, refatorar e revisar código NestJS/TypeScript no padrão sênior. Cobre anatomia de módulo (module-first, DI por construtor), DTOs com `class-validator`, uso de RxJS para chamadas HTTP (`Observable` vs `lastValueFrom`), mapeamento de erro do upstream, logging e segurança. Asset `nest-patterns.md` contém pares Bom/Ruim canônicos.
 
 **Quando usar:** o usuário for implementar, refatorar ou revisar módulos, controllers, services ou DTOs NestJS; trabalhar em um projeto BFF NestJS; ou mencionar NestJS, Nest, RxJS, HttpService ou código TypeScript de backend.
+
+---
+
+## dev-ts-react
+
+**Arquivo:** `skills/engineering/dev-ts-react/pt-BR/SKILL.md`
+
+**Descrição:** Desenvolver, refatorar e revisar código React/TypeScript no padrão sênior, para SPA client-side (Vite). Cobre anatomia feature-first, componentes de função + hooks, data-fetching via camada dedicada (React Query ou equivalente, nunca `useEffect` manual), estados explícitos de loading/erro/sucesso, formulários com schema único compartilhado. Asset `react-patterns.md` contém pares Bom/Ruim canônicos e tabela de anti-padrões.
+
+**Quando usar:** o usuário for implementar, refatorar ou revisar componentes, hooks, rotas ou chamadas de API em um frontend React; trabalhar num projeto Vite+React; ou mencionar React, componente, hook, JSX/TSX, React Query, Zustand, React Router.
 
 ---
 
