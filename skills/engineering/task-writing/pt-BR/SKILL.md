@@ -18,7 +18,11 @@ de escrever, depois escreva no padrão US.
 3. **Escreva no padrão** — siga [US-FORMAT.md](US-FORMAT.md).
 4. **Critérios de aceite são obrigatórios** e escritos como Dado/Quando/Então (Given/When/Then).
 5. **Divida** trabalho grande em subtasks por camada/dependência (back, front, integração) — não
-   em fragmentos que forcem malabarismo de contexto.
+   em fragmentos que forcem malabarismo de contexto. Épico e US ficam no mesmo nível hierárquico
+   (vínculo, não parentesco); subtask é reservada ao detalhamento técnico — ver seção "Hierarquia"
+   em [US-FORMAT.md](US-FORMAT.md).
+6. **Enxugue e revise legibilidade** antes de publicar — [lean-writing.md](lean-writing.md) (o que
+   cortar) e [readability.md](readability.md) (como dispor o que fica).
 
 ## Durabilidade
 
