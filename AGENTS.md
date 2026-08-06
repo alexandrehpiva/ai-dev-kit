@@ -311,6 +311,16 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 
 ---
 
+## session-recovery
+
+**Arquivo:** `skills/productivity/session-recovery/pt-BR/SKILL.md`
+
+**Descrição:** Recuperar o contexto e o estado de trabalho após interrupção por limite de tokens ou erro de sessão. Cobre a auditoria de contexto (diretivas, histórico), auditoria de ambiente (git, tasks, agentes, filesystem), sincronização do plano e retomada qualificada de subagentes com prompts detalhados. Integra com `subagent-orchestration` (monitoramento), `recall-directives` (recuperação de contexto compactado) e `agent-memory`.
+
+**Quando usar:** o usuário disser "acabaram os tokens", "limite de uso", "sessão caiu", "recupere o que estava fazendo" ou houver evidência de trabalho interrompido.
+
+---
+
 # Knowledge
 
 Skills que leem/mantêm conhecimento persistente: template de Knowledge Base compartilhada (gera skill custom) e memória do agente sobre o desenvolvedor.

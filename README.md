@@ -54,7 +54,7 @@ ai-dev-kit/
 `commit-guide`, `dev-python`, `dev-ts-angular`, `dev-ts-nest`, `dev-ts-react`, `dev-go`, `diagnose`, `write-a-dev-stack`, `qa-e2e-testing`
 (`dev-python-fastapi` está deprecated — substituída por `dev-python`)
 
-**[productivity/](skills/productivity/README.md)** — `write-a-skill`, `handoff`, `archive-session`, `grill-me`, `study`, `zoom-out`, `teach-to-build`, `open-pr`, `recall-directives`, `mine-skills`, `subagent-orchestration`
+**[productivity/](skills/productivity/README.md)** — `write-a-skill`, `handoff`, `archive-session`, `grill-me`, `study`, `zoom-out`, `teach-to-build`, `open-pr`, `recall-directives`, `mine-skills`, `subagent-orchestration`, `session-recovery`
 
 **[knowledge/](skills/knowledge/README.md)** — `knowledge-base` (template → custom), `agent-memory`
 

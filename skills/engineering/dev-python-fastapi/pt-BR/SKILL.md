@@ -1,7 +1,10 @@
 ---
 name: dev-python-fastapi
-description: Desenvolver, refatorar e revisar código Python/FastAPI no padrão sênior. Usar quando o usuário for implementar, refatorar ou revisar código Python; trabalhar em projeto uv/poetry/FastAPI; ou mencionar FastAPI, uv, poetry ou serviços Python.
+description: "[DEPRECATED — substituída por dev-python] Desenvolver, refatorar e revisar código Python/FastAPI no padrão sênior."
+disable-model-invocation: true
 ---
+
+> **DEPRECATED.** Esta skill foi substituída pela `dev-python` (`skills/engineering/dev-python/pt-BR/SKILL.md`), que cobre Python em qualquer framework/arquitetura (FastAPI, Lambda, e futuros), com detecção automática de package manager e assets separados por tema (`poetry.md`, `uv.md`, `code-quality.md`, `fastapi/`, `lambda/`). Use `dev-python` a partir de agora. Este arquivo permanece só para referência histórica e não deve mais ser instalado em projetos novos.
 
 # dev-python-fastapi
 
