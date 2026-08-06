@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.8.0] — 2026-08-06
+
+### Added
+
+- **Skill `productivity/session-recovery` (pt-BR):** recupera contexto e estado de trabalho após interrupção por limite de tokens ou erro de sessão. Cobre auditoria de contexto (recall de diretivas e histórico), auditoria de ambiente (git, tasks, agentes, filesystem), sincronização do plano e retomada qualificada de subagentes com prompts detalhados. Integra com `subagent-orchestration` (monitoramento), `recall-directives` (recuperação de contexto compactado) e `agent-memory`. Descrição inclui gatilhos literais como "acabaram os tokens", "limite de uso", "sessão caiu", "recupere o que estava fazendo".
+
+---
+
 ## [0.7.1] — 2026-07-24
 
 ### Changed
