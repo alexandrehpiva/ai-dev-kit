@@ -9,18 +9,19 @@ Apresente a lista agrupada por skill, com numeração **global e sequencial** (n
 
 ### Item N — <título curto>
 - **Tipo:** adicionar | alterar | remover
+- **Origem:** incidente | comparação orientação-vs-entrega
 - **Onde:** <SKILL.md seção X | asset Y.md>
-- **Incidente:** <o que aconteceu na sessão, com citação/resumo concreto — não genérico>
+- **Evidência:** <o que aconteceu na sessão (incidente), ou o trecho comparado entre o que a skill orienta e o que foi entregue (comparação) — com citação/resumo concreto, não genérico>
 - **Mudança proposta:** <texto real a ser adicionado/alterado/removido, não só a ideia>
-- **Por quê:** <por que esta mudança teria evitado o incidente>
+- **Por quê:** <por que esta mudança teria evitado o incidente, ou fechado a lacuna encontrada na comparação>
 ```
 
 ## Regras de preenchimento
 
-- **Incidente sempre concreto.** Nunca "poderia ter dado errado" — só o que de fato aconteceu, com trecho ou resumo fiel do histórico (turno do usuário, erro do agente, correção aplicada).
+- **Evidência sempre concreta.** Nunca "poderia ter dado errado" — só o que de fato aconteceu ou foi comparado, com trecho ou resumo fiel do histórico (turno do usuário, erro do agente, correção aplicada, trecho do trabalho entregue vs. trecho da skill).
 - **Mudança proposta é texto, não intenção.** Escreva a frase/parágrafo real que entraria na skill, não "adicionar uma regra sobre X".
-- **Um item = uma mudança isolada.** Se dois ajustes na mesma skill não têm o mesmo incidente motivador, são itens separados, mesmo que fiquem na mesma seção do arquivo.
-- **Sem inflar contagem.** Uma skill sem incidente qualificado não aparece na lista — não force um item fraco só para a skill "não ficar de fora".
+- **Um item = uma mudança isolada.** Se dois ajustes na mesma skill não têm a mesma evidência motivadora, são itens separados, mesmo que fiquem na mesma seção do arquivo.
+- **Sem inflar contagem.** Uma skill sem evidência qualificada não aparece na lista — não force um item fraco só para a skill "não ficar de fora", nem para preencher as duas lentes artificialmente quando só uma se aplica.
 
 ## Exemplo real (do incidente que originou esta skill)
 

@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.10.0] — 2026-08-07
+
+### Added
+
+- **Skill `productivity/skill-gap-audit` (pt-BR):** minera dois tipos de achado em vez de um só — mantém "incidente real" e acrescenta a lente "comparação orientação vs. entrega" (compara o que cada skill efetivamente orienta com o que a sessão de fato produziu, revelando melhorias/features não apontadas e bugs que escaparam por falta de cobertura). Passo novo de leitura paginada do histórico item a item — a sessão inteira pode exceder a janela de contexto, então a skill agora percorre em páginas, registra achados por página num arquivo de notas de trabalho e comunica explicitamente até onde conseguiu avançar em vez de tratar uma leitura parcial como completa. A aplicação de itens aceitos passa a exigir explicitamente o acionamento de `write-a-skill` (nunca edição direta do `SKILL.md`/assets, mesmo trivial). `SUGGESTION-FORMAT.md` atualizado em conjunto: campo `Incidente` renomeado para `Evidência` e novo campo `Origem` (incidente | comparação). Motivado por feedback do usuário logo após os primeiros testes da skill: queria profundidade maior no histórico e mineração de oportunidades de melhoria além de incidentes de erro.
+
+---
+
 ## [0.9.2] — 2026-08-07
 
 ### Changed
