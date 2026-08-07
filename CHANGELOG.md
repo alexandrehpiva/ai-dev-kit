@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.9.2] — 2026-08-07
+
+### Changed
+
+- **Skill `engineering/dev-python` (pt-BR):** o item "Coverage gate atingido" do checklist de fechamento de task agora especifica que só se aplica quando o projeto tem `--cov`/threshold configurado (`pyproject.toml`, `pytest.ini`, `.coveragerc`), exigindo declaração explícita de "sem coverage gate" quando não houver, em vez de marcar/pular em silêncio. Motivado por uma sessão em que a task foi fechada em `personal-finance-backend` — repo sem nenhuma configuração de coverage — sem que o item fosse nem cumprido nem declarado como não aplicável, porque o checklist não define nenhum critério de detecção.
+
+---
+
 ## [0.9.1] — 2026-08-07
 
 ### Changed

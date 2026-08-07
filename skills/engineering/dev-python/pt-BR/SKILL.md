@@ -67,7 +67,7 @@ Mock prova que o parsing está certo, não que a chamada é válida contra o ser
 ## Fechamento de task — portão obrigatório
 
 - [ ] Suíte completa de testes passa (unit + integration)
-- [ ] Coverage gate atingido
+- [ ] Coverage gate atingido — **se o projeto tiver `--cov`/threshold configurado** (`pyproject.toml`, `pytest.ini`, `.coveragerc` ou equivalente), rode e confirme o número; **se não tiver**, este item não se aplica — não marque nem ignore silenciosamente, declare explicitamente "projeto sem coverage gate configurado" no fechamento da task
 - [ ] Chamada a API externa nova/alterada validada ao vivo (não só mocks)
 - [ ] Endpoint/schema/classe removido → busca por órfãos e deleta o que ficou morto
 - [ ] Schema público mudou → docs correspondentes alinhados
