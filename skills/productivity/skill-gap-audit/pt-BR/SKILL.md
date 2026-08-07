@@ -1,27 +1,28 @@
 ---
 name: skill-gap-audit
 description: >-
-  Depois de uma sessão de trabalho guiada por skills (especialmente ciclos
-  multi-agente como `dev-squad`), audita todo o histórico da sessão —
-  inclusive trechos perdidos em compactações/sumarizações do harness — em
-  busca de diretrizes, regras ou contexto que deveriam existir nas skills
-  usadas mas não existiam, e que causaram erro, retrabalho ou esquecimento
-  (do agente principal ou de subagentes). Produz uma lista numerada de
+  Depois de qualquer sessão de trabalho guiada por uma ou mais skills —
+  ciclo multi-agente ou não —, audita todo o histórico da sessão, inclusive
+  trechos perdidos em compactações/sumarizações do harness, em busca de
+  diretrizes, regras ou contexto que deveriam existir nas skills usadas mas
+  não existiam, e que causaram erro, retrabalho ou esquecimento (do agente
+  principal ou de subagentes, quando houver). Produz uma lista numerada de
   sugestões de ajuste por skill (o que mudar/acrescentar/remover, com o
   incidente que motiva e o porquê), aguarda o usuário aceitar ou rejeitar
   item a item, e aplica cada item aceito via `write-a-skill`. Usar quando o
   usuário pedir para "auditar as skills desta sessão", "por que o agente
   esqueceu isso", "atualizar as skills com o que aconteceu", "revisão
-  pós-sessão das skills", ou depois de um incidente causado por falta de
-  diretriz numa skill (ex.: subagentes colidindo na mesma branch, contexto
-  perdido, regra que devia existir e não existia).
+  pós-sessão das skills", ou depois de qualquer incidente causado por falta
+  de diretriz numa skill — subagentes colidindo na mesma branch, contexto
+  perdido, uma regra de qualquer skill (dev, infra, QA, memória, etc.) que
+  devia existir e não existia.
 ---
 
 # skill-gap-audit — Minerar incidentes da sessão para corrigir skills
 
 ## Modo de falha que esta skill corrige
 
-Em ciclos guiados por skill (sobretudo multi-agente, como `dev-squad`), o agente principal ou um subagente comete um erro evitável — esquece uma regra de contexto, dois subagentes colidem por falta de isolamento, uma diretriz de qualidade não foi seguida porque nunca esteve escrita em lugar nenhum. O erro é corrigido no calor da hora, mas a **causa raiz** — a skill que deveria ter essa regra e não tem — nunca é revisitada. O mesmo erro volta em sessões futuras porque a lição ficou presa na conversa que já foi compactada/sumarizada, em vez de virar texto durável na skill.
+Em qualquer sessão guiada por skill — um ciclo multi-agente como `dev-squad`, mas igualmente uma sessão de infra, de QA, ou de uso solo de uma única skill —, o agente principal ou um subagente comete um erro evitável: esquece uma regra de contexto, colide com outro subagente por falta de isolamento, deixa de seguir uma diretriz de qualidade que nunca esteve escrita em lugar nenhum. O erro é corrigido no calor da hora, mas a **causa raiz** — a skill que deveria ter essa regra e não tem — nunca é revisitada. O mesmo erro volta em sessões futuras porque a lição ficou presa na conversa que já foi compactada/sumarizada, em vez de virar texto durável na skill.
 
 Quando uma instrução explícita do usuário contradisser algo aqui, prevalece a instrução do usuário.
 
@@ -38,7 +39,7 @@ Diferente de `mine-skills` (que minera candidatas a **skill nova**), esta skill 
 ## Procedimento
 
 1. **Localizar o histórico completo.** Mesma disciplina de `recall-directives`: siga [`transcript-sources.md`](../../recall-directives/pt-BR/transcript-sources.md) dela (reaproveitar o asset, não duplicar) para achar transcript em disco além do que sobrou de compactações/sumarizações.
-2. **Listar as skills efetivamente usadas na sessão** — toda invocação via Skill tool, toda troca de papel dentro de ciclos tipo `dev-squad` (Dev Sênior/Tech Lead/QA), qualquer subagente lançado com prompt derivado de uma skill.
+2. **Listar as skills efetivamente usadas na sessão** — toda invocação via Skill tool, toda troca de papel dentro de um ciclo multi-agente (ex.: Dev Sênior/Tech Lead/QA em `dev-squad`, mas o mesmo vale para qualquer outro ciclo de papéis), qualquer subagente lançado com prompt derivado de uma skill.
 3. **Releia cada skill usada direto do disco agora** (`SKILL.md` + assets relevantes) — não confie na versão que estava na janela de contexto quando foi carregada; pode ter mudado desde então.
 4. **Minere incidentes reais**: erros do agente principal, falhas ou retrabalho de subagentes, correções que o usuário precisou fazer, comportamento que só deu certo por sorte ou julgamento sem regra escrita. Para cada incidente, teste: *"se a skill já tivesse esta regra escrita, o incidente teria sido evitado?"* — só vira item quando a resposta é sim.
 5. **Escreva um item de sugestão por incidente qualificado**, seguindo [`SUGGESTION-FORMAT.md`](SUGGESTION-FORMAT.md): skill alvo, tipo de mudança (adicionar/alterar/remover), texto proposto, contexto do incidente, porquê.

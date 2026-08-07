@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.9.1] — 2026-08-07
+
+### Changed
+
+- **Skill `productivity/skill-gap-audit` (pt-BR):** removida a âncora em `dev-squad` da description, do "Modo de falha" e do passo 2 do procedimento — o usuário apontou, logo após a criação, que a skill estava enquadrada como se ciclos multi-agente tipo `dev-squad` fossem o caso central, quando o objetivo sempre foi qualquer sessão guiada por skill (uma única skill, um ciclo de papéis qualquer, com ou sem subagentes). `dev-squad` permanece como exemplo ilustrativo (é o incidente real que originou a skill), não como o cenário-alvo.
+
+---
+
 ## [0.9.0] — 2026-08-07
 
 ### Added
