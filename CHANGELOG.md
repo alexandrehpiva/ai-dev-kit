@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.9.0] — 2026-08-07
+
+### Added
+
+- **Skill `productivity/skill-gap-audit` (pt-BR):** audita o histórico de uma sessão guiada por skills — reaproveitando `transcript-sources.md` de `recall-directives` para alcançar trechos perdidos em compactações/sumarizações — em busca de incidentes reais (erro do agente principal ou de subagentes, retrabalho, correção do usuário) que evidenciam lacunas nas skills usadas. Motivada pelo incidente de dois subagentes `dev-squad` compartilhando o mesmo working directory por falta de `isolation: "worktree"`, o que fez um commit aterrissar na branch errada. Diferente de `mine-skills` (minera candidatas a skill nova), esta minera correções em skills já existentes: produz itens numerados por skill (contrato em `SUGGESTION-FORMAT.md`), aguarda aceite/rejeição item a item do usuário, e aplica os aceitos via `write-a-skill` — incluindo, para skills oficiais, entrada de changelog e bump de versão do kit.
+
+---
+
 ## [0.8.0] — 2026-08-06
 
 ### Added

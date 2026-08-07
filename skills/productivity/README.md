@@ -14,5 +14,6 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 | [`open-pr`](open-pr/pt-BR/SKILL.md) | Abrir Pull Request com descrição no padrão da skill, vínculo opcional com a task e publicação correta da branch |
 | [`recall-directives`](recall-directives/pt-BR/SKILL.md) | Antes da tarefa, recuperar do histórico (mesmo compactado) diretivas do usuário que o agente pode ter esquecido, e persistir na memória |
 | [`mine-skills`](mine-skills/pt-BR/SKILL.md) | Minerar o histórico de uma conversa em busca de padrões que valem virar skill, e devolver um relatório rankeado de candidatas |
+| [`skill-gap-audit`](skill-gap-audit/pt-BR/SKILL.md) | Auditar o histórico da sessão em busca de incidentes que evidenciam lacunas nas skills usadas, propor ajustes item a item e aplicar os aceitos via `write-a-skill` |
 | [`subagent-orchestration`](subagent-orchestration/pt-BR/SKILL.md) | Orquestrar subagentes em paralelo: delegar lotes, monitorar, corrigir falhas e escalar ao usuário só em bloqueios sérios — sem scripts no lugar de agentes |
 | [`session-recovery`](session-recovery/pt-BR/SKILL.md) | Recuperar contexto e estado de trabalho após interrupção por limite de tokens ou queda de sessão, relançando agentes com escopo bem definido |

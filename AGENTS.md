@@ -255,6 +255,16 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 
 ---
 
+## skill-gap-audit
+
+**Arquivo:** `skills/productivity/skill-gap-audit/pt-BR/SKILL.md`
+
+**Descrição:** Depois de uma sessão guiada por skills (sobretudo ciclos multi-agente como `dev-squad`), audita todo o histórico da sessão — inclusive trechos perdidos em compactações/sumarizações, reaproveitando `transcript-sources.md` de `recall-directives` — em busca de diretrizes que deveriam existir nas skills usadas mas não existiam, evidenciadas por um incidente real (erro do agente principal ou de subagentes, retrabalho, correção do usuário). Diferente de `mine-skills` (minera candidatas a skill **nova**), esta minera correções em skills **já existentes**. Produz uma lista numerada de sugestões por skill (o que adicionar/alterar/remover, o incidente que motiva, o porquê — contrato em `SUGGESTION-FORMAT.md`), aguarda o usuário aceitar ou rejeitar item a item, e aplica cada item aceito via `write-a-skill` — detectando custom vs. oficial, e para oficiais incrementando a versão do kit em `CHANGELOG.md`/`cli/package.json`.
+
+**Quando usar:** o usuário pedir para "auditar as skills desta sessão", "por que o agente esqueceu isso", "atualizar as skills com o que aconteceu", "revisão pós-sessão das skills"; ou após um incidente causado por falta de diretriz numa skill (ex.: subagentes colidindo na mesma branch).
+
+---
+
 ## subagent-orchestration
 
 **Arquivo:** `skills/productivity/subagent-orchestration/pt-BR/SKILL.md`
