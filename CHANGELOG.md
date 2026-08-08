@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.10.1] — 2026-08-08
+
+### Changed
+
+- **Skill `productivity/write-a-skill` (pt-BR):** nova seção "Generalize por padrão" logo após "Comece pelo problema" — mesmo quando o conteúdo de uma skill/asset é minerado de um projeto concreto, a versão final deve ser escrita em termos project-agnostic (vocabulário, entidades e citações de documento do projeto-fonte viram exemplo ilustrativo entre parênteses, não premissa implícita), a menos que o usuário peça acoplamento deliberado a um projeto específico. Motivado por um incidente em `skills/custom/dev-squad`: o asset `agents/architecture-refinement-checklist.md` foi minerado da documentação de produto do Recepta e ficou com vocabulário e entidades daquele domínio (clínica/paciente/Bia, `PlatformEvent`, `Entitlement`, códigos `RC-*`/`D-*`/`Q-TL-*`) espalhados pelo texto, apesar de `dev-squad` ser explicitamente uma skill pessoal genérica para qualquer projeto — o usuário precisou pedir uma auditoria de acoplamento explícita para pegar o problema, que uma diretriz de generalização no `write-a-skill` teria evitado.
+
+---
+
 ## [0.10.0] — 2026-08-07
 
 ### Added

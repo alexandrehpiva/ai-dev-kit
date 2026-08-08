@@ -11,6 +11,10 @@ Skills são primitivos precisos de propósito único que corrigem um modo de fal
 
 Antes de escrever, nomeie o **modo de falha** que esta skill corrige ("o agente é muito verboso", "o código não funciona", "o agente não fez o que eu queria"). Isso decide escopo e tom.
 
+## Generalize por padrão
+
+Mesmo quando o conteúdo é minerado de um projeto concreto, escreva a skill/asset em termos project-agnostic — vocabulário, entidades e citações de documento específicas do projeto-fonte viram exemplo ilustrativo entre parênteses, não premissa implícita. Só acople deliberadamente a um projeto quando o usuário pedir isso explicitamente (ex.: uma skill que É sobre aquele projeto). Teste antes de considerar pronto: um leitor sem contexto do projeto-fonte consegue aplicar cada item sem precisar substituir nomes de entidade mentalmente?
+
 ## Anatomia
 
 Uma skill é uma pasta `skills/<bucket>/<kebab-name>/` com subpastas de locale e assets opcionais.
