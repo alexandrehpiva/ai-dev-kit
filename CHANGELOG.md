@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.11.0] — 2026-09-15
+
+### Added
+
+- **Skill `knowledge/knowledge-vault` (pt-BR):** disciplina genérica e reutilizável para criar, organizar e manter um cofre de notas Markdown estilo Obsidian (wikilinks, tags, frontmatter) sobre produtos/projetos, software, empresas, reuniões e outras entidades de conhecimento. Cobre taxonomia de pastas por tipo de entidade, disciplina de nota (um conceito por arquivo, fonte verificada, sem inferir dado não confirmado), tags/wikilinks como grafo leve, protocolo de migração de material externo (`migration.md`), processamento de transcrição de reunião em prosa narrativa (`meeting-notes.md`), referência de sintaxe Markdown/Obsidian (`markdown-syntax.md`) e portão de confidencialidade default-deny (`confidentiality-gate.md`). Minerada da skill pessoal `cofre-obsidian-alexandre` e generalizada por padrão (vocabulário/entidades específicas do cofre-fonte — empregador atual, agenda pessoal — ficaram fora ou entraram como gatilho condicional, não premissa). Distinta de `knowledge-base` (bootstrap de skill custom para KB compartilhada de time) e de `agent-memory` (memória do agente sobre o dev).
+
+---
+
 ## [0.10.1] — 2026-08-08
 
 ### Changed

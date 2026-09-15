@@ -333,7 +333,7 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 
 # Knowledge
 
-Skills que leem/mantêm conhecimento persistente: template de Knowledge Base compartilhada (gera skill custom) e memória do agente sobre o desenvolvedor.
+Skills que leem/mantêm conhecimento persistente: template de Knowledge Base compartilhada (gera skill custom), disciplina operacional de cofre de notas e memória do agente sobre o desenvolvedor.
 
 ---
 
@@ -344,6 +344,16 @@ Skills que leem/mantêm conhecimento persistente: template de Knowledge Base com
 **Descrição:** Template e bootstrap para criar uma skill **custom** de Knowledge Base compartilhada. Na primeira execução: detecta ausência de custom, cria via `write-a-skill`, desinstala o template do projeto (`ai-dev-kit skills uninstall --skills knowledge/knowledge-base`), instala a custom (`ai-dev-kit skills install --skills custom/<nome>`), e passa a usá-la. Inclui incremento contínuo da KB só com autorização explícita e portão de segurança (sem secrets/PII/paths pessoais). Distingue KB do time de `agent-memory` / `memory`.
 
 **Quando usar:** criar/montar KB ou skill de KB; bootstrap; atualizar a KB; ou quando ainda não existir skill custom de KB.
+
+---
+
+## knowledge-vault
+
+**Arquivo:** `skills/knowledge/knowledge-vault/pt-BR/SKILL.md`
+
+**Descrição:** Organiza e mantém um cofre de notas Markdown estilo Obsidian (wikilinks, tags, frontmatter) sobre produtos/projetos, software, empresas, reuniões e outras entidades de conhecimento — taxonomia de pastas por tipo de entidade, disciplina de nota (um conceito por arquivo, fonte verificada, sem inferir dado não confirmado), tags/wikilinks como grafo de conhecimento, protocolo de migração de material externo (`migration.md`), processamento de transcrição de reunião em prosa narrativa (`meeting-notes.md`), referência de sintaxe Markdown/Obsidian (`markdown-syntax.md`) e portão de confidencialidade (`confidentiality-gate.md`). Genérica e reutilizável em qualquer cofre — pessoal ou de time; minerada da skill pessoal `cofre-obsidian-alexandre`, generalizada por padrão. Distinta de `knowledge-base` (bootstrap de KB compartilhada de time) e de `agent-memory` (memória do agente sobre o dev).
+
+**Quando usar:** criar, organizar ou expandir uma base de conhecimento em Markdown/Obsidian sobre produtos, projetos, software, empresas ou reuniões; "cria uma nota sobre X", "organiza isso no meu cofre", "monta a estrutura de pastas da minha KB", "migra esse material pra minha base de notas"; ou processar uma transcrição de reunião para virar nota.
 
 ---
 
