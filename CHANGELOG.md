@@ -9,6 +9,46 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.14.2] — 2026-09-16
+
+### Changed
+
+- **Skill `productivity/write-a-skill` (pt-BR):** nova seção "Explique a motivação (obrigatório em regras não óbvias)" — regras que corrigem julgamento/viés do modelo (não mecânicas óbvias de naming/paths) devem abrir com uma seção curta "Diagnóstico do modo de falha" antes do procedimento, para que o agente entenda o porquê e não volte ao atalho errado. Nova técnica "Motivação explícita" em `<tecnicas>`. Skills que emitem cursos de estudo (ex.: `video-mini-course`) passam a exigir `AGENTS.md` na raiz de cada course root, via `write-an-agents-md` + `COURSE-AGENTS-TEMPLATE.md`. Esclarece que "ai-dev-kit"/"AIDK" sempre se refere ao repositório físico do store, nunca a um sinônimo genérico de "skill" — inclusive quando o usuário diz algo como "sem AIDK" ao pedir uma skill local.
+
+---
+
+## [0.14.1] — 2026-09-16
+
+### Changed
+
+- **Skill `productivity/grill-me` (pt-BR):** relaxa "uma pergunta por vez" para "até 3 perguntas independentes agrupadas", mantendo sequencial quando há dependência real entre respostas; cada pergunta (isolada ou em grupo) passa a exigir contexto completo e autônomo. Nova seção "Persistência incremental na documentação do projeto": quando o projeto grillado já mantém um registro de decisões versionado (ex.: um log numerado tipo D-XX), cada sub-decisão deve ser gravada nesse registro assim que fechar, em vez de só no resumo final — motivado pelo risco de perda de decisões por compactação de contexto do harness em sessões longas de grill.
+
+---
+
+## [0.14.0] — 2026-09-16
+
+### Added
+
+- **Skill `productivity/think-then-organize` (pt-BR):** companheira do prompt de trabalho — quando anexada/citada no mesmo turno de um pedido, obriga o agente a organizar **todos** os itens e responsabilidades daquela mensagem (skills anexadas, restrições, papéis, entregas) num plano escrito em disco antes de executar qualquer ação da tarefa. Agnóstica de harness e domínio; não é skill de recuperação de sessão perdida (isso é `recall-directives`/`session-recovery`). Integra com `session-ticks`: quando presente no mesmo prompt, recarrega o `SKILL.md` e o plano em **todo** tick de trabalho (`with-session-ticks.md`), sem esperar o recall-tick padrão (6 ticks/1h). Assets: `organization-criteria.md` (o que conta como "todos" — cobertura literal do prompt, não resumo da intenção), `PLAN-FORMAT.md` (contrato do plano), `with-session-ticks.md`.
+
+---
+
+## [0.13.0] — 2026-09-16
+
+### Added
+
+- **Skill `engineering/architecture-diagrams` (pt-BR):** gera diagramas de arquitetura estilo docs oficiais de cloud (ícones reais, boxes, setas) via lib Python `diagrams` + Graphviz, para qualquer projeto. Minerada de uma sessão real em que o diagrama gerado cometeu, em sequência, os três defeitos mais comuns do gênero — ícone de marca errada (Route53 representando Cloudflare), a "correção" ingênua trocando por ícone invisível (`Blank`, reportado pelo usuário como "ícones faltando"), e texto vazando da caixa por labels longos demais — além de uma seta desenhada por suposição em vez de confirmada no código (frontend→backend via CDN, quando na real o SPA chama a API diretamente). Assets: `icon-selection.md` (ordem de preferência de ícone — real exato > real mais próximo documentado > nunca placeholder vazio), `layout-and-labels.md` (labels curtos, detalhe no título do cluster, tuning `nodesep`/`ranksep`), `setup-and-workflow.md` (venv isolado via uv, estrutura `docs/diagrams/`, fluxo de entrega), `verify-against-reality.md` (toda seta exige confirmação em código/IaC antes de ser desenhada).
+
+---
+
+## [0.12.0] — 2026-09-16
+
+### Added
+
+- **Skill `engineering/codebase-deep-dive` (pt-BR):** estuda um repositório de ponta a ponta (estrutura, stack, banco de dados/migrations, Docker/infra, configs de raiz, env vars, lint/hooks/CI, convenções de commit, docs/specs de IA, nomenclatura e idioma código-vs-comentários), registra os achados numa nota-índice + notas por frente na base de notas/conhecimento do usuário, e depois conduz um percurso de aprendizado guiado com checkpoints até o domínio do repositório. Exige que a nota seja escrita como documentação humana (árvore de pastas literal, trechos de código reais colados, jargão explicado na primeira menção) em vez de pensada para outro agente de IA. Checklist completo de cobertura em `REPO-STUDY-CHECKLIST.md`.
+
+---
+
 ## [0.11.0] — 2026-09-15
 
 ### Added

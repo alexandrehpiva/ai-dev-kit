@@ -91,6 +91,26 @@ Skills focadas em código: construir, revisar, depurar e operar sistemas.
 
 ---
 
+## codebase-deep-dive
+
+**Arquivo:** `skills/engineering/codebase-deep-dive/pt-BR/SKILL.md`
+
+**Descrição:** Estuda um repositório de código de ponta a ponta (estrutura, stack, banco de dados/migrations, Docker/infra, configs de raiz, env vars, lint/hooks/CI, convenções de commit, docs/specs de IA, nomenclatura e idioma código-vs-comentários), registra os achados numa nota-índice + notas por frente na base de notas do usuário, e depois conduz um percurso de aprendizado guiado com checkpoints até o domínio do repositório. Checklist completo de cobertura em `REPO-STUDY-CHECKLIST.md`.
+
+**Quando usar:** o usuário pedir "estuda esse repositório a fundo", "mapeia a arquitetura do projeto", "quero dominar esse código", "documenta tudo sobre esse repo", "me guia no aprendizado deste projeto", ou pedir auditoria completa de um codebase antes de contribuir nele.
+
+---
+
+## architecture-diagrams
+
+**Arquivo:** `skills/engineering/architecture-diagrams/pt-BR/SKILL.md`
+
+**Descrição:** Gera diagramas de arquitetura estilo docs oficiais de cloud (ícones reais, boxes, setas) para qualquer solução, via código (lib Python `diagrams` + Graphviz). Cobre disciplina para evitar os três defeitos mais comuns observados em produção real — ícone de marca errada, ícone invisível (placeholder sem glifo), texto vazando do box — e exige que toda seta desenhada corresponda a uma integração confirmada no código/IaC, não a uma suposição de "como normalmente funciona". Assets: `icon-selection.md` (ordem de preferência de ícone, nunca cair em placeholder vazio), `layout-and-labels.md` (labels curtos, detalhe no título do cluster, tuning de `nodesep`/`ranksep`), `setup-and-workflow.md` (venv isolado via uv, estrutura `docs/diagrams/`, fluxo de entrega), `verify-against-reality.md` (como confirmar cada conexão antes de desenhar).
+
+**Quando usar:** o usuário pedir "desenho de arquitetura", "diagrama estilo AWS docs", "diagrama com ícones e setas", "desenha a arquitetura desse projeto"; ou pedir correção de um diagrama já gerado (ícones sumidos, texto cortado, seta errada/faltando).
+
+---
+
 ## commit-guide
 
 **Arquivo:** `skills/engineering/commit-guide/pt-BR/SKILL.md` (também disponível em `en-US`)
@@ -318,6 +338,16 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 **Quando usar:** o usuário pedir "abrir um PR", "criar pull request", "abre o PR dessa branch", "manda pra review", ou ao finalizar uma feature e submetê-la.
 
 **Nota:** `disable-model-invocation: true` — só quando explicitamente solicitado.
+
+---
+
+## think-then-organize
+
+**Arquivo:** `skills/productivity/think-then-organize/pt-BR/SKILL.md`
+
+**Descrição:** Skill **companheira do prompt de trabalho**: quando anexada ou citada no mesmo turno do pedido, obriga o agente a pensar e organizar exatamente todos os itens daquela mensagem **antes** de executar. Com `session-ticks` no mesmo prompt, recarrega o `SKILL.md` e o plano **a cada tick** (`with-session-ticks.md`). Não é recuperação de sessão compactada.
+
+**Quando usar:** esta skill está no mesmo prompt que o trabalho; ou o usuário disser "pense e se organize", "se organize e faça direito", "/think-then-organize".
 
 ---
 

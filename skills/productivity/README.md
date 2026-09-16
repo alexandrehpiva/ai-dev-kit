@@ -17,3 +17,4 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 | [`skill-gap-audit`](skill-gap-audit/pt-BR/SKILL.md) | Auditar o histórico da sessão em busca de incidentes que evidenciam lacunas nas skills usadas, propor ajustes item a item e aplicar os aceitos via `write-a-skill` |
 | [`subagent-orchestration`](subagent-orchestration/pt-BR/SKILL.md) | Orquestrar subagentes em paralelo: delegar lotes, monitorar, corrigir falhas e escalar ao usuário só em bloqueios sérios — sem scripts no lugar de agentes |
 | [`session-recovery`](session-recovery/pt-BR/SKILL.md) | Recuperar contexto e estado de trabalho após interrupção por limite de tokens ou queda de sessão, relançando agentes com escopo bem definido |
+| [`think-then-organize`](think-then-organize/pt-BR/SKILL.md) | Companheira do prompt de trabalho: organizar todos os itens daquela mensagem antes de executar |

@@ -3,7 +3,7 @@
 Kit de desenvolvimento assistido por agentes de IA — **skills**, agentes e o CLI
 `ai-dev-kit` (ver [`cli/`](cli/README.md)) que os instala nos projetos via symlinks.
 
-> **Status:** 🚧 em construção. Versão atual do CLI: **0.11.0**.
+> **Status:** 🚧 em construção. Versão atual do CLI: **0.14.2**.
 
 ## O que é
 
@@ -50,11 +50,11 @@ ai-dev-kit/
 
 ## Skills disponíveis
 
-**[engineering/](skills/engineering/README.md)** — `technical-refinement`, `task-context`, `task-writing`, `code-review`,
+**[engineering/](skills/engineering/README.md)** — `technical-refinement`, `architecture-diagrams`, `task-context`, `task-writing`, `code-review`, `codebase-deep-dive`,
 `commit-guide`, `dev-python`, `dev-ts-angular`, `dev-ts-nest`, `dev-ts-react`, `dev-go`, `diagnose`, `write-a-dev-stack`, `qa-e2e-testing`
 (`dev-python-fastapi` está deprecated — substituída por `dev-python`)
 
-**[productivity/](skills/productivity/README.md)** — `write-a-skill`, `handoff`, `archive-session`, `grill-me`, `study`, `zoom-out`, `teach-to-build`, `open-pr`, `recall-directives`, `mine-skills`, `skill-gap-audit`, `subagent-orchestration`, `session-recovery`
+**[productivity/](skills/productivity/README.md)** — `write-a-skill`, `handoff`, `archive-session`, `grill-me`, `study`, `zoom-out`, `teach-to-build`, `open-pr`, `recall-directives`, `mine-skills`, `skill-gap-audit`, `subagent-orchestration`, `session-recovery`, `think-then-organize`
 
 **[knowledge/](skills/knowledge/README.md)** — `knowledge-base` (template → custom), `knowledge-vault`, `agent-memory`
 
