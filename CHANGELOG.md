@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.15.0] — 2026-10-01
+
+### Added
+
+- **Skill `productivity/generate-pdf-report` (pt-BR):** promovida de `custom/` para skill oficial. Gera PDFs estilizados a partir de HTML autocontido via Chrome/Chromium headless (`--print-to-pdf`), evitando `weasyprint`/`wkhtmltopdf`/`pandoc` frágeis. Generalizada para qualquer máquina: detecção do Chrome em macOS/Linux/Windows com override por `CHROME_PATH`, e instrução de "revelar o arquivo" por sistema operacional. Inclui `PDF-STYLE-GUIDE.md` (contrato de estilo padrão).
+
+---
+
 ## [0.14.2] — 2026-09-16
 
 ### Changed

@@ -361,6 +361,16 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 
 ---
 
+## generate-pdf-report
+
+**Arquivo:** `skills/productivity/generate-pdf-report/pt-BR/SKILL.md`
+
+**Descrição:** Gera PDFs bem estilizados (relatórios, comparativos, tabelas) a partir de um HTML autocontido com CSS de impressão, renderizado via Chrome/Chromium headless (`--print-to-pdf`) — sem depender de `weasyprint`/`wkhtmltopdf`/`pandoc`, que costumam faltar ou quebrar por lib nativa ausente. Detecta o Chrome em macOS/Linux/Windows (override por `CHROME_PATH`). `PDF-STYLE-GUIDE.md` traz o contrato de estilo padrão: `@page`, cabeçalho de tabela escuro, zebra, badges de status com ícone textual, legenda e rodapé de proveniência.
+
+**Quando usar:** o usuário pedir "gera um PDF", "cria um PDF com essas tabelas", "exporta isso em PDF", "quero um relatório em PDF", ou quando o output final no chat precisar virar arquivo para compartilhar/imprimir.
+
+---
+
 # Knowledge
 
 Skills que leem/mantêm conhecimento persistente: template de Knowledge Base compartilhada (gera skill custom), disciplina operacional de cofre de notas e memória do agente sobre o desenvolvedor.
