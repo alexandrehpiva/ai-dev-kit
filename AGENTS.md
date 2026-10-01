@@ -371,6 +371,16 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 
 ---
 
+## interactive-prototype
+
+**Arquivo:** `skills/productivity/interactive-prototype/pt-BR/SKILL.md`
+
+**Descrição:** Processo de produto completo para criar e evoluir protótipos navegáveis em HTML/CSS/JS, com técnicas de engenharia: estrutura dividida em arquivos desde o início + `build.py` para arquivo único, hot reload sem `package.json`, workflow de commit aprovado (versão semver e changelog só numerados na aprovação; entrada `Pendente` como espelho do worktree), previews compartilháveis e artefatos com versão no nome. Inclui direção estética distintiva (evita os "defaults de IA"; adaptada de anthropics/skills), exploração de 2-3 direções contrastantes antes de fixar o plano, design system extraído da referência real como fonte de verdade, fundamentos de UX/UI (heurísticas, leis de UX, Gestalt, estados, formulários, responsividade mobile-first, WCAG 2.2 AA, acabamento visual), portão de entrega `UX-REVIEW.md`, documentação de jornadas de usuário e compilação das jornadas em PDF com sumário (`journeys-to-pdf.py`, personas configuráveis). O `SKILL.md` é um roteador; o detalhe vive nos assets.
+
+**Quando usar:** criar/editar/redesenhar tela, fluxo, landing page ou dashboard; "protótipo navegável", "design de UI", "direção visual", "isso parece genérico/feito por IA", "comparar direções de design", "design system", "subir o protótipo", "versionar/commitar o protótipo", "jornadas de usuário", "PDF das jornadas", "revisão de UX", "isso está responsivo?".
+
+---
+
 # Knowledge
 
 Skills que leem/mantêm conhecimento persistente: template de Knowledge Base compartilhada (gera skill custom), disciplina operacional de cofre de notas e memória do agente sobre o desenvolvedor.

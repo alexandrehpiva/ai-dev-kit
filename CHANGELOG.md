@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.16.0] — 2026-10-01
+
+### Added
+
+- **Skill `productivity/interactive-prototype` (pt-BR):** processo completo para protótipos navegáveis — `SKILL.md` roteador + assets: `aesthetic-direction.md` (direção estética, adaptada de anthropics/skills `frontend-design`, Apache 2.0), `explore-directions.md` (2-3 variantes contrastantes, adaptado de "HTML Mockup Sketcher"), `design-system.md`, `split-into-files.md`, `dev-server-hot-reload.md`, `versioning-and-changelog.md`, `user-journey-docs.md`, `JOURNEY-PDF-STYLE.md` + `journeys-to-pdf.py`, e os novos `ux-ui-principles.md` (heurísticas, leis de UX, Gestalt, estados, formulários, responsividade mobile-first, WCAG 2.2 AA, acabamento visual) e `UX-REVIEW.md` (portão de entrega). Consolidada a partir de uma skill pessoal em uso, generalizada: incidentes reais mantidos como motivação sem identificar projeto/cliente; códigos de jornada `<PROD>-<ÁREA>-<PERSONA>`; `journeys-to-pdf.py` com personas configuráveis por `--groups` (JSON) e detecção de Chrome multiplataforma — saída idêntica à versão anterior quando configurado com as mesmas personas.
+
+---
+
 ## [0.15.0] — 2026-10-01
 
 ### Added
