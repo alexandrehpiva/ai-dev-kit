@@ -17,3 +17,5 @@ tmp/
 # Custom skills — local-only, not part of the official kit.
 # Users can git-init this folder independently to version their own skills.
 skills/custom/
+# Instalações locais da CLI (symlinks com caminho absoluto; recriados por `aidk skills install`)
+.claude/
