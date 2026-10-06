@@ -6,6 +6,7 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 |-------|-----------|
 | [`write-a-skill`](write-a-skill/SKILL.md) | Meta-skill: como escrever e manter skills neste framework |
 | [`context-compaction`](context-compaction/pt-BR/SKILL.md) | Compactar contexto sem perda em tarefas longas: ledger em disco com checkpoints, duas zonas (valores exatos vs decisões) e re-ancoragem pós-compactação |
+| [`hallucination-guard`](hallucination-guard/pt-BR/SKILL.md) | Verificar antes de virar verdade: checklist de diretivas verbatim, verificação em dois níveis (autoconferência e subagente independente) e marcação de proveniência |
 | [`handoff`](handoff/SKILL.md) | Produzir um handoff denso de sessão para continuidade |
 | [`archive-session`](archive-session/pt-BR/SKILL.md) | Criar arquivo histórico autossuficiente de sessão/fase — snapshot congelado no tempo, não passagem de bastão |
 | [`grill-me`](grill-me/SKILL.md) | Entrevistar o usuário de forma implacável para pressure-test de um plano |

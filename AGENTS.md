@@ -325,6 +325,16 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 
 ---
 
+## hallucination-guard
+
+**Arquivo:** `skills/productivity/hallucination-guard/pt-BR/SKILL.md`
+
+**Descrição:** Protocolo de verificação contínua para conversas longas: captura verbatim de cada prompt do usuário num checklist vivo (seções acrescentadas ao ledger da `context-compaction`), revalida cada artefato gravado contra as diretivas literais, marca proveniência do que não foi confirmado e usa subagente verificador independente antes de qualquer conteúdo virar verdade durável. Impede a bola de neve de alucinação (erro gravado e reusado como fato). Assets: `CHECKLIST-FORMAT.md`, `VERIFIER-PROMPT.md`, `provenance-marking.md`, `subagent-delegation.md`. Depende (hard) da `context-compaction`.
+
+**Quando usar:** após compactação/sumarização do contexto, ao retomar sessão longa, antes de gravar nota/doc/diagrama/spec/memória; "você está alucinando", "confere o que você escreveu", "de onde você tirou isso?".
+
+---
+
 ## study
 
 **Arquivo:** `skills/productivity/study/pt-BR/SKILL.md`

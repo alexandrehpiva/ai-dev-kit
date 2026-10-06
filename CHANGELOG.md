@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.22.0] — 2026-10-06
+
+### Added
+
+- **Skill `productivity/hallucination-guard` (pt-BR):** promovida a oficial a partir de uma versão pessoal, com alterações mínimas (o desenho original foi preservado). Referências a um cofre de notas pessoal viraram exemplos neutros de base de conhecimento; a menção a um flag de harness no `grill-me` foi neutralizada; ganha a seção "Privacidade do checklist" (prompts verbatim sem segredos, arquivo fora de repositório público) e a dependência da `context-compaction` classificada como hard, com comando de instalação. Referências de seção do `LEDGER-FORMAT.md` atualizadas para a numeração da v0.21.0.
+
+---
+
 ## [0.21.0] — 2026-10-06
 
 ### Added
