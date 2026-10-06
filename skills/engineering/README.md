@@ -6,6 +6,7 @@ Skills focadas em código: construir, revisar, depurar e operar sistemas.
 |-------|-----------|
 | [`technical-refinement`](technical-refinement/pt-BR/SKILL.md) | Investigar uma task, analisar repositórios e redigir subtasks técnicas com completude total (fatiamento vertical, decisões fechadas via `grill-me`) |
 | [`architecture-diagrams`](architecture-diagrams/pt-BR/SKILL.md) | Diagramas de arquitetura estilo docs de cloud via lib `diagrams`/Graphviz — evita ícone de marca errada, ícone invisível e texto vazando do box; exige toda seta confirmada no código/IaC (`icon-selection.md`, `layout-and-labels.md`, `setup-and-workflow.md`, `verify-against-reality.md`) |
+| [`bpmn-flow-diagrams`](bpmn-flow-diagrams/pt-BR/SKILL.md) | Diagramas de fluxo estilo BPMN (raias, gateways, eventos, dados) em `.drawio` ou SVG via libs Python stdlib — rótulos de negócio, só elementos confirmados na fonte, legenda com fonte e revisão visual (`shapes-and-colors.md`, `layout-grid.md`, `verify-against-code.md`, `LEGEND-FORMAT.md`, `scripts/`) |
 | [`task-context`](task-context/pt-BR/SKILL.md) | Ler uma subtask e montar visão completa da feature (épico, irmãs, contratos, código) antes de implementar |
 | [`task-writing`](task-writing/pt-BR/SKILL.md) | Escrever tasks/US no padrão `US-FORMAT.md` (BDD / Given-When-Then) |
 | [`code-review`](code-review/pt-BR/SKILL.md) | Revisar um diff/PR: bugs + reuso/simplificação (`RECURRING-CHECKS.md`) |

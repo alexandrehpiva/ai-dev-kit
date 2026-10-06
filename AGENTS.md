@@ -111,6 +111,16 @@ Skills focadas em código: construir, revisar, depurar e operar sistemas.
 
 ---
 
+## bpmn-flow-diagrams
+
+**Arquivo:** `skills/engineering/bpmn-flow-diagrams/pt-BR/SKILL.md`
+
+**Descrição:** Gera diagramas de fluxo no estilo BPMN (raias por ator, gateways `+`/`x`/`o`, eventos de início/fim/mensagem, objetos de dado, repositórios) com rótulos em linguagem de negócio, como `.drawio` editável (padrão) ou SVG, via bibliotecas Python stdlib (`scripts/`) com validação de XML e de parâmetros. Exige que todo gateway, raia e evento venha de fonte confirmada (código ou documentação validada), distingue seta síncrona de assíncrona, marca ausências como `gap`, e termina com renderização para revisão visual e legenda com fonte. Assets: `shapes-and-colors.md` (vocabulário e status), `layout-grid.md` (grade e anti-sobreposição), `verify-against-code.md` (confirmação na fonte), `LEGEND-FORMAT.md` (contrato da legenda), `scripts/` (libs e exemplos executáveis).
+
+**Quando usar:** o usuário pedir "diagrama tipo BPMN", "fluxograma com raias", "desenha esse fluxo com gateway/eventos", "arquivo .drawio"; ou quando uma documentação descrever um processo passo a passo (onboarding, aprovação, webhooks) que ganha com raias e pontos de decisão. Para infraestrutura com ícones de provedor, usar `architecture-diagrams`.
+
+---
+
 ## commit-guide
 
 **Arquivo:** `skills/engineering/commit-guide/pt-BR/SKILL.md` (também disponível em `en-US`)

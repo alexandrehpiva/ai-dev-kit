@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.18.0] — 2026-10-06
+
+### Added
+
+- **Skill `engineering/bpmn-flow-diagrams` (pt-BR):** diagramas de fluxo estilo BPMN (raias por ator, gateways `+`/`x`/`o`, eventos de início/fim/mensagem, objetos de dado e repositórios) em `.drawio` (padrão) ou SVG, com rótulos de negócio e só elementos confirmados na fonte. Assets: `shapes-and-colors.md` (vocabulário BPMN → funções, status `gap`/`confirmado`/`bug`, tipos de seta), `layout-grid.md` (grade e anti-sobreposição para os dois motores), `verify-against-code.md`, `LEGEND-FORMAT.md` (contrato da legenda com coluna de fonte) e `scripts/` (`drawio_bpmn_lib.py`, `svg_bpmn_lib.py` e um exemplo executável por motor, que também serve de teste de fumaça). Consolidada a partir de uma skill pessoal em uso, generalizada (incidentes mantidos só como motivação, sem identificar projeto ou cliente) e refatorada: escape duplo de rótulos no `.drawio` (um `<` no título virava tag HTML), remoção do `add_pool` do motor drawio (deixava `{H}` literal), marcadores de seta definidos no SVG mesmo sem `add_pool`, `status="bug"` também no drawio, `ValueError` para `symbol`/`kind`/`side`/`status` inválidos em vez de default silencioso, ids por diagrama (não globais), `save()` que valida XML e ids de seta, `via=` para forçar rota de seta no drawio, rótulo de raia quebrado em linhas no SVG, portão de decisão com rótulo de condição nas saídas de gateway exclusivo e passo de renderização independente de harness (SVG por navegador/Chrome headless; drawio pelo CLI do app, quando existir).
+
+---
+
 ## [0.17.0] — 2026-10-06
 
 ### Changed
