@@ -9,6 +9,18 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.24.1] — 2026-10-06
+
+### Added
+
+- `engineering/dev-squad`: versão `pt-BR` (SKILL.md e assets em português).
+
+### Changed
+
+- `engineering/dev-squad` `en-US`: assets traduzidos integralmente para inglês, incluindo os campos de contrato entre papéis (ex.: `APPROVAL`, `FINAL_VERDICT`, `QUESTIONS_FOR_PO`, `STATUS: approved | bugs_found`) e as missões (`investigate`, `implement`, `fix`, `refine_architecture`…). A `pt-BR` mantém os identificadores originais.
+
+---
+
 ## [0.24.0] — 2026-10-06
 
 ### Added

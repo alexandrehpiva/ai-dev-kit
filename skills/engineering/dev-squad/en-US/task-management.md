@@ -1,122 +1,122 @@
-# Task Management — Backlog em Markdown
+# Task Management — Markdown Backlog
 
-Este asset define como o Orquestrador cria, lê e atualiza épicos e tasks no backlog Markdown local do projeto.
+This asset defines how the Orchestrator creates, reads, and updates epics and tasks in the project's local Markdown backlog.
 
 ---
 
-## Localização
+## Location
 
-`{NotesRoot}` é a raiz onde o projeto guarda notas e backlog em Markdown (um vault Obsidian, a pasta `docs/` do repositório etc.). Resolva uma vez: use a convenção que o projeto já tem; se não houver, pergunte ao PO onde guardar e registre em `state.md`.
+`{NotesRoot}` is the root where the project keeps notes and the Markdown backlog (an Obsidian vault, the repository's `docs/` folder, etc.). Resolve it once: use the convention the project already has; if there is none, ask the PO where to store it and record it in `state.md`.
 
 ```
-{NotesRoot}/{NomeDoProjeto}/backlog/
-├── épicos/
-│   ├── EPIC-01 - {Nome do Épico}.md
+{NotesRoot}/{ProjectName}/backlog/
+├── epics/
+│   ├── EPIC-01 - {Epic Name}.md
 │   └── …
 └── tasks/
-    ├── TASK-01.1 - {Nome da Task}.md
+    ├── TASK-01.1 - {Task Name}.md
     └── …
 ```
 
 ---
 
-## Template de Épico
+## Epic Template
 
 ```markdown
 ---
-tags: [backlog, {nome-do-projeto-em-kebab-case}, épico]
+tags: [backlog, {project-name-in-kebab-case}, epic]
 status: backlog
-projeto: {NomeDoProjeto}
-criado_em: {YYYY-MM-DD}
+project: {ProjectName}
+created_at: {YYYY-MM-DD}
 ---
 
-# EPIC-{n}: {Nome do Épico}
+# EPIC-{n}: {Epic Name}
 
-## Objetivo
+## Objective
 
-{O que este épico entrega e qual valor justifica sua existência.}
+{What this epic delivers and what value justifies its existence.}
 
-## Critérios de aceite
+## Acceptance criteria
 
-- [ ] {critério mensurável 1}
-- [ ] {critério mensurável 2}
+- [ ] {measurable criterion 1}
+- [ ] {measurable criterion 2}
 
 ## Tasks
 
-- [[TASK-{n}.1 - {Nome}]]
-- [[TASK-{n}.2 - {Nome}]]
+- [[TASK-{n}.1 - {Name}]]
+- [[TASK-{n}.2 - {Name}]]
 
-## Contexto técnico
+## Technical context
 
-{Decisões arquiteturais, riscos, dependências.}
+{Architectural decisions, risks, dependencies.}
 ```
 
 ---
 
-## Template de Task
+## Task Template
 
 ```markdown
 ---
-tags: [backlog, {nome-do-projeto-em-kebab-case}, task]
+tags: [backlog, {project-name-in-kebab-case}, task]
 status: backlog
-épico: [[EPIC-{n} - {Nome do Épico}]]
-complexidade: pequena | média | grande
-criado_em: {YYYY-MM-DD}
+epic: [[EPIC-{n} - {Epic Name}]]
+complexity: small | medium | large
+created_at: {YYYY-MM-DD}
 ---
 
-# TASK-{epic}.{n}: {Nome da Task}
+# TASK-{epic}.{n}: {Task Name}
 
-## Contexto
+## Context
 
-{O que precisa ser feito e por quê.}
+{What needs to be done and why.}
 
-## Critérios de aceite
+## Acceptance criteria
 
-- [ ] {critério 1 — mensurável e verificável}
-- [ ] {critério 2}
+- [ ] {criterion 1 — measurable and verifiable}
+- [ ] {criterion 2}
 
-## Detalhes técnicos
+## Technical details
 
-{Arquivos, endpoints, schemas, env vars, decisões já tomadas.}
+{Files, endpoints, schemas, env vars, decisions already made.}
 
-## Notas de desenvolvimento
+## Development notes
 
-{Bloqueios, decisões, links para commits.}
+{Blockers, decisions, links to commits.}
 ```
 
-## Padrão US para épicos e tasks (obrigatório)
+## US standard for epics and tasks (mandatory)
 
-Seguir o padrão de User Stories da skill oficial `task-writing` (`US-FORMAT.md`), incluindo a
-seção "Hierarquia: história vs subtask" — épico e US ficam no mesmo nível (wikilink entre
-`[[EPIC-{n}...]]` e a task, como no template acima, não aninhamento de arquivo); subtask é
-reservada ao detalhamento técnico do Tech Lead. Ao publicar no ClickUp, aplicar
-também `clickup-hierarchy.md` desta skill (mecanismo de link, não `parent`, entre épico e US).
-Critérios de aceite em Given/When/Then.
+Follow the User Stories standard from the official `task-writing` skill (`US-FORMAT.md`), including the
+section "Hierarchy: story vs subtask" — epic and US sit at the same level (wikilink between
+`[[EPIC-{n}...]]` and the task, as in the template above, not file nesting); subtask is
+reserved for the Tech Lead's technical breakdown. When publishing to ClickUp, also apply
+`clickup-hierarchy.md` from this skill (link mechanism, not `parent`, between epic and US).
+Acceptance criteria in Given/When/Then.
 
-### Banner em tasks técnicas
+### Banner on technical tasks
 
 ```
-> ⚠️ **Tarefa de escopo técnico.** Contém termos técnicos e referências de implementação. Produto/QA: foque em **Contexto** e **Critérios de Aceite (BDD)**.
+> ⚠️ **Technical-scope task.** Contains technical terms and implementation references. Product/QA: focus on **Context** and **Acceptance Criteria (BDD)**.
 ```
 
-### Critérios de aceite: BDD
+### Acceptance criteria: BDD
 
 ```markdown
-### Cenário N: {título}
+### Scenario N: {title}
 
-**Given** {contexto}
-**When** {ação}
-**Then** {resultado}
+**Given** {context}
+**When** {action}
+**Then** {result}
 ```
 
-## Atualizar status
+## Updating status
 
-Edite o frontmatter `status` do arquivo Markdown:
+Edit the Markdown file's `status` frontmatter:
 
-| Status do ciclo | Valor no frontmatter |
+| Cycle status | Frontmatter value |
 |---|---|
 | backlog | `backlog` |
-| em desenvolvimento | `in-progress` |
-| em validação técnica | `in-review` |
-| em teste | `in-qa` |
-| pronto / entregue | `done` |
+| in development | `in-progress` |
+| in technical validation | `in-review` |
+| in testing | `in-qa` |
+| ready / delivered | `done` |

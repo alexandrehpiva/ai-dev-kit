@@ -1,121 +1,121 @@
-# Checklist de refinamento de arquitetura — Tech Lead
+# Architecture Refinement Checklist — Tech Lead
 
-Este asset alimenta a missão `refinar_arquitetura` do Tech Lead (ver `agents/tech-lead.md`). É uma coleção de **lentes temáticas genéricas** — não um formulário de um projeto específico, mas um conjunto de perguntas que o Tech Lead reaplica, em qualquer projeto pessoal, a cada parte nova da arquitetura conforme o produto evolui. Cada lente vem com o modo de falha que ela previne e, quando fizer sentido, um exemplo ilustrativo genérico — nunca um exemplo hardcoded de um produto específico.
+This asset feeds the Tech Lead's `refine_architecture` mission (see `agents/tech-lead.md`). It is a collection of **generic thematic lenses** — not a form for a specific project, but a set of questions the Tech Lead reapplies, in any personal project, to each new part of the architecture as the product evolves. Each lens comes with the failure mode it prevents and, when it makes sense, a generic illustrative example — never a hardcoded example from a specific product.
 
-**Nem toda lente se aplica a todo projeto.** Antes de aplicar uma lente, confirme se ela é relevante ao projeto em questão (ex.: a lente 3 só vale se o projeto expõe ferramentas a um agente de IA; a lente 1 só vale se o projeto é multi-tenant). Pular uma lente irrelevante é comportamento esperado, não lacuna.
+**Not every lens applies to every project.** Before applying a lens, confirm it is relevant to the project at hand (e.g., lens 3 only applies if the project exposes tools to an AI agent; lens 1 only applies if the project is multi-tenant). Skipping an irrelevant lens is expected behavior, not a gap.
 
-Escopo explícito: isto é sobre **arquitetura e refinamento técnico**, não sobre code review de uma implementação já escrita — code review continua nas missões `revisar_plano`/`revisar_codigo`. Este checklist serve à condução ativa de discovery técnico e à produção de documentação de arquitetura, não à revisão de PR.
+Explicit scope: this is about **architecture and technical refinement**, not about code review of an already-written implementation — code review remains in the `review_plan`/`review_code` missions. This checklist serves the active conduct of technical discovery and the production of architecture documentation, not PR review.
 
-Todo item aqui é sobre **desenho**, não sobre execução operacional (deploy, monitoramento ao vivo, resposta a incidente em produção) — isso é escopo do `personal-infra-sre` quando o produto estiver rodando.
-
----
-
-## Como aplicar
-
-1. Para cada decisão ou área de arquitetura sendo refinada, percorra as lentes abaixo que forem relevantes ao projeto — nem toda decisão toca todas as lentes.
-2. Trate cada lente como uma pergunta a fazer ao PO ou uma decisão técnica a fechar sozinho, seguindo a mesma disciplina do `/grill-me`: uma pergunta por vez, com recomendação, resolvendo dependências em ordem.
-3. Quando um bloco de decisões fechar, documente no local que o projeto já usa para arquitetura (ex.: uma pasta `arquitetura/` no repositório ou vault do projeto) — não deixe a decisão só na conversa.
-4. Uma pergunta sem resposta ainda não é bloqueio: registre como pendência explícita no documento de produto ou de arquitetura relevante do projeto (adote a convenção de rastreio que o projeto já usa, ou proponha uma) e siga para a próxima lente.
-5. Sempre releia a documentação de produto/arquitetura já existente **daquele projeto** antes de aplicar uma lente — as perguntas abaixo são o ponto de partida, não substituem o contexto real do que já foi decidido.
+Every item here is about **design**, not operational execution (deploy, live monitoring, production incident response) — that is the scope of `personal-infra-sre` once the product is running.
 
 ---
 
-## 1 — Isolamento multi-tenant (se o projeto for multi-tenant)
+## How to apply
 
-**Modo de falha que previne:** dado ou contexto de um tenant vazando para outro — normalmente o defeito mais caro de um SaaS multi-tenant.
-
-- Toda consulta nova a dado tem o identificador de tenant como parte obrigatória do filtro, nunca opcional ou implícito? Uma consulta sem tenant definido **falha**, nunca retorna "genérico".
-- Se o projeto usa busca semântica/vetorial, o filtro de tenant está **dentro** da query do índice, nunca só como instrução de prompt? (é um modo de vazamento mais sutil que vazamento via banco relacional, porque nada trava a busca "por fora")
-- Se o projeto monta prompt de IA dinamicamente, esse montador escopa por tenant, e uma montagem sem tenant identificado falha em vez de produzir contexto genérico?
-- Existe teste de isolamento automatizado (ex.: criar dois tenants de teste e afirmar zero visibilidade cruzada) para qualquer feature nova que toque dado de tenant?
-- Alguma camada nova precisa **deliberadamente** cruzar tenants (ex.: métricas agregadas de produto para o operador da plataforma)? Se sim, o acesso está restrito a um papel que nenhum tenant alcança, e isso está documentado como exceção explícita, não como padrão?
-- Dentro do mesmo tenant, há sub-escopos que também precisam de isolamento (entre usuários finais, entre papéis com visibilidade assimétrica)? Isso está mapeado, não implícito?
+1. For each decision or architecture area being refined, go through the lenses below that are relevant to the project — not every decision touches every lens.
+2. Treat each lens as a question to ask the PO or a technical decision to close on your own, following the same discipline as `/grill-me`: one question at a time, with a recommendation, resolving dependencies in order.
+3. When a block of decisions closes, document it in the place the project already uses for architecture (e.g., an `arquitetura/` folder in the project's repository or vault) — don't leave the decision only in the conversation.
+4. An unanswered question is not yet a blocker: record it as an explicit pending item in the project's relevant product or architecture document (adopt the tracking convention the project already uses, or propose one) and move on to the next lens.
+5. Always reread the existing product/architecture documentation **of that project** before applying a lens — the questions below are the starting point, they don't replace the real context of what has already been decided.
 
 ---
 
-## 2 — Segurança e camadas de verificação (se houver agente de IA gerando conteúdo/ação autônoma)
+## 1 — Multi-tenant isolation (if the project is multi-tenant)
 
-**Modo de falha que previne:** um agente autônomo agindo ou respondendo fora do que é seguro/permitido, sem nenhuma camada independente pegando o erro.
+**Failure mode it prevents:** one tenant's data or context leaking to another — usually the most expensive defect of a multi-tenant SaaS.
 
-- Existe (ou deveria existir) uma segunda camada de verificação independente da geração principal, para saídas que chegam a um usuário final ou disparam uma ação? Ela recebe só o mínimo necessário para julgar (não herda memórias/ferramentas/contexto rico da camada principal, de propósito)?
-- As categorias de risco que essa camada verifica estão explícitas e catalogadas (não é "olha e usa o bom senso")?
-- Existe nível de rigor configurável, e qualquer redução de rigor segue um critério objetivo (não é decisão unilateral e silenciosa de quem opera)?
-- Incidentes/bloqueios gerados por essa camada têm regra de visibilidade definida — quem pode ver o quê, inclusive quando o incidente foi causado pela própria pessoa que teria acesso a ele?
-- Se o agente pode "aprender" uma correção de um humano e aplicá-la como regra permanente, isso passa por algum tipo de aval de quem tem autoridade sobre aquele escopo, sem expiração silenciosa da pendência?
-
----
-
-## 3 — Permissões e superfície de ferramentas de agente (se o projeto expõe tools a um agente de IA / MCP)
-
-**Modo de falha que previne:** o agente expondo, mencionando ou executando algo que o usuário/tenant não autorizou.
-
-- A lista de ferramentas disponíveis ao agente é resolvida dinamicamente (por tenant/papel/momento) em vez de hardcoded no código do agente? Uma ferramenta bloqueada nunca deve ser sequer mencionada como indisponível — ela simplesmente não é enviada ao modelo.
-- Cada ferramenta tem um nível de risco claro (ex.: só ler, agir livremente, agir com aval humano) e esse nível é consistente entre ferramentas parecidas?
-- O modelo de permissão segue uma hierarquia clara de herança e restrição (ex.: padrão da plataforma → tenant → usuário, e cada nível só pode restringir, nunca ampliar além do nível acima)?
-- Antes de propor um servidor MCP novo (em vez de mais filtro/permissão no servidor existente), há uma justificativa concreta de fronteira de credencial ou integração externa distinta — não só "reduzir contexto"? (o custo de contexto normalmente vem de quantas declarações de função são enviadas por turno, não de quantos servidores existem — separar servidor sem essa justificativa tende a não resolver o problema que motivou a ideia)
-- Se o projeto tem configuração conversacional (o agente aplica mudança de configuração via chat), existe um padrão único e genérico para isso, em vez de uma ferramenta nova por campo de configuração?
+- Does every new data query have the tenant identifier as a mandatory part of the filter, never optional or implicit? A query with no tenant defined **fails**, it never returns "generic".
+- If the project uses semantic/vector search, is the tenant filter **inside** the index query, never only as a prompt instruction? (it is a subtler leak mode than leaking via a relational database, because nothing blocks the search "from outside")
+- If the project assembles an AI prompt dynamically, does that assembler scope by tenant, and does an assembly with no identified tenant fail instead of producing generic context?
+- Is there an automated isolation test (e.g., create two test tenants and assert zero cross visibility) for any new feature that touches tenant data?
+- Does any new layer need to **deliberately** cross tenants (e.g., aggregated product metrics for the platform operator)? If so, is access restricted to a role no tenant can reach, and is this documented as an explicit exception, not as the default?
+- Within the same tenant, are there sub-scopes that also need isolation (between end users, between roles with asymmetric visibility)? Is this mapped, not implicit?
 
 ---
 
-## 4 — Privacidade e conformidade regulatória (LGPD/GDPR — checklist técnico, não parecer jurídico)
+## 2 — Security and verification layers (if there is an AI agent generating content/autonomous action)
 
-**Modo de falha que previne:** decisão de arquitetura que cria exposição de dado pessoal/sensível, mesmo sem violar nenhuma lei especificamente — o julgamento legal em si fica sempre para revisão de advogado real; isto é o que a arquitetura pode e deve garantir tecnicamente antes disso.
+**Failure mode it prevents:** an autonomous agent acting or responding outside what is safe/allowed, with no independent layer catching the error.
 
-- Dado sensível (saúde, financeiro, biométrico, o que for sensível no domínio do projeto) nunca vira memória durável nem log estruturado sem necessidade explícita e auditável?
-- Toda estrutura nova de retenção de dado tem prazo definido e descarte automático — não é "guarda para sempre por padrão"?
-- Segredo (credencial, token, chave) versus PII (nome, CPF/CNPJ ou equivalente local, telefone, e-mail, dado sensível do domínio) são tratados como categorias **diferentes** — segredo nunca versionado nem em log, PII sempre minimizada no que entra em qualquer prompt de IA ou payload de log?
-- Acesso administrativo a dado de usuário final (suporte, operador da plataforma) é auditado — quem acessou, quando, por quê?
-- Se o projeto tem exportação de dado (ex.: encerramento de conta/contrato), ela entrega só o que é do titular, nunca configuração/propriedade intelectual do produto?
-- Isso é uma decisão que **precisa** de revisão jurídica antes de ir para produção (nova finalidade de tratamento de dado, novo terceiro recebendo dado pessoal)? Se sim, marque explicitamente como pendente de advogado — não decida sozinho o enquadramento legal.
-
----
-
-## 5 — Confiabilidade e observabilidade
-
-**Modo de falha que previne:** feature que funciona no caminho feliz mas não dá sinal de que está quebrada, ou derruba a experiência inteira quando uma dependência externa falha.
-
-- A feature tem um caminho de degradação explícito quando uma dependência externa (provedor de IA, serviço de terceiros, fila) fica indisponível? Prefira avisar → degradar a bloqueio seco sem aviso.
-- Cache local com fallback é necessário aqui — uma dependência de resolução (ex.: feature flag, plano/entitlement) indisponível nunca deveria travar o produto inteiro?
-- O comportamento da feature (proposta → resposta humana, ou salvaguarda automática agindo sozinha) é o tipo de sinal que deveria virar evento/métrica agregada para calibração de produto? Se sim, esse evento nunca deve carregar dado de usuário final — só metadado estrutural de comportamento.
-- Existe um jeito de o operador da plataforma distinguir "isso está quebrado num tenant específico" de "isso está mal calibrado para todos" nessa feature?
+- Is there (or should there be) a second verification layer independent of the main generation, for outputs that reach an end user or trigger an action? Does it receive only the minimum needed to judge (it deliberately does not inherit memories/tools/rich context from the main layer)?
+- Are the risk categories this layer checks explicit and cataloged (not "look and use common sense")?
+- Is there a configurable rigor level, and does any reduction in rigor follow an objective criterion (not a unilateral, silent decision by whoever operates it)?
+- Do incidents/blocks generated by this layer have a defined visibility rule — who can see what, including when the incident was caused by the very person who would have access to it?
+- If the agent can "learn" a correction from a human and apply it as a permanent rule, does this go through some kind of approval from whoever has authority over that scope, with no silent expiration of the pending item?
 
 ---
 
-## 6 — Custo (especialmente relevante em produtos com IA generativa)
+## 3 — Permissions and agent tool surface (if the project exposes tools to an AI agent / MCP)
 
-**Modo de falha que previne:** feature que funciona mas corrói a margem porque ninguém mediu o custo de execução por unidade de uso antes de escalar.
+**Failure mode it prevents:** the agent exposing, mentioning, or executing something the user/tenant did not authorize.
 
-- Se o projeto usa LLM, a feature adiciona tokens ao que é "sempre enviado" em todo turno/chamada? Se sim, isso é realmente estável e pequeno, ou deveria ser buscado sob demanda em vez de sempre presente?
-- Quantas buscas/chamadas extras por interação a feature introduz? Cada busca tem limite de resultados e tamanho configurável?
-- Se há uma camada de verificação/segurança separada (lente 2), ela pode rodar com um modelo mais barato sem perder eficácia?
-- Se a feature é cobrada ou limitada por plano, ela passa por uma camada única de verificação de acesso (não por checagem de plano espalhada e reimplementada em cada lugar do código)?
-- Que métrica de custo por unidade de valor entregue (ex.: custo por conversa concluída, por tarefa concluída) essa feature deveria alimentar desde o primeiro dia?
-
----
-
-## 7 — Segredos e configuração
-
-**Modo de falha que previne:** credencial vazada, ou configuração de comportamento tratada como código quando deveria ser dado.
-
-- Nenhuma credencial, chave ou token está hardcoded — tudo vem de variável de ambiente, secret manager ou equivalente (ver a skill de infraestrutura/SRE do ambiente, se houver)?
-- Antes de publicar qualquer artefato de arquitetura que inclua exemplo de configuração, aplicar a checagem segredo-vs-PII do `security-verification`: um exemplo de `.env` ou payload nunca deve carregar valor real, mesmo redigido "só para ilustrar".
-- A configuração de comportamento de negócio (regras, faixas de plano, critérios) é tratada como **dado**, editável sem deploy — ou virou mais uma constante hardcoded no código?
-- Regras verdadeiramente inegociáveis do produto (que nenhum tenant pode desligar) estão claramente separadas de configuração ajustável por tenant — a arquitetura impede que a segunda camada sobrescreva a primeira?
+- Is the list of tools available to the agent resolved dynamically (by tenant/role/moment) instead of hardcoded in the agent's code? A blocked tool should never even be mentioned as unavailable — it simply isn't sent to the model.
+- Does each tool have a clear risk level (e.g., read-only, act freely, act with human approval) and is that level consistent across similar tools?
+- Does the permission model follow a clear hierarchy of inheritance and restriction (e.g., platform default → tenant → user, and each level can only restrict, never widen beyond the level above)?
+- Before proposing a new MCP server (instead of more filtering/permissions on the existing server), is there a concrete justification of a distinct credential boundary or external integration — not just "reduce context"? (the context cost normally comes from how many function declarations are sent per turn, not from how many servers exist — splitting a server without that justification tends not to solve the problem that motivated the idea)
+- If the project has conversational configuration (the agent applies a configuration change via chat), is there a single generic pattern for it, instead of a new tool per configuration field?
 
 ---
 
-## 8 — Reversibilidade e evolução
+## 4 — Privacy and regulatory compliance (LGPD/GDPR — technical checklist, not legal opinion)
 
-**Modo de falha que previne:** decisão de arquitetura que parece definitiva e que, quando o produto crescer, exige migração cara ou reescrita.
+**Failure mode it prevents:** an architecture decision that creates exposure of personal/sensitive data, even without violating any law specifically — the legal judgment itself always remains for review by a real lawyer; this is what the architecture can and must technically guarantee before that.
 
-- Existe uma extensão futura plausível (mesmo que fora de escopo agora) que essa decisão deveria deixar barata? Prefira um "gancho reservado, sem comportamento" (ex.: campo opcional já modelado, mas sem lógica associada) a uma modelagem que exigiria migração de dado em produção depois.
-- Se a decisão precisar ser revertida depois (trocar de provedor, mudar de modelo de dado), qual é o custo estimado? Prefira operação reversível (blue/green, dry-run, feature flag) a mudança definitiva sem saída.
-- Essa decisão está sendo tomada cedo demais — depende de dado real de uso que ainda não existe? Se sim, considere registrar como discussão futura em vez de decidir por especulação.
+- Does sensitive data (health, financial, biometric, whatever is sensitive in the project's domain) never become durable memory or a structured log without explicit, auditable need?
+- Does every new data retention structure have a defined term and automatic disposal — it is not "keep forever by default"?
+- Are secrets (credential, token, key) versus PII (name, CPF/CNPJ or local equivalent, phone, email, domain-sensitive data) treated as **different** categories — secret never versioned or logged, PII always minimized in whatever enters any AI prompt or log payload?
+- Is administrative access to end-user data (support, platform operator) audited — who accessed, when, why?
+- If the project has data export (e.g., account/contract termination), does it deliver only what belongs to the data subject, never the product's configuration/intellectual property?
+- Is this a decision that **requires** legal review before going to production (new purpose of data processing, new third party receiving personal data)? If so, explicitly mark it as pending a lawyer — don't decide the legal framing on your own.
 
 ---
 
-## Ver também
+## 5 — Reliability and observability
 
-- Documentação de produto e de arquitetura já existente **do projeto em refinamento** — sempre a fonte primária, não este checklist genérico.
-- Skill de infraestrutura/SRE do ambiente, se houver — origem das lentes de confiabilidade/observabilidade/custo/segurança operacional (adaptadas aqui para desenho, não para execução).
-- Skill `security-verification` — origem da distinção segredo-vs-PII e da disciplina de nunca versionar credencial.
+**Failure mode it prevents:** a feature that works on the happy path but gives no signal that it is broken, or brings down the entire experience when an external dependency fails.
+
+- Does the feature have an explicit degradation path when an external dependency (AI provider, third-party service, queue) becomes unavailable? Prefer warn → degrade over a dry block with no warning.
+- Is a local cache with fallback needed here — a resolution dependency (e.g., feature flag, plan/entitlement) being unavailable should never lock up the entire product?
+- Is the feature's behavior (proposal → human response, or automatic safeguard acting on its own) the kind of signal that should become an aggregated event/metric for product calibration? If so, that event must never carry end-user data — only structural behavior metadata.
+- Is there a way for the platform operator to tell "this is broken in a specific tenant" from "this is miscalibrated for everyone" in this feature?
+
+---
+
+## 6 — Cost (especially relevant in generative AI products)
+
+**Failure mode it prevents:** a feature that works but erodes margin because nobody measured the execution cost per unit of usage before scaling.
+
+- If the project uses an LLM, does the feature add tokens to what is "always sent" on every turn/call? If so, is that really stable and small, or should it be fetched on demand instead of always present?
+- How many extra searches/calls per interaction does the feature introduce? Does each search have a configurable result limit and size?
+- If there is a separate verification/safety layer (lens 2), can it run on a cheaper model without losing effectiveness?
+- If the feature is billed or limited by plan, does it go through a single access-verification layer (not through plan checks scattered and reimplemented all over the code)?
+- What cost-per-unit-of-value-delivered metric (e.g., cost per completed conversation, per completed task) should this feature feed from day one?
+
+---
+
+## 7 — Secrets and configuration
+
+**Failure mode it prevents:** a leaked credential, or behavior configuration treated as code when it should be data.
+
+- Is no credential, key, or token hardcoded — does everything come from an environment variable, secret manager, or equivalent (see the environment's infrastructure/SRE skill, if any)?
+- Before publishing any architecture artifact that includes a configuration example, apply the secret-vs-PII check from `security-verification`: an example `.env` or payload must never carry a real value, even redacted "just to illustrate".
+- Is business behavior configuration (rules, plan tiers, criteria) treated as **data**, editable without a deploy — or did it become yet another hardcoded constant in the code?
+- Are the product's truly non-negotiable rules (that no tenant can turn off) clearly separated from tenant-adjustable configuration — does the architecture prevent the second layer from overriding the first?
+
+---
+
+## 8 — Reversibility and evolution
+
+**Failure mode it prevents:** an architecture decision that seems definitive and that, when the product grows, requires an expensive migration or rewrite.
+
+- Is there a plausible future extension (even if out of scope now) that this decision should leave cheap? Prefer a "reserved hook, with no behavior" (e.g., an optional field already modeled, but with no associated logic) over a model that would require a production data migration later.
+- If the decision needs to be reverted later (switch provider, change data model), what is the estimated cost? Prefer a reversible operation (blue/green, dry-run, feature flag) over a definitive change with no way out.
+- Is this decision being made too early — does it depend on real usage data that doesn't exist yet? If so, consider recording it as future discussion instead of deciding by speculation.
+
+---
+
+## See also
+
+- Existing product and architecture documentation **of the project being refined** — always the primary source, not this generic checklist.
+- The environment's infrastructure/SRE skill, if any — origin of the reliability/observability/cost/operational security lenses (adapted here for design, not for execution).
+- `security-verification` skill — origin of the secret-vs-PII distinction and the discipline of never versioning credentials.

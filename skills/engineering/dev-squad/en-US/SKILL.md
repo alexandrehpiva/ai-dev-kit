@@ -15,7 +15,7 @@ The agent reading this document is the **Orchestrator**. It coordinates the deve
 
 Read the assets as they become relevant:
 
-| Quando | Leia |
+| When | Read |
 |---|---|
 | Always, at startup | `agents/dev-senior.md`, `agents/tech-lead.md`, `agents/qa.md` |
 | Before starting the cycle | `orchestrator/flow.md` |
@@ -26,7 +26,7 @@ Read the assets as they become relevant:
 | Before creating or updating local backlog items | `task-management.md` |
 | Before creating, restructuring, or linking tasks in a ClickUp Space | `clickup-hierarchy.md` |
 | Before approving QA | `qa-reports.md` |
-| Before the Tech Lead conducts deep architecture refinement (mission `refinar_arquitetura`) | `agents/architecture-refinement-checklist.md` |
+| Before the Tech Lead conducts deep architecture refinement (mission `refine_architecture`) | `agents/architecture-refinement-checklist.md` |
 
 ---
 
@@ -58,7 +58,7 @@ dev-squad/
 ├── agents/
 │   ├── dev-senior.md               ← Senior Developer role, missions, prompts
 │   ├── tech-lead.md                ← Tech Lead role, missions, prompts
-│   ├── architecture-refinement-checklist.md ← thematic lenses for Tech Lead's `refinar_arquitetura` mission
+│   ├── architecture-refinement-checklist.md ← thematic lenses for Tech Lead's `refine_architecture` mission
 │   └── qa.md                       ← QA role, mission, prompt
 ├── orchestrator/
 │   ├── flow.md                     ← phases, state transitions, loop limits
@@ -76,7 +76,7 @@ dev-squad/
 Whenever the Orchestrator runs a role **inline** instead of delegating to a separate subagent, it must:
 
 1. **Announce the role switch explicitly**, for example:
-   > "Estou assumindo como o **{Role}** e agora vou recarregar minhas diretivas..."
+   > "I am now taking on the **{Role}** role and will reload my directives..."
 
 2. **Reload that role's instruction file** before continuing: `agents/{agent}.md`.
 
@@ -87,10 +87,10 @@ Whenever the Orchestrator runs a role **inline** instead of delegating to a sepa
 Example:
 
 ```
-> Estou assumindo como o **Tech Lead** e agora vou recarregar minhas diretivas...
+> I am now taking on the **Tech Lead** role and will reload my directives...
 [read agents/tech-lead.md]
 [review the plan]
-> Estou assumindo como o **Dev Sênior** para aplicar as correções do Tech Lead...
+> I am now taking on the **Senior Developer** role to apply the Tech Lead's corrections...
 [read agents/dev-senior.md]
 [apply corrections]
 ```
@@ -115,7 +115,7 @@ Keep commits focused. Commit after creating a new epic, creating or updating a t
 
 ## Team Roles
 
-| Papel | Quem é | Autoridade |
+| Role | Who | Authority |
 |---|---|---|
 | **Senior Developer** | Subagent or inline role | Investigates, implements, and fixes issues; asks the Tech Lead for technical decisions and the PO for product decisions |
 | **Tech Lead** | Subagent or inline role | Reviews plans and code; approves or sends work back with concrete corrections; owns technical decisions |
@@ -143,7 +143,7 @@ Agent({
 - The Orchestrator parses the result and decides the next step.
 - Roles do not talk to each other directly; all communication passes through the Orchestrator.
 
-**Mandatory isolation.** Every delegated subagent that will touch git branches in a repository is launched with `isolation: "worktree"` — even when no other subagent is confirmed to be running in parallel at launch time. Never let two active subagents share the same physical working directory of a repository: a `git checkout` in one can silently move the active branch out from under the other, landing commits on the wrong branch (this happened in practice — two Dev Sênior subagents on unrelated epics shared a directory, and one agent's branch switch relocated the other's commit).
+**Mandatory isolation.** Every delegated subagent that will touch git branches in a repository is launched with `isolation: "worktree"` — even when no other subagent is confirmed to be running in parallel at launch time. Never let two active subagents share the same physical working directory of a repository: a `git checkout` in one can silently move the active branch out from under the other, landing commits on the wrong branch (this happened in practice — two Senior Developer subagents on unrelated epics shared a directory, and one agent's branch switch relocated the other's commit).
 
 For state and communication protocol details, read `orchestrator/state.md`.
 
@@ -153,8 +153,8 @@ For state and communication protocol details, read `orchestrator/state.md`.
 
 Subagents start cold — no memory of this conversation, no access to what the Orchestrator has already read or decided. A thin prompt ("implement US-14.1") produces shallow, generic work; a self-contained prompt that hands over everything the Orchestrator already knows produces work at the same bar as if the Orchestrator had done it directly. This matters most **outside** the strict single-role handoff described above, in two situations:
 
-1. **When the Orchestrator has already done the discovery** (a product doc with closed decisions, a Tech Lead plan approved in a prior session, a codebase levantamento already on record) — the Dev Sênior `implementar` prompt must inline that discovery, not just point at a file path and hope the subagent re-derives it. Paste the relevant contract, decisions, and file list directly into the prompt body.
-2. **When multiple backlog items are independent** (different files/modules, no shared dependency, no risk of merge conflict) — run their Dev Sênior missions as parallel `Agent` calls in a single message instead of one at a time. This saves wall-clock time and keeps the Orchestrator's own context window from accumulating every intermediate step of work it isn't doing itself. Before parallelizing, verify independence explicitly (check the dependency graph/file overlap recorded for the epic) — when two items touch the same files or one is declared blocked-by the other, sequence them instead; a merge conflict or a stale plan costs more than the parallelism saves.
+1. **When the Orchestrator has already done the discovery** (a product doc with closed decisions, a Tech Lead plan approved in a prior session, a codebase survey already on record) — the Senior Developer `implement` prompt must inline that discovery, not just point at a file path and hope the subagent re-derives it. Paste the relevant contract, decisions, and file list directly into the prompt body.
+2. **When multiple backlog items are independent** (different files/modules, no shared dependency, no risk of merge conflict) — run their Senior Developer missions as parallel `Agent` calls in a single message instead of one at a time. This saves wall-clock time and keeps the Orchestrator's own context window from accumulating every intermediate step of work it isn't doing itself. Before parallelizing, verify independence explicitly (check the dependency graph/file overlap recorded for the epic) — when two items touch the same files or one is declared blocked-by the other, sequence them instead; a merge conflict or a stale plan costs more than the parallelism saves.
 
 **Prompt-quality bar for every spawn, especially when parallelizing:**
 - Include the **exact acceptance criteria** (Given/When/Then) for the item, not a paraphrase — copy them from the tracker item or backlog file into the prompt.
@@ -217,10 +217,10 @@ List only the skills and tools relevant to the mission:
 
 - [ ] Identify the task source: local Markdown, inline user request, or repo spec.
 - [ ] Read `task-management.md` before creating or updating backlog items.
-- [ ] Ler `agents/dev-senior.md`, `agents/tech-lead.md`, `agents/qa.md`
-- [ ] Ler `orchestrator/flow.md`
-- [ ] Ler `orchestrator/state.md`
-- [ ] Initialize internal state with `task_ref`, `task_context`, and `fase_atual = investigacao`
+- [ ] Read `agents/dev-senior.md`, `agents/tech-lead.md`, `agents/qa.md`
+- [ ] Read `orchestrator/flow.md`
+- [ ] Read `orchestrator/state.md`
+- [ ] Initialize internal state with `task_ref`, `task_context`, and `current_phase = investigation`
 - [ ] Start the Senior Developer investigation mission.
 
 ## PO Defines Epics, Technical Team Refines Tasks

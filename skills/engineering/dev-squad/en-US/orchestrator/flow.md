@@ -1,128 +1,128 @@
-# Orchestrator — Ciclo de Vida e Regras de Decisão
+# Orchestrator — Lifecycle and Decision Rules
 
-## Gestão de status
+## Status management
 
-O Orquestrador atualiza o status da task no backlog Markdown local (ou no tracker conectado):
+The Orchestrator updates the task status in the local Markdown backlog (or in the connected tracker):
 
-| Status do ciclo | Frontmatter |
+| Cycle status | Frontmatter |
 |---|---|
-| `em desenvolvimento` | `status: in-progress` |
-| `em validação técnica` | `status: in-review` |
-| `em teste` | `status: in-qa` |
-| `pronto para deploy` | `status: done` + seção "Notas de entrega" |
+| `in development` | `status: in-progress` |
+| `in technical validation` | `status: in-review` |
+| `in testing` | `status: in-qa` |
+| `ready for deploy` | `status: done` + "Delivery notes" section |
 
-Edite o frontmatter YAML do arquivo Markdown da task. Leia `task-management.md` para o caminho e formato.
+Edit the YAML frontmatter of the task's Markdown file. Read `task-management.md` for the path and format.
 
-Se a task estiver em um tracker conectado (Jira, ClickUp, Linear etc.), atualize o status por ele. Se a task for só inline no chat, omita atualizações de status e informe o PO sobre cada transição.
-
----
-
-## Fase 1 — Investigação
-
-**Responsável:** Dev Sênior (missão `investigar`)
-
-### Passos
-
-1. Spawn Dev Sênior com missão `investigar` e o contexto completo da task
-2. Se o retorno contiver `DUVIDAS_PARA_TECH_LEAD`:
-   - Spawn Tech Lead com missão `responder_duvidas`
-   - Incluir `RESPOSTAS` do TL no próximo spawn do Dev
-   - Re-spawn Dev Sênior para completar a investigação com as respostas
-3. Se o retorno contiver `DUVIDAS_PARA_PO`:
-   - **Leia `po-proxy/protocol.md` e relaye ao usuário** (formato grill-me: uma pergunta + recomendação)
-   - Incluir respostas do PO no próximo spawn do Dev
-4. Quando Dev Sênior retornar `STATUS: investigacao_completa`:
-   - Spawn Tech Lead com missão `revisar_plano`
-
-### Regra de loop — revisão de plano
-
-- Se Tech Lead retornar `STATUS: plano_devolvido`: re-spawn Dev Sênior para ajustar o plano com `CORRECOES_OBRIGATORIAS`
-- **Limite: 3 ciclos de revisão de plano** — após o 3º sem aprovação, escalar ao PO antes de continuar
+If the task is in a connected tracker (Jira, ClickUp, Linear etc.), update the status there. If the task exists only inline in the chat, omit status updates and inform the PO of each transition.
 
 ---
 
-## Fase 2 — Implementação
+## Phase 1 — Investigation
 
-**Responsável:** Dev Sênior (missão `implementar`)
+**Owner:** Senior Dev (mission `investigate`)
 
-### Passos
+### Steps
 
-1. Atualizar status da task para `em desenvolvimento` (frontmatter ou tracker conectado)
-2. Spawn Dev Sênior com missão `implementar`, passando:
-   - `approved_plan` = `PLANO_DE_IMPLEMENTACAO` aprovado pelo TL
-   - `resolved_questions` = todas as decisões tomadas até agora
-3. Se retorno contiver `DUVIDAS_PARA_TECH_LEAD` durante a implementação:
-   - Spawn Tech Lead com missão `responder_duvidas`
-   - Re-spawn Dev Sênior para continuar com as respostas
-4. Se retorno contiver `DUVIDAS_PARA_PO`:
-   - **Leia `po-proxy/protocol.md` e relaye ao usuário** (formato grill-me: uma pergunta + recomendação)
-5. Quando Dev Sênior retornar `STATUS: implementado`:
-   - Avançar para Fase 3
+1. Spawn Senior Dev with mission `investigate` and the full task context
+2. If the return contains `QUESTIONS_FOR_TECH_LEAD`:
+   - Spawn Tech Lead with mission `answer_questions`
+   - Include the TL's `ANSWERS` in the Dev's next spawn
+   - Re-spawn Senior Dev to complete the investigation with the answers
+3. If the return contains `QUESTIONS_FOR_PO`:
+   - **Read `po-proxy/protocol.md` and relay to the user** (grill-me format: one question + recommendation)
+   - Include the PO's answers in the Dev's next spawn
+4. When Senior Dev returns `STATUS: investigation_complete`:
+   - Spawn Tech Lead with mission `review_plan`
 
----
+### Loop rule — plan review
 
-## Fase 3 — Code Review (Tech Lead)
-
-**Responsável:** Tech Lead (missão `revisar_codigo`)
-
-Se o projeto tiver ambientes separados de staging/produção, leia
-`orchestrator/branch-strategy.md` antes de abrir o PR — o destino é sempre
-`develop`, nunca `main`.
-
-### Passos
-
-1. Atualizar status da task para `em validação técnica`
-2. Spawn Tech Lead com missão `revisar_codigo`, passando:
-   - `branch` = branch do Dev
-   - `files` = `ARQUIVOS_MODIFICADOS` do Dev
-   - `dev_summary` = `RESUMO` do Dev
-3. Se `APROVACAO: sim`:
-   - Avançar para Fase 4
-4. Se `APROVACAO: não`:
-   - Spawn Dev Sênior com missão `corrigir`, passando os problemas do TL
-   - Após retorno do Dev, **re-spawn Tech Lead para revisar novamente** — não pula para QA
-
-### Regra de loop — code review
-
-- **Limite: 3 ciclos sem aprovação** — após o 3º, escalar ao PO:
-  - Apresentar histórico de problemas e perguntar se quer relaxar critério, mudar abordagem ou intervir
+- If Tech Lead returns `STATUS: plan_returned`: re-spawn Senior Dev to adjust the plan with `REQUIRED_CORRECTIONS`
+- **Limit: 3 plan review cycles** — after the 3rd without approval, escalate to the PO before continuing
 
 ---
 
-## Fase 4 — Teste (QA)
+## Phase 2 — Implementation
 
-**Responsável:** QA (missão `testar`)
+**Owner:** Senior Dev (mission `implement`)
 
-### Passos
+### Steps
 
-1. Atualizar status no tracker para `em teste`
-2. Spawn QA com missão `testar`, passando:
-   - `branch` = branch atual
-   - `files` = lista de arquivos modificados
-   - `implementation_summary` = resumo do que foi implementado
-3. Se `PARECER_FINAL: aprovado para deploy`:
-   - **Verificar** relatório QA em `qa-reports/` (backlog Markdown local — `qa-reports.md`)
-   - Atualizar status para `pronto para deploy` / Markdown `done`
-   - Notificar o PO: resumo + **link ao relatório QA** para re-teste manual
-4. Se `PARECER_FINAL: devolver para dev`:
-   - Atualizar status no tracker para `em desenvolvimento`
-   - Spawn Dev Sênior com missão `corrigir`, passando os `BUGS` do QA com `source: QA`
-   - Após correção: **retornar para Fase 3 (Tech Lead revisa)** — não pula direto para QA
-
-### Regra de loop — QA
-
-- **Limite: 3 ciclos sem aprovação** — após o 3º, escalar ao PO:
-  - Apresentar bugs persistentes e perguntar como proceder (aceitar com ressalvas? mudar escopo? subset?)
+1. Update the task status to `in development` (frontmatter or connected tracker)
+2. Spawn Senior Dev with mission `implement`, passing:
+   - `approved_plan` = `IMPLEMENTATION_PLAN` approved by the TL
+   - `resolved_questions` = all decisions made so far
+3. If the return contains `QUESTIONS_FOR_TECH_LEAD` during implementation:
+   - Spawn Tech Lead with mission `answer_questions`
+   - Re-spawn Senior Dev to continue with the answers
+4. If the return contains `QUESTIONS_FOR_PO`:
+   - **Read `po-proxy/protocol.md` and relay to the user** (grill-me format: one question + recommendation)
+5. When Senior Dev returns `STATUS: implemented`:
+   - Proceed to Phase 3
 
 ---
 
-## Regras de escalada ao PO
+## Phase 3 — Code Review (Tech Lead)
 
-Escale ao PO (via `po-proxy/protocol.md`) quando:
-- Qualquer agente retornar `DUVIDAS_PARA_PO` preenchido
-- Ciclos de revisão excedem o limite (3x)
-- Há decisão de negócio sem resolução técnica clara
-- Há bloqueio externo: infra, acesso a ambiente, dependência de outro time
-- QA encontra bug em funcionalidade fora do escopo da task atual
+**Owner:** Tech Lead (mission `review_code`)
 
-**Nunca tome decisões de negócio ou de escopo sem o PO.**
+If the project has separate staging/production environments, read
+`orchestrator/branch-strategy.md` before opening the PR — the target is always
+`develop`, never `main`.
+
+### Steps
+
+1. Update the task status to `in technical validation`
+2. Spawn Tech Lead with mission `review_code`, passing:
+   - `branch` = the Dev's branch
+   - `files` = the Dev's `MODIFIED_FILES`
+   - `dev_summary` = the Dev's `SUMMARY`
+3. If `APPROVAL: yes`:
+   - Proceed to Phase 4
+4. If `APPROVAL: no`:
+   - Spawn Senior Dev with mission `fix`, passing the TL's problems
+   - After the Dev returns, **re-spawn Tech Lead to review again** — do not skip to QA
+
+### Loop rule — code review
+
+- **Limit: 3 cycles without approval** — after the 3rd, escalate to the PO:
+  - Present the history of problems and ask whether they want to relax the criteria, change the approach or step in
+
+---
+
+## Phase 4 — Testing (QA)
+
+**Owner:** QA (mission `testar`)
+
+### Steps
+
+1. Update the status in the tracker to `in testing`
+2. Spawn QA with mission `testar`, passing:
+   - `branch` = current branch
+   - `files` = list of modified files
+   - `implementation_summary` = summary of what was implemented
+3. If `FINAL_VERDICT: approved for deploy`:
+   - **Verify** the QA report in `qa-reports/` (local Markdown backlog — `qa-reports.md`)
+   - Update the status to `ready for deploy` / Markdown `done`
+   - Notify the PO: summary + **link to the QA report** for manual re-testing
+4. If `FINAL_VERDICT: send back to dev`:
+   - Update the status in the tracker to `in development`
+   - Spawn Senior Dev with mission `fix`, passing the QA's `BUGS` with `source: QA`
+   - After the fix: **return to Phase 3 (Tech Lead reviews)** — do not skip straight to QA
+
+### Loop rule — QA
+
+- **Limit: 3 cycles without approval** — after the 3rd, escalate to the PO:
+  - Present the persistent bugs and ask how to proceed (accept with caveats? change scope? subset?)
+
+---
+
+## PO escalation rules
+
+Escalate to the PO (via `po-proxy/protocol.md`) when:
+- Any agent returns a filled `QUESTIONS_FOR_PO`
+- Review cycles exceed the limit (3x)
+- There is a business decision with no clear technical resolution
+- There is an external blocker: infra, environment access, dependency on another team
+- QA finds a bug in functionality outside the scope of the current task
+
+**Never make business or scope decisions without the PO.**

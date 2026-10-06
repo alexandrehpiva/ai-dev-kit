@@ -1,147 +1,147 @@
-# QA Reports — Relatórios em Markdown
+# QA Reports — Markdown Reports
 
-**Obrigatório:** todo ciclo de QA do dev-squad que use o backlog Markdown local **deve** gerar um relatório neste formato e local. O PO usa estes arquivos para **visualizar** o que foi testado e **re-testar** manualmente.
+**Mandatory:** every dev-squad QA cycle that uses the local Markdown backlog **must** generate a report in this format and location. The PO uses these files to **see** what was tested and to **re-test** manually.
 
 ---
 
-## Localização
+## Location
 
 ```
-{NotesRoot}/{NomeDoProjeto}/qa-reports/
+{NotesRoot}/{ProjectName}/qa-reports/
 ├── README.md
 └── {YYYY-MM-DD}/
-    └── {TASK-ID} - {nome-curto} - {status}.md
+    └── {TASK-ID} - {short-name} - {status}.md
 ```
 
-**Exemplo:**
-`{NotesRoot}/ExampleApp/qa-reports/2026-06-14/TASK-03.1 - Login e sessão - aprovado.md`
+**Example:**
+`{NotesRoot}/ExampleApp/qa-reports/2026-06-14/TASK-03.1 - Login and session - approved.md`
 
 ---
 
-## Nomenclatura do arquivo
+## File naming
 
 ```
-{TASK-ID} - {nome curto da task} - {aprovado|bugs|parcial}.md
+{TASK-ID} - {short task name} - {approved|bugs|partial}.md
 ```
 
-- `aprovado` — todos os cenários BDD da task passaram
-- `bugs` — há bugs abertos; devolver para dev
-- `parcial` — bloqueio externo (DNS, acesso); cenários pendentes listados explicitamente
+- `approved` — all of the task's BDD scenarios passed
+- `bugs` — there are open bugs; send back to dev
+- `partial` — external blocker (DNS, access); pending scenarios listed explicitly
 
 ---
 
-## Template obrigatório do relatório
+## Mandatory report template
 
-O QA **copia os cenários BDD da task** e preenche cada um. O PO deve conseguir re-executar sem ler o chat.
+QA **copies the task's BDD scenarios** and fills in each one. The PO must be able to re-run them without reading the chat.
 
 ```markdown
 ---
-tags: [backlog, {projeto-kebab}, qa-report]
-task: "[[TASK-xx.x - Nome]]"
-épico: "[[EPIC-xx - Nome]]"
-status: aprovado | bugs | parcial
-testado_em: {YYYY-MM-DD HH:MM}
-testado_por: QA (dev-squad)
-branch: {branch ou N/A para infra}
+tags: [backlog, {project-kebab}, qa-report]
+task: "[[TASK-xx.x - Name]]"
+epic: "[[EPIC-xx - Name]]"
+status: approved | bugs | partial
+tested_at: {YYYY-MM-DD HH:MM}
+tested_by: QA (dev-squad)
+branch: {branch or N/A for infra}
 commits: [{hash}, ...]
-ambiente: dev | staging | producao
+environment: dev | staging | production
 ---
 
-# Relatório QA — {TASK-ID}: {Nome}
+# QA Report — {TASK-ID}: {Name}
 
-## Resumo executivo
+## Executive summary
 
-{2–4 frases: o que foi testado, resultado geral, bloqueios}
+{2–4 sentences: what was tested, overall result, blockers}
 
-## Pré-requisitos para re-teste (PO)
+## Prerequisites for re-test (PO)
 
-{Lista numerada — o que o PO precisa ter/configurar antes de re-testar}
+{Numbered list — what the PO needs to have/configure before re-testing}
 
-## Comandos e ferramentas usados
+## Commands and tools used
 
 \`\`\`bash
-# comandos exatos copiáveis
+# exact copyable commands
 \`\`\`
 
-## Cenários BDD (copiados da task)
+## BDD scenarios (copied from the task)
 
-### Cenário 1: {título da task}
+### Scenario 1: {title from the task}
 
-**Dado** ...
-**Quando** ...
-**Então** ...
+**Given** ...
+**When** ...
+**Then** ...
 
-| Passo re-teste (PO) | Comando / ação | Resultado QA | Resultado PO |
+| Re-test step (PO) | Command / action | QA result | PO result |
 |--------------------|----------------|--------------|--------------|
 | 1 | `curl ...` | ✅ 200 | ☐ |
 | 2 | ... | ... | ☐ |
 
-**Evidência QA:** {output resumido ou link observação}
+**QA evidence:** {summarized output or observation link}
 
 ---
 
-### Cenário 2: ...
+### Scenario 2: ...
 
-(repetir para **todos** os cenários da task + edge cases testados)
+(repeat for **all** of the task's scenarios + edge cases tested)
 
-## Testes automatizados
+## Automated tests
 
-| Suite | Comando | Resultado |
+| Suite | Command | Result |
 |-------|---------|-----------|
 | ... | ... | pass / fail / N/A |
 
-## Bugs encontrados
+## Bugs found
 
-(vazio se aprovado)
+(empty if approved)
 
-### [SEVERIDADE] Título
+### [SEVERITY] Title
 
-- **Reprodução:** passos numerados
-- **Esperado:** ...
-- **Atual:** ...
-- **Severidade:** CRITICO | SEVERO | MEDIO | LEVE
+- **Reproduction:** numbered steps
+- **Expected:** ...
+- **Actual:** ...
+- **Severity:** CRITICAL | SEVERE | MEDIUM | MINOR
 
-## Cenários pendentes / bloqueados
+## Pending / blocked scenarios
 
-| Cenário | Motivo do bloqueio | Responsável |
+| Scenario | Blocker reason | Owner |
 |---------|-------------------|-------------|
-| ... | DNS não propagado | PO (Cloudflare) |
+| ... | DNS not propagated | PO (Cloudflare) |
 
-## Parecer final
+## Final verdict
 
-- [ ] **Aprovado para deploy** — task pode ir para `done`
-- [ ] **Devolver para dev** — bugs acima
-- [ ] **Parcial** — aguardar PO/desbloqueio externo
+- [ ] **Approved for deploy** — task can move to `done`
+- [ ] **Send back to dev** — bugs above
+- [ ] **Partial** — wait for PO/external unblock
 
-## Checklist PO (re-teste manual)
+## PO checklist (manual re-test)
 
-- [ ] Cenário 1 re-testado por mim
-- [ ] Cenário 2 re-testado por mim
-- [ ] Aceito como done
+- [ ] Scenario 1 re-tested by me
+- [ ] Scenario 2 re-tested by me
+- [ ] Accepted as done
 ```
 
 ---
 
-## Regras do QA
+## QA rules
 
-1. **Nunca** aprovar sem relatório salvo em `{NotesRoot}`
-2. **Todo cenário BDD** da task aparece no relatório — mesmo se bloqueado (marcar pendente)
-3. Comandos devem ser **copiáveis** — paths, URLs, headers completos
-4. Coluna **Resultado PO** deixa checkboxes vazios para o PO preencher
-5. Após salvar relatório: Orquestrador faz commit no repositório que guarda `{NotesRoot}`:
+1. **Never** approve without a report saved in `{NotesRoot}`
+2. **Every BDD scenario** of the task appears in the report — even if blocked (mark as pending)
+3. Commands must be **copyable** — full paths, URLs, headers
+4. The **PO result** column leaves empty checkboxes for the PO to fill in
+5. After saving the report: the Orchestrator commits in the repository that holds `{NotesRoot}`:
 
 ```bash
-cd "<repositório que guarda {NotesRoot}>"
-git add "{NotesRoot}/{projeto}/qa-reports/"
-git commit -m "qa({projeto}): relatório TASK-xx.x — {aprovado|bugs|parcial}"
+cd "<repository that holds {NotesRoot}>"
+git add "{NotesRoot}/{project}/qa-reports/"
+git commit -m "qa({project}): report TASK-xx.x — {approved|bugs|partial}"
 ```
 
-6. Linkar o relatório na seção **Notas de desenvolvimento** da task (`[[qa-reports/...]]`)
+6. Link the report in the task's **Development notes** section (`[[qa-reports/...]]`)
 
 ---
 
-## Integração com o ciclo (flow.md Fase 4)
+## Integration with the cycle (flow.md Phase 4)
 
-Após spawn QA retornar `STATUS: aprovado`, o Orquestrador **verifica** que o arquivo de relatório existe antes de marcar task `done`.
+After the QA spawn returns `STATUS: approved`, the Orchestrator **verifies** that the report file exists before marking the task `done`.
 
-Se `parcial`: task permanece `in-qa` ou volta `in-progress` conforme bloqueio; PO notificado com link ao relatório.
+If `partial`: the task stays `in-qa` or goes back to `in-progress` depending on the blocker; the PO is notified with a link to the report.

@@ -55,11 +55,11 @@ tasks with their `linked_tasks` populated. If a connected ClickUp tool (MCP/CLI)
 ## Technical subtasks (Tech Lead phase)
 
 Once architecture is settled, the Tech Lead creates subtasks under each US following
-`US-FORMAT.md` (subtask row of the "Application rules by type" table): one subtask per
+`US-FORMAT.md` (subtask row of the "Regras de aplicação por tipo" table): one subtask per
 layer/dependency (backend, frontend, infra), each independently pickable. Apply
 `lean-writing.md` and `readability.md` before publishing. Use blocking dependencies
-(`depends_on`) between subtasks only for genuine hard blockers — see the "when to register a
-blocker" criteria pattern in `lean-writing.md`'s Dependencies guidance; two subtasks that can
+(`depends_on`) between subtasks only for genuine hard blockers — see the "quando cadastrar
+bloqueio" criteria pattern in `lean-writing.md`'s Dependências guidance; two subtasks that can
 be built in parallel against a shared contract should not block each other.
 
 ## Authorship boundary

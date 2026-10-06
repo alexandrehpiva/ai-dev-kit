@@ -1,255 +1,254 @@
-# Escrita de documentação de produto — diretiva do PO
+# Writing product documentation — PO directive
 
-## Princípio
+## Principle
 
-Documentação de produto é escrita para uma PESSOA que nunca viu o produto,
-não para um agente de IA com o histórico de decisões aberto ao lado.
-Se um trecho só faz sentido para quem já sabe do que se trata, ele falhou.
+Product documentation is written for a PERSON who has never seen the product,
+not for an AI agent with the decision history open beside it.
+If a passage only makes sense to someone who already knows what it is about, it has failed.
 
-## O teste
+## The test
 
-Antes de publicar qualquer parágrafo de doc de produto, pergunte:
-"Se eu mostrasse só este parágrafo para alguém de fora, sem mais nada,
-ele entenderia o que o produto faz e por quê?"
-Se a resposta depende de abrir outro documento primeiro, reescreva.
+Before publishing any paragraph of product doc, ask:
+"If I showed only this paragraph to an outsider, with nothing else,
+would they understand what the product does and why?"
+If the answer depends on opening another document first, rewrite it.
 
-## Regra sobre códigos de decisão (D-XX, J-XX, etc.)
+## Rule on decision codes (D-XX, J-XX, etc.)
 
-Códigos de rastreabilidade (D-07, J-12...) NUNCA carregam significado
-sozinhos dentro de uma frase explicativa. Duas formas corretas de usá-los:
+Traceability codes (D-07, J-12...) NEVER carry meaning
+on their own inside an explanatory sentence. There are two correct ways to use them:
 
-1. Como LINK ao final de um parágrafo que já se explicou sozinho:
-   "...na venda ela passa a usar a API oficial do WhatsApp Business, mais
-   estável em escala. [→ racional completo em [[Decisões fechadas]]#D-07]"
+1. As a LINK at the end of a paragraph that already explained itself:
+   "...at sale time it uses the official WhatsApp Business API, which is more
+   stable at scale. [→ full rationale in [[Closed decisions]]#D-07]"
 
-2. Nunca como parte do sujeito ou predicado da frase:
-   ❌ "canal único por decisão D-07"
-   ❌ "conforme D-02, o produto se chama..."
+2. Never as part of the subject or predicate of the sentence:
+   ❌ "single channel per decision D-07"
+   ❌ "per D-02, the product is called..."
 
-## Regra sobre acoplamento a estado externo/de terceiros
+## Rule on coupling to external/third-party state
 
-Um documento sobre o produto X nunca deve afirmar o **estado atual** de uma
-entidade externa a X (marca-mãe, plataforma irmã, outro produto do mesmo
-grupo) — só a **relação** de X com essa entidade. Estado externo muda por
-razões que não têm nada a ver com X, e cada mudança externa forçaria voltar
-a editar a doc de X só para não deixá-la desatualizada — um acoplamento
-desnecessário entre documentos que deveriam evoluir de forma independente.
+A document about product X must never state the **current state** of an
+entity external to X (parent brand, sister platform, another product of the same
+group) — only X's **relationship** with that entity. External state changes for
+reasons that have nothing to do with X, and each external change would force going back
+to edit X's doc just to keep it from becoming outdated — unnecessary coupling
+between documents that should evolve independently.
 
-❌ Errado (estado atual de terceiro, vira mentira no dia em que mudar):
-"AgentsTrail é a marca guarda-chuva — hoje ainda não há outro produto
-ativo sob essa marca."
-→ No dia em que um segundo produto for lançado sob AgentsTrail, essa
-frase na doc do Recepta vira falsa, e alguém precisa lembrar de voltar
-aqui para corrigir algo que não tem relação com o Recepta em si.
+❌ Wrong (current state of a third party, becomes a lie the day it changes):
+"AgentsTrail is the umbrella brand — today there is still no other active
+product under that brand."
+→ The day a second product is launched under AgentsTrail, that
+sentence in Recepta's doc becomes false, and someone has to remember to come back
+here to fix something unrelated to Recepta itself.
 
-✅ Certo (relação com o terceiro, atemporal — nunca precisa de correção):
-"AgentsTrail é a marca guarda-chuva, pensada para hospedar outros agentes
-de IA verticais no futuro. Recepta é o primeiro produto lançado sob essa
-marca." (ambos os fatos são permanentes: a intenção da marca e a ordem de
-lançamento nunca mudam, mesmo que o catálogo cresça)
+✅ Right (relationship with the third party, timeless — never needs correction):
+"AgentsTrail is the umbrella brand, designed to host other vertical
+AI agents in the future. Recepta is the first product launched under that
+brand." (both facts are permanent: the brand's intent and the order of
+launch never change, even if the catalog grows)
 
-### Como reconhecer o padrão
+### How to recognize the pattern
 
-Frases com "hoje", "atualmente", "ainda não", "por enquanto" descrevendo o
-estado de algo que **não é o assunto do documento** são sinal de alerta.
-Pergunte: "se essa contagem/estado mudar amanhã, alguém vai lembrar de
-voltar exatamente a este documento para corrigir?" Se a resposta for "não,
-provavelmente não" — o fato não deveria estar aqui. Ou vira uma afirmação
-atemporal sobre a relação, ou aponta para a fonte de verdade externa (a
-documentação da própria entidade), nunca duplica o estado dela aqui.
+Sentences with "today", "currently", "not yet", "for now" describing the
+state of something that **is not the subject of the document** are a warning sign.
+Ask: "if this count/state changes tomorrow, will anyone remember to
+come back to exactly this document to fix it?" If the answer is "no,
+probably not" — the fact should not be here. Either it becomes a
+timeless statement about the relationship, or it points to the external source of truth (the
+entity's own documentation), never duplicating its state here.
 
-## Regra sobre toda dor citada precisar de solução rastreável
+## Rule that every pain point cited needs a traceable solution
 
-Se um documento lista dores/problemas do cliente (uma seção "o problema",
-um "por que isso importa"), cada item dessa lista precisa de uma resposta
-**explícita e localizável** no produto — não implícita, não só sugerida
-por outra capacidade parecida, e não enterrada páginas depois numa seção
-de "diferenciais" que o leitor pode nunca chegar a ler.
+If a document lists customer pain points/problems (a "the problem" section,
+a "why this matters"), each item on that list needs an
+**explicit and findable** answer in the product — not implicit, not merely suggested
+by another similar capability, and not buried pages later in a
+"differentiators" section the reader may never get to.
 
-O teste: para cada dor da lista, um vendedor conseguiria, só com este
-documento, apontar em uma frase a funcionalidade exata que resolve
-aquilo? Se a resposta for "ele teria que inferir" ou "está descrito só
-lá na frente, sem ligação de volta com a dor" — é uma brecha argumentativa
-real. Um cliente em potencial vai perguntar exatamente isso ("e o buraco
-que fica na agenda quando alguém cancela em cima da hora?"), e o vendedor
-precisa de uma resposta pronta, não de uma dedução.
+The test: for each pain point on the list, could a salesperson, using only this
+document, point in one sentence to the exact feature that solves
+it? If the answer is "they would have to infer it" or "it is described only
+way up front, with no link back to the pain" — it is a real argumentative
+gap. A prospective customer will ask exactly that ("and the hole
+left in the schedule when someone cancels at the last minute?"),
+and the salesperson needs a ready answer, not a deduction.
 
-Forma recomendada: uma tabela ou lista curta logo após a lista de dores,
-ligando cada dor à mecânica que a resolve — não precisa reexplicar a
-mecânica em detalhe ali (isso já vive em outro lugar do documento ou em
-doc próprio), só fechar o loop visualmente.
+Recommended form: a table or short list right after the list of pain points,
+linking each pain point to the mechanic that solves it — there is no need to re-explain the
+mechanic in detail there (that already lives elsewhere in the document or in its own
+doc), just close the loop visually.
 
-## Regra sobre consistência de mecânica entre jornadas parecidas
+## Rule on mechanic consistency across similar journeys
 
-Quando uma mecânica é estabelecida para UM cenário específico (ex.: "toda
-vez que a Bia aprende algo novo com um humano, ela pergunta se vale só
-para agora ou se pode aplicar sempre, e o 'sempre' passa por aval antes
-de virar regra"), essa mesma mecânica normalmente precisa valer em **todo
-outro lugar da documentação onde o mesmo tipo de momento acontece** — não
-só onde ela foi originalmente especificada.
+When a mechanic is established for ONE specific scenario (e.g. "every
+time Bia learns something new from a human, she asks whether it is worth it only
+for now or whether it can apply always, and the 'always' goes through approval before
+becoming a rule"), that same mechanic usually needs to hold **everywhere
+else in the documentation where the same kind of moment happens** — not
+only where it was originally specified.
 
-O erro típico: a mecânica nasce bem definida numa jornada (ex.: J-43, "a
-secretária corrige a Bia"), mas uma jornada irmã, que dispara o mesmo tipo
-de aprendizado por um caminho diferente (ex.: J-31, "a Bia pergunta porque
-não sabe o que fazer"), fica descrita de forma mais simplista ("a orientação
-vira memória", sem a mesma pergunta pontual-ou-sempre) — como se fosse um
-mecanismo diferente, quando na prática deveria ser o mesmo crivo.
+The typical mistake: the mechanic is born well defined in one journey (e.g. J-43, "the
+secretary corrects Bia"), but a sibling journey, which triggers the same kind of
+learning through a different path (e.g. J-31, "Bia asks because
+she does not know what to do"), is described in a more simplistic way ("the guidance
+becomes memory", without the same one-off-or-always question) — as if it were a
+different mechanism, when in practice it should be the same filter.
 
-Ao fechar qualquer decisão ou mecânica nova, perguntar: "que outras
-jornadas/documentos disparam esse mesmo tipo de momento, e elas já
-descrevem o mesmo comportamento, ou ficaram para trás?" Rastrear e alinhar
-antes de considerar o tema fechado — mesmo princípio da regra de "refletir
-mudanças nos documentos relacionados" do processo de revisão, mas aplicado
-durante a *criação* de uma mecânica nova, não só na correção de texto.
+When closing any new decision or mechanic, ask: "what other
+journeys/documents trigger this same kind of moment, and do they already
+describe the same behavior, or were they left behind?" Trace and align
+before considering the topic closed — same principle as the "reflect
+changes in related documents" rule of the review process, but applied
+during the *creation* of a new mechanic, not only when correcting text.
 
-## Regra sobre nomes próprios e conceitos novos
+## Rule on proper names and new concepts
 
-Todo nome próprio do produto (persona, marca, feature) precisa, na
-primeira aparição em cada documento, de uma frase que diga O QUE é e
-POR QUE existe — não apenas que existe.
+Every proper name in the product (persona, brand, feature) needs, on its
+first appearance in each document, a sentence saying WHAT it is and
+WHY it exists — not just that it exists.
 
-❌ "sob o guarda-chuva AgentsTrail (agentstrail.dev)"
-✅ "Recepta é o primeiro produto de uma marca guarda-chuva chamada
-    AgentsTrail, pensada para hospedar outros agentes verticais no
-    futuro." (explica o que é e por que existe, sem afirmar o estado
-    atual do catálogo de terceiro — ver regra de acoplamento abaixo)
+❌ "under the AgentsTrail umbrella (agentstrail.dev)"
+✅ "Recepta is the first product of an umbrella brand called
+    AgentsTrail, designed to host other vertical agents in the
+    future." (explains what it is and why it exists, without stating the current
+    state of a third party's catalog — see the coupling rule above)
 
-## Regra sobre ordenação: capacidades antes de implementação/roadmap
+## Rule on ordering: capabilities before implementation/roadmap
 
-O corpo principal de um documento de produto conta primeiro O QUE o
-produto FAZ e QUE VALOR entrega — sem interrupções de "como isso é
-entregue ao longo do tempo" (fases, versões, MVP × comercial, rollout).
+The main body of a product document first tells WHAT the
+product DOES and WHAT VALUE it delivers — without interruptions about "how this is
+delivered over time" (phases, versions, MVP × commercial, rollout).
 
-Detalhe de implementação/roadmap PODE e DEVE existir, mas como bloco
-separado, claramente rotulado, DEPOIS do fluxo de capacidades — nunca
-intercalado no meio da explicação do que o produto faz.
+Implementation/roadmap detail CAN and SHOULD exist, but as a
+separate, clearly labeled block, AFTER the flow of capabilities — never
+interleaved in the middle of the explanation of what the product does.
 
-Formato do bloco técnico separado:
-> **Nota técnica — {assunto}:** {conteúdo técnico/roadmap}.
-> [→ link para decisão/detalhe, se houver]
+Format of the separate technical block:
+> **Technical note — {subject}:** {technical/roadmap content}.
+> [→ link to decision/detail, if any]
 
-❌ Errado (interrompe o fluxo de capacidades com detalhe de fases):
-"Ela atende pelo WhatsApp (no piloto via integração não oficial, na
-venda via API oficial), agenda consultas, lembra do histórico..."
+❌ Wrong (interrupts the flow of capabilities with phase detail):
+"She answers on WhatsApp (in the pilot via an unofficial integration, at sale
+via the official API), schedules appointments, remembers the history..."
 
-✅ Certo (fluxo de capacidades completo, nota técnica depois):
-"Ela atende pelo WhatsApp, agenda consultas, lembra do histórico...
-[fim do parágrafo de capacidades]
+✅ Right (complete flow of capabilities, technical note afterwards):
+"She answers on WhatsApp, schedules appointments, remembers the history...
+[end of the capabilities paragraph]
 
-**Nota técnica — roadmap de conexão com o WhatsApp:** no piloto..."
+**Technical note — WhatsApp connection roadmap:** in the pilot..."
 
-## Regra crítica — links de relacionamento entre documentos
+## Critical rule — relationship links between documents
 
-Toda referência a outro documento, decisão, seção ou conceito definido
-em outro lugar PRECISA ser um link navegável na plataforma de destino —
-nunca texto puro citando o nome do documento/seção sem link.
+Every reference to another document, decision, section or concept defined
+elsewhere MUST be a navigable link on the target platform —
+never plain text citing the document/section name without a link.
 
-Isso vale tanto para referência cruzada entre documentos quanto para
-âncoras dentro do MESMO documento (ex.: "ver seção X" mais abaixo na
-mesma página).
+This applies both to cross-references between documents and to
+anchors within the SAME document (e.g. "see section X" further down on
+the same page).
 
-### Sintaxe por plataforma
+### Syntax per platform
 
-| Plataforma | Sintaxe de link |
+| Platform | Link syntax |
 |---|---|
-| Markdown local (Obsidian) | `[[Nome do Documento]]` ou `[[Nome do Documento#Seção]]` |
-| ClickUp Doc | link direto para a página/seção de destino dentro do workspace |
-| Confluence (ou outra plataforma futura) | link nativo da plataforma para a página/âncora de destino |
+| Local Markdown (Obsidian) | `[[Document Name]]` or `[[Document Name#Section]]` |
+| ClickUp Doc | direct link to the target page/section inside the workspace |
+| Confluence (or another future platform) | the platform's native link to the target page/anchor |
 
-Ao publicar/sincronizar um documento Markdown local para uma plataforma
-externa, os wikilinks `[[...]]` do Markdown DEVEM ser convertidos para
-o formato de link nativo daquela plataforma — nunca deixados como texto
-puro `[[Nome]]` nem removidos.
+When publishing/syncing a local Markdown document to an external
+platform, the Markdown `[[...]]` wikilinks MUST be converted to
+that platform's native link format — never left as plain
+`[[Name]]` text nor removed.
 
-## Regra sobre o conteúdo dos registros de decisão (o destino do link D-XX)
+## Rule on the content of decision records (the target of the D-XX link)
 
-Um link `[[Decisões fechadas]]#D-07` só cumpre sua função se, ao clicar,
-o leitor encontrar o contexto completo — não só o resultado. Cada
-entrada de decisão precisa registrar:
+A link `[[Closed decisions]]#D-07` only fulfills its purpose if, when clicking,
+the reader finds the full context — not just the outcome. Each
+decision entry must record:
 
-1. **Pergunta** — o que estava em aberto antes da decisão (a dúvida ou
-   trade-off que motivou a discussão)
-2. **Decisão** — o que ficou valendo
-3. **Motivo** — por que essa opção venceu as alternativas
-4. **Impacto** — quais documentos/áreas mudam por causa dela
+1. **Question** — what was open before the decision (the doubt or
+   trade-off that motivated the discussion)
+2. **Decision** — what became valid
+3. **Reason** — why this option beat the alternatives
+4. **Impact** — which documents/areas change because of it
 
-Registro sem o campo **Pergunta** obriga o leitor a adivinhar qual
-problema estava sendo resolvido — o mesmo defeito de "escrever para
-quem já sabe do que se trata" que esta skill existe para evitar, só que
-transferido para dentro do próprio documento de decisões.
+A record without the **Question** field forces the reader to guess which
+problem was being solved — the same "writing for someone who already knows
+what it is about" flaw that this skill exists to avoid, just
+transferred into the decisions document itself.
 
-## Processo — quando o usuário pedir revisão/correção de documentação de produto existente
+## Process — when the user asks for review/correction of existing product documentation
 
-Quando o pedido for do tipo "revise e corrija a documentação seguindo
-essa diretriz" (não escrita do zero), seguir este processo, não um
-"find & replace" mecânico:
+When the request is of the type "review and fix the documentation following
+this directive" (not writing from scratch), follow this process, not a mechanical
+"find & replace":
 
-1. **Antes de tudo, garantir o worktree limpo.** Se houver qualquer
-   pendência de commit não relacionada no repositório, commitar
-   primeiro (agrupada por tema), para que os commits da revisão de
-   documentação fiquem isolados e revisáveis por si só.
-2. **Recarregar esta skill e as diretivas acumuladas na conversa** antes
-   de tocar em qualquer arquivo — inclusive rodando `recall-directives`
-   se a conversa for longa ou tiver sido compactada, para não perder
-   ajuste que o PO pediu e que saiu da janela de contexto visível.
-3. **Ler linearmente, como uma pessoa leria.** Seguir a ordem real de
-   leitura do documento (não pular para o fim, não processar por
-   busca-e-substitui). Para cada bloco de texto, avaliar contra os
-   critérios desta skill antes de decidir se mexe ou não.
-4. **Refletir mudanças nos documentos relacionados.** Um ajuste em um
-   documento quase sempre exige o mesmo ajuste (ou um ajuste
-   equivalente) em documentos que citam o mesmo conceito, decisão ou
-   nome próprio. Rastrear e ajustar os relacionados antes de considerar
-   o tema fechado — não deixar o mesmo problema resolvido em um lugar e
-   pendente em outro.
-5. **Commitar parcialmente, por tema, à medida que avança** — não
-   acumular a revisão inteira num único commit gigante. Cada tema
-   fechado (um documento, ou um grupo pequeno de documentos
-   fortemente relacionados) vira um commit.
-6. **Sem pressa.** Analisar cada bloco de texto com cuidado antes de
-   decidir a correção. É preferível ir mais devagar e não esquecer
-   nada do que aplicar rápido e deixar furo.
-7. **Criar conteúdo novo quando necessário.** Se, durante a leitura,
-   ficar claro que falta uma página, uma seção ou um bloco de nota
-   técnica para a documentação ficar completa e coerente com estes
-   critérios, criar — não é preciso pedir permissão para preencher uma
-   lacuna que a própria diretriz de qualidade exige.
-8. **Ao final, ressincronizar** as páginas efetivamente alteradas na
-   plataforma externa em uso (ex.: ClickUp), não o conjunto inteiro —
-   só o que mudou de fato.
+1. **First of all, ensure a clean worktree.** If there is any
+   unrelated pending commit in the repository, commit it
+   first (grouped by theme), so that the documentation review commits
+   stay isolated and reviewable on their own.
+2. **Reload this skill and the directives accumulated in the conversation** before
+   touching any file — including running `recall-directives`
+   if the conversation is long or has been compacted, so as not to lose
+   an adjustment the PO asked for that fell out of the visible context window.
+3. **Read linearly, the way a person would.** Follow the actual
+   reading order of the document (do not jump to the end, do not process by
+   search-and-replace). For each block of text, evaluate it against this skill's
+   criteria before deciding whether to touch it or not.
+4. **Reflect changes in related documents.** An adjustment in one
+   document almost always requires the same adjustment (or an
+   equivalent one) in documents that cite the same concept, decision or
+   proper name. Trace and adjust the related ones before considering the
+   topic closed — do not leave the same problem solved in one place and
+   pending in another.
+5. **Commit partially, by theme, as you go** — do not
+   accumulate the entire review in a single giant commit. Each closed
+   theme (one document, or a small group of strongly
+   related documents) becomes a commit.
+6. **No rush.** Analyze each block of text carefully before
+   deciding on the fix. It is preferable to go slower and not forget
+   anything than to apply quickly and leave a hole.
+7. **Create new content when necessary.** If, during reading, it becomes
+   clear that a page, a section or a technical note block is missing for the documentation to be
+   complete and coherent with these criteria, create it — there is no need to
+   ask permission to fill a gap that the quality directive itself requires.
+8. **At the end, resync** the pages actually changed on the
+   external platform in use (e.g. ClickUp), not the whole set —
+   only what actually changed.
 
-## Referência de calibre
+## Calibration reference
 
-Ler a documentação pública de produtos SaaS renomados (Stripe, Linear,
-Intercom) como vara de medir: eles escrevem para o leitor decidir se
-compra, não para o próximo engenheiro rastrear uma decisão. Doc de
-produto não é changelog nem ADR.
+Read the public product documentation of renowned SaaS products (Stripe, Linear,
+Intercom) as a yardstick: they write for the reader to decide whether
+to buy, not for the next engineer to trace a decision. Product
+doc is not a changelog or an ADR.
 
-## Checklist antes de publicar/revisar uma página de produto
+## Checklist before publishing/reviewing a product page
 
-- [ ] Nenhum código de decisão (D-XX) aparece fora de um link
-- [ ] Todo nome próprio citado tem uma frase de "o que é / por que existe"
-      na primeira aparição no documento
-- [ ] O parágrafo de abertura do documento passa no teste do leitor de fora
-- [ ] Nenhuma frase parece copiada de uma nota de decisão ou changelog
-- [ ] Nenhum detalhe de fase/versão/rollout aparece dentro do parágrafo
-      que descreve capacidades do produto
-- [ ] Todo detalhe técnico/roadmap está em bloco separado e rotulado
-      "Nota técnica —", posicionado depois do fluxo principal
-- [ ] Toda menção a outro documento é um link, não texto puro com o nome
-- [ ] Toda menção a uma seção específica (própria ou de outro doc) linka
-      direto para essa âncora, não só para o topo do documento
-- [ ] Ao publicar fora do Obsidian, todo wikilink foi convertido para a
-      sintaxe de link nativa da plataforma de destino (ClickUp, Confluence)
-- [ ] Nenhum link quebrado (documento/seção renomeado sem atualizar quem
-      aponta para ele)
-- [ ] Toda entrada de decisão (D-XX) linkada tem os quatro campos:
-      Pergunta, Decisão, Motivo, Impacto
-- [ ] Nenhuma frase afirma o estado atual ("hoje", "ainda não", "por
-      enquanto") de uma entidade externa ao assunto do documento (marca-mãe,
-      produto irmão, plataforma de terceiro) — só a relação atemporal com ela
-- [ ] Toda dor listada numa seção de "problema" tem uma solução explícita
-      e localizável no documento, não só implícita ou distante
-- [ ] Toda mecânica nova (ex.: "aprende algo e pergunta se é regra
-      permanente") foi checada contra as demais jornadas/documentos que
-      disparam o mesmo tipo de momento, e todas descrevem o mesmo comportamento
+- [ ] No decision code (D-XX) appears outside a link
+- [ ] Every proper name cited has a "what it is / why it exists" sentence
+      on its first appearance in the document
+- [ ] The document's opening paragraph passes the outside-reader test
+- [ ] No sentence looks copied from a decision note or changelog
+- [ ] No phase/version/rollout detail appears inside the paragraph
+      that describes product capabilities
+- [ ] Every technical/roadmap detail is in a separate block labeled
+      "Technical note —", positioned after the main flow
+- [ ] Every mention of another document is a link, not plain text with the name
+- [ ] Every mention of a specific section (own or of another doc) links
+      directly to that anchor, not just to the top of the document
+- [ ] When publishing outside Obsidian, every wikilink was converted to the
+      native link syntax of the target platform (ClickUp, Confluence)
+- [ ] No broken links (document/section renamed without updating whatever
+      points to it)
+- [ ] Every linked decision entry (D-XX) has the four fields:
+      Question, Decision, Reason, Impact
+- [ ] No sentence states the current state ("today", "not yet", "for
+      now") of an entity external to the document's subject (parent brand,
+      sister product, third-party platform) — only the timeless relationship with it
+- [ ] Every pain point listed in a "problem" section has an explicit
+      and findable solution in the document, not just implicit or distant
+- [ ] Every new mechanic (e.g. "learns something and asks whether it is a
+      permanent rule") was checked against the other journeys/documents that
+      trigger the same kind of moment, and all describe the same behavior

@@ -1,36 +1,36 @@
-# Estratégia de branch — projetos com staging e produção
+# Branch strategy — projects with staging and production
 
-Aplica-se a qualquer projeto cujo CI/CD tenha ambientes separados
-(staging + produção). Nem todo projeto tem isso — confirme antes de assumir
-(veja se existe `develop` no remoto e um `deploy.yml`/pipeline com trigger
-por branch).
+Applies to any project whose CI/CD has separate environments
+(staging + production). Not every project has this — confirm before assuming
+(check whether `develop` exists on the remote and whether there is a `deploy.yml`/pipeline with a
+per-branch trigger).
 
-## Fluxo
+## Flow
 
 ```
-checkout develop → pull → checkout -b feature/<nome>_<id-da-task-se-existir>
-  → código → PR para develop → merge → testa em staging (deploy automático)
-  → [só quando o PO decidir ir para produção] PR de develop para main → merge
+checkout develop → pull → checkout -b feature/<name>_<task-id-if-any>
+  → code → PR to develop → merge → test on staging (automatic deploy)
+  → [only when the PO decides to go to production] PR from develop to main → merge
 ```
 
-- `develop` é onde o time de desenvolvimento trabalha. Toda feature branch
-  nasce dela, não de `main`. PR de fase 3 (Code Review) e fase 4 (QA) desta
-  skill sempre aponta para `develop`.
-- `main` é reservado para produção. O Dev Sênior e o Tech Lead nunca abrem
-  PR direto pra `main`, nunca commitam nela, e nunca a tratam como destino
-  de uma feature comum.
-- A promoção `develop → main` **não é uma fase do ciclo de desenvolvimento
-  desta skill** — é uma decisão de negócio do PO, feita fora do fluxo
-  Dev→TL→QA, normalmente quando um conjunto de features já testado em
-  staging está pronto para ir ao ar. Trate como uma escalada ao PO (ver
-  "Regras de escalada" em `flow.md`), nunca como decisão técnica automática.
-- Se o projeto ainda não tem infraestrutura de produção provisionada, isso é
-  um bloqueio de infra (route para a skill/fluxo de infraestrutura do ambiente) — não invente
-  workaround nem pule a etapa.
+- `develop` is where the development team works. Every feature branch
+  is born from it, not from `main`. The PRs of phase 3 (Code Review) and phase 4 (QA) of this
+  skill always target `develop`.
+- `main` is reserved for production. The Senior Dev and the Tech Lead never open
+  a PR directly to `main`, never commit to it, and never treat it as the destination
+  of an ordinary feature.
+- The `develop → main` promotion **is not a phase of this skill's development
+  cycle** — it is a business decision by the PO, made outside the
+  Dev→TL→QA flow, normally when a set of features already tested on
+  staging is ready to go live. Treat it as an escalation to the PO (see
+  "Escalation rules" in `flow.md`), never as an automatic technical decision.
+- If the project does not yet have production infrastructure provisioned, that is
+  an infra blocker (route to the environment's infrastructure skill/flow) — do not invent a
+  workaround and do not skip the step.
 
-## Quando o projeto não tem esse split
+## When the project does not have this split
 
-Projetos sem ambiente de produção separado (só staging, ou só um ambiente)
-seguem o fluxo genérico de branch da skill de linguagem/framework em uso
-(ex.: `dev-python`, se houver — checkout da branch base → pull → checkout -b feature).
-Não crie `develop`/`main` split para um projeto que não pediu isso.
+Projects without a separate production environment (only staging, or only one environment)
+follow the generic branch flow of the language/framework skill in use
+(e.g. `dev-python`, if any — checkout the base branch → pull → checkout -b feature).
+Do not create a `develop`/`main` split for a project that did not ask for it.

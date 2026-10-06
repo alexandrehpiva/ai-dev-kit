@@ -1,100 +1,100 @@
-# PO Proxy — Protocolo de Relay de Perguntas ao Usuário
+# PO Proxy — Question Relay Protocol to the User
 
-## Quando usar
+## When to use
 
-Usar este protocolo quando:
-- Qualquer subagente retornar `DUVIDAS_PARA_PO` preenchido (não-vazio)
-- O Orquestrador precisar de decisão de negócio para continuar
-- Ciclos de revisão excederam o limite e o PO precisa intervir
-- Há bloqueio externo sem resolução técnica possível
-
----
-
-## Passo 1 — Coletar todas as perguntas do ciclo
-
-Antes de perguntar ao usuário, verifique se outros subagentes também têm dúvidas pendentes no mesmo ciclo. Se sim, agrupe tudo em uma única interação com o PO — nunca faça múltiplas interações separadas para perguntas do mesmo ciclo.
-
-Para cada dúvida coletada, registre:
-- **Origem:** qual agente perguntou (Dev Sênior / Tech Lead / QA / Orquestrador)
-- **Pergunta:** a dúvida em si
-- **Impacto:** o que muda dependendo da resposta
-- **Urgência:** bloqueia agora | pode resolver depois
+Use this protocol when:
+- Any subagent returns a filled (non-empty) `QUESTIONS_FOR_PO`
+- The Orchestrator needs a business decision to continue
+- Review cycles exceeded the limit and the PO needs to step in
+- There is an external blocker with no possible technical resolution
 
 ---
 
-## Passo 2 — Preparar a apresentação para o PO
+## Step 1 — Collect all questions of the cycle
 
-O PO neste fluxo é o **usuário real** (a pessoa usuária). Perguntas devem seguir o protocolo **grill-me**: **uma pergunta por vez**, com **recomendação do time** e raciocínio breve — nunca lista de perguntas soltas sem contexto.
+Before asking the user, check whether other subagents also have pending questions in the same cycle. If so, group everything into a single interaction with the PO — never run multiple separate interactions for questions from the same cycle.
 
-Use `AskUserQuestion` quando houver opções discretas; caso contrário, texto em formato grill-me:
+For each question collected, record:
+- **Origin:** which agent asked (Senior Dev / Tech Lead / QA / Orchestrator)
+- **Question:** the question itself
+- **Impact:** what changes depending on the answer
+- **Urgency:** blocks now | can be resolved later
 
-> **Contexto:** {1 frase}
-> **Pergunta:** {uma só}
-> **Recomendação do time:** {opção preferida + por quê}
+---
 
-Regras adicionais:
+## Step 2 — Prepare the presentation for the PO
 
-- **Não exponha o vocabulário interno** — o PO não precisa saber de "spawn", "Orquestrador", "subagente", "missão"
-- **Fale como um PM ou secretária do time** — "o time tem algumas dúvidas antes de continuar"
-- **Seja conciso** — contexto mínimo necessário + pergunta direta
-- **Máximo de 4 perguntas por interação** — se houver mais, priorize as que bloqueiam agora
+The PO in this flow is the **real user** (the human user). Questions must follow the **grill-me** protocol: **one question at a time**, with a **team recommendation** and brief reasoning — never a list of loose questions without context.
 
-### Modelo de texto antes do AskUserQuestion
+Use `AskUserQuestion` when there are discrete options; otherwise, text in grill-me format:
 
-> O time chegou em algumas dúvidas que precisam da sua decisão antes de continuar:
+> **Context:** {1 sentence}
+> **Question:** {just one}
+> **Team recommendation:** {preferred option + why}
 
-### Modelo de opções no AskUserQuestion
+Additional rules:
 
-Cada opção deve conter uma alternativa real de decisão, não apenas confirmação. Exemplo:
+- **Do not expose internal vocabulary** — the PO does not need to know about "spawn", "Orchestrator", "subagent", "mission"
+- **Speak like a PM or the team's secretary** — "the team has a few questions before continuing"
+- **Be concise** — minimum necessary context + direct question
+- **Maximum of 4 questions per interaction** — if there are more, prioritize the ones that block now
+
+### Text template before AskUserQuestion
+
+> The team has reached some questions that need your decision before continuing:
+
+### Options template in AskUserQuestion
+
+Each option must contain a real decision alternative, not just a confirmation. Example:
 
 ```
-Questão: "Como deve se comportar o sistema quando o usuário não tem permissão para essa ação?"
-Opções:
-- Retornar 403 com mensagem genérica (sem expor detalhes)
-- Retornar 403 com descrição do que está faltando
-- Redirecionar para tela de upgrade de plano
-- Outro (campo livre)
+Question: "How should the system behave when the user does not have permission for this action?"
+Options:
+- Return 403 with a generic message (without exposing details)
+- Return 403 with a description of what is missing
+- Redirect to the plan upgrade screen
+- Other (free field)
 ```
 
-Se a pergunta não tiver opções bem definidas, use formato aberto com "Outro" como escape.
+If the question does not have well-defined options, use an open format with "Other" as an escape.
 
 ---
 
-## Passo 3 — Processar a resposta do PO
+## Step 3 — Process the PO's answer
 
-1. Mapear cada resposta à pergunta de origem e ao agente que perguntou
-2. Formatar as respostas como `resolved_questions` para o próximo spawn:
+1. Map each answer to the originating question and to the agent that asked
+2. Format the answers as `resolved_questions` for the next spawn:
 
 ```
-DECISÕES DO PO:
-- [pergunta resumida]: [resposta do PO]
-- [pergunta resumida]: [resposta do PO]
+PO DECISIONS:
+- [summarized question]: [PO's answer]
+- [summarized question]: [PO's answer]
 ```
 
-3. Registrar a decisão no log da conversa e, se houver task_id, adicionar como comentário na task pelo tracker conectado (para rastreabilidade)
+3. Record the decision in the conversation log and, if there is a task_id, add it as a comment on the task through the connected tracker (for traceability)
 
 ---
 
-## Passo 4 — Continuar o ciclo
+## Step 4 — Continue the cycle
 
-Após receber as respostas do PO:
-1. Retornar ao `orchestrator/flow.md` e identificar em qual fase o ciclo estava
-2. Re-spawn do agente correto, agora com as respostas incluídas
-3. Se o PO respondeu com mudança de escopo ou cancelamento, comunicar ao usuário o que mudará
+After receiving the PO's answers:
+1. Return to `orchestrator/flow.md` and identify which phase the cycle was in
+2. Re-spawn the correct agent, now with the answers included
+3. If the PO answered with a scope change or cancellation, tell the user what will change
 
 ---
 
-## Escalada por limite de ciclos
+## Escalation by cycle limit
 
-Quando o Orquestrador escala ao PO por ter atingido o limite de ciclos (3x sem resolução):
+When the Orchestrator escalates to the PO for having reached the cycle limit (3x without resolution):
 
-Apresente ao usuário:
-- O problema recorrente (o que o Tech Lead ou QA continua apontando)
-- O que o Dev Sênior está fazendo em cada tentativa
-- As opções para desbloquear:
-  1. Mudar a abordagem técnica (Orquestrador instrui o Dev com nova direção)
-  2. Aceitar o estado atual com ressalvas documentadas (tech debt)
-  3. Reduzir o escopo (entregar um subset funcional agora)
-  4. Pausar e escalar para um humano do time real
+Present to the user:
+- The recurring problem (what the Tech Lead or QA keeps pointing out)
+- What the Senior Dev is doing in each attempt
+- The options to unblock:
+  1. Change the technical approach (Orchestrator instructs the Dev with new direction)
+  2. Accept the current state with documented caveats (tech debt)
+  3. Reduce the scope (deliver a functional subset now)
+  4. Pause and escalate to a human on the real team
 
-Nunca tome esta decisão sozinho — sempre traga ao PO.
+Never make this decision alone — always bring it to the PO.

@@ -123,7 +123,7 @@ Skills focadas em código: construir, revisar, depurar e operar sistemas.
 
 ## dev-squad
 
-**Arquivo:** `skills/engineering/dev-squad/en-US/SKILL.md`
+**Arquivo:** `skills/engineering/dev-squad/pt-BR/SKILL.md` (também disponível em `en-US`)
 
 **Descrição:** Orquestrador multi-agente de desenvolvimento: coordena Dev Sênior, Tech Lead, QA e PO proxy num ciclo estruturado (investigação técnica, plano, implementação, code review, testes, entrega). Usa task tracker conectado (MCP/CLI de Jira, ClickUp, Linear, GitHub Issues etc.), backlog Markdown local ou contexto inline; toda comunicação entre agentes passa pelo orquestrador e decisões de produto sobem ao usuário. Skills `dev-*` da stack são **recomendação** (fallback: melhores práticas atuais + pesquisa na internet). Assets em `agents/`, `orchestrator/`, `po-proxy/`, `task-management.md`, `qa-reports.md`, `clickup-hierarchy.md`.
 
