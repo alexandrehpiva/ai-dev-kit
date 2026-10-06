@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.17.0] — 2026-10-06
+
+### Changed
+
+- **Skill `productivity/write-a-skill` (pt-BR):** incorpora o processo de criação em etapas (nomear a dor → domínio → estrutura → redação → criar/registrar/instalar → checklist), convenções de nomenclatura (prefixo `personal-`, templates-semente `<tema>-<variante>.md`, `scripts/`), `license` e `argument-hint` no frontmatter, seção de abertura condicional, regras por critério comportamental (não por incidente), registro em `CHANGELOG.md` + versão no fluxo de skill oficial e registro opcional no índice de skills do projeto. Limite do `SKILL.md` sobe de ~100 para ~200 linhas (teto, não meta), também em `docs/conventions.md` e `AGENTS.md`. Novos assets: `craft.md` (princípios e técnicas de redação, tabela de progressive disclosure, composabilidade, dependências hard/soft, scripts, skills de setup), `security-and-privacy.md` (segredos, dados pessoais e contexto de cliente, generalização de casos reais, atribuição e licença de conteúdo de terceiros, varredura antes de publicar) e `skill-writing-patterns.md` (estudo detalhado, em paráfrase, da coleção mattpocock/skills). **Escopo da skill nova:** o fluxo de autorização por casos A/B dá lugar a uma pergunta obrigatória ao usuário entre **oficial**, **custom no AIDK** e **local**, explicando o contexto de cada opção (o que é publicado, onde fica versionado, como instala, quando escolher) e com recomendação para o caso — contrato em `SCOPE-QUESTION.md`; novo Passo 3C (skill custom flat em `skills/custom/`, sem registro público, instalada via `custom/<nome>`). A pergunta é pulada quando o escopo já veio explícito ou ao alterar skill existente; default sem resposta = local.
+
+---
+
 ## [0.16.0] — 2026-10-01
 
 ### Added

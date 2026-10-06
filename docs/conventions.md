@@ -55,7 +55,7 @@ description: <o que faz>. Usar quando <gatilhos concretos, incluindo frases lite
 ### Corpo
 
 - **Menor skill que funciona vence.** Uma skill imperativa de um parágrafo é válida.
-- `SKILL.md` abaixo de ~100 linhas. Quando cresce, vira um **router**: decide e roteia; assets executam.
+- `SKILL.md` abaixo de ~200 linhas (teto, não meta). Quando cresce, vira um **router**: decide e roteia; assets executam.
 - Empurre detalhe de domínio para assets. `SCREAMING-CASE.md` = formatos/contratos de saída; `lowercase.md` = guias de domínio.
 - Referências vão **um nível de profundidade** apenas.
 - Crie arquivos **de forma lazy** — apenas quando houver conteúdo real a escrever.

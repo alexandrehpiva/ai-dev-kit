@@ -215,7 +215,7 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 
 **Arquivo:** `skills/productivity/write-a-skill/pt-BR/SKILL.md`
 
-**Descrição:** Meta-skill: como escrever e manter skills no AI Dev Kit. Cobre anatomia (estrutura locale-aware com `pt-BR/SKILL.md` + `en-US/SKILL.md` e assets co-localizados), como redigir a `description`, técnicas de escrita e o **fluxo CRÍTICO de criação**: verificar autorização para escrever no ai-dev-kit, criar skill oficial (locale-aware no store) ou local (flat no projeto atual), e instalar imediatamente. Leia `docs/conventions.md` em conjunto.
+**Descrição:** Meta-skill: como escrever e manter skills no AI Dev Kit. Cobre processo de criação (nomear a dor, domínio, estrutura, redação, registro, checklist), anatomia (estrutura locale-aware com `pt-BR/SKILL.md` + `en-US/SKILL.md` e assets co-localizados), frontmatter (`description`, `disable-model-invocation`, `license`, `argument-hint`) e o **fluxo CRÍTICO de criação**: perguntar ao usuário o escopo — oficial (locale-aware no store, com registro e versionamento), custom no AIDK (flat em `skills/custom/`, sem publicação) ou local (flat no projeto atual) — explicando o contexto de cada opção, e instalar imediatamente. Assets: `SCOPE-QUESTION.md` (contrato da pergunta de escopo), `craft.md` (técnicas de redação, progressive disclosure, composabilidade, dependências hard/soft, scripts, skills de setup), `security-and-privacy.md` (segredos, dados pessoais, generalização, atribuição de terceiros, varredura antes de publicar) e `skill-writing-patterns.md` (estudo detalhado da coleção mattpocock/skills). Leia `docs/conventions.md` em conjunto.
 
 **Quando usar:** o usuário pedir para criar, estruturar, refatorar ou revisar uma skill; definir uma nova capacidade para um agente; mencionar "write a skill", "create a skill", "nova skill".
 
@@ -443,7 +443,7 @@ Agentes são papéis especializados com system prompt próprio que carregam um c
 - **Locale padrão do dev:** configurado via `ai-dev-kit config set-locale <locale>`. Default: `pt-BR`.
 - **Referências a projetos:** sempre por URL do GitHub (`org/<repo>`), nunca por caminho local.
 - **Commits:** Conventional Commits em inglês (`feat:`, `fix:`, `docs:`, `chore:`…).
-- **Skills pequenas:** `SKILL.md` sob ~100 linhas. Acima disso, o arquivo vira um router e o detalhe vai para assets.
+- **Skills pequenas:** `SKILL.md` sob ~200 linhas (teto, não meta). Acima disso, o arquivo vira um router e o detalhe vai para assets.
 - **Assets lazily:** criar arquivo de asset só quando houver conteúdo real a escrever.
 - **Registrar skills novas:** registrar no `AGENTS.md`, no `README.md` do bucket e no `README.md` raiz.
 
