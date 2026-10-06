@@ -105,9 +105,9 @@ Skills focadas em código: construir, revisar, depurar e operar sistemas.
 
 **Arquivo:** `skills/engineering/architecture-diagrams/pt-BR/SKILL.md`
 
-**Descrição:** Gera diagramas de arquitetura estilo docs oficiais de cloud (ícones reais, boxes, setas) para qualquer solução, via código (lib Python `diagrams` + Graphviz). Cobre disciplina para evitar os três defeitos mais comuns observados em produção real — ícone de marca errada, ícone invisível (placeholder sem glifo), texto vazando do box — e exige que toda seta desenhada corresponda a uma integração confirmada no código/IaC, não a uma suposição de "como normalmente funciona". Assets: `icon-selection.md` (ordem de preferência de ícone, nunca cair em placeholder vazio), `layout-and-labels.md` (labels curtos, detalhe no título do cluster, tuning de `nodesep`/`ranksep`), `setup-and-workflow.md` (venv isolado via uv, estrutura `docs/diagrams/`, fluxo de entrega), `verify-against-reality.md` (como confirmar cada conexão antes de desenhar).
+**Descrição:** Gera diagramas de arquitetura estilo docs oficiais de cloud em dois motores: `.drawio` editável com ícones `mxgraph.aws4` (lib stdlib `scripts/drawio_arch_lib.py` + exemplo executável) e lib `diagrams` + Graphviz. Exige que toda caixa e seta corresponda ao código/IaC e que o diagrama seja legível: contêineres de fronteira (nuvem, rede, externos), cartões com ícone, cor por categoria, setas numeradas por tema de fluxo (tracejado = assíncrono), legenda e notas no rodapé. Assets: `visual-patterns.md`, `drawio-engine.md`, `diagrams-engine.md`, `layout-and-labels.md`, `icon-selection.md`, `verify-against-reality.md`, contrato `EVIDENCE-TABLE-FORMAT.md` (tabela de evidências por seta).
 
-**Quando usar:** o usuário pedir "desenho de arquitetura", "diagrama estilo AWS docs", "diagrama com ícones e setas", "desenha a arquitetura desse projeto"; ou pedir correção de um diagrama já gerado (ícones sumidos, texto cortado, seta errada/faltando).
+**Quando usar:** o usuário pedir "desenho de arquitetura", "diagrama estilo AWS docs", "diagrama com ícones e setas", "desenha a arquitetura desse projeto"; ou pedir correção de um diagrama já gerado (ícones sumidos, texto cortado, seta errada/faltando, falta legenda ou ordem de fluxo).
 
 ---
 

@@ -1,14 +1,16 @@
 # layout-and-labels
 
+Guia do motor `diagrams` + Graphviz. No motor `.drawio` o layout é por coordenadas (ver `drawio-engine.md`); os princípios de label curto e detalhe em nota valem igualmente.
+
 ## Diagnóstico do modo de falha
 
-Labels descritivos demais direto no nó (ex. `"GitHub Actions (GitHub Environments: staging / production)"`, `"Lambda FastAPI+Mangum (container arm64)"`) estouram a largura do box do Graphviz, que dimensiona o node pelo ícone, não pelo texto — o texto simplesmente vaza para fora da caixa visualmente. Isso só aparece depois de renderizar; o código não acusa erro nenhum.
+Labels descritivos demais direto no nó (ex. `"Serviço de CI (ambientes: staging / production)"`, `"Função (framework, runtime, arquitetura, região)"`) estouram a largura do box do Graphviz, que dimensiona o node pelo ícone, não pelo texto — o texto simplesmente vaza para fora da caixa visualmente. Isso só aparece depois de renderizar; o código não acusa erro nenhum.
 
 ## Regras de label
 
-- **Nó**: 1 a 3 palavras-chave, quebradas em até 2-3 linhas curtas com `\n`. Ex.: `"Lambda\nFastAPI+Mangum\n(arm64)"`, não a frase completa.
-- **Detalhe/contexto**: vai no **título do `Cluster`** que agrupa o nó (tem mais largura disponível que o node) — ex. `with Cluster("Backend — API Gateway HTTP + Lambda arm64"):` em vez de inflar o label do node individual.
-- **Explicação de uma conexão específica**: vai na `Edge(label=...)`, também curta e quebrada em linhas — ex. `Edge(label="chamadas API\n(execute-api direto,\nsem CDN/domínio custom)")`.
+- **Nó**: 1 a 3 palavras-chave, quebradas em até 2-3 linhas curtas com `\n`. Ex.: `"Função\nde negócio"`, não a frase completa.
+- **Detalhe/contexto**: vai no **título do `Cluster`** que agrupa o nó (tem mais largura disponível que o node) — ex. `with Cluster("Backend — API + funções"):` em vez de inflar o label do node individual.
+- **Explicação de uma conexão específica**: vai na `Edge(label=...)`, também curta e quebrada em linhas — ex. `Edge(label="1. chamada API\n(direto, sem CDN)")`.
 
 ## Tuning de espaçamento
 
@@ -38,6 +40,6 @@ Depois de gerar, **leia a imagem** (`Read` no PNG) e confira, no zoom natural da
 
 Se qualquer um falhar: encurte o label ofensor, mova detalhe para o cluster/edge, ou aumente `nodesep`/`ranksep` — regenere e releia. Não entregue no primeiro render sem essa checagem.
 
-## Nota sobre inspecionar regiões específicas da imagem
+## Inspecionar uma região da imagem
 
-Ferramentas de browser/preview (`zoom`, `screenshot`) só operam sobre uma aba viva do navegador — **não conseguem abrir um arquivo PNG local**. Para inspecionar uma região específica de uma imagem já gerada, use o próprio `Read` no arquivo completo (geralmente suficiente) ou, se precisar de verdade de um crop, gere o recorte via `PIL`/`ImageMagick` antes de ler — não tente `preview`/`zoom` num path de arquivo.
+Para conferir um trecho pequeno, leia o arquivo completo; se precisar de um recorte, gere-o com `PIL`/`ImageMagick` antes de ler. Ferramentas de navegador só operam sobre página aberta, não sobre arquivo local.

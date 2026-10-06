@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.20.0] — 2026-10-06
+
+### Changed
+
+- **Skill `engineering/architecture-diagrams` (pt-BR):** revisão completa. Novo motor `.drawio` com ícones oficiais `mxgraph.aws4` (`scripts/drawio_arch_lib.py`, stdlib, mais `scripts/example_architecture.py` genérico e renderizado para validação), ao lado do motor `diagrams` + Graphviz, com tabela de escolha. Novo `visual-patterns.md` (fronteiras aninhadas, cartão de serviço, cor por categoria, setas numeradas por tema de fluxo, tracejado = assíncrono, legenda, notas no rodapé, anti-padrões), `drawio-engine.md`, `diagrams-engine.md` (substitui `setup-and-workflow.md`) e o contrato `EVIDENCE-TABLE-FORMAT.md` (tabela de evidências por seta). O `SKILL.md` ganha o modo de falha "diagrama ilegível", portão com fronteiras/ordem/legenda e a regra de seta não confirmada. Textos antigos generalizados e referências de harness removidas.
+
+---
+
 ## [0.19.0] — 2026-10-06
 
 ### Changed
