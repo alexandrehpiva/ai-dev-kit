@@ -2,6 +2,7 @@ import path from 'node:path';
 
 import { buildCache, readCache, writeCache, writeSnapshot } from '../../core/cache.js';
 import { getLocale, readConfig, readProjects, writeProjects } from '../../core/config.js';
+import { buildDependencyCascade, expandWithDependencies } from '../../core/dependencies.js';
 import { runInitWizardIfNeeded } from '../../core/init.js';
 import { getCurrentCommit, listAvailableSkills } from '../../core/store.js';
 import { checkSymlinkStatus, createSymlink, getTargetDir } from '../../core/symlinks.js';
@@ -159,6 +160,15 @@ export async function installSkills(options: InstallOptions): Promise<void> {
         return [matches[0]];
       });
     }
+
+    const installedNamesOnTarget = installedNamesFor(projectPath, target);
+    const expanded = expandWithDependencies(
+      skillsToInstall,
+      allSkillsForDisplay,
+      installedNamesOnTarget,
+    );
+    reportDependencies(expanded);
+    skillsToInstall = expanded.skills;
   } else {
     // Interactive: no suppress (no ℹ), one row per name, hide already installed on target.
     const allSkillsForDisplay = listAvailableSkills(storePath, {
@@ -192,6 +202,7 @@ export async function installSkills(options: InstallOptions): Promise<void> {
       message: 'Selecione as skills para instalar:',
       options: toMultiselectOptions(entries, installedByName),
       required: true,
+      cascade: buildDependencyCascade(entries),
     });
     if (isCancel(selected)) {
       cancel('Cancelado.');
@@ -212,6 +223,11 @@ export async function installSkills(options: InstallOptions): Promise<void> {
       }
       skillsToInstall.push(resolved);
     }
+
+    // Safety net: dependencies not offered in the list (other buckets, custom variants).
+    const expanded = expandWithDependencies(skillsToInstall, allSkillsForDisplay, installedNames);
+    reportDependencies(expanded);
+    skillsToInstall = expanded.skills;
   }
 
   // Install
@@ -254,6 +270,24 @@ export async function installSkills(options: InstallOptions): Promise<void> {
   s.stop(`${installedSkills.length} skill(s) instalada(s) em ${targetDir}`);
 
   outro('Pronto! Use "ai-dev-kit update" para manter as skills atualizadas.');
+}
+
+function installedNamesFor(projectPath: string, target: Target): Set<string> {
+  const project = readProjects().projects.find((p) => p.path === projectPath);
+  return collectInstalledNamesForTarget(
+    project?.skills.filter((sk) => sk.target === target) ?? [],
+    target,
+    (sk) => checkSymlinkStatus(sk).status,
+  );
+}
+
+function reportDependencies(expanded: ReturnType<typeof expandWithDependencies>): void {
+  for (const dep of expanded.added) {
+    console.log(`+ ${dep.bucket}/${dep.name} (dependência)`);
+  }
+  for (const { from, ref } of expanded.missing) {
+    console.warn(`⚠  ${from.bucket}/${from.name} depende de "${ref}", que não existe no store.`);
+  }
 }
 
 async function resolveInteractiveEntry(

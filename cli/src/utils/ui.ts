@@ -134,6 +134,7 @@ export async function multiselect<T>(opts: {
   message: string;
   options: MultiselectOption<T>[];
   required?: boolean;
+  cascade?: MultiSelectPromptProps<T>['cascade'];
 }): Promise<T[] | typeof CANCEL> {
   if (!isTTY) {
     throw new Error(
@@ -144,6 +145,7 @@ export async function multiselect<T>(opts: {
     message: opts.message,
     options: opts.options,
     required: opts.required,
+    cascade: opts.cascade,
     onDone: (value) => {
       void value;
     },

@@ -11,6 +11,7 @@ import {
 } from '../core/cache.js';
 import { updateCliFromStore } from '../core/cli-self-update.js';
 import { getLocale, readConfig, readProjects, writeProjects } from '../core/config.js';
+import { findMissingDependencies } from '../core/dependencies.js';
 import { runInitWizardIfNeeded } from '../core/init.js';
 import { SUPPORTED_LOCALES, gitPull, isGitRepo, listAvailableSkills } from '../core/store.js';
 import {
@@ -254,7 +255,20 @@ export default async function update(options: UpdateOptions = {}): Promise<void>
     }
   }
 
-  // 7. Persist the new baseline (registry, hash cache and file snapshot)
+  // 7. Install dependencies missing from tracked projects (transitive)
+  for (const project of registry.projects) {
+    const missing = findMissingDependencies(project.skills, availableSkills);
+    for (const dep of missing) {
+      const targetDir = getTargetDir(project.path, dep.target, dep.targetPath);
+      const installed = createSymlink(dep.skill, targetDir, dep.target, dep.targetPath, 'default');
+      project.skills.push(installed);
+      log(
+        `  + ${dep.skill.bucket}/${dep.skill.name} (dependência de ${dep.requiredBy}) em ${project.path}`,
+      );
+    }
+  }
+
+  // 8. Persist the new baseline (registry, hash cache and file snapshot)
   writeProjects(registry);
   writeCache(newCache);
   writeSnapshot(storePath);

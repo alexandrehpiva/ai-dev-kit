@@ -1,5 +1,7 @@
-import { readConfig, readProjects, writeProjects } from '../../core/config.js';
+import { getLocale, readConfig, readProjects, writeProjects } from '../../core/config.js';
+import { findInstalledDependents } from '../../core/dependencies.js';
 import { runInitWizardIfNeeded } from '../../core/init.js';
+import { listAvailableSkills } from '../../core/store.js';
 import { removeSymlink } from '../../core/symlinks.js';
 import type { InstalledSkill } from '../../types.js';
 import { cancel, intro, isCancel, multiselect, outro, spinner } from '../../utils/ui.js';
@@ -46,7 +48,11 @@ export async function uninstallSkills(options: UninstallSkillsOptions = {}): Pro
 
   intro('ai-dev-kit skills uninstall');
 
-  readConfig(); // ensure config exists
+  const { storePath } = readConfig();
+  const available = listAvailableSkills(storePath, {
+    suppressCustomDuplicates: false,
+    locale: getLocale(),
+  });
 
   const projectPath = process.cwd();
   const registry = readProjects();
@@ -104,6 +110,14 @@ export async function uninstallSkills(options: UninstallSkillsOptions = {}): Pro
       message: 'Selecione as skills para remover:',
       options: buildUninstallMultiselectOptions(project.skills),
       required: true,
+      cascade: {
+        onSelect: (value) => {
+          const root = project.skills.find((sk) => sk.symlinkPath === value);
+          return root
+            ? findInstalledDependents([root], project.skills, available).map((sk) => sk.symlinkPath)
+            : [];
+        },
+      },
     });
 
     if (isCancel(selected)) {
@@ -115,6 +129,12 @@ export async function uninstallSkills(options: UninstallSkillsOptions = {}): Pro
     const selectedPaths = new Set(resolveUninstallSelection(selected as string[], allPaths));
     toRemove = project.skills.filter((sk) => selectedPaths.has(sk.symlinkPath));
   }
+
+  const dependents = findInstalledDependents(toRemove, project.skills, available);
+  for (const dep of dependents) {
+    console.log(`- ${dep.bucket}/${dep.name} (depende de uma skill removida)`);
+  }
+  toRemove = [...toRemove, ...dependents];
 
   const s = spinner();
   s.start('Removendo symlinks...');

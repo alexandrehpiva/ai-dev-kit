@@ -9,6 +9,16 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.23.0] — 2026-10-06
+
+### Added
+
+- CLI: campo `dependencies:` no frontmatter das skills. `skills install` marca/instala dependências transitivas (multiselect e flags) e `skills uninstall` remove também os dependentes instalados; ciclos tolerados e referências inexistentes avisadas. Testes em `core/dependencies.test.ts`.
+- CLI: `update` instala, em cascata, as dependências que faltam das skills já instaladas em cada projeto rastreado (por target).
+- `hallucination-guard` declara `productivity/context-compaction` como dependência; `write-a-skill` documenta o campo.
+
+---
+
 ## [0.22.0] — 2026-10-06
 
 ### Added

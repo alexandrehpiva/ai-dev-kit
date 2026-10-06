@@ -20,6 +20,14 @@ export type MultiSelectPromptProps<T> = {
   message: string;
   options: MultiSelectItem<T>[];
   required?: boolean;
+  /**
+   * Extra values to switch together with a toggled one (e.g. transitive
+   * dependencies on select, dependents on deselect). Must be transitive.
+   */
+  cascade?: {
+    onSelect?: (value: T) => T[];
+    onDeselect?: (value: T) => T[];
+  };
   onDone: (value: T[] | 'cancel') => void;
 };
 
@@ -31,6 +39,7 @@ export function MultiSelectPrompt<T>({
   message,
   options,
   required = false,
+  cascade,
   onDone,
 }: MultiSelectPromptProps<T>): React.ReactElement {
   const selectable = useMemo(() => focusableIndexes(options), [options]);
@@ -56,8 +65,18 @@ export function MultiSelectPrompt<T>({
     if (index < 0 || options[index]?.separator) return;
     setSelected((prev) => {
       const next = new Set(prev);
-      if (next.has(index)) next.delete(index);
-      else next.add(index);
+      const turningOn = !next.has(index);
+      const value = options[index]!.value;
+      const linked = (turningOn ? cascade?.onSelect : cascade?.onDeselect)?.(value) ?? [];
+      const indexes = [index];
+      for (const v of linked) {
+        const i = options.findIndex((o) => !o.separator && Object.is(o.value, v));
+        if (i >= 0) indexes.push(i);
+      }
+      for (const i of indexes) {
+        if (turningOn) next.add(i);
+        else next.delete(i);
+      }
       return next;
     });
     setError(null);

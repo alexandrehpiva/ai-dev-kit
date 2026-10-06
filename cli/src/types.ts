@@ -44,6 +44,8 @@ export interface SkillInfo {
   /** Absolute path to the skill folder in the store (locale subfolder when locale-aware) */
   storePath: string;
   description: string;
+  /** Hard dependencies declared in the SKILL.md frontmatter (`name` or `bucket/name`). */
+  dependencies?: string[];
   /** Set when the user's locale is unavailable and a fallback locale was used, e.g. "pt-BR only" */
   localeHint?: string;
   /** The resolved locale for this skill entry, e.g. "pt-BR" or "en-US". Absent for flat skills. */

@@ -12,6 +12,8 @@ description: >-
   memória, e quando o usuário disser "você está alucinando", "não confio
   nisso", "confere o que você escreveu", "revalida isso", "isso está certo
   mesmo?", "de onde você tirou isso?" ou "/hallucination-guard".
+dependencies:
+  - productivity/context-compaction
 ---
 
 # hallucination-guard — verificar antes de virar verdade

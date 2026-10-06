@@ -104,6 +104,14 @@ Without arguments, shows an interactive select of installed skills and locale op
 
 ---
 
+### Dependências entre skills
+
+O frontmatter de uma `SKILL.md` pode declarar `dependencies:` (lista de `nome` ou `bucket/nome`, só dependências hard). O CLI resolve o grafo de forma transitiva:
+
+- **`skills install`** — ao marcar uma skill, as dependências (e as dependências delas) são marcadas junto no multiselect; com `--skills`, `--bucket` ou `--all` são adicionadas e listadas (`+ bucket/nome (dependência)`). Dependências já instaladas no target são ignoradas; referência inexistente gera aviso.
+- **`update`** — para cada projeto rastreado, instala (por target) as dependências transitivas que faltam das skills já instaladas.
+- **`skills uninstall`** — ao marcar uma skill, as instaladas que dependem dela (direta ou indiretamente, no mesmo target) são marcadas/removidas junto.
+
 ### `ai-dev-kit skills uninstall`
 
 Removes skill symlinks from the current project.

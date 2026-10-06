@@ -5,6 +5,8 @@ import { simpleGit } from 'simple-git';
 
 import type { SkillInfo } from '../types.js';
 
+import { parseDependencies } from './dependencies.js';
+
 export const SUPPORTED_LOCALES = ['pt-BR', 'en-US'] as const;
 export type Locale = (typeof SUPPORTED_LOCALES)[number];
 
@@ -47,6 +49,7 @@ export function listAvailableSkills(
             bucket,
             storePath: resolvedPath,
             description,
+            dependencies: extractDependencies(preferredPath),
             resolvedLocale: locale,
           });
         } else {
@@ -62,6 +65,7 @@ export function listAvailableSkills(
             bucket,
             storePath: resolvedPath,
             description,
+            dependencies: extractDependencies(path.join(resolvedPath, 'SKILL.md')),
             resolvedLocale: fallbackLocale,
             localeHint: `${fallbackLocale} only`,
           });
@@ -71,7 +75,13 @@ export function listAvailableSkills(
         const skillMdPath = path.join(skillPath, 'SKILL.md');
         if (!fs.existsSync(skillMdPath)) continue;
         const description = extractDescription(skillMdPath);
-        skills.push({ name: skillName, bucket, storePath: skillPath, description });
+        skills.push({
+          name: skillName,
+          bucket,
+          storePath: skillPath,
+          description,
+          dependencies: extractDependencies(skillMdPath),
+        });
       }
     }
   }
@@ -90,6 +100,11 @@ export function listAvailableSkills(
     }
     return true;
   });
+}
+
+function extractDependencies(skillMdPath: string): string[] | undefined {
+  const deps = parseDependencies(fs.readFileSync(skillMdPath, 'utf-8'));
+  return deps.length ? deps : undefined;
 }
 
 function extractDescription(skillMdPath: string): string {

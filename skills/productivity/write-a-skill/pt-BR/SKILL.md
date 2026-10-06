@@ -95,6 +95,17 @@ Ela é exibida junto com as descrições de todas as outras skills e decide se e
 
 A flag impede o modelo de auto-invocar a skill por inferência; ela só roda quando nomeada. Use apenas para skills que são um comando de voz do usuário (`zoom-out`, `grill-me`) ou uma operação perigosa/de setup/irreversível que nunca deve disparar automaticamente. Caso contrário, omita — a `description` bem escrita é o mecanismo de invocação, e a flag esconde a skill justamente quando o agente deveria reconhecê-la.
 
+### `dependencies` (opcional)
+
+Lista de skills **hard** (sem elas a saída fica errada — ver [`craft.md`](craft.md)), como `name` ou `bucket/name`:
+
+```yaml
+dependencies:
+  - productivity/context-compaction
+```
+
+A CLI do ai-dev-kit lê o campo: ao instalar a skill marca/instala junto as dependências (transitivas, sem laço infinito em ciclos) e, ao remover uma skill, remove também as instaladas que dependem dela. Dependência **soft** fica só em prosa, fora do campo.
+
 ### `license` e `argument-hint` (opcionais)
 
 - `license:` quando houver conteúdo de terceiros — dizendo qual asset vem de onde (ver [`security-and-privacy.md`](security-and-privacy.md)).
