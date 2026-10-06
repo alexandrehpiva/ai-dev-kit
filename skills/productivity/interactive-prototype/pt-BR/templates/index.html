@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>@@NAME@@ (protótipo)</title>
+<!-- A ordem dos <link>/<script> abaixo é a fonte de verdade da ordem de carregamento: o build.py
+     segue exatamente esta lista. Nenhum type="module" (ver split-into-files.md da skill). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- PLACEHOLDER de fonte: trocar na etapa de direção visual (e em tokens.css / design-system.md). -->
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles/tokens.css">
+<link rel="stylesheet" href="styles/base.css">
+<link rel="stylesheet" href="styles/components.css">
+<link rel="stylesheet" href="styles/layout.css">
+<link rel="stylesheet" href="styles/responsive.css">
+</head>
+<body>
+
+<header class="app-header">
+  <div class="inner">
+    <span class="brand">@@NAME@@</span>
+  </div>
+  <div class="stepper-wrap" id="stepperWrap"></div>
+</header>
+
+<main class="app-main">
+  <div class="form-card" id="screenRoot"></div>
+  <nav class="footer-nav" id="footerNav"></nav>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- ⚠️  PROTÓTIPO — Badge de versão clicável (prototype-only).
+     Este elemento e sua classe CSS (.prototype-version-badge) são exclusivos do protótipo e NÃO
+     migram para o produto. Mostra a última versão REALMENTE commitada — nunca um número para
+     trabalho em andamento (ver versioning-and-changelog.md da skill). Só o texto interno muda
+     a cada bump de versão. -->
+<button class="prototype-version-badge" id="prototype-version-badge" onclick="openChangelog()" aria-label="Ver changelog do protótipo">v0.0.0 · protótipo</button>
+
+<!-- ⚠️  PROTÓTIPO — Modal de changelog (prototype-only). Conteúdo renderizado por
+     js/components/changelog-modal.js a partir do array CHANGELOG. Não migrar para o produto. -->
+<div class="changelog-modal-overlay" id="changelogOverlay" onclick="closeChangelog(event)">
+  <div class="changelog-modal" role="dialog" aria-modal="true" aria-labelledby="changelogTitle">
+    <div class="changelog-modal-head">
+      <h2 id="changelogTitle">Histórico de versões</h2>
+      <button class="changelog-close" onclick="closeChangelog()" aria-label="Fechar">×</button>
+    </div>
+    <div class="changelog-modal-body" id="changelogBody"></div>
+  </div>
+</div>
+
+<!-- Botão "Demo" (prototype-only): preenche a tela atual com dados fictícios — js/components/demo-button.js -->
+<button class="demo-btn" id="demoBtn" onclick="runDemoFill()" hidden>Demo</button>
+
+<script src="js/state.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/icons.js"></script>
+<script src="js/components/stepper.js"></script>
+<script src="js/components/demo-button.js"></script>
+<script src="js/components/changelog-modal.js"></script>
+<script src="js/screens/shared/welcome.js"></script>
+<script src="js/screens/shared/exemplo-formulario.js"></script>
+<script src="js/screens/shared/resultado.js"></script>
+<script src="js/screens/index.js"></script>
+<script src="js/router.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

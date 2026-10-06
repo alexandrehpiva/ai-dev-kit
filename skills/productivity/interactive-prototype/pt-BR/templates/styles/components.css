@@ -1,0 +1,73 @@
+/* Componentes reutilizáveis — botão, campo, card, stepper, toast, animações e elementos
+   exclusivos do protótipo (badge, changelog, demo). Cada bloco tem um comentário com o nome do
+   componente — o mesmo nome usado em design-system.md. Prefixo de classe do projeto: @@PREFIX@@- */
+
+/* ---- Botão primário (.@@PREFIX@@-btn-primary) ---- */
+.@@PREFIX@@-btn-primary{background:var(--color-primary);color:#fff;border:0;border-radius:var(--radius);padding:0.8rem 1.5rem;font-weight:700;transition:background-color 200ms var(--ease),transform 200ms var(--ease),box-shadow 200ms var(--ease);}
+.@@PREFIX@@-btn-primary:hover{background:var(--color-primary-dark);transform:translateY(-1.5px);box-shadow:0 6px 20px oklch(0.35 0.09 250 / 0.40);}
+.@@PREFIX@@-btn-primary:active{transform:scale(0.97);}
+.@@PREFIX@@-btn-primary:disabled{background:oklch(0.75 0.01 250);box-shadow:none;transform:none;cursor:not-allowed;}
+
+/* ---- Botão ghost (.@@PREFIX@@-btn-ghost) ---- */
+.@@PREFIX@@-btn-ghost{background:transparent;color:var(--color-primary);border:0;border-radius:var(--radius);padding:0.8rem 1.2rem;font-weight:600;transition:background-color 200ms var(--ease);}
+.@@PREFIX@@-btn-ghost:hover{background:var(--color-primary-light);}
+
+/* ---- Campo de formulário (.field + .@@PREFIX@@-input + .field-error) ---- */
+.field{display:flex;flex-direction:column;gap:var(--space-2);margin-bottom:var(--space-4);}
+.field label{font-weight:700;font-size:var(--fs-small);}
+.@@PREFIX@@-input{border:1.5px solid var(--border);border-radius:var(--radius);background:var(--card);padding:0.75rem 0.9rem;transition:border-color 200ms var(--ease),box-shadow 200ms var(--ease);}
+.@@PREFIX@@-input:focus{border-color:var(--color-primary);box-shadow:0 0 0 3px oklch(0.45 0.10 250 / 0.12);outline:none;}
+.@@PREFIX@@-input.has-error{border-color:var(--destructive);box-shadow:0 0 0 3px oklch(0.577 0.245 27 / 0.12);}
+.field-error{color:var(--destructive);font-size:var(--fs-small);font-weight:600;}
+
+/* ---- Card (.@@PREFIX@@-card) ---- */
+.@@PREFIX@@-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-card);padding:var(--space-6);box-shadow:var(--shadow-card);}
+
+/* ---- Texto de tela (.eyebrow / .screen-title / .screen-subtitle) ---- */
+.eyebrow{font-size:var(--fs-eyebrow);font-weight:700;color:var(--color-accent-dark);margin-bottom:var(--space-2);}
+.screen-title{font-size:var(--fs-title);margin-bottom:var(--space-2);}
+.screen-subtitle{font-size:var(--fs-small);color:var(--muted-foreground);margin-bottom:var(--space-6);}
+
+/* ---- Stepper (.stepper) ---- */
+.stepper{display:flex;gap:var(--space-2);list-style:none;}
+.stepper li{flex:1;display:flex;flex-direction:column;gap:var(--space-1);font-size:var(--fs-eyebrow);font-weight:700;color:var(--muted-foreground);}
+.stepper li .bar{height:4px;border-radius:var(--radius-pill);background:var(--border);}
+.stepper li.done .bar,.stepper li.current .bar{background:var(--color-primary);}
+.stepper li.current{color:var(--foreground);}
+
+/* ---- Toast (.toast) ---- */
+.toast{position:fixed;left:50%;bottom:1.5rem;transform:translate(-50%,20px);background:var(--foreground);color:#fff;border-radius:var(--radius);padding:0.7rem 1.1rem;font-weight:600;opacity:0;pointer-events:none;transition:opacity 200ms var(--ease),transform 200ms var(--ease);z-index:60;}
+.toast.show{opacity:1;transform:translate(-50%,0);}
+
+/* ---- Animações (keyframes disponíveis) ---- */
+@keyframes fadeInUp{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:none;}}
+@keyframes slideInRight{from{opacity:0;transform:translateX(24px);}to{opacity:1;transform:none;}}
+@keyframes slideInLeft{from{opacity:0;transform:translateX(-24px);}to{opacity:1;transform:none;}}
+.screen-enter-forward{animation:slideInRight 320ms var(--ease);}
+.screen-enter-back{animation:slideInLeft 320ms var(--ease);}
+
+/* =========================================================================
+   ⚠️  PROTÓTIPO — elementos exclusivos do protótipo. NÃO migrar para o produto.
+   ========================================================================= */
+
+/* Badge de versão — atualizar o texto somente em index.html (#prototype-version-badge). */
+.prototype-version-badge{position:fixed;bottom:0.45rem;right:0.7rem;z-index:30;font-size:0.6rem;font-weight:600;letter-spacing:0.03em;color:rgba(0,0,0,0.28);background:rgba(255,255,255,0.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid rgba(0,0,0,0.07);border-radius:var(--radius-pill);padding:0.18rem 0.55rem;cursor:pointer;transition:background 140ms ease,color 140ms ease;}
+.prototype-version-badge:hover{background:rgba(255,255,255,0.95);color:rgba(0,0,0,0.5);}
+
+/* Modal de changelog — max-height 60vh com rolagem interna; fecha por backdrop, × ou Escape. */
+.changelog-modal-overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;padding:var(--space-4);}
+.changelog-modal-overlay.open{display:flex;}
+.changelog-modal{background:var(--card);border-radius:var(--radius-card);width:100%;max-width:32rem;box-shadow:var(--shadow-card);}
+.changelog-modal-head{display:flex;align-items:center;justify-content:space-between;padding:var(--space-4) var(--space-6);border-bottom:1px solid var(--border);}
+.changelog-modal-head h2{font-size:1.1rem;}
+.changelog-close{background:none;border:0;font-size:1.6rem;line-height:1;color:var(--muted-foreground);}
+.changelog-modal-body{max-height:60vh;overflow-y:auto;padding:var(--space-4) var(--space-6) var(--space-6);}
+.changelog-entry{margin-bottom:var(--space-4);}
+.changelog-entry h3{font-size:0.95rem;margin-bottom:var(--space-1);}
+.changelog-entry .date{font-weight:500;color:var(--muted-foreground);font-size:0.8rem;margin-left:var(--space-2);}
+.changelog-entry ul{padding-left:1.1rem;font-size:var(--fs-small);}
+.changelog-entry li{margin-bottom:var(--space-1);}
+
+/* Botão Demo flutuante — preenche a tela atual com dados fictícios (js/components/demo-button.js). */
+.demo-btn{position:fixed;right:0.7rem;bottom:2.2rem;z-index:30;background:var(--color-accent);color:#fff;border:0;border-radius:var(--radius-pill);padding:0.5rem 0.9rem;font-weight:700;font-size:0.8rem;box-shadow:0 3px 10px rgba(0,0,0,0.18);}
+.demo-btn:hover{background:var(--color-accent-dark);}

@@ -55,7 +55,9 @@ Jornada removida nunca é apagada — mover o arquivo para `_archived/` preserva
 
 ### Template por jornada (`<journey-slug>.md`)
 
-O slug do arquivo segue o código da jornada, sem o prefixo de produto/área: `<persona>-j<nn>-<tipo>.md` (ex.: `cp-j00-fp.md`, `pf-j01-fp.md`, `pj-j02-fa01.md`). Jornadas de uma persona específica podem viver numa subpasta com o código da persona em minúsculas (`pf/`, `pj/`); jornadas na raiz pertencem à persona compartilhada.
+O nome do arquivo segue o código da jornada em minúsculas, mais uma descrição curta separada por **hífen duplo**: `<prod>-<area>-<persona>-j<nn>-<tipo>--<descricao-curta>.md` (ex.: `acme-onb-pf-j01-fp--cadastro-basico.md`, `acme-onb-cp-j02-fa01--reenvio-documento.md`). O H1 do arquivo traz o código completo em maiúsculas (`# [ACME-ONB-PF-J01-FP] Título`) — é o H1, não o nome do arquivo, que o gerador de PDF lê. Jornadas de uma persona específica podem viver numa subpasta com o código da persona em minúsculas (`pf/`, `pj/`); jornadas na raiz pertencem à persona compartilhada. Se o repositório já tem uma convenção estabelecida, **siga a do repositório**.
+
+**Estrutura de `docs/user-journeys/` num projeto novo** (o scaffold gera com `--journeys`, só com confirmação do time): `README.md` (convenção de nome, tabela de jornadas por persona, seção "Arquivadas", tabela de-para tela do protótipo → jornada), `personas.json` (lista ordenada `code/label/tag/folder/legend`, entrada do `journeys-to-pdf.py --groups`), `_archived/` quando houver jornada arquivada.
 
 ```markdown
 # [<PROD>-<ÁREA>-<PERSONA>-J00-FP] <Nome da jornada>

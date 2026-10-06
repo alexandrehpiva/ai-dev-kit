@@ -1,0 +1,53 @@
+/* Design tokens — cor, tipografia, espaçamento, raio, sombra, easing.
+   FONTE DE VERDADE DO CÓDIGO; o documento correspondente é design-system.md (manter os dois
+   sincronizados na mesma rodada: token novo/alterado aqui ⇒ linha nova/alterada lá).
+
+   ⚠️ PLACEHOLDER: a paleta e a família tipográfica abaixo são neutras de propósito, só para o
+   esqueleto renderizar. Substituí-las na etapa de direção visual (aesthetic-direction.md) ou
+   pelos valores extraídos da referência real (design-system.md da skill). */
+
+:root{
+  /* Cor — marca */
+  --color-primary: oklch(0.45 0.10 250);
+  --color-primary-dark: oklch(0.35 0.09 250);
+  --color-primary-light: oklch(0.95 0.025 250);
+  --color-accent: oklch(0.70 0.15 55);
+  --color-accent-dark: oklch(0.60 0.14 55);
+
+  /* Cor — semânticas */
+  --background: oklch(0.975 0.003 250);
+  --foreground: oklch(0.18 0.02 250);
+  --card: oklch(1 0 0);
+  --border: oklch(0.88 0.005 250);
+  --muted: oklch(0.96 0.002 250);
+  --muted-foreground: oklch(0.45 0.01 250);
+  --destructive: oklch(0.577 0.245 27);
+  --success: oklch(0.55 0.15 145);
+
+  /* Tipografia */
+  --font-family: 'Nunito', system-ui, sans-serif;
+  --fs-eyebrow: 0.8rem;
+  --fs-title: 1.32rem;
+  --fs-body: 1rem;
+  --fs-small: 0.9rem;
+
+  /* Espaçamento (escala) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+
+  /* Raio */
+  --radius: 0.75rem;
+  --radius-card: 1.5rem;
+  --radius-pill: 999px;
+
+  /* Sombra */
+  --shadow-card: 0 1px 3px rgba(16,24,60,0.04), 0 10px 30px oklch(0.45 0.10 250 / 0.08);
+  --shadow-header: 0 1px 12px oklch(0.45 0.10 250 / 0.07);
+
+  /* Easing padrão de transição (não usar `ease`/`linear` genérico) */
+  --ease: cubic-bezier(0.23, 1, 0.32, 1);
+}

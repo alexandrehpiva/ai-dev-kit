@@ -8,7 +8,7 @@ O ciclo: `chokidar-cli` assiste `js/`, `styles/` e `index.html`; a cada mudança
 
 ## Iniciar (Claude Code)
 
-Registrar uma entrada no `.claude/launch.json` do repositório onde o protótipo vive (ver "Adicionar ao `.claude/launch.json`" abaixo) e usar `preview_start` com o nome dessa entrada:
+O scaffold já gera `.claude/launch.json` com a entrada `<slug>-dev` e a **porta única do projeto** (a mesma que o README cita). Em protótipo sem essa entrada, registre uma (ver "Adicionar ao `.claude/launch.json`" abaixo) e usar `preview_start` com o nome dessa entrada:
 
 ```
 preview_start({ name: "<nome-do-prototipo>" })
@@ -49,3 +49,5 @@ Substitua `8850` pela porta desejada. O `--yes` no `npx` instala os pacotes na p
 | Reload não dispara | Arquivo salvo fora de `js/`/`styles/`/`index.html` | Verificar que o arquivo está na árvore assistida |
 | Build falhou | Erro de sintaxe no JS/CSS | Corrigir o arquivo e salvar novamente |
 | `npx` lento na 1ª vez | Download inicial dos pacotes | Normal; nas próximas execuções está em cache do npx |
+
+**Porta única:** `.claude/launch.json` é a fonte de verdade da porta; README e comandos manuais citam o mesmo número. Mudou a porta num lugar, mude nos dois.

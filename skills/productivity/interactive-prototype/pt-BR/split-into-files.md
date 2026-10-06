@@ -34,30 +34,30 @@ Dado que este fluxo existe justamente para permitir recompilar de volta a um art
 
 ## Árvore de referência
 
+O scaffold ([`scaffold-new-prototype.md`](scaffold-new-prototype.md)) gera exatamente esta árvore:
+
 ```
-index.html                # shell: <head>, markup estático, <link> e <script src> na ordem de dependência — sem lógica de tela
+index.html                # shell + manifesto da ordem de carga (<link> e <script src>) — sem lógica de tela
+build.py                  # recompila tudo em dist/index.html (só stdlib) — templates/build.py
+README.md                 # o que é, como rodar, estrutura por níveis de pasta, convenções
+prototype.config.json     # groupMode / sharedBranch / remote
+.gitignore                # dist/, node_modules/, .DS_Store, logs
+.claude/launch.json       # servidor de dev com hot reload (porta única)
 styles/
-  tokens.css               # design tokens (cor, tipografia, espaçamento, raio, sombra) — espelha o design system do projeto
-  base.css                 # reset, tipografia base, container
-  components.css           # componentes genéricos reusados (botão, input, card, badge)
-  layout.css               # header/footer/estrutura de navegação
-  responsive.css           # todo @media num lugar só — facilita auditar responsividade
+  tokens.css · base.css · components.css · layout.css · responsive.css
 js/
-  state.js                 # única fonte de estado mutável — primeiro <script> da lista
-  utils.js                 # helpers puros sem estado
-  icons.js                 # ícones reutilizados em mais de uma tela
-  components/
-    <nome-do-componente>.js  # um componente reusável por arquivo (ex.: modal de confirmação, formulário de endereço)
+  state.js · utils.js · icons.js · router.js · main.js
+  components/             # stepper, demo-button, changelog-modal + componentes de domínio
   screens/
-    shared/<nome>.js          # telas usadas por mais de uma variante do fluxo
-    <variante-a>/<nome>.js    # telas exclusivas dessa variante
-    <variante-b>/<nome>.js
-    index.js                  # monta o mapa de telas (objeto `screens`) referenciando as funções já carregadas — único lugar que "conhece" todas as telas
-  router.js                 # navegação entre telas / render principal
-  main.js                   # último <script>: registra listeners globais e chama o render inicial
-build.py                  # script de recompilação (ver seção "Recompilar num único arquivo")
-dist/
-  index.html                # gerado pelo build — não editar à mão, não commitar mudanças manuais nele
+    shared/<nome>.js      # telas usadas por mais de uma variante
+    <variante>/<nome>.js  # telas exclusivas
+    index.js              # mapa id → tela (único que conhece todas)
+data/                     # dados fictícios (quando existirem)
+assets/                   # imagens e fontes locais
+docs/
+  design-system.md        # fonte de verdade visual
+  user-journeys/          # jornadas (só com confirmação do time)
+dist/                     # GERADO e ignorado no git — nunca editar à mão
 ```
 
 Adapte nomes de pasta (`pf`/`pj`, `admin`/`user`, etc.) ao domínio real do projeto — a estrutura acima é o esqueleto, não uma nomenclatura fixa.
@@ -108,57 +108,7 @@ Como o `index.html` já é a lista ordenada de tudo que precisa entrar no bundle
 4. Escrever o resultado em `dist/index.html` (ou o nome de arquivo que o projeto já usava antes da divisão).
 5. Nunca editar `dist/index.html` à mão — toda mudança entra pelos arquivos-fonte e passa pelo build de novo.
 
-Implementação de referência (Python stdlib, sem dependência — adaptar paths conforme a árvore real do projeto):
-
-```python
-#!/usr/bin/env python3
-"""Recompila index.html + styles/ + js/ em dist/index.html (arquivo único)."""
-
-import base64, mimetypes, re, os, sys
-
-SRC  = os.path.join(os.path.dirname(__file__), "index.html")
-DIST = os.path.join(os.path.dirname(__file__), "dist", "index.html")
-
-def read(path):
-    with open(path, encoding="utf-8") as f:
-        return f.read()
-
-def inline_css(m):
-    path = os.path.join(os.path.dirname(SRC), m.group(1))
-    return f"<style>\n{read(path)}</style>"
-
-def inline_js(m):
-    path = os.path.join(os.path.dirname(SRC), m.group(1))
-    return f"<script>\n{read(path)}</script>"
-
-def inline_img(m):
-    pre, src, post = m.group(1), m.group(2), m.group(3)
-    if re.match(r"^(https?:)?//", src):          # imagem remota — deixa como está
-        return m.group(0)
-    path = os.path.join(os.path.dirname(SRC), src)
-    mime = mimetypes.guess_type(path)[0] or "application/octet-stream"
-    with open(path, "rb") as f:
-        data_uri = f"data:{mime};base64," + base64.b64encode(f.read()).decode("ascii")
-    return f"<img{pre} src=\"{data_uri}\"{post}>"
-
-def build():
-    html = read(SRC)
-    # Inline imagens locais ANTES do JS (evita casar com <img> em template strings de runtime)
-    html = re.sub(r'<img([^>]*?)\ssrc="([^"]+)"([^>]*)>', inline_img, html)
-    html = re.sub(r'<link rel="stylesheet" href="([^"]+)">', inline_css, html)
-    html = re.sub(r'<script src="([^"]+)"></script>', inline_js, html)
-    os.makedirs(os.path.dirname(DIST), exist_ok=True)
-    with open(DIST, "w", encoding="utf-8") as f:
-        f.write(html)
-    print(f"✓  dist/index.html  ({os.path.getsize(DIST):,} bytes)")
-
-if __name__ == "__main__":
-    try:
-        build()
-    except FileNotFoundError as e:
-        print(f"Erro: {e}", file=sys.stderr)
-        sys.exit(1)
-```
+Implementação de referência: [`templates/build.py`](templates/build.py) (Python stdlib; inline de CSS, JS, imagens `<img>` locais e favicon em base64; remotos ficam como estão). Em projeto migrado, copie esse arquivo para a raiz e ajuste só se a árvore for diferente. `dist/` é **gerado e ignorado no git** (`.gitignore`): quem precisa do artefato roda `python3 build.py`.
 
 > O inline de imagens base64 garante que logos e assets funcionem no artefato único mesmo sem o diretório de assets ao lado — essencial para Artifacts do Claude e envio por e-mail.
 

@@ -1,0 +1,13 @@
+/* Layout — header, container principal, form-card e navegação de rodapé */
+
+.app-header{position:sticky;top:0;z-index:20;background:var(--card);box-shadow:var(--shadow-header);}
+.app-header .inner{max-width:40rem;margin:0 auto;padding:0.8rem var(--space-4) 0.4rem;display:flex;align-items:center;}
+.app-header .brand{font-weight:800;font-size:1.05rem;color:var(--color-primary);}
+.stepper-wrap{max-width:40rem;margin:0 auto;padding:0.3rem var(--space-4) 0.7rem;}
+.stepper-wrap:empty{display:none;}
+
+.app-main{max-width:40rem;margin:0 auto;padding:var(--space-6) var(--space-4) 6rem;}
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-card);padding:var(--space-6);box-shadow:var(--shadow-card);}
+
+.footer-nav{display:flex;justify-content:space-between;gap:var(--space-3);margin-top:var(--space-4);}
+.footer-nav:empty{display:none;}

@@ -1,0 +1,14 @@
+/* Base — reset, tipografia base, foco, movimento reduzido */
+
+*{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-text-size-adjust:100%;}
+body{font-family:var(--font-family);font-size:var(--fs-body);font-weight:500;color:var(--foreground);background:var(--background);line-height:1.5;}
+h1,h2,h3,h4{font-weight:800;line-height:1.2;}
+button,input,select,textarea{font:inherit;color:inherit;}
+button{cursor:pointer;}
+img{max-width:100%;display:block;}
+:focus-visible{outline:3px solid var(--color-primary);outline-offset:2px;}
+[hidden]{display:none !important;}
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.01ms !important;animation-iteration-count:1 !important;transition-duration:0.01ms !important;}
+}

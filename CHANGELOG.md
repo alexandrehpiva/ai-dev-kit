@@ -9,6 +9,19 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.26.0] — 2026-10-06
+
+### Added
+
+- `productivity/interactive-prototype`: **kit de criação de protótipo novo**. `scripts/scaffold.py` (stdlib, determinístico, recusa diretório não vazio, `--dry-run`) gera o repositório completo a partir de `templates/`: `index.html` (manifesto de carga, badge/modal de changelog, botão Demo), `styles/` em 5 camadas, `js/` (state/FLOWS, router, screens, stepper), `build.py` (inline de CSS/JS/imagens/favicon), `.claude/launch.json`, `.gitignore`, README, `docs/design-system.md` e, opcionalmente, `docs/user-journeys/` (`--journeys`). Novos assets `scaffold-new-prototype.md` (procedimento) e `app-architecture.md` (padrão state/router/screens/FLOWS, receitas, política de comentários).
+- `scripts/group-preflight.py`: confere repositório pronto e acesso de push (`ls-remote` + `push --dry-run`, sem alterar o remoto) e só então liga `groupMode` (`--enable`); `group-mode.md` ganhou a seção "Pré-requisitos".
+
+### Changed
+
+- `design-system.md` (o documento nasce junto do protótipo, sincronia tokens↔doc, estrutura completa, auditoria cruzada), `split-into-files.md` (árvore completa; `build.py` passa a viver em `templates/`), `versioning-and-changelog.md` (`dist/` ignorado no git; código de referência do badge/changelog; versão inicial v0.0.0), `user-journey-docs.md` (nome de arquivo com hífen duplo, `personas.json`, estrutura de `docs/user-journeys/`), `dev-server-hot-reload.md` (porta única) e `SKILL.md` (roteamento e descrição).
+
+---
+
 ## [0.25.0] — 2026-10-06
 
 ### Added

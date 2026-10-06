@@ -25,6 +25,20 @@ Arquivo único na raiz do protótipo, `prototype.config.json`:
 - Arquivo exclusivo do protótipo: não é referenciado por `index.html`/`build.py`, não entra no `dist/` e não migra para o produto. Criá-lo só com confirmação do usuário (é configuração nova).
 - `groupMode: true` sem o remoto configurado: avisar em linguagem de produto ("este protótipo está em modo grupo, mas ainda não tem o lugar compartilhado configurado") e tratar como "sem sincronização" (seção abaixo).
 
+## Pré-requisitos — repositório pronto e acesso de push conferido
+
+O modo grupo só liga depois que o repositório está **pronto para compartilhar** e o acesso de envio foi **conferido de verdade** — configurar `groupMode: true` sem isso faz o primeiro commit aprovado falhar na sincronização, e o agente tende a "seguir mesmo assim" (numerando versão sem ter sincronizado).
+
+Checagem (script `scripts/group-preflight.py`, só leitura no remoto): repositório git, remoto configurado, remoto alcançável (`git ls-remote`), branch compartilhada existente no remoto e acesso de push (`git push --dry-run`, que não altera o remoto). Resultado inconclusivo (sem commits locais, tempo esgotado) é relatado como tal — nunca como sucesso.
+
+```bash
+python3 <skill>/scripts/group-preflight.py --repo <pasta>            # confere (exige groupMode:true na config)
+python3 <skill>/scripts/group-preflight.py --repo <pasta> --enable   # confere e, se tudo OK, grava groupMode:true
+python3 <skill>/scripts/group-preflight.py --repo <pasta> --force-check   # testar antes de ativar
+```
+
+Quando falha, resolver antes de seguir (sem decidir pelo usuário o que é dele): remoto ausente → pedir a URL e `git remote add`; branch compartilhada ausente → primeiro envio com aprovação; sem permissão de push → pedir ao responsável pelo repositório que conceda o acesso (o agente não contorna credencial). Enquanto não passar, `groupMode` permanece `false` e vale a regra "sem sincronização = sem versionamento". Rodar o preflight de novo quando o acesso mudar ou ao retomar um protótipo antigo em modo grupo.
+
 ## Ciclo de sincronização — obrigatório após cada commit aprovado
 
 A aprovação de commit do usuário já cobre a sincronização (no modo grupo ela faz parte do commit). Fazer na ordem:

@@ -1,0 +1,14 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "@@SLUG@@-dev",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "python3 build.py && npx --yes concurrently \"npx --yes chokidar-cli 'js/**/*.js' 'styles/**/*.css' 'index.html' -c 'python3 build.py'\" \"npx --yes live-server dist --port=@@PORT@@ --no-browser\""
+      ],
+      "port": @@PORT@@
+    }
+  ]
+}

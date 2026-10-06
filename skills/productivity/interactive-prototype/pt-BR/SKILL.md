@@ -1,6 +1,6 @@
 ---
 name: interactive-prototype
-description: Cria e evolui protótipos navegáveis em HTML/CSS/JS (estrutura dividida em arquivos + build para arquivo único, hot reload, versionamento e changelog aprovados antes do commit), com direção estética distintiva (paleta, tipografia, layout e copy que não leem como "default de IA"), design system extraído da referência real, fundamentos de UX/UI (estados, formulários, responsividade mobile-first, acessibilidade WCAG AA, acabamento visual), documentação de jornadas de usuário, compilação das jornadas em PDF com sumário e modo opcional de trabalho em grupo. Usar quando o usuário pedir para criar/editar/redesenhar uma tela, fluxo, landing page, dashboard ou "protótipo navegável"; "design de UI", "direção visual", "isso parece genérico/feito por IA"; "comparar direções", "mockup HTML"; "design system"; "subir/servir o protótipo"; "versionar/commitar o protótipo"; "jornadas de usuário", "gera o PDF das jornadas"; "revisão de UX", "isso está responsivo?"; "modo grupo", "trabalho em grupo", "sincronizar o protótipo".
+description: Cria e evolui protótipos navegáveis em HTML/CSS/JS: gera o repositório completo (scaffold com estrutura em camadas, build para arquivo único, hot reload, design system, README, badge/changelog, jornadas), com direção estética distintiva, fundamentos de UX/UI, versionamento aprovado antes do commit, documentação e PDF de jornadas e modo opcional de trabalho em grupo. Usar quando o usuário pedir "criar protótipo novo", "repositório do protótipo", "protótipo navegável", criar/editar/redesenhar tela, fluxo ou landing page; "direção visual", "isso parece genérico"; "design system"; "subir/servir o protótipo"; "versionar/commitar o protótipo"; "jornadas de usuário", "PDF das jornadas"; "isso está responsivo?"; "modo grupo", "sincronizar o protótipo".
 license: Apache License 2.0 (ver LICENSE.txt) para aesthetic-direction.md, adaptado de anthropics/skills (skills/frontend-design); explore-directions.md adaptado de "HTML Mockup Sketcher" (Nous Research); demais conteúdo e assets de autoria de Alexandre Piva.
 ---
 
@@ -15,8 +15,10 @@ license: Apache License 2.0 (ver LICENSE.txt) para aesthetic-direction.md, adapt
 | Direção visual ainda indefinida / "compare opções" / "esboça umas telas" | [`explore-directions.md`](explore-directions.md) |
 | Criar ou redesenhar UI (paleta, tipo, layout, hero, copy) | [`aesthetic-direction.md`](aesthetic-direction.md) |
 | UX, estados, formulários, responsividade, acessibilidade, acabamento | [`ux-ui-principles.md`](ux-ui-principles.md) |
+| **Criar um protótipo/repositório novo** | [`scaffold-new-prototype.md`](scaffold-new-prototype.md) — obrigatório; roda `scripts/scaffold.py` |
+| Criar tela/fluxo/campo/componente, mexer em `js/` | [`app-architecture.md`](app-architecture.md) |
 | Criar/manter o design system do projeto | [`design-system.md`](design-system.md) |
-| Protótipo novo, ou migrar um single-file | [`split-into-files.md`](split-into-files.md) |
+| Estrutura de pastas, ou migrar um single-file | [`split-into-files.md`](split-into-files.md) |
 | "Subir"/"servir"/"rodar" com hot reload | [`dev-server-hot-reload.md`](dev-server-hot-reload.md) |
 | Commit, versão, badge, changelog, artefato exportado, link de preview | [`versioning-and-changelog.md`](versioning-and-changelog.md) |
 | Mudança de navegação/sequência entre telas | [`user-journey-docs.md`](user-journey-docs.md) |
@@ -44,9 +46,9 @@ Quando o pedido adiciona uma tela/etapa a uma sequência existente, remove uma, 
 
 No início de toda rodada que possa terminar em commit, verifique se existe `prototype.config.json` na raiz do protótipo com `"groupMode": true`. Se sim, leia [`group-mode.md`](group-mode.md) antes de commitar: depois de cada commit aprovado a sincronização com o time é obrigatória (buscar novidades **antes** de numerar a versão, integrar, conferir versões, reconstruir, enviar). Conflito que muda o que o cliente final vê ou faz — telas, ordem, textos, botões, cores — vai ao usuário via `grill-me` **em linguagem de produto, sem jargão de versionamento** e com print quando for visual; o que é burocracia (changelog, número de versão, `dist/`) o agente resolve e relata. Sem sincronização possível: sem número de versão novo e sem artefato publicado.
 
-## Estrutura padrão de protótipo — sempre dividido em arquivos desde o início
+## Estrutura padrão de protótipo — sempre dividido em arquivos, gerado por script
 
-Todo protótipo criado com esta skill nasce com estrutura dividida: `index.html` + `styles/` + `js/` + `build.py` + `dist/`. Não existe fase "single-file primeiro". Ver [`split-into-files.md`](split-into-files.md) para a árvore de referência, os princípios de divisão, o `build.py` completo (com inline de CSS, JS e imagens base64) e o checklist para projetos em migração. O `build.py` usa apenas Python stdlib, sem dependência externa.
+Todo protótipo novo nasce do scaffold ([`scaffold-new-prototype.md`](scaffold-new-prototype.md)), nunca montado de memória: `index.html` + `styles/` + `js/` + `build.py` + `docs/design-system.md` + README + `.claude/launch.json` + `.gitignore` + `prototype.config.json`. Sem fase "single-file primeiro". `dist/` é gerado pelo `build.py` (stdlib) e **ignorado no git**. Árvore e princípios de divisão: [`split-into-files.md`](split-into-files.md).
 
 ## Regras que não se negociam
 

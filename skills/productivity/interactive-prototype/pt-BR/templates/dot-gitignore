@@ -1,0 +1,10 @@
+# Artefato gerado pelo build.py — nunca versionado (gere com `python3 build.py`)
+dist/
+
+node_modules/
+.DS_Store
+Thumbs.db
+*.log
+__pycache__/
+*.py[cod]
+.idea/

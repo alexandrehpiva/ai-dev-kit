@@ -8,10 +8,9 @@ Sem um design system escrito, o agente reconstrói a paleta/tipografia/espaçame
 
 ## Quando criar
 
-- Existe uma referência real (app irmão, POC, produto em produção) mas nenhum arquivo captura os tokens dela ainda.
-- O projeto vai ganhar um segundo protótipo/tela que precisa dos mesmos tokens do primeiro — sinal de que "lembrar de cabeça" não escala.
-
-Se não existe nenhuma referência real (o design é original, sem produto irmão para espelhar), não force um design system prematuro — as escolhas de paleta/tipo/layout desta skill (ver [`aesthetic-direction.md`](aesthetic-direction.md)) resolvem esse caso; o design system nasce quando o *próprio* protótipo vira a referência para telas futuras dele mesmo.
+- **Protótipo novo:** o design system **nasce junto** com o protótipo — o scaffold ([`scaffold-new-prototype.md`](scaffold-new-prototype.md)) já entrega `styles/tokens.css` e `docs/design-system.md` com a estrutura completa e valores `PLACEHOLDER`; a direção visual aprovada substitui os placeholders **nos dois arquivos na mesma rodada**.
+- **Existe referência real** (app irmão, POC, produto em produção) mas nenhum arquivo captura os tokens dela: extrair (seção abaixo) e preencher.
+- **Projeto sem referência real:** o design é original; os valores vêm das escolhas de [`aesthetic-direction.md`](aesthetic-direction.md) e o próprio protótipo passa a ser a referência das telas seguintes.
 
 ## Como extrair os tokens da referência real
 
@@ -24,34 +23,16 @@ Registre a fonte de cada bloco de token (ex.: "extraído de `client/src/index.cs
 
 ## Estrutura do documento
 
-Salve como `design-system.md` (ou `DESIGN-SYSTEM.md`) na raiz do projeto ou em `docs/`. Seções mínimas:
+Fica em `docs/design-system.md` (modelo completo em `templates/design-system.md`). Seções: **1 Filosofia** · **2 Cores** (tabela token/valor/uso/contraste) · **3 Tipografia** · **4 Espaçamento, raio e sombra** · **5 Componentes** (prefixo de classe, onde é definido, estados) · **6 Animações** · **7 Responsividade obrigatória** (375/768/1280 px) · **8 Como manter**. Ajuste ao que o projeto realmente define; não preencha seção sem conteúdo real.
 
-```markdown
-# Design System — <nome do projeto>
-
-Fonte: <referência real espelhada + como os tokens foram extraídos>
-
-## Tokens de cor
-| Token | Valor | Uso |
-|---|---|---|
-| --color-primary | #... | ... |
-
-## Tipografia
-Família, pesos, escala (display/corpo/dado), line-height por família.
-
-## Espaçamento e raio
-Escala de espaçamento (ex.: 4/8/12/16/24/32px) e raios de borda por categoria de componente (botão vs. card vs. input).
-
-## Componentes
-Um bloco por componente reutilizável: estados (default/hover/active/disabled), variantes, e onde ele é definido (arquivo/seletor) se o projeto já foi dividido (ver `split-into-files.md`).
-
-## Efeitos
-Sombras, transições, easings — só o que é reusado por mais de um componente.
-```
-
-Ajuste as seções ao que a referência real de fato define — não preencha uma seção que a referência não tem conteúdo para sustentar.
+Regras da estrutura:
+- **Sincronia tokens ↔ documento:** `styles/tokens.css` e a tabela de cores/tipografia/escala andam juntos; valor mudou num, muda no outro na mesma rodada.
+- **Prefixo de classe** por projeto (`@@PREFIX@@-` no template → ex. `abc-btn-primary`) para componentes de produto; utilitários estruturais sem prefixo.
+- **Camadas de CSS:** tokens → base → components → layout → responsive (um arquivo por camada, `@media` só em `responsive.css`).
+- **Catálogo de componentes:** cada componente lista variantes, estados (hover, foco, desabilitado, erro, carregando) e arquivo de origem. Componente de domínio (usado em uma tela só) fica colocated; reutilizado em ≥2 telas sobe para `components.css` e entra no catálogo.
 
 ## Manutenção
 
 - Componente ou token novo, que ainda não existe no design system do projeto: documentar **nele primeiro**, com o valor real (extraído da referência, nunca inventado), e só então usar o componente nas telas — esta é a mesma regra do corpo do `SKILL.md`, repetida aqui porque é o ponto onde a disciplina mais costuma falhar (parece mais rápido só usar o valor direto no CSS da tela).
 - Se a referência real mudar (nova versão do app irmão, novo componente na POC), re-sincronizar o token/componente afetado e anotar a mudança — não deixar o design system do projeto congelado numa versão antiga da referência sem sinalizar a defasagem.
+- **Auditoria cruzada ao fim de cada rodada que mexeu em estilo:** todo token de `tokens.css` está documentado e todo token documentado existe em `tokens.css`; nenhuma cor/espaçamento literal em tela ou componente. Em modo grupo, essa auditoria também cobre mudanças vindas de outras pessoas (ver [`group-mode.md`](group-mode.md)).

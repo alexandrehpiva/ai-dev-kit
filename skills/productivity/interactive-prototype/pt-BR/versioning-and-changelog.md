@@ -9,7 +9,7 @@ Nunca commitar diretamente no meio de uma sessão de implementação sem aprova�
 3. **Rebuild** (`python3 build.py`) para gerar `dist/index.html` atualizado.
 4. **Gerar relatório de mudanças** e apresentar ao usuário (o que mudou, por quê, quais arquivos).
 5. **Aguardar aprovação explícita** do usuário antes de fazer o commit final.
-6. **Commit final** com os arquivos modificados (`js/`, `styles/`, `index.html`, `dist/index.html`) + documentação de jornadas atualizada se aplicável.
+6. **Commit final** com os arquivos-fonte modificados (`js/`, `styles/`, `index.html`, `docs/`) + documentação de jornadas atualizada se aplicável. **`dist/` não é versionado** (está no `.gitignore`): é gerado por `python3 build.py`; se um projeto antigo versiona `dist/`, mantenha a convenção dele e sinalize a divergência ao usuário.
 
 > Este workflow evita commits parciais e garante que o usuário revise antes de gravar histórico.
 
@@ -35,6 +35,8 @@ Essa entrada é **reescrita/ampliada** a cada rodada de ajuste (não duplicada),
 - `patch` — correção de texto/copy, ajuste CSS micro (cor, espaçamento, tamanho de fonte), sem mudança funcional perceptível.
 - `minor` — novo componente, nova tela, novo tipo de documento, reordenação de elementos, mudança de layout, responsividade, qualquer coisa que o usuário perceba como feature nova.
 - `major` — redesign completo, novo fluxo/persona, mudança arquitetural no protótipo.
+
+**Código de referência pronto:** `templates/index.html` (badge + modal), `templates/js/components/changelog-modal.js` (`CHANGELOG`, `openChangelog`, `closeChangelog`) e `templates/styles/components.css` (estilos) — o scaffold já os entrega; em projeto existente sem eles, copie de lá. Versão inicial do protótipo novo: badge `v0.0.0` com entrada `Pendente`; o primeiro lote aprovado vira `v0.1.0`.
 
 **Como implementar:**
 1. O badge vive em `index.html` como `<button>` estático com `onclick="openChangelog()"` — **não** em JS gerado.

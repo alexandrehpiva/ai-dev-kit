@@ -1,0 +1,12 @@
+/* Responsividade — TODO @media do projeto vive aqui (facilita auditar larguras).
+   Regra: grid de N colunas fixas nunca fica fixo — classe CSS com override aqui, nunca
+   style="grid-template-columns:…" inline (inline vence media query). Validar toda tela nova em
+   375×812 além do desktop. */
+
+@media (max-width:480px){
+  body{background:var(--card);}
+  .app-main{padding:var(--space-4) var(--space-3) 6rem;}
+  .form-card{border:0;box-shadow:none;border-radius:0;padding:var(--space-2) var(--space-1);}
+  .screen-title{font-size:1.15rem;}
+  .footer-nav{padding:0 var(--space-1);}
+}

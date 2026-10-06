@@ -1,0 +1,5 @@
+{
+  "groupMode": @@GROUP_MODE@@,
+  "sharedBranch": "main",
+  "remote": "origin"
+}
