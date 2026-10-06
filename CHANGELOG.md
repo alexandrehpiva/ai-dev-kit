@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.21.0] — 2026-10-06
+
+### Added
+
+- **Skill `productivity/context-compaction` (pt-BR):** promovida a oficial e refatorada a partir de uma versão pessoal. Conteúdo pessoal e exemplos presos a projetos reais removidos (inclusive o log de aprendizados, cujas lições viraram diagnóstico genérico). `SKILL.md` ganha portão de decisão, escape de falha, regra de privacidade (nenhum segredo no ledger, pasta fora de repositório público) e classificação das dependências. `LEDGER-FORMAT.md` renumerado (duas zonas movidas para §4, inventário §5, checkpoints §6, verificação §9, privacidade §10) e aceita seções de outras skills no mesmo ledger. `compaction-strategies.md` sem redundância.
+
+---
+
 ## [0.20.0] — 2026-10-06
 
 ### Changed

@@ -315,6 +315,16 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 
 ---
 
+## context-compaction
+
+**Arquivo:** `skills/productivity/context-compaction/pt-BR/SKILL.md`
+
+**Descrição:** Disciplina para preservar contexto de alto valor em tarefas longas: compactar (densificar sem perda) em vez de sumarizar, externalizando o essencial num ledger em disco (`context-ledgers/`) que sobrevive à compactação automática do harness e é relido para re-ancorar. Traz portão de decisão, escape de falha e regra de privacidade (nenhum segredo no ledger). Assets: `LEDGER-FORMAT.md` (contrato: anti-padrões, duas zonas — valores exatos vs decisões load-bearing —, inventário, checkpoints incrementais, estrutura adaptativa, privacidade, verificação) e `compaction-strategies.md` (reduzir na ingestão, externalizar, re-ancorar, cadência). Base do checklist da `hallucination-guard`.
+
+**Quando usar:** tarefa longa ou de muitas iterações; contexto crescendo ou detalhe escapando; antes de operações que enchem a janela; "compacte o contexto", "não perca o contexto", "o contexto está ficando grande".
+
+---
+
 ## study
 
 **Arquivo:** `skills/productivity/study/pt-BR/SKILL.md`
