@@ -19,4 +19,4 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 | [`session-recovery`](session-recovery/pt-BR/SKILL.md) | Recuperar contexto e estado de trabalho após interrupção por limite de tokens ou queda de sessão, relançando agentes com escopo bem definido |
 | [`think-then-organize`](think-then-organize/pt-BR/SKILL.md) | Companheira do prompt de trabalho: organizar todos os itens daquela mensagem antes de executar |
 | [`interactive-prototype`](interactive-prototype/pt-BR/SKILL.md) | Criar e evoluir protótipos navegáveis: direção estética, design system, UX/UI e responsividade, versionamento/changelog aprovados, jornadas de usuário e PDF das jornadas |
-| [`generate-pdf-report`](generate-pdf-report/pt-BR/SKILL.md) | Gerar PDF estilizado (relatório, comparativo, tabelas) a partir de HTML autocontido via Chrome headless, sem libs de conversão frágeis |
+| [`generate-pdf-report`](generate-pdf-report/pt-BR/SKILL.md) | Gerar PDF estilizado (relatório, comparativo, tabelas) a partir de HTML autocontido via Chrome headless (`scripts/html_to_pdf.py` valida o PDF gerado), sem libs de conversão frágeis |

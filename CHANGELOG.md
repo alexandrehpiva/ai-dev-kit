@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.19.0] — 2026-10-06
+
+### Changed
+
+- **Skill `productivity/generate-pdf-report` (pt-BR):** revisão completa contra os padrões da `write-a-skill`. Novo `scripts/html_to_pdf.py` (stdlib) substitui a receita em prosa: detecta Chrome/Chromium em macOS/Linux/Windows, falha com mensagem clara quando `CHROME_PATH` aponta para algo inexistente, remove PDF antigo antes de renderizar, valida que o resultado é um PDF e informa o número de páginas; `--no-sandbox` só quando roda como root (antes era sempre ligado). `SKILL.md` ganha o modo de falha "sucesso declarado sem olhar", passo e checklist de revisão visual do PDF, segurança/privacidade (HTML sem script nem recurso remoto) e skills relacionadas. `PDF-STYLE-GUIDE.md` ganha paginação de tabela longa (cabeçalho repetido, linha não partida, numeração de página por `@page`), nota sobre fonte de emoji em Linux e pilha de fontes multiplataforma; o template foi revalidado num PDF de várias páginas (Chrome 154, macOS).
+
+---
+
 ## [0.18.0] — 2026-10-06
 
 ### Added
