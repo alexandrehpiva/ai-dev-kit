@@ -10,6 +10,9 @@ description: >-
   pedir para identificar possíveis skills a partir do histórico do chat,
   perguntar "isso vira skill?", pedir um retro de sessão focado em
   automação/ferramentas, ou quando esta skill for nomeada explicitamente.
+dependencies:
+  - productivity/recall-directives
+  - productivity/write-a-skill
 ---
 
 # mine-skills — Minerar candidatas a skill no histórico de conversa

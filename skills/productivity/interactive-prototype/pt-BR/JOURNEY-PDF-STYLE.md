@@ -1,6 +1,6 @@
 # PDF de jornadas de usuário — contrato de estilo
 
-Contrato visual e de conteúdo do PDF que compila `docs/user-journeys/` de um protótipo. Motor de renderização: skill `generate-pdf-report` (Chrome headless). Gerador pronto e reaproveitável: [`journeys-to-pdf.py`](journeys-to-pdf.py) — **usar o script, não reescrever o conversor**.
+Contrato visual e de conteúdo do PDF que compila `docs/user-journeys/` de um protótipo. Renderização via Chrome headless. Gerador pronto e reaproveitável: [`journeys-to-pdf.py`](journeys-to-pdf.py) — **usar o script, não reescrever o conversor**.
 
 ## Diagnóstico do modo de falha
 

@@ -52,4 +52,4 @@ Todo protótipo criado com esta skill nasce com estrutura dividida: `index.html`
 
 ## Skills relacionadas
 
-`grill-me` (decisões ambíguas de escopo/preview), `generate-pdf-report` (motor de PDF), `qa-e2e-testing` (testes e2e a partir das jornadas), `task-writing` (histórias a partir das jornadas).
+`grill-me` (decisões ambíguas de escopo/preview), `qa-e2e-testing` (testes e2e a partir das jornadas), `task-writing` (histórias a partir das jornadas).

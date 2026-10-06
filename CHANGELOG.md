@@ -9,6 +9,15 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.23.1] — 2026-10-06
+
+### Changed
+
+- Dependências hard declaradas em `dependencies:`: `mine-skills` → `recall-directives`, `write-a-skill`; `skill-gap-audit` → `write-a-skill`; `knowledge-base` → `write-a-skill`; `commit-guide` → `code-review`; `technical-refinement` → `grill-me` (inclui as versões `en-US`).
+- `interactive-prototype`: removida a menção à `generate-pdf-report` como motor do PDF (o gerador `journeys-to-pdf.py` é autossuficiente).
+
+---
+
 ## [0.23.0] — 2026-10-06
 
 ### Added

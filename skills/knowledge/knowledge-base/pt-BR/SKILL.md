@@ -11,6 +11,8 @@ description: >-
   de base de conhecimento", "documentar regras de negócio do time", "bootstrap
   knowledge base", "atualizar a KB", ou quando ainda não existir skill custom
   de KB.
+dependencies:
+  - productivity/write-a-skill
 ---
 
 # knowledge-base — Template para skill custom de KB

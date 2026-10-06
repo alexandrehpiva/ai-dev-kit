@@ -121,6 +121,6 @@ Quando o usuário pedir um PDF das jornadas (ex.: "gera um PDF das jornadas", "c
 
 1. Ler [`JOURNEY-PDF-STYLE.md`](JOURNEY-PDF-STYLE.md): contrato completo de estilo (página, paleta, capa, sumário, cabeçalho, badges FP/FA/FE, ordem, regras de conteúdo, verificação).
 2. Validar as `.md` de jornada contra o protótipo atual (telas, rótulos, numeração de etapas) e corrigir o que divergir; remover referências a código do texto.
-3. Gerar com o script [`journeys-to-pdf.py`](journeys-to-pdf.py) (usa a skill `generate-pdf-report` como motor, Chrome headless, dois passos para os números do sumário). Não reescrever o conversor e não copiar o estilo de um PDF antigo em `docs/`: ele pode estar defasado ou ter errado.
+3. Gerar com o script [`journeys-to-pdf.py`](journeys-to-pdf.py) (Chrome headless, dois passos para os números do sumário). Não reescrever o conversor e não copiar o estilo de um PDF antigo em `docs/`: ele pode estar defasado ou ter errado.
 
 Modo de falha coberto: reconstruir o HTML de memória visual (cabeçalho com cor errada, capa numerada, sem rodapé, código dentro das células, badge de exceção inexistente) e/ou converter Markdown direto com `weasyprint`/`pandoc` sem verificar se funcionam.

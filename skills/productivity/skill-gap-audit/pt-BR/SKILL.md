@@ -19,6 +19,8 @@ description: >-
   qualquer incidente causado por falta de diretriz numa skill — subagentes
   colidindo na mesma branch, contexto perdido, uma regra de qualquer skill
   (dev, infra, QA, memória, etc.) que devia existir e não existia.
+dependencies:
+  - productivity/write-a-skill
 ---
 
 # skill-gap-audit — Minerar incidentes da sessão para corrigir skills

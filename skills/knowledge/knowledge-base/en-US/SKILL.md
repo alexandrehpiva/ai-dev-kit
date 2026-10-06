@@ -10,6 +10,8 @@ description: >-
   to "create a knowledge base", "build a KB skill", "knowledge base template",
   "document team business rules", "bootstrap knowledge base", "update the KB",
   or when no custom KB skill exists yet.
+dependencies:
+  - productivity/write-a-skill
 ---
 
 # knowledge-base — Template for a custom KB skill

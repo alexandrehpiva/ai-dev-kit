@@ -10,6 +10,8 @@ description: >-
   "create technical subtasks", "figure out what needs to be done" to
   implement something, or investigate repositories before writing tasks.
 disable-model-invocation: true
+dependencies:
+  - productivity/grill-me
 ---
 
 # technical-refinement — Agent Guide

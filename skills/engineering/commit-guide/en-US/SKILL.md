@@ -2,6 +2,8 @@
 name: commit-guide
 description: Guide a developer through staging one atomic, quality-gated conventional commit — never commits or pushes without explicit per-commit confirmation. Detects the project's stack and harnesses the matching dev-* specialist skill (dev-ts-angular, dev-ts-nest, dev-python-fastapi, ...) when one exists, then runs code-review against the diff. Use when the user asks to prepare, organize, or split a commit; says "commit guide", "stage this", "help me commit", "organize these changes into commits"; or when there are pending changes ready to become one or more commits.
 disable-model-invocation: true
+dependencies:
+  - engineering/code-review
 ---
 
 # commit-guide

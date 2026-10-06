@@ -2,6 +2,8 @@
 name: commit-guide
 description: Guiar o dev por um fluxo de staging de um commit atômico e passado por um portão de qualidade — nunca commita ou faz push sem confirmação explícita por commit. Detecta a stack do projeto e aciona a skill especialista dev-* correspondente (dev-ts-angular, dev-ts-nest, dev-python-fastapi, ...) quando existir, depois roda code-review no diff. Usar quando o usuário pedir para preparar, organizar ou dividir um commit; disser "commit guide", "prepara esse commit", "me ajuda a comitar", "organiza essas mudanças em commits"; ou quando houver mudanças pendentes prontas para virar um ou mais commits.
 disable-model-invocation: true
+dependencies:
+  - engineering/code-review
 ---
 
 # commit-guide

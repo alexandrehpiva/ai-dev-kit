@@ -11,6 +11,8 @@ description: >-
   "analisar o que precisa ser feito" para implementar algo, ou investigar
   repositórios antes de escrever tasks.
 disable-model-invocation: true
+dependencies:
+  - productivity/grill-me
 ---
 
 # technical-refinement — Guia para Agentes
