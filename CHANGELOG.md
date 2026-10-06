@@ -9,6 +9,15 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.24.0] — 2026-10-06
+
+### Added
+
+- Skill oficial `engineering/dev-squad` (en-US): orquestrador multi-agente promovido da versão custom, neutralizado — task tracker e code host via ferramenta conectada genérica (MCP/CLI), backlog em `{NotesRoot}`, skills `dev-*` como recomendação com fallback para melhores práticas atuais e pesquisa na internet. Declara `productivity/grill-me` em `dependencies:`.
+- Skill oficial `engineering/security-verification` (pt-BR): Gitleaks, segredo vs PII, remediação segura de histórico (`purgar-historico.md`).
+
+---
+
 ## [0.23.1] — 2026-10-06
 
 ### Changed

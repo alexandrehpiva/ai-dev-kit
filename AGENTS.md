@@ -121,6 +121,30 @@ Skills focadas em código: construir, revisar, depurar e operar sistemas.
 
 ---
 
+## dev-squad
+
+**Arquivo:** `skills/engineering/dev-squad/en-US/SKILL.md`
+
+**Descrição:** Orquestrador multi-agente de desenvolvimento: coordena Dev Sênior, Tech Lead, QA e PO proxy num ciclo estruturado (investigação técnica, plano, implementação, code review, testes, entrega). Usa task tracker conectado (MCP/CLI de Jira, ClickUp, Linear, GitHub Issues etc.), backlog Markdown local ou contexto inline; toda comunicação entre agentes passa pelo orquestrador e decisões de produto sobem ao usuário. Skills `dev-*` da stack são **recomendação** (fallback: melhores práticas atuais + pesquisa na internet). Assets em `agents/`, `orchestrator/`, `po-proxy/`, `task-management.md`, `qa-reports.md`, `clickup-hierarchy.md`.
+
+**Quando usar:** o usuário pedir para rodar o dev-squad, orquestrar um ciclo de desenvolvimento com papéis (dev/tech lead/QA) ou nomear a skill.
+
+**Nota:** `disable-model-invocation: true`. Depende de `grill-me` (`dependencies:`); usa `task-writing`, `security-verification`, `recall-directives` e `agent-memory` quando disponíveis.
+
+---
+
+## security-verification
+
+**Arquivo:** `skills/engineering/security-verification/pt-BR/SKILL.md`
+
+**Descrição:** Verificações de segurança em repositórios: varredura de segredos com Gitleaks (histórico e working tree), distinção segredo vs PII, higiene de `.env`/`.gitignore` e remediação segura (rotacionar o segredo primeiro, depois reescrever histórico com `git filter-repo` e force-push — procedimento em `purgar-historico.md`).
+
+**Quando usar:** o usuário pedir para verificar segurança, procurar vazamentos/segredos, rodar gitleaks, auditar histórico de commits ou remover dados sensíveis do repositório.
+
+**Nota:** `disable-model-invocation: true`.
+
+---
+
 ## commit-guide
 
 **Arquivo:** `skills/engineering/commit-guide/pt-BR/SKILL.md` (também disponível em `en-US`)

@@ -11,6 +11,8 @@ Skills focadas em código: construir, revisar, depurar e operar sistemas.
 | [`task-writing`](task-writing/pt-BR/SKILL.md) | Escrever tasks/US no padrão `US-FORMAT.md` (BDD / Given-When-Then) |
 | [`code-review`](code-review/pt-BR/SKILL.md) | Revisar um diff/PR: bugs + reuso/simplificação (`RECURRING-CHECKS.md`) |
 | [`codebase-deep-dive`](codebase-deep-dive/pt-BR/SKILL.md) | Estudar um repositório de ponta a ponta (arquitetura, dados, infra, configs, convenções), registrar na base de notas do usuário e conduzir percurso de aprendizado guiado até o domínio do repo (`REPO-STUDY-CHECKLIST.md`) |
+| [`dev-squad`](dev-squad/en-US/SKILL.md) | Orquestrador multi-agente (Dev Sênior, Tech Lead, QA, PO proxy) sobre tracker conectado, backlog Markdown ou contexto inline; skills `dev-*` como recomendação |
+| [`security-verification`](security-verification/pt-BR/SKILL.md) | Varredura de segredos com Gitleaks, segredo vs PII e remediação segura (rotação + `git filter-repo`; `purgar-historico.md`) |
 | [`commit-guide`](commit-guide/pt-BR/SKILL.md) | Staging de commit atômico com portão de qualidade — detecta a stack, aciona a skill `dev-*` correspondente e `code-review` |
 | [`dev-python`](dev-python/pt-BR/SKILL.md) | Desenvolvimento Python em qualquer framework/arquitetura — detecta package manager (`poetry.md`, `uv.md`), framework (`fastapi/`, `lambda/`) e qualidade (`code-quality.md`); projeto novo decide via `grill-me` |
 | ~~`dev-python-fastapi`~~ | **Deprecated** — substituída por `dev-python` |
