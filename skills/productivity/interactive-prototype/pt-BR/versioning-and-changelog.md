@@ -61,7 +61,7 @@ Enquanto não aprovada para commit, a entrada do topo usa `version: 'Pendente (n
 
 **Workflow obrigatório:**
 1. **A cada rodada de ajuste** (mesmo sem aprovação de commit): fazer o **merge** da rodada nova na entrada `'Pendente (não commitado)'` no **topo** do array `CHANGELOG` — não um simples append. Ver "entrada é espelho do worktree, não log de eventos" na seção de Versionamento acima: reversão remove a linha revertida, ajuste parcial edita a linha existente, só mudança genuinamente nova vira linha nova. `date` atualiza para a data da rodada mais recente. Isso mantém o changelog sempre corrente durante o desenvolvimento, sem fingir que virou release e sem acumular contradições.
-2. **Só quando o usuário aprova explicitamente o lote para commit:** renomear `'Pendente (não commitado)'` para o próximo número semver real (`version: 'vX.Y.Z'`).
+2. **Só quando o usuário aprova explicitamente o lote para commit** (em modo grupo, antes disso sincronize e confira as versões — ver [`group-mode.md`](group-mode.md)): renomear `'Pendente (não commitado)'` para o próximo número semver real (`version: 'vX.Y.Z'`).
 3. Atualizar o texto do badge em `index.html` (`#prototype-version-badge`) com a mesma versão.
 4. Rebuild: `python3 build.py`.
 5. Só então: `git add` + `git commit` com a mensagem incluindo `chore(prototype): bump version to vX.Y.Z`.

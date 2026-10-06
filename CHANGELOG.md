@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.25.0] — 2026-10-06
+
+### Added
+
+- `productivity/interactive-prototype`: **modo trabalho em grupo** (novo asset `group-mode.md`), ligado por `prototype.config.json` no repositório do protótipo. Após cada commit aprovado, sincronização obrigatória com o time (buscar novidades antes de numerar a versão, conferência de versões, rebuild, envio sem forçar); conflitos mecânicos (changelog, versão, `dist/`) resolvidos pelo agente; conflitos que mudam o que o usuário final vê vão ao `grill-me` em linguagem de produto, com print de cada lado (Chrome headless ou browser da sessão) e auditoria cruzada com o design system; sem sincronização possível não há versionamento nem artefato publicado, com regra de sufixo `a`/`b`/`c` para colisões de versão.
+
+---
+
 ## [0.24.1] — 2026-10-06
 
 ### Added

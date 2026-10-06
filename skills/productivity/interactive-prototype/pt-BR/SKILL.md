@@ -1,6 +1,6 @@
 ---
 name: interactive-prototype
-description: Cria e evolui protótipos navegáveis em HTML/CSS/JS (estrutura dividida em arquivos + build para arquivo único, hot reload, versionamento e changelog aprovados antes do commit), com direção estética distintiva (paleta, tipografia, layout e copy que não leem como "default de IA"), design system extraído da referência real, fundamentos de UX/UI (estados, formulários, responsividade mobile-first, acessibilidade WCAG AA, acabamento visual), documentação de jornadas de usuário e compilação das jornadas em PDF com sumário. Usar quando o usuário pedir para criar/editar/redesenhar uma tela, fluxo, landing page, dashboard ou "protótipo navegável"; "design de UI", "direção visual", "isso parece genérico/feito por IA"; "comparar direções de design", "mockup HTML"; "design system"; "subir/servir o protótipo"; "versionar/commitar o protótipo"; "jornadas de usuário", "gera o PDF das jornadas"; "revisão de UX", "isso está responsivo?".
+description: Cria e evolui protótipos navegáveis em HTML/CSS/JS (estrutura dividida em arquivos + build para arquivo único, hot reload, versionamento e changelog aprovados antes do commit), com direção estética distintiva (paleta, tipografia, layout e copy que não leem como "default de IA"), design system extraído da referência real, fundamentos de UX/UI (estados, formulários, responsividade mobile-first, acessibilidade WCAG AA, acabamento visual), documentação de jornadas de usuário, compilação das jornadas em PDF com sumário e modo opcional de trabalho em grupo. Usar quando o usuário pedir para criar/editar/redesenhar uma tela, fluxo, landing page, dashboard ou "protótipo navegável"; "design de UI", "direção visual", "isso parece genérico/feito por IA"; "comparar direções", "mockup HTML"; "design system"; "subir/servir o protótipo"; "versionar/commitar o protótipo"; "jornadas de usuário", "gera o PDF das jornadas"; "revisão de UX", "isso está responsivo?"; "modo grupo", "trabalho em grupo", "sincronizar o protótipo".
 license: Apache License 2.0 (ver LICENSE.txt) para aesthetic-direction.md, adaptado de anthropics/skills (skills/frontend-design); explore-directions.md adaptado de "HTML Mockup Sketcher" (Nous Research); demais conteúdo e assets de autoria de Alexandre Piva.
 ---
 
@@ -21,6 +21,7 @@ license: Apache License 2.0 (ver LICENSE.txt) para aesthetic-direction.md, adapt
 | Commit, versão, badge, changelog, artefato exportado, link de preview | [`versioning-and-changelog.md`](versioning-and-changelog.md) |
 | Mudança de navegação/sequência entre telas | [`user-journey-docs.md`](user-journey-docs.md) |
 | PDF das jornadas | [`JOURNEY-PDF-STYLE.md`](JOURNEY-PDF-STYLE.md) + [`journeys-to-pdf.py`](journeys-to-pdf.py) |
+| `prototype.config.json` com `groupMode: true`, ou pedido de sincronizar/trabalhar em grupo | [`group-mode.md`](group-mode.md) — obrigatório antes de qualquer commit |
 | Antes de entregar qualquer rodada | [`UX-REVIEW.md`](UX-REVIEW.md) |
 
 Pedido típico de ajuste numa tela já existente: design system do projeto → `aesthetic-direction.md`/`ux-ui-principles.md` conforme o tema → implementar nos arquivos-fonte → rebuild → `UX-REVIEW.md` → changelog `Pendente` → relatório e aguardar aprovação de commit.
@@ -39,6 +40,10 @@ Procedimento:
 
 Quando o pedido adiciona uma tela/etapa a uma sequência existente, remove uma, muda a ordem/ramificação de navegação entre telas, ou cria um fluxo multi-tela inteiramente novo — não para mudanças visuais dentro de uma única tela —, trate a documentação de jornadas como parte do trabalho, não como opcional silencioso. Vale tanto quando esta skill é acionada manualmente quanto quando um agente a aciona de forma dinâmica/automática: em ambos os casos, sem exceção, peça confirmação ao usuário antes de criar documentação nova (alterar documentação já existente segue a mesma régua — confirmar antes). Ver [`user-journey-docs.md`](user-journey-docs.md) para onde procurar documentação de jornadas já existente (repo atual, repo irmão de e2e, gerenciador de tarefas/wiki com pista explícita) e para a estrutura padrão a propor quando não existir. Quando o pedido for gerar ou atualizar o **PDF das jornadas**, seguir a seção "Compilar jornadas em PDF" desse arquivo: o estilo canônico está em [`JOURNEY-PDF-STYLE.md`](JOURNEY-PDF-STYLE.md) e o gerador pronto em [`journeys-to-pdf.py`](journeys-to-pdf.py) — ler o estilo e usar o script antes de escrever qualquer HTML, sem imitar PDF antigo do projeto.
 
+## Modo trabalho em grupo (opcional, ligado por configuração no repositório)
+
+No início de toda rodada que possa terminar em commit, verifique se existe `prototype.config.json` na raiz do protótipo com `"groupMode": true`. Se sim, leia [`group-mode.md`](group-mode.md) antes de commitar: depois de cada commit aprovado a sincronização com o time é obrigatória (buscar novidades **antes** de numerar a versão, integrar, conferir versões, reconstruir, enviar). Conflito que muda o que o cliente final vê ou faz — telas, ordem, textos, botões, cores — vai ao usuário via `grill-me` **em linguagem de produto, sem jargão de versionamento** e com print quando for visual; o que é burocracia (changelog, número de versão, `dist/`) o agente resolve e relata. Sem sincronização possível: sem número de versão novo e sem artefato publicado.
+
 ## Estrutura padrão de protótipo — sempre dividido em arquivos desde o início
 
 Todo protótipo criado com esta skill nasce com estrutura dividida: `index.html` + `styles/` + `js/` + `build.py` + `dist/`. Não existe fase "single-file primeiro". Ver [`split-into-files.md`](split-into-files.md) para a árvore de referência, os princípios de divisão, o `build.py` completo (com inline de CSS, JS e imagens base64) e o checklist para projetos em migração. O `build.py` usa apenas Python stdlib, sem dependência externa.
@@ -49,6 +54,7 @@ Todo protótipo criado com esta skill nasce com estrutura dividida: `index.html`
 - **Nunca editar `dist/index.html` à mão** — toda mudança entra pelos arquivos-fonte e passa pelo build.
 - **Nunca declarar pronto sem renderizar** — [`UX-REVIEW.md`](UX-REVIEW.md) exige olhar as larguras e os estados de verdade; o que não pôde ser verificado é dito como tal.
 - **Documentação nova (jornadas, design system) só com confirmação do usuário.**
+- **Em modo grupo, nunca numerar versão antes de sincronizar, nunca forçar envio e nunca decidir sozinho conflito de sequência de telas, texto ou regra visível.**
 
 ## Skills relacionadas
 
