@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.26.1] — 2026-10-12
+
+### Changed
+
+- `engineering/dev-squad`: `clickup-hierarchy.md` renomeado para `tracker-hierarchy.md` (en-US e pt-BR) e generalizado — a regra épico/US/subtask vale para qualquer tracker conectado; ClickUp virou nota de tracker (Jira/Linear/GitHub Issues via primitivas nativas). A cópia `pt-BR` do asset, que estava em inglês, foi traduzida. Referências atualizadas em `SKILL.md`, `task-management.md`, `AGENTS.md` e `task-writing/US-FORMAT.md`.
+
+---
+
 ## [0.26.0] — 2026-10-06
 
 ### Added
