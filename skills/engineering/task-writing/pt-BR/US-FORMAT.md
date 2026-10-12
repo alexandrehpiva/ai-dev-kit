@@ -36,7 +36,7 @@ Como saber se o objetivo foi atingido: métricas de produto, métricas técnicas
 Condicionantes para a entrega — outra task, serviço externo, design, decisão pendente. Uma
 linha por dependência, com link direto; não narre o motivo aqui (isso é Contexto de quem
 depende, não desta task). Bloqueios fortes vão também no campo nativo de dependência do
-tracker, quando existir — mecanismo concreto no ClickUp em `dev-squad/clickup-hierarchy.md`.
+tracker, quando existir — mecanismo concreto por tracker (ClickUp etc.) em `dev-squad/pt-BR/tracker-hierarchy.md`.
 
 ## 8. DoR — Definition of Ready *(épicos e US maiores; opcional em task pequena)*
 Checklist antes de puxar para desenvolvimento:
@@ -94,7 +94,7 @@ Tech Lead cria **dentro** de uma US já aprovada.
   confirmação antes de alterar. O Tech Lead cria, renomeia e mantém livremente as subtasks
   técnicas dentro da história.
 - Mecanismo concreto no ClickUp (como linkar sem usar `parent`, onde ficam os vínculos): ver a
-  skill `dev-squad`, asset `clickup-hierarchy.md`.
+  skill `dev-squad`, asset `tracker-hierarchy.md`.
 
 ## Redação enxuta e legível
 

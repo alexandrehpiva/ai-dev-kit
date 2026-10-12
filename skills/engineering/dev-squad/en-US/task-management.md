@@ -89,8 +89,8 @@ created_at: {YYYY-MM-DD}
 Follow the User Stories standard from the official `task-writing` skill (`US-FORMAT.md`), including the
 section "Hierarchy: story vs subtask" — epic and US sit at the same level (wikilink between
 `[[EPIC-{n}...]]` and the task, as in the template above, not file nesting); subtask is
-reserved for the Tech Lead's technical breakdown. When publishing to ClickUp, also apply
-`clickup-hierarchy.md` from this skill (link mechanism, not `parent`, between epic and US).
+reserved for the Tech Lead's technical breakdown. When publishing to a connected tracker, also apply
+`tracker-hierarchy.md` from this skill (link mechanism, not `parent`, between epic and US).
 Acceptance criteria in Given/When/Then.
 
 ### Banner on technical tasks

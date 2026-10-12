@@ -24,7 +24,7 @@ Leia os assets conforme se tornarem relevantes:
 | Quando um papel tem dúvidas de produto | `po-proxy/protocol.md` |
 | Antes de escrever, revisar ou corrigir documentação de produto (não tasks de backlog) | `po-proxy/product-doc-writing.md` |
 | Antes de criar ou atualizar itens do backlog local | `task-management.md` |
-| Antes de criar, reestruturar ou vincular tasks num Space do ClickUp | `clickup-hierarchy.md` |
+| Antes de criar, reestruturar ou vincular tasks num task tracker conectado | `tracker-hierarchy.md` |
 | Antes de aprovar o QA | `qa-reports.md` |
 | Antes de o Tech Lead conduzir um refinamento profundo de arquitetura (missão `refinar_arquitetura`) | `agents/architecture-refinement-checklist.md` |
 
@@ -53,7 +53,7 @@ Trabalho de infraestrutura não pertence aos papéis de desenvolvimento. Quando 
 dev-squad/
 ├── SKILL.md                        ← ponto de entrada do orquestrador
 ├── task-management.md              ← formato do backlog Markdown local
-├── clickup-hierarchy.md            ← formato épico/US/subtask e vínculos no ClickUp
+├── tracker-hierarchy.md            ← formato épico/US/subtask e vínculos no tracker
 ├── qa-reports.md                   ← formato do relatório de QA local
 ├── agents/
 │   ├── dev-senior.md               ← papel Dev Sênior, missões, prompts

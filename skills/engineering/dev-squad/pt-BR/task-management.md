@@ -89,8 +89,8 @@ criado_em: {YYYY-MM-DD}
 Seguir o padrão de User Stories da skill oficial `task-writing` (`US-FORMAT.md`), incluindo a
 seção "Hierarquia: história vs subtask" — épico e US ficam no mesmo nível (wikilink entre
 `[[EPIC-{n}...]]` e a task, como no template acima, não aninhamento de arquivo); subtask é
-reservada ao detalhamento técnico do Tech Lead. Ao publicar no ClickUp, aplicar
-também `clickup-hierarchy.md` desta skill (mecanismo de link, não `parent`, entre épico e US).
+reservada ao detalhamento técnico do Tech Lead. Ao publicar num tracker conectado, aplicar
+também `tracker-hierarchy.md` desta skill (mecanismo de link, não `parent`, entre épico e US).
 Critérios de aceite em Given/When/Then.
 
 ### Banner em tasks técnicas

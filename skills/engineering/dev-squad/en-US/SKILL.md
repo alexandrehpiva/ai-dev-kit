@@ -24,7 +24,7 @@ Read the assets as they become relevant:
 | When a role has product questions | `po-proxy/protocol.md` |
 | Before writing, reviewing, or correcting product documentation (not backlog tasks) | `po-proxy/product-doc-writing.md` |
 | Before creating or updating local backlog items | `task-management.md` |
-| Before creating, restructuring, or linking tasks in a ClickUp Space | `clickup-hierarchy.md` |
+| Before creating, restructuring, or linking tasks in a connected task tracker | `tracker-hierarchy.md` |
 | Before approving QA | `qa-reports.md` |
 | Before the Tech Lead conducts deep architecture refinement (mission `refine_architecture`) | `agents/architecture-refinement-checklist.md` |
 
@@ -53,7 +53,7 @@ Infrastructure work is not owned by the development roles. When a task requires 
 dev-squad/
 ├── SKILL.md                        ← orchestrator entry point
 ├── task-management.md              ← local Markdown backlog format
-├── clickup-hierarchy.md            ← epic/US/subtask shape and linking in ClickUp
+├── tracker-hierarchy.md            ← epic/US/subtask shape and linking in the tracker
 ├── qa-reports.md                   ← local QA report format
 ├── agents/
 │   ├── dev-senior.md               ← Senior Developer role, missions, prompts
