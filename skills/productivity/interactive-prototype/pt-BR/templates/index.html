@@ -39,17 +39,10 @@
      a cada bump de versão. -->
 <button class="prototype-version-badge" id="prototype-version-badge" onclick="openChangelog()" aria-label="Ver changelog do protótipo">v0.0.0 · protótipo</button>
 
-<!-- ⚠️  PROTÓTIPO — Modal de changelog (prototype-only). Conteúdo renderizado por
-     js/components/changelog-modal.js a partir do array CHANGELOG. Não migrar para o produto. -->
-<div class="changelog-modal-overlay" id="changelogOverlay" onclick="closeChangelog(event)">
-  <div class="changelog-modal" role="dialog" aria-modal="true" aria-labelledby="changelogTitle">
-    <div class="changelog-modal-head">
-      <h2 id="changelogTitle">Histórico de versões</h2>
-      <button class="changelog-close" onclick="closeChangelog()" aria-label="Fechar">×</button>
-    </div>
-    <div class="changelog-modal-body" id="changelogBody"></div>
-  </div>
-</div>
+<!-- ⚠️  PROTÓTIPO — Ponto de montagem do modal de changelog (prototype-only). O conteúdo é
+     renderizado por js/components/changelog-modal.js com o modal genérico (js/components/modal.js).
+     Não migrar para o produto. -->
+<div id="changelogHost"></div>
 
 <!-- Botão "Demo" (prototype-only): preenche a tela atual com dados fictícios — js/components/demo-button.js -->
 <button class="demo-btn" id="demoBtn" onclick="runDemoFill()" hidden>Demo</button>
@@ -59,6 +52,7 @@
 <script src="js/icons.js"></script>
 <script src="js/components/stepper.js"></script>
 <script src="js/components/demo-button.js"></script>
+<script src="js/components/modal.js"></script>
 <script src="js/components/changelog-modal.js"></script>
 <script src="js/screens/shared/welcome.js"></script>
 <script src="js/screens/shared/exemplo-formulario.js"></script>

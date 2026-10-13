@@ -106,10 +106,27 @@ dependencies:
 
 A CLI do ai-dev-kit lê o campo: ao instalar a skill marca/instala junto as dependências (transitivas, sem laço infinito em ciclos) e, ao remover uma skill, remove também as instaladas que dependem dela. Dependência **soft** fica só em prosa, fora do campo.
 
+### `version` (opcional — só para skills evolutivas)
+
+`version: 2.0.0` (semver) quando a skill grava estado ou estrutura no projeto do usuário (config, pastas, documentos) e, portanto, pode ficar incompatível com projetos criados por versões anteriores. Skills sem estado no projeto não precisam do campo. Ver "Skills evolutivas" abaixo.
+
 ### `license` e `argument-hint` (opcionais)
 
 - `license:` quando houver conteúdo de terceiros — dizendo qual asset vem de onde (ver [`security-and-privacy.md`](security-and-privacy.md)).
 - `argument-hint:` quando a skill recebe um texto livre que muda a saída (ex.: `argument-hint: "O que a próxima sessão vai focar?"`); o corpo diz como tratar o argumento.
+
+## Skills evolutivas — quando a skill deixa estado no projeto do usuário
+
+**Modo de falha:** uma skill que grava config, estrutura ou documentos no projeto evolui; os projetos já criados ficam para trás. O agente aplica as regras novas a uma estrutura que não as tem e improvisa; ou, com uma skill instalada mais antiga que o projeto, "corrige" o que parece fora do padrão e desfaz a evolução. Regras só em prosa são esquecidas no meio de uma sessão longa. Quanto mais a instrução for **específica, ordenada e verificável**, mais próximo de determinístico o comportamento (nunca é totalmente determinístico: o agente é um modelo).
+
+Quando a skill se encaixa nisso, aplique, nesta ordem:
+
+1. **Versão da skill** em `version:` no frontmatter e **versão registrada no projeto** (campo no config que a skill cria). Ausência do registro = versão legada `1.0.0`.
+2. **Detecção obrigatória a cada acionamento** por script: compara a versão da skill com a do projeto e devolve um código de status (em dia, projeto legado/desatualizado, skill mais antiga que o projeto). Uma **tabela status → ação** no texto fecha o comportamento. Skill mais antiga que o projeto = **modo consulta**: nada é alterado, pede-se a atualização da skill.
+3. **Migração por script**, idempotente, com plano (`--plan`/`--dry-run`) antes e **uma aprovação** do usuário; nunca sobrescreve arquivo do usuário; cada salto de versão tem entrada num `MIGRATIONS.md` (o que muda, que pergunta nova faz, como verificar) e teste.
+4. **Passo 0 no `SKILL.md`**: a primeira coisa a cada acionamento e reacionamento — recarregar as skills de dependência críticas (declaradas em `dependencies:`), rodar a detecção de versão e as demais verificações de ativação, em ordem fixa, parando no primeiro item que bloqueia.
+5. **Script antes de prosa**: o que pode ser checado ou executado de forma determinística (validar config, detectar identidade, calcular versão, sincronizar) vira script com saída JSON (`ok`, `status`, `data`, `problems`, `questions`); o texto diz **quando** rodar e **como agir sobre cada status**, sem repetir o que o script faz. Operações que escrevem ou são irreversíveis rodam em simulação por padrão e só executam com flag explícita.
+6. **Checklists verificáveis** para as etapas críticas: cada item se confirma lendo uma saída de comando ou citando uma evidência; o que não pôde ser verificado é dito, não marcado como feito.
 
 ## Corpo
 
@@ -220,6 +237,7 @@ Se o arquivo de instruções do projeto atual (`CLAUDE.md`, `AGENTS.md` ou equiv
 - [ ] Escopo (oficial / custom no AIDK / local) perguntado com contexto, salvo se já explícito
 - [ ] **Custom (3C):** flat em `skills/custom/`, sem registro público; instalada via `custom/<nome>`
 - [ ] **Local (3B):** flat em `.claude/skills/` ou `.cursor/skills/` do projeto atual
+- [ ] **Skill evolutiva (deixa estado no projeto):** `version:` + versão registrada no projeto, detecção por script, migração idempotente com plano e uma aprovação, `MIGRATIONS.md`, Passo 0, checklists verificáveis
 - [ ] Linha no índice de skills do projeto, se ele existir
 
 > Convenções completas do repositório: `docs/conventions.md` (raiz do repo).

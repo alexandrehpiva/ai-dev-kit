@@ -39,6 +39,10 @@ O agente declara "pronto" depois de olhar **um** screenshot em desktop, com dado
 - [ ] Cor não é o único portador de significado.
 - [ ] `prefers-reduced-motion` respeitado.
 
+**Componentes e reaproveitamento**
+- [ ] Elemento com potencial de compartilhamento está em `js/components/` com cabeçalho de contrato (`component-scan.py --lint` limpo); nenhuma peça duplicada ([`components-and-docs.md`](components-and-docs.md)).
+- [ ] A mesma peça se comporta igual (estados, foco, teclado) em todas as telas que a usam.
+
 **Beleza e acabamento**
 - [ ] Espaçamentos e tamanhos de fonte saem das escalas do design system (nenhum valor "solto").
 - [ ] Um único ponto focal por tela; hierarquia legível no teste de borrar a tela.

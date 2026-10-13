@@ -1,7 +1,13 @@
-/* ⚠️  PROTÓTIPO — Changelog e modal de versões (prototype-only).
-   NÃO migrar para o produto final. Este componente e seus dados são exclusivos do protótipo.
+/**
+ * @purpose Janela com o histórico de versões do protótipo (lista CHANGELOG), aberta pelo badge de versão; exclusivo do protótipo, não migra para o produto.
+ * @props nenhuma — openChangelog() sem argumentos; os dados vêm da constante CHANGELOG deste arquivo.
+ * @slots nenhum — o conteúdo é a lista de entradas montada por changelogBodyHTML() e entregue ao slot de corpo do modal genérico (modal.js).
+ * @state uncontrolled — dono: o modal genérico (aberto/fechado interno); CHANGELOG é dado constante, sem estado de tela.
+ * @events nenhum próprio — herda modal:open e modal:close do modal genérico.
+ * @a11y herda do modal genérico: role="dialog" rotulado pelo título "Histórico de versões", foco preso e devolvido ao badge, Escape fecha; versão e data de cada entrada em texto, sem depender de cor.
+ */
 
-   Formato de cada entrada: { version, date: 'YYYY-MM-DD', changes: ['descrição', ...] }
+/* Formato de cada entrada: { version, date: 'YYYY-MM-DD', changes: ['descrição', ...] }
    Ordem: decrescente — a entrada mais recente fica no TOPO do array.
 
    Workflow de atualização (obrigatório — ver versioning-and-changelog.md da skill):
@@ -20,20 +26,15 @@ const CHANGELOG = [
   ] },
 ];
 
-function renderChangelog(){
-  document.getElementById('changelogBody').innerHTML = CHANGELOG.map(e =>
+function changelogBodyHTML(){
+  return CHANGELOG.map(e =>
     `<div class="changelog-entry"><h3>${escapeHtml(e.version)}<span class="date">${escapeHtml(e.date)}</span></h3>
      <ul>${e.changes.map(c => `<li>${escapeHtml(c)}</li>`).join('')}</ul></div>`).join('');
 }
 
+/* Reconstrói o modal a cada abertura para refletir o CHANGELOG atual. */
 function openChangelog(){
-  renderChangelog();
-  document.getElementById('changelogOverlay').classList.add('open');
+  document.getElementById('changelogHost').innerHTML =
+    modalHTML({ id: 'changelog', title: 'Histórico de versões', bodyHTML: changelogBodyHTML() });
+  modalOpen('changelog');
 }
-
-function closeChangelog(ev){
-  if (ev && ev.target !== ev.currentTarget) return;  // clique dentro do modal não fecha
-  document.getElementById('changelogOverlay').classList.remove('open');
-}
-
-document.addEventListener('keydown', ev => { if (ev.key === 'Escape') closeChangelog(); });

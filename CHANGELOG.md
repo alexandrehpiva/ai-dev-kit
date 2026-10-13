@@ -9,6 +9,21 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.28.0] — 2026-10-13
+
+### Added
+
+- `productivity/interactive-prototype` 2.0.0: modo trabalho em grupo reescrito como família de assets (`group-mode.md` núcleo, `group-identity`, `group-members`, `group-sync`, `group-promotion`, `group-artifacts`, `group-conflicts`, `group-scenarios`), `components-and-docs.md`, `checklists.md` (C0–C6), `skill-lifecycle.md` e `MIGRATIONS.md`. Camadas oficial/beta/rascunho/preview com versões `vX.Y.Z` e `vX.Y.Z-beta.N`; identidade verificada por camadas automáticas e auto-registro com aprovação por promoter (rollback e reintegração sem reescrever histórico); promoção para o cliente com relatório "irá também ao cliente", correção urgente e desfazer; artefatos registrados por camada com alerta de permissão; componentização com catálogo gerado e regras de negócio documentadas.
+- `interactive-prototype`: scripts determinísticos com envelope JSON (`protolib`, `configtools`, `config-validate`, `skill-status`, `migrate`, `artifacts`, `identity-check`, `group-preflight`, `group-setup`, `group-share`, `group-promote`, `member-vetting`, `conflict-decisions`, `component-scan`, `changelog_tools`, `group_sync`), com decisões de conflito (`mine`, `theirs` ou `combined`, só nos trechos em conflito; o roster do config nunca é descartado) aplicadas por `group-share.py --decisions` e rastreadas no trailer `Prototype-Conflict-Decision` com testes (incluindo fluxo ponta a ponta com dois membros) e `prototype.config.json` v2 com schema; templates com `AGENTS.md`/`CLAUDE.md` enxutos, `docs/business-rules.md`, `docs/components.md` e componente de modal.
+- `productivity/write-a-skill`: seção "Skills evolutivas" (campo `version`, detecção por script, migração idempotente com plano e uma aprovação, Passo 0, script antes de prosa, checklists verificáveis).
+
+### Changed
+
+- `interactive-prototype`: agora declara `dependencies` em `grill-me` e `hallucination-guard`, recarregadas no Passo 0 a cada (re)ativação; `scaffold-new-prototype.md`, `split-into-files.md`, `app-architecture.md`, `versioning-and-changelog.md` e `UX-REVIEW.md` alinhados ao novo modelo. Protótipos antigos migram por `migrate.py` (1.0.0 → 2.0.0).
+- `.gitignore`: ignora `__pycache__/` e `*.py[cod]`.
+
+---
+
 ## [0.27.0] — 2026-10-13
 
 ### Added

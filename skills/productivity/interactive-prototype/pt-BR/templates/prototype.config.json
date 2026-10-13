@@ -1,5 +1,10 @@
 {
+  "skill": { "name": "interactive-prototype", "version": "@@SKILL_VERSION@@" },
   "groupMode": @@GROUP_MODE@@,
-  "sharedBranch": "main",
-  "remote": "origin"
+  "remote": "origin",
+  "branches": { "official": "main", "beta": "beta", "draftPattern": "draft/{member}" },
+  "policy": { "promoters": "all-members", "requireSignedCommits": false, "pendingExpiryDays": 7 },
+  "docs": { "autoMaintain": false },
+  "members": [],
+  "artifacts": []
 }

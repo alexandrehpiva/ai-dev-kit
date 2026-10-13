@@ -1,5 +1,11 @@
-/* Stepper numerado (componente genérico). Lê FLOWS/flow/screenOrder/cursor de state.js.
-   Não aparece nas telas fora do fluxo ('welcome' e 'resultado'). */
+/**
+ * @purpose Indicador numerado das etapas do fluxo atual, com a etapa corrente destacada; não aparece nas telas fora do fluxo ('welcome' e 'resultado').
+ * @props nenhuma — lê FLOWS, flow, screenOrder e cursor de state.js; renderiza dentro de #stepperWrap.
+ * @slots nenhum
+ * @state controlled — dono: state.js (flow, screenOrder, cursor); o componente só reflete esses valores a cada renderAll().
+ * @events nenhum
+ * @a11y lista ordenada com aria-label "Etapas"; a etapa corrente leva aria-current="step"; rótulos em texto visível (o progresso não depende só da barra colorida).
+ */
 
 function renderStepper(){
   const wrap = document.getElementById('stepperWrap');

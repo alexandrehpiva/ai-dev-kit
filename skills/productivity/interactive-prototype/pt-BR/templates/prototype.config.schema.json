@@ -1,0 +1,147 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.test/interactive-prototype/prototype.config.schema.json",
+  "title": "prototype.config.json (v2)",
+  "description": "Configuração do protótipo (skill interactive-prototype >= 2.0.0). `_doc` é aceito em qualquer objeto como comentário livre.",
+  "type": "object",
+  "required": ["skill", "groupMode", "remote", "branches", "members", "artifacts"],
+  "additionalProperties": false,
+  "properties": {
+    "_doc": {},
+    "skill": {
+      "type": "object",
+      "required": ["name", "version"],
+      "additionalProperties": false,
+      "properties": {
+        "_doc": {},
+        "name": { "const": "interactive-prototype" },
+        "version": { "$ref": "#/$defs/semver" }
+      }
+    },
+    "groupMode": { "type": "boolean" },
+    "remote": { "type": "string", "minLength": 1 },
+    "branches": {
+      "type": "object",
+      "required": ["official", "beta", "draftPattern"],
+      "additionalProperties": false,
+      "properties": {
+        "_doc": {},
+        "official": { "$ref": "#/$defs/branchName" },
+        "beta": { "$ref": "#/$defs/branchName" },
+        "draftPattern": { "type": "string", "pattern": "\\{member\\}" }
+      }
+    },
+    "policy": {
+      "type": "object",
+      "required": ["promoters", "requireSignedCommits", "pendingExpiryDays"],
+      "additionalProperties": false,
+      "properties": {
+        "_doc": {},
+        "promoters": { "enum": ["all-members", "listed"] },
+        "requireSignedCommits": { "type": "boolean" },
+        "pendingExpiryDays": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "docs": {
+      "type": "object",
+      "required": ["autoMaintain"],
+      "additionalProperties": false,
+      "properties": {
+        "_doc": {},
+        "autoMaintain": { "type": "boolean" }
+      }
+    },
+    "members": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/member" }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/artifact" }
+    }
+  },
+  "$defs": {
+    "semver": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "branchName": { "type": "string", "minLength": 1, "pattern": "^[^\\s~^:?*\\[\\\\]+$" },
+    "email": { "type": "string", "format": "email" },
+    "isoDateTime": { "type": "string", "format": "date-time" },
+    "sha": { "type": ["string", "null"], "pattern": "^[0-9a-f]{7,40}$" },
+    "protoVersion": { "type": ["string", "null"], "pattern": "^v?\\d+\\.\\d+\\.\\d+(-beta\\.\\d+)?$" },
+    "member": {
+      "type": "object",
+      "required": ["name", "email", "roles", "profile", "status", "registeredAt", "statusChangedAt", "statusChangedAtCommit", "statusHistory", "identityEvidence"],
+      "additionalProperties": false,
+      "properties": {
+        "_doc": {},
+        "name": { "type": "string", "minLength": 1 },
+        "email": { "$ref": "#/$defs/email" },
+        "hostLogin": { "type": "string", "minLength": 1 },
+        "roles": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": { "enum": ["promoter", "contributor"] }
+        },
+        "profile": { "enum": ["product", "technical"] },
+        "status": { "$ref": "#/$defs/memberStatus" },
+        "registeredAt": { "$ref": "#/$defs/isoDateTime" },
+        "statusChangedAt": { "$ref": "#/$defs/isoDateTime" },
+        "statusChangedAtCommit": { "$ref": "#/$defs/sha" },
+        "statusHistory": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/statusHistoryItem" }
+        },
+        "identityEvidence": { "enum": ["host-verified", "git-only", "unverified"] },
+        "decidedBy": { "$ref": "#/$defs/email" },
+        "decidedAt": { "$ref": "#/$defs/isoDateTime" },
+        "reason": { "type": "string" }
+      }
+    },
+    "memberStatus": { "enum": ["pending", "approved", "rejected", "revoked"] },
+    "statusHistoryItem": {
+      "type": "object",
+      "required": ["status", "at", "commit", "by"],
+      "additionalProperties": false,
+      "properties": {
+        "_doc": {},
+        "status": { "$ref": "#/$defs/memberStatus" },
+        "at": { "$ref": "#/$defs/isoDateTime" },
+        "commit": { "$ref": "#/$defs/sha" },
+        "by": {
+          "type": "string",
+          "anyOf": [
+            { "enum": ["self", "setup"] },
+            { "format": "email" }
+          ]
+        },
+        "reason": { "type": "string" }
+      }
+    },
+    "artifact": {
+      "type": "object",
+      "required": ["id", "kind", "branch", "delivery", "owner", "version", "status", "pendingVersion", "publishedAt", "publishedBy"],
+      "additionalProperties": false,
+      "properties": {
+        "_doc": {},
+        "id": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]*$" },
+        "kind": { "enum": ["official", "beta", "preview"] },
+        "branch": { "anyOf": [{ "$ref": "#/$defs/branchName" }, { "type": "null" }] },
+        "delivery": { "enum": ["claude-artifact", "file"] },
+        "url": { "type": "string", "pattern": "^https?://\\S+$" },
+        "path": { "type": "string", "minLength": 1 },
+        "owner": { "$ref": "#/$defs/email" },
+        "version": { "$ref": "#/$defs/protoVersion" },
+        "status": { "enum": ["current", "stale", "revoked", "missing"] },
+        "pendingVersion": { "$ref": "#/$defs/protoVersion" },
+        "publishedAt": { "anyOf": [{ "$ref": "#/$defs/isoDateTime" }, { "type": "null" }] },
+        "publishedBy": { "anyOf": [{ "$ref": "#/$defs/email" }, { "type": "null" }] },
+        "label": { "type": "string" },
+        "purpose": { "type": "string" },
+        "sourceRef": { "type": "string" },
+        "revokedAt": { "$ref": "#/$defs/isoDateTime" },
+        "revokedReason": { "type": "string" }
+      }
+    }
+  }
+}

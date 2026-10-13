@@ -1,12 +1,20 @@
 ---
 name: interactive-prototype
-description: Cria e evolui protótipos navegáveis em HTML/CSS/JS: gera o repositório completo (scaffold com estrutura em camadas, build para arquivo único, hot reload, design system, README, badge/changelog, jornadas), com direção estética distintiva, fundamentos de UX/UI, versionamento aprovado antes do commit, documentação e PDF de jornadas e modo opcional de trabalho em grupo. Usar quando o usuário pedir "criar protótipo novo", "repositório do protótipo", "protótipo navegável", criar/editar/redesenhar tela, fluxo ou landing page; "direção visual", "isso parece genérico"; "design system"; "subir/servir o protótipo"; "versionar/commitar o protótipo"; "jornadas de usuário", "PDF das jornadas"; "isso está responsivo?"; "modo grupo", "sincronizar o protótipo".
+description: Cria e evolui protótipos navegáveis em HTML/CSS/JS: gera o repositório completo (scaffold com estrutura em camadas, build para arquivo único, hot reload, design system, README, badge/changelog, jornadas), com direção estética distintiva, fundamentos de UX/UI, versionamento aprovado antes do commit, documentação e PDF de jornadas e modo opcional de trabalho em grupo. Usar quando o usuário pedir "criar protótipo novo", "repositório do protótipo", "protótipo navegável", criar/editar/redesenhar tela, fluxo ou landing page; "direção visual", "isso parece genérico"; "design system"; "subir/servir o protótipo"; "versionar/commitar o protótipo"; "jornadas de usuário", "PDF das jornadas"; "isso está responsivo?"; "modo grupo", "sincronizar o protótipo", "versão beta", "publicar para o cliente", "preview para comparar".
+version: 2.0.0
+dependencies:
+  - productivity/grill-me
+  - productivity/hallucination-guard
 license: Apache License 2.0 (ver LICENSE.txt) para aesthetic-direction.md, adaptado de anthropics/skills (skills/frontend-design); explore-directions.md adaptado de "HTML Mockup Sketcher" (Nous Research); demais conteúdo e assets de autoria de Alexandre Piva.
 ---
 
 # Interactive Prototype
 
 **Princípio:** um protótipo navegável é produto de processo, não de inspiração — direção visual deliberada, design system como fonte de verdade, cada estado e cada largura de tela verificados, e histórico (versão, changelog, jornadas) que só afirma o que de fato foi entregue.
+
+## Passo 0 — obrigatório em toda ativação e reativação
+
+Antes de **qualquer** outra ação, sem exceção e mesmo que consuma mais tokens: (1) **invocar de novo `grill-me` e `hallucination-guard`** pela ferramenta de skills e seguir o que carregarem; (2) rodar `scripts/skill-status.py` para comparar a versão da skill com a do protótipo e **migrar** se estiver desatualizado; (3) confirmar **quem é a pessoa** (`scripts/identity-check.py`: nome e e-mail do git, em qualquer protótipo já migrado) e, se o protótipo está em modo grupo, também o preflight e os artefatos. Sem isso nada é alterado. Detalhe e comandos: [`skill-lifecycle.md`](skill-lifecycle.md) e [`checklists.md`](checklists.md) → C0. As duas skills são recarregadas de novo antes de compartilhar com o time, antes de promover e ao notar compactação ou retomada de sessão.
 
 ## Roteamento — leia o asset antes de agir
 
@@ -23,7 +31,10 @@ license: Apache License 2.0 (ver LICENSE.txt) para aesthetic-direction.md, adapt
 | Commit, versão, badge, changelog, artefato exportado, link de preview | [`versioning-and-changelog.md`](versioning-and-changelog.md) |
 | Mudança de navegação/sequência entre telas | [`user-journey-docs.md`](user-journey-docs.md) |
 | PDF das jornadas | [`JOURNEY-PDF-STYLE.md`](JOURNEY-PDF-STYLE.md) + [`journeys-to-pdf.py`](journeys-to-pdf.py) |
-| `prototype.config.json` com `groupMode: true`, ou pedido de sincronizar/trabalhar em grupo | [`group-mode.md`](group-mode.md) — obrigatório antes de qualquer commit |
+| Ativar a skill, versão da skill, migrar protótipo antigo | [`skill-lifecycle.md`](skill-lifecycle.md) + [`MIGRATIONS.md`](MIGRATIONS.md) — obrigatório |
+| `prototype.config.json` com `groupMode: true`, ou pedido de sincronizar/trabalhar em grupo | [`group-mode.md`](group-mode.md) (núcleo) — obrigatório antes de qualquer commit; ele aponta o asset de cada processo: identidade/membros (`group-identity.md`, `group-members.md`), compartilhar (`group-sync.md`), publicar para o cliente (`group-promotion.md`), artefatos (`group-artifacts.md`), conflitos (`group-conflicts.md`), cenários e respostas (`group-scenarios.md`) |
+| Criar componente/peça compartilhável, regra de negócio, `docs/` do protótipo | [`components-and-docs.md`](components-and-docs.md) — obrigatório |
+| Fechar etapa crítica (ativação, fim de rodada, compartilhar, promover, migrar, vetar pessoa) | [`checklists.md`](checklists.md) |
 | Antes de entregar qualquer rodada | [`UX-REVIEW.md`](UX-REVIEW.md) |
 
 Pedido típico de ajuste numa tela já existente: design system do projeto → `aesthetic-direction.md`/`ux-ui-principles.md` conforme o tema → implementar nos arquivos-fonte → rebuild → `UX-REVIEW.md` → changelog `Pendente` → relatório e aguardar aprovação de commit.
@@ -44,7 +55,9 @@ Quando o pedido adiciona uma tela/etapa a uma sequência existente, remove uma, 
 
 ## Modo trabalho em grupo (opcional, ligado por configuração no repositório)
 
-No início de toda rodada que possa terminar em commit, verifique se existe `prototype.config.json` na raiz do protótipo com `"groupMode": true`. Se sim, leia [`group-mode.md`](group-mode.md) antes de commitar: depois de cada commit aprovado a sincronização com o time é obrigatória (buscar novidades **antes** de numerar a versão, integrar, conferir versões, reconstruir, enviar). Conflito que muda o que o cliente final vê ou faz — telas, ordem, textos, botões, cores — vai ao usuário via `grill-me` **em linguagem de produto, sem jargão de versionamento** e com print quando for visual; o que é burocracia (changelog, número de versão, `dist/`) o agente resolve e relata. Sem sincronização possível: sem número de versão novo e sem artefato publicado.
+Verifique no início de toda rodada se `prototype.config.json` tem `"groupMode": true`. Se sim, o protótipo tem **três camadas**: *oficial* (o que o cliente avalia), *beta* (versão de testes do time, compartilhada) e *rascunho* (o trabalho de cada pessoa), mais *previews* avulsos para comparar. Cada pessoa trabalha no seu rascunho; compartilhar com o time é o padrão ao aprovar um lote; só **promoters** publicam para o cliente, com aprovação que mostra "irá também ao cliente". Identidade, papéis e artefatos registrados no config; versão da skill, migração e checklists por script. Leia [`group-mode.md`](group-mode.md) e o asset do processo em curso antes de commitar.
+
+Com pessoas de produto, a conversa usa **só vocabulário de produto** — nada de git ou código; regras técnicas vivem no código e em `docs/`. Conflito que muda o que o cliente vê, e aprovar ou reprovar pessoas, vão ao usuário via `grill-me` com contexto completo. Sem sincronização possível: sem número de versão novo e sem artefato publicado.
 
 ## Estrutura padrão de protótipo — sempre dividido em arquivos, gerado por script
 
@@ -52,12 +65,14 @@ Todo protótipo novo nasce do scaffold ([`scaffold-new-prototype.md`](scaffold-n
 
 ## Regras que não se negociam
 
+- **Passo 0 em toda ativação e reativação** (recarregar `grill-me` e `hallucination-guard`, versão da skill, identidade, artefatos).
 - **Nunca numerar versão nem commitar sem aprovação explícita do usuário** — trabalho em andamento vive na entrada `Pendente (não commitado)` do changelog ([`versioning-and-changelog.md`](versioning-and-changelog.md)).
 - **Nunca editar `dist/index.html` à mão** — toda mudança entra pelos arquivos-fonte e passa pelo build.
 - **Nunca declarar pronto sem renderizar** — [`UX-REVIEW.md`](UX-REVIEW.md) exige olhar as larguras e os estados de verdade; o que não pôde ser verificado é dito como tal.
-- **Documentação nova (jornadas, design system) só com confirmação do usuário.**
-- **Em modo grupo, nunca numerar versão antes de sincronizar, nunca forçar envio e nunca decidir sozinho conflito de sequência de telas, texto ou regra visível.**
+- **Documentação nova (jornadas, design system) só com confirmação do usuário**; o conjunto padrão de `docs/` segue a autorização registrada em `docs.autoMaintain`.
+- **Elemento com potencial de compartilhamento vira componente**, com cabeçalho de contrato ([`components-and-docs.md`](components-and-docs.md)).
+- **Em modo grupo:** nunca numerar versão antes de sincronizar, nunca forçar envio nem reescrever histórico, nunca decidir sozinho conflito de sequência de telas, texto ou regra visível, nunca promover quem não é promoter, nunca falar em git ou código com quem é de produto.
 
 ## Skills relacionadas
 
-`grill-me` (decisões ambíguas de escopo/preview), `qa-e2e-testing` (testes e2e a partir das jornadas), `task-writing` (histórias a partir das jornadas).
+`grill-me` e `hallucination-guard` (dependências hard, recarregadas no Passo 0), `qa-e2e-testing` (testes e2e a partir das jornadas), `task-writing` (histórias a partir das jornadas).

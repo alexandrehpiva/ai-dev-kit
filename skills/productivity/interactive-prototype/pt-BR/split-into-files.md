@@ -31,6 +31,7 @@ Dado que este fluxo existe justamente para permitir recompilar de volta a um art
 6. **Toda tela/componente novo, depois da divisão, nasce já como arquivo próprio** — nunca entra solto de volta no HTML ou num arquivo "misc".
 7. **Ícones/SVGs repetidos em mais de um lugar** viram uma função/constante num arquivo dedicado (`icons.js`); ícone usado uma única vez pode continuar inline.
 8. **A ordem dos `<link>`/`<script>` no `index.html` é a fonte de verdade da ordem de carregamento** — é ela que o build de recompilação (ver abaixo) vai seguir. Não existe manifesto separado para manter sincronizado; o próprio `index.html` é o manifesto.
+9. **Elemento com potencial de compartilhamento entre telas vira componente** (`js/components/`, com cabeçalho de contrato e catálogo gerado) — regras em [`components-and-docs.md`](components-and-docs.md).
 
 ## Árvore de referência
 
@@ -40,14 +41,15 @@ O scaffold ([`scaffold-new-prototype.md`](scaffold-new-prototype.md)) gera exata
 index.html                # shell + manifesto da ordem de carga (<link> e <script src>) — sem lógica de tela
 build.py                  # recompila tudo em dist/index.html (só stdlib) — templates/build.py
 README.md                 # o que é, como rodar, estrutura por níveis de pasta, convenções
-prototype.config.json     # groupMode / sharedBranch / remote
+prototype.config.json     # config do protótipo (versão da skill, modo grupo, membros, artefatos)
+AGENTS.md · CLAUDE.md     # ponteiro curto para agentes (regras vivem na skill e em docs/)
 .gitignore                # dist/, node_modules/, .DS_Store, logs
 .claude/launch.json       # servidor de dev com hot reload (porta única)
 styles/
   tokens.css · base.css · components.css · layout.css · responsive.css
 js/
   state.js · utils.js · icons.js · router.js · main.js
-  components/             # stepper, demo-button, changelog-modal + componentes de domínio
+  components/             # stepper, demo-button, modal, changelog-modal + componentes de domínio (cada um com cabeçalho de contrato)
   screens/
     shared/<nome>.js      # telas usadas por mais de uma variante
     <variante>/<nome>.js  # telas exclusivas
@@ -56,6 +58,8 @@ data/                     # dados fictícios (quando existirem)
 assets/                   # imagens e fontes locais
 docs/
   design-system.md        # fonte de verdade visual
+  components.md           # catálogo de componentes (GERADO por component-scan.py)
+  business-rules.md       # regras de negócio rastreáveis (BR-xx)
   user-journeys/          # jornadas (só com confirmação do time)
 dist/                     # GERADO e ignorado no git — nunca editar à mão
 ```

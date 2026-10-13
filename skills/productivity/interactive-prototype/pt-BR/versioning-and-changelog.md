@@ -36,7 +36,7 @@ Essa entrada é **reescrita/ampliada** a cada rodada de ajuste (não duplicada),
 - `minor` — novo componente, nova tela, novo tipo de documento, reordenação de elementos, mudança de layout, responsividade, qualquer coisa que o usuário perceba como feature nova.
 - `major` — redesign completo, novo fluxo/persona, mudança arquitetural no protótipo.
 
-**Código de referência pronto:** `templates/index.html` (badge + modal), `templates/js/components/changelog-modal.js` (`CHANGELOG`, `openChangelog`, `closeChangelog`) e `templates/styles/components.css` (estilos) — o scaffold já os entrega; em projeto existente sem eles, copie de lá. Versão inicial do protótipo novo: badge `v0.0.0` com entrada `Pendente`; o primeiro lote aprovado vira `v0.1.0`.
+**Código de referência pronto:** `templates/index.html` (badge + modal), `templates/js/components/changelog-modal.js` (`CHANGELOG`, `openChangelog`), `templates/js/components/modal.js` (o modal genérico que o changelog usa) e `templates/styles/components.css` (estilos) — o scaffold já os entrega; em projeto existente sem eles, copie de lá. Versão inicial do protótipo novo: badge `v0.0.0` com entrada `Pendente`; o primeiro lote aprovado vira `v0.1.0`.
 
 **Como implementar:**
 1. O badge vive em `index.html` como `<button>` estático com `onclick="openChangelog()"` — **não** em JS gerado.
@@ -47,7 +47,7 @@ Essa entrada é **reescrita/ampliada** a cada rodada de ajuste (não duplicada),
 
 **Localizar e atualizar:** procurar `prototype-version-badge` em `index.html` — só o texto interno muda a cada bump. Reconstruir (`python3 build.py`) depois de atualizar.
 
-**Protótipo-only — não migrar:** a classe `.prototype-version-badge`, o modal `#changelogOverlay` e o componente `js/components/changelog-modal.js` devem ter comentários explícitos alertando que não pertencem ao produto.
+**Protótipo-only — não migrar:** a classe `.prototype-version-badge`, o componente `js/components/changelog-modal.js` (e o contêiner `#changelogHost` do `index.html`) devem ter comentários explícitos alertando que não pertencem ao produto.
 
 ## Changelog do protótipo (registrar a cada rodada; numerar só na aprovação)
 
@@ -63,18 +63,18 @@ Enquanto não aprovada para commit, a entrada do topo usa `version: 'Pendente (n
 
 **Workflow obrigatório:**
 1. **A cada rodada de ajuste** (mesmo sem aprovação de commit): fazer o **merge** da rodada nova na entrada `'Pendente (não commitado)'` no **topo** do array `CHANGELOG` — não um simples append. Ver "entrada é espelho do worktree, não log de eventos" na seção de Versionamento acima: reversão remove a linha revertida, ajuste parcial edita a linha existente, só mudança genuinamente nova vira linha nova. `date` atualiza para a data da rodada mais recente. Isso mantém o changelog sempre corrente durante o desenvolvimento, sem fingir que virou release e sem acumular contradições.
-2. **Só quando o usuário aprova explicitamente o lote para commit** (em modo grupo, antes disso sincronize e confira as versões — ver [`group-mode.md`](group-mode.md)): renomear `'Pendente (não commitado)'` para o próximo número semver real (`version: 'vX.Y.Z'`).
+2. **Só quando o usuário aprova explicitamente o lote para commit** (em modo grupo, antes disso sincronize e confira as versões — ver [`group-sync.md`](group-sync.md) e a seção "Em modo grupo" abaixo): renomear `'Pendente (não commitado)'` para o próximo número semver real (`version: 'vX.Y.Z'`).
 3. Atualizar o texto do badge em `index.html` (`#prototype-version-badge`) com a mesma versão.
 4. Rebuild: `python3 build.py`.
 5. Só então: `git add` + `git commit` com a mensagem incluindo `chore(prototype): bump version to vX.Y.Z`.
 
 **Modal de changelog:**
 - Ativado pelo clique no badge (`#prototype-version-badge`).
-- Reutiliza o padrão de overlay do design system do protótipo (`.changelog-modal-overlay` + `.changelog-modal`).
+- Usa o modal genérico `js/components/modal.js` (`modalHTML`/`modalOpen`); ver [`components-and-docs.md`](components-and-docs.md).
 - Responsivo: `max-height: 60vh` com `overflow-y: auto` no body — rola o quanto precisar, sem paginação.
 - Fecha com: clique no backdrop, botão ×, ou tecla `Escape`.
 - Conteúdo renderizado via JS a partir do array `CHANGELOG` — nunca HTML hardcoded no modal.
-- **Não criar um modal do zero se o design system do projeto já tem overlay reutilizável** — adicionar `.changelog-modal-overlay` ao grupo existente e criar só os estilos da card interna.
+- **Não criar um modal do zero:** reaproveitar o componente `modal.js` (ou o overlay reutilizável que o design system do projeto já tiver) e acrescentar só os estilos do conteúdo.
 
 ## Artefatos gerados a partir do protótipo — versão no nome
 
@@ -95,3 +95,13 @@ Quando o usuário quer mostrar/compartilhar o estado atual do protótipo — inc
 4. Cada preview pedido é, por padrão, um **artefato novo e separado** dos anteriores (não republicar por cima de um link já enviado a stakeholders) — a menos que o usuário peça explicitamente para atualizar um preview existente no mesmo link.
 
 **Se algum desses três eixos não estiver claro no pedido, perguntar antes de gerar** (via `grill-me` quando a skill estiver ativa): (a) capturar o worktree com pendências ou só o último commit; (b) formato de entrega — arquivo HTML standalone (para anexar em e-mail, útil se já existir uma lista de destinatários salva no projeto) vs. Claude Artifact (link) vs. ambos; (c) confirmar o sufixo de versão do preview antes de publicar.
+
+## Em modo grupo — versões beta e oficial
+
+Com `groupMode: true`, a numeração segue as camadas ([`group-mode.md`](group-mode.md)); as regras acima (nunca numerar antes da aprovação, `Pendente` como espelho do trabalho) continuam valendo para o rascunho.
+
+- **Beta:** ao compartilhar com o time (e só depois de integrar as novidades), a entrada `Pendente` vira `vX.Y.Z-beta.N`, onde X.Y.Z é a **última versão oficial** do changelog integrado e N é o próximo número da beta desde essa oficial (1 se nenhuma). O badge mostra o mesmo texto (`vX.Y.Z-beta.N · protótipo`). Quem faz o cálculo é `scripts/group-share.py`; nunca numerar de memória.
+- **Oficial:** só na promoção ([`group-promotion.md`](group-promotion.md)). O próximo `vX.Y.Z` vem das regras de incremento acima, pelo **maior nível entre os itens promovidos**; as entradas beta do ciclo são **consolidadas numa única entrada oficial**; a beta recomeça em `vX.Y.Z-beta.1`. `scripts/group-promote.py` aplica o nível (`--bump auto` só reconhece arquivo novo em `js/screens/` ou `js/components/`; o agente classifica os itens e passa `--bump patch|minor|major` quando for maior — [`group-promotion.md`](group-promotion.md)).
+- **Preview:** não consome número nem entra no changelog. Nome: `<slug>-<oficial>-preview-<rótulo>-<AAAAMMDD-HHMM>` e registro em `artifacts` do config ([`group-artifacts.md`](group-artifacts.md)). O formato `<última versão commitada>-preview-<data>` acima vale só para protótipo de um autor.
+- **Mensagem de commit** do bump: `chore(prototype): bump version to <versão>`, com os trailers de identidade ([`group-identity.md`](group-identity.md)).
+- Sem sincronização possível: sem número novo ([`group-sync.md`](group-sync.md)).

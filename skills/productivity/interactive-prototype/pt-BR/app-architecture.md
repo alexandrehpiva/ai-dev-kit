@@ -48,7 +48,7 @@ const FLOWS = {
 
 **Fluxo/variante nova:** nova chave em `FLOWS`, telas exclusivas em `js/screens/<variante>/`, comuns em `shared/`; documentar jornada (com confirmação).
 
-**Componente reutilizável:** arquivo próprio em `js/components/`, estilo em `styles/components.css` (ou colocated se extenso), documentado em `docs/design-system.md` **antes** de usar nas telas.
+**Componente reutilizável:** arquivo próprio em `js/components/` com **cabeçalho de contrato** (propósito, parâmetros, estado controlado/não controlado/híbrido, acessibilidade), estilo em `styles/components.css` (ou colocated se extenso), documentado em `docs/design-system.md` **antes** de usar nas telas. Todo elemento com potencial de compartilhamento vira componente; regras completas, modelo de estado e catálogo gerado em [`components-and-docs.md`](components-and-docs.md).
 
 ## Botão Demo (prototype-only)
 

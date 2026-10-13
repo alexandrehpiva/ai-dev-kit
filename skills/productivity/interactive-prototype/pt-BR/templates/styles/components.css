@@ -1,4 +1,4 @@
-/* Componentes reutilizáveis — botão, campo, card, stepper, toast, animações e elementos
+/* Componentes reutilizáveis — botão, campo, card, stepper, modal, toast, animações e elementos
    exclusivos do protótipo (badge, changelog, demo). Cada bloco tem um comentário com o nome do
    componente — o mesmo nome usado em design-system.md. Prefixo de classe do projeto: @@PREFIX@@- */
 
@@ -46,6 +46,20 @@
 .screen-enter-forward{animation:slideInRight 320ms var(--ease);}
 .screen-enter-back{animation:slideInLeft 320ms var(--ease);}
 
+/* ---- Modal (.@@PREFIX@@-modal-overlay + .@@PREFIX@@-modal) — js/components/modal.js ---- */
+.@@PREFIX@@-modal-overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;padding:var(--space-4);}
+.@@PREFIX@@-modal-overlay.is-open{display:flex;}
+.@@PREFIX@@-modal{background:var(--card);border-radius:var(--radius-card);width:100%;max-height:calc(100vh - 2 * var(--space-4));display:flex;flex-direction:column;box-shadow:var(--shadow-card);}
+.@@PREFIX@@-modal:focus{outline:none;}
+.@@PREFIX@@-modal.is-sm{max-width:24rem;}
+.@@PREFIX@@-modal.is-md{max-width:32rem;}
+.@@PREFIX@@-modal.is-lg{max-width:48rem;}
+.@@PREFIX@@-modal-head{display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);padding:var(--space-4) var(--space-6);border-bottom:1px solid var(--border);}
+.@@PREFIX@@-modal-head h2{font-size:1.1rem;}
+.@@PREFIX@@-modal-close{background:none;border:0;font-size:1.6rem;line-height:1;color:var(--muted-foreground);}
+.@@PREFIX@@-modal-body{flex:1;overflow-y:auto;padding:var(--space-4) var(--space-6) var(--space-6);}
+.@@PREFIX@@-modal-foot{display:flex;justify-content:flex-end;gap:var(--space-2);padding:var(--space-4) var(--space-6);border-top:1px solid var(--border);}
+
 /* =========================================================================
    ⚠️  PROTÓTIPO — elementos exclusivos do protótipo. NÃO migrar para o produto.
    ========================================================================= */
@@ -54,14 +68,7 @@
 .prototype-version-badge{position:fixed;bottom:0.45rem;right:0.7rem;z-index:30;font-size:0.6rem;font-weight:600;letter-spacing:0.03em;color:rgba(0,0,0,0.28);background:rgba(255,255,255,0.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid rgba(0,0,0,0.07);border-radius:var(--radius-pill);padding:0.18rem 0.55rem;cursor:pointer;transition:background 140ms ease,color 140ms ease;}
 .prototype-version-badge:hover{background:rgba(255,255,255,0.95);color:rgba(0,0,0,0.5);}
 
-/* Modal de changelog — max-height 60vh com rolagem interna; fecha por backdrop, × ou Escape. */
-.changelog-modal-overlay{position:fixed;inset:0;z-index:50;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;padding:var(--space-4);}
-.changelog-modal-overlay.open{display:flex;}
-.changelog-modal{background:var(--card);border-radius:var(--radius-card);width:100%;max-width:32rem;box-shadow:var(--shadow-card);}
-.changelog-modal-head{display:flex;align-items:center;justify-content:space-between;padding:var(--space-4) var(--space-6);border-bottom:1px solid var(--border);}
-.changelog-modal-head h2{font-size:1.1rem;}
-.changelog-close{background:none;border:0;font-size:1.6rem;line-height:1;color:var(--muted-foreground);}
-.changelog-modal-body{max-height:60vh;overflow-y:auto;padding:var(--space-4) var(--space-6) var(--space-6);}
+/* Entradas do modal de changelog (o modal em si é o genérico acima). */
 .changelog-entry{margin-bottom:var(--space-4);}
 .changelog-entry h3{font-size:0.95rem;margin-bottom:var(--space-1);}
 .changelog-entry .date{font-weight:500;color:var(--muted-foreground);font-size:0.8rem;margin-left:var(--space-2);}

@@ -4,7 +4,7 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 
 | Skill | O que faz |
 |-------|-----------|
-| [`write-a-skill`](write-a-skill/SKILL.md) | Meta-skill: como escrever e manter skills neste framework |
+| [`write-a-skill`](write-a-skill/SKILL.md) | Meta-skill: como escrever e manter skills neste framework, incluindo skills evolutivas (versão, migração, Passo 0) |
 | [`context-compaction`](context-compaction/pt-BR/SKILL.md) | Compactar contexto sem perda em tarefas longas: ledger em disco com checkpoints, duas zonas (valores exatos vs decisões) e re-ancoragem pós-compactação |
 | [`hallucination-guard`](hallucination-guard/pt-BR/SKILL.md) | Verificar antes de virar verdade: checklist de diretivas verbatim, verificação em dois níveis (autoconferência e subagente independente) e marcação de proveniência |
 | [`handoff`](handoff/SKILL.md) | Produzir um handoff denso de sessão para continuidade |
@@ -20,5 +20,5 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 | [`subagent-orchestration`](subagent-orchestration/pt-BR/SKILL.md) | Orquestrar subagentes em paralelo: delegar lotes, monitorar, corrigir falhas e escalar ao usuário só em bloqueios sérios — sem scripts no lugar de agentes |
 | [`session-recovery`](session-recovery/pt-BR/SKILL.md) | Recuperar contexto e estado de trabalho após interrupção por limite de tokens ou queda de sessão, relançando agentes com escopo bem definido |
 | [`think-then-organize`](think-then-organize/pt-BR/SKILL.md) | Companheira do prompt de trabalho: organizar todos os itens daquela mensagem antes de executar |
-| [`interactive-prototype`](interactive-prototype/pt-BR/SKILL.md) | Criar (scaffold completo do repositório) e evoluir protótipos navegáveis: direção estética, design system, UX/UI e responsividade, versionamento/changelog aprovados, jornadas de usuário, PDF das jornadas e modo opcional de trabalho em grupo |
+| [`interactive-prototype`](interactive-prototype/pt-BR/SKILL.md) | Criar (scaffold completo do repositório) e evoluir protótipos navegáveis: direção estética, design system, UX/UI e responsividade, versionamento/changelog aprovados, jornadas de usuário, PDF das jornadas, componentização com catálogo e regras de negócio documentadas, e modo opcional de trabalho em grupo (camadas oficial/beta/rascunho/preview, identidade e aprovação de membros, promoção para o cliente, artefatos registrados e migração de protótipos antigos) |
 | [`generate-pdf-report`](generate-pdf-report/pt-BR/SKILL.md) | Gerar PDF estilizado (relatório, comparativo, tabelas) a partir de HTML autocontido via Chrome headless (`scripts/html_to_pdf.py` valida o PDF gerado), sem libs de conversão frágeis |

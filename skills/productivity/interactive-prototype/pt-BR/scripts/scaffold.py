@@ -17,13 +17,22 @@ import unicodedata
 from datetime import date
 from pathlib import Path
 
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import protolib  # noqa: E402
+
 TEMPLATES = Path(__file__).resolve().parent.parent / 'templates'
 # nome no template → caminho no repositório gerado
 RENAMES = {
     'dot-gitignore': '.gitignore',
     'dot-claude': '.claude',
     'design-system.md': 'docs/design-system.md',
+    'business-rules.md': 'docs/business-rules.md',
+    'components.md': 'docs/components.md',
 }
+# Existe só para a skill validar o prototype.config.json; não vai para o repositório gerado.
+NOT_SCAFFOLDED = {'prototype.config.schema.json'}
+# Versão gravada quando o SKILL.md ainda não declara `version:` no frontmatter.
+FALLBACK_SKILL_VERSION = '2.0.0'
 TEXT_SUFFIXES = {'.html', '.css', '.js', '.json', '.md', '.py', ''}
 
 
@@ -46,6 +55,23 @@ def render(text, values):
     for key, val in values.items():
         text = text.replace(f'@@{key}@@', val)
     return text
+
+
+def ensure_group_mode_off(out):
+    """O scaffold nunca liga o modo grupo (só o group-preflight.py liga, depois de conferir o remoto)."""
+    cfg_path = out / protolib.CONFIG_NAME
+    cfg = json.loads(cfg_path.read_text(encoding='utf-8'))
+    if cfg.get('groupMode') is not False:
+        cfg['groupMode'] = False
+        cfg_path.write_text(json.dumps(cfg, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+
+def write_catalog(out):
+    """Gera docs/components.md a partir dos cabeçalhos dos componentes recém-copiados."""
+    r = subprocess.run([sys.executable, str(Path(__file__).with_name('component-scan.py')),
+                        '--repo', str(out), '--write-catalog'], capture_output=True, text=True)
+    if r.returncode != 0:
+        print('Aviso: não consegui gerar docs/components.md:', r.stdout.strip() or r.stderr.strip(), file=sys.stderr)
 
 
 def parse_personas(raw):
@@ -115,11 +141,12 @@ def main():
         'NAME': args.name, 'SLUG': slug, 'PREFIX': prefix, 'PORT': str(args.port),
         'DATE': date.today().isoformat(),
         'GROUP_MODE': 'false',  # nunca nasce true: só o preflight liga
+        'SKILL_VERSION': protolib.skill_version() or FALLBACK_SKILL_VERSION,
     }
 
     planned = []
     for src in sorted(TEMPLATES.rglob('*')):
-        if src.is_file():
+        if src.is_file() and src.relative_to(TEMPLATES).as_posix() not in NOT_SCAFFOLDED:
             planned.append((src, dest_for(src.relative_to(TEMPLATES))))
     extras = {}
     if args.journeys:
@@ -146,6 +173,8 @@ def main():
         target = out / dst
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(content, encoding='utf-8')
+    ensure_group_mode_off(out)
+    write_catalog(out)
     for empty in ('assets', 'data'):
         (out / empty).mkdir(exist_ok=True)
         (out / empty / '.gitkeep').write_text('', encoding='utf-8')
@@ -155,6 +184,7 @@ def main():
 
     print(f'\n✓ Protótipo "{args.name}" gerado em {out}')
     print('  Próximo: python3 build.py && abrir dist/index.html; depois aplicar a direção visual (tokens.css + docs/design-system.md).')
+    print('  Antes de entregar cada rodada: python3 <skill>/scripts/component-scan.py --repo . (cabeçalhos, duplicação, regras).')
     if args.group_mode:
         print('  Modo grupo: configure o remoto e rode group-preflight.py --enable (groupMode segue false até passar).')
 

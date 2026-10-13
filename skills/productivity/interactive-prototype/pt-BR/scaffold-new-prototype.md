@@ -25,13 +25,28 @@ Sem um procedimento determinístico, cada protótipo novo sai diferente: falta R
 
 ## Modo trabalho em grupo
 
-O scaffold nunca grava `groupMode: true`: ele só liga depois que o repositório está pronto e o acesso de push foi conferido. Depois de adicionar o remoto (`git remote add origin <url>`) e fazer o primeiro envio da branch compartilhada, rode:
+O scaffold nunca grava `groupMode: true`: ele gera o `prototype.config.json` no formato v2 (com a versão da skill) com o modo desligado e só liga depois que o repositório está pronto e o acesso de envio foi conferido. Também gera `AGENTS.md`, `CLAUDE.md`, `docs/business-rules.md` e `docs/components.md`.
+
+Para ligar o modo grupo num protótipo novo:
+
+1. Adicionar o remoto e fazer o primeiro envio da branch oficial (`git remote add origin <url>`; com aprovação).
+2. **Perguntar ao responsável (via `grill-me`), uma vez:** qual papel sugerir ao aprovar alguém (`policy.promoters`: `all-members` sugere promoter; `listed`, colaborador; o papel real fica em `roles`) e se a documentação padrão pode ser mantida sem perguntar a cada rodada. Registrar as respostas e o responsável como primeiro membro (aprovado e promoter) com o script de setup, e então commitar e enviar a oficial:
 
 ```bash
-python3 <skill>/scripts/group-preflight.py --repo <pasta> --enable
+python3 <skill>/scripts/group-setup.py --repo <pasta> --actor-name "<nome>" --actor-email <e-mail> \
+    --promoters-policy all-members --docs-auto-maintain true
 ```
 
-Detalhes e o que fazer quando falha: [`group-mode.md`](group-mode.md) → "Pré-requisitos".
+3. Criar a branch beta (com aprovação), conferir o acesso e ligar o modo:
+
+```bash
+python3 <skill>/scripts/group-preflight.py --repo <pasta> --force-check --create-beta   # cria a beta e confere
+python3 <skill>/scripts/group-preflight.py --repo <pasta> --enable                      # só liga se tudo passar
+```
+
+4. **Bootstrap (única vez em que se envia direto às duas camadas):** commitar a config com o modo ligado e enviá-la à oficial **e** à beta no mesmo commit (`git push origin <oficial>` e `git push origin <oficial>:<beta>`). Assim quem clonar a oficial já encontra o modo grupo ligado. Depois disso, tudo passa pelo fluxo de compartilhar e promover; o roster mais atual vive na beta ([`group-identity.md`](group-identity.md)).
+
+Detalhes e o que fazer quando falha: [`group-sync.md`](group-sync.md) → "Pré-requisitos"; modelo completo em [`group-mode.md`](group-mode.md).
 
 ## O que NÃO fazer
 

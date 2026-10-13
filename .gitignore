@@ -19,3 +19,7 @@ tmp/
 skills/custom/
 # Instalações locais da CLI (symlinks com caminho absoluto; recriados por `aidk skills install`)
 .claude/
+
+# Python
+__pycache__/
+*.py[cod]

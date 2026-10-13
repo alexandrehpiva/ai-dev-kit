@@ -1,131 +1,98 @@
-# Modo trabalho em grupo
+# Modo trabalho em grupo — núcleo
 
-Guia de domínio para protótipos editados por mais de uma pessoa (cada uma com o seu agente, em cópias separadas do mesmo repositório). Só vale quando o protótipo declara o modo ligado na configuração do repositório; sem isso, nada neste arquivo se aplica.
+Guia de domínio para protótipos editados por mais de uma pessoa, cada uma com o seu agente, em cópias separadas do mesmo repositório. Só vale quando o config do protótipo declara `"groupMode": true`; sem isso, nada nesta família de arquivos (`group-*.md`) se aplica.
+
+Este arquivo é o **núcleo**: camadas, papéis, vocabulário e regras invioláveis. Os detalhes de cada processo estão nos assets listados em "Mapa dos assets"; ler o asset do processo em curso é **obrigatório** antes de agir.
 
 ## Diagnóstico do modo de falha
 
-A skill nasceu para um autor só: "Pendente", badge e número de versão assumem que ninguém mais mexe no protótipo. Com várias pessoas, o agente comete três erros previsíveis:
+A skill nasceu para um autor só: "Pendente", badge e número de versão assumem que ninguém mais mexe no protótipo. Com várias pessoas, e com um cliente avaliando uma versão estável enquanto o time continua evoluindo, o agente comete erros previsíveis:
 
-- **Numera cedo demais.** Cada agente escolhe "o próximo número" olhando só a própria cópia; dois colegas reservam a mesma versão sem saber, e o changelog passa a afirmar um histórico que não existe.
-- **Resolve em silêncio o que era decisão de produto.** O git só vê linhas diferentes. O agente "resolve" ficando com um dos lados, e a pessoa A ou B perde, sem ser avisada, uma decisão sobre o que o usuário final vê (ordem de telas, texto, cor).
-- **Pergunta em jargão.** Quando pergunta, fala de branch, merge e arquivo; quem decide é produto e não precisa (nem deveria) entender isso.
+- **Numera cedo demais.** Cada agente escolhe "o próximo número" olhando só a própria cópia; dois colegas reservam a mesma versão e o changelog passa a afirmar um histórico que não existe.
+- **Mistura o que o cliente avalia com o que o time está construindo.** Sem camadas, um ajuste em andamento chega ao cliente, ou a versão de teste do time muda debaixo de quem está avaliando.
+- **Resolve em silêncio o que era decisão de produto.** O git só vê linhas diferentes. O agente "resolve" ficando com um dos lados e a pessoa A ou B perde, sem aviso, uma decisão sobre o que o usuário final vê.
+- **Fala em jargão com quem não é técnico.** Branch, merge e arquivo na conversa com quem decide produto.
+- **Confia em identidade autodeclarada.** Qualquer um digita um e-mail de responsável e passa a publicar para o cliente.
+- **Publica no artefato errado, ou em silêncio, sem permissão.** O link que o cliente abre fica velho e ninguém percebe.
 
-Princípio: **sincronizar antes de numerar, decidir com o usuário o que o cliente final veria diferente, e resolver sozinho só o que é burocracia ou tem critério claro.**
+Princípio: **sincronizar antes de numerar, separar o que o cliente vê do que o time constrói, decidir com o usuário o que muda para o cliente, e resolver sozinho só o que é burocracia ou tem critério claro.**
 
-## Ativação (configuração dentro do repositório)
+## As camadas
 
-Arquivo único na raiz do protótipo, `prototype.config.json`:
+| Camada | Para a pessoa do time | Por baixo dos panos | Artefato |
+|---|---|---|---|
+| **Oficial** | "a versão que o cliente está avaliando" | branch oficial (padrão `main`) — só recebe promoção da beta | `<slug>-vX.Y.Z` |
+| **Beta** | "a versão de testes do time" | branch compartilhada (padrão `beta`) | `<slug>-vX.Y.Z-beta.N` |
+| **Meu rascunho** | "o meu trabalho" | branch pessoal (padrão `draft/{membro}`) | só local |
+| **Preview** | "uma opção para comparar" | qualquer ponto de partida, sem numeração | `<slug>-<oficial>-preview-<rótulo>-<AAAAMMDD-HHMM>` |
 
-```json
-{ "groupMode": true, "sharedBranch": "main", "remote": "origin" }
-```
+- **Invariante beta ⊇ oficial:** tudo que está na oficial está na beta. A oficial só avança por promoção da beta (avanço direto, sem reescrever histórico). A única exceção é a correção urgente (ver [`group-promotion.md`](group-promotion.md)), que também traz a correção para a beta.
+- **Versões:** oficial `vX.Y.Z`; beta `vX.Y.Z-beta.N`, onde X.Y.Z é a última oficial e N é um contador contínuo que recomeça em 1 a cada promoção. Preview **não consome número, não entra no changelog e nunca é promovido diretamente**: para virar oficial precisa passar pela beta e pela promoção.
+- **Beta e preview podem ser mostrados a cliente ou stakeholder como comparativo.** O artefato sempre carrega um rótulo visível do que é ("Versão oficial", "Versão de testes", "Opção A — <rótulo>").
 
-- `groupMode` ausente, `false` ou arquivo inexistente → comportamento normal da skill.
-- Ler o arquivo no início de toda rodada que possa terminar em commit (a configuração pode ter mudado no meio do trabalho).
-- Arquivo exclusivo do protótipo: não é referenciado por `index.html`/`build.py`, não entra no `dist/` e não migra para o produto. Criá-lo só com confirmação do usuário (é configuração nova).
-- `groupMode: true` sem o remoto configurado: avisar em linguagem de produto ("este protótipo está em modo grupo, mas ainda não tem o lugar compartilhado configurado") e tratar como "sem sincronização" (seção abaixo).
+## Papéis e estado de cada membro
 
-## Pré-requisitos — repositório pronto e acesso de push conferido
+Cada pessoa é um membro do `members` do config, com `status`, `roles` e `profile`.
 
-O modo grupo só liga depois que o repositório está **pronto para compartilhar** e o acesso de envio foi **conferido de verdade** — configurar `groupMode: true` sem isso faz o primeiro commit aprovado falhar na sincronização, e o agente tende a "seguir mesmo assim" (numerando versão sem ter sincronizado).
+| Status | Pode | Não pode |
+|---|---|---|
+| `approved` + `promoter` | tudo: rascunho, compartilhar, previews, promover, migrar, aprovar/reprovar pessoas, alterar `policy`/`branches` | — |
+| `approved` + `contributor` | rascunho, compartilhar na beta, gerar previews | promover, migrar, aprovar/reprovar pessoas, alterar `policy`/`branches` |
+| `pending` (acabou de se registrar) | rascunho, compartilhar na beta (o trabalho entra marcado como pendente), gerar previews | promover, decidir sobre pessoas, alterar `policy`/`branches`/`skill.version`, tocar a branch oficial, atualizar o artefato oficial |
+| `rejected` / `revoked` | só consultar | qualquer alteração |
+| fora da lista, ou identidade divergente | só consultar | qualquer alteração |
 
-Checagem (script `scripts/group-preflight.py`, só leitura no remoto): repositório git, remoto configurado, remoto alcançável (`git ls-remote`), branch compartilhada existente no remoto e acesso de push (`git push --dry-run`, que não altera o remoto). Resultado inconclusivo (sem commits locais, tempo esgotado) é relatado como tal — nunca como sucesso.
+`profile` por membro (`product` — padrão — ou `technical`) define o vocabulário da conversa (próxima seção). A skill **não impõe permissão no servidor**: ela segue uma convenção uniforme e verificável. A proteção real está em o responsável proteger a branch oficial e a beta no host de código; o preflight avisa quando não consegue confirmar isso.
 
-```bash
-python3 <skill>/scripts/group-preflight.py --repo <pasta>            # confere (exige groupMode:true na config)
-python3 <skill>/scripts/group-preflight.py --repo <pasta> --enable   # confere e, se tudo OK, grava groupMode:true
-python3 <skill>/scripts/group-preflight.py --repo <pasta> --force-check   # testar antes de ativar
-```
+## Vocabulário na conversa — obrigatório
 
-Quando falha, resolver antes de seguir (sem decidir pelo usuário o que é dele): remoto ausente → pedir a URL e `git remote add`; branch compartilhada ausente → primeiro envio com aprovação; sem permissão de push → pedir ao responsável pelo repositório que conceda o acesso (o agente não contorna credencial). Enquanto não passar, `groupMode` permanece `false` e vale a regra "sem sincronização = sem versionamento". Rodar o preflight de novo quando o acesso mudar ou ao retomar um protótipo antigo em modo grupo.
+Com membro de `profile: product`, a conversa usa **só** vocabulário de produto. Termo técnico só se a própria pessoa o usar primeiro ou perguntar. Com `profile: technical`, termos técnicos são permitidos, mas as camadas continuam sendo chamadas pelos nomes de produto.
 
-## Ciclo de sincronização — obrigatório após cada commit aprovado
-
-A aprovação de commit do usuário já cobre a sincronização (no modo grupo ela faz parte do commit). Fazer na ordem:
-
-- [ ] 1. **Buscar as novidades do time** no remoto, antes de numerar qualquer versão.
-- [ ] 2. **Trazer as novidades para o trabalho** sem reescrever o que já foi publicado. Nunca forçar envio; nunca descartar trabalho de outra pessoa sem aprovação do usuário.
-- [ ] 3. **Classificar cada conflito** (mecânico × perceptível) e tratar conforme as duas seções abaixo.
-- [ ] 4. **Conferência de versões** (só se o lote está sendo numerado agora): maior versão no changelog já integrado; próximo número livre a partir dela (regras de incremento do `versioning-and-changelog.md`); nenhuma versão duplicada no changelog; badge = versão do topo do changelog; nomes de artefatos publicados coerentes com isso. Renomear `Pendente (não commitado)` para o número só agora, depois da integração.
-- [ ] 5. **Rebuild** (`python3 build.py`) e olhar os fluxos que as novidades tocaram ([`UX-REVIEW.md`](UX-REVIEW.md)): integrar sem ver a tela é o jeito de publicar uma tela quebrada.
-- [ ] 6. **Commit** da integração/bump e **envio**. Se o envio for recusado porque alguém enviou no meio tempo, voltar ao passo 1 (no máximo 3 voltas; depois parar e relatar).
-- [ ] 7. **Relatar em linguagem de produto**: o que veio do time, o que foi decidido (e por quem), qual número de versão saiu. Só então publicar/atualizar artefatos (nome com a versão final).
-
-`dist/` é gerado: se o repositório o versiona, regenerar pelo build — nunca resolver à mão nem escolher um lado.
-
-## Conflito mecânico — o agente resolve e relata em uma linha
-
-Burocracia sem decisão de produto: o array do changelog (manter as entradas de todos, ordem decrescente), número de versão e badge (passo 4), `dist/`, listas de registro em que as duas pessoas só **acrescentaram itens independentes** (ordem dos `<script>`/`<link>` no `index.html`, mapa de telas). Se as duas mexeram no **mesmo item** de uma lista, deixa de ser mecânico → perceptível.
-
-## Conflito perceptível — qualquer divergência no que o usuário final vê ou faz
-
-"Jornada" aqui é genérico: sequência e ordem de telas, bifurcações, textos, botões, campos, cores, tipografia, espaçamento, regras visíveis (valores, taxas, mensagens). Sempre que as duas pessoas mudaram **a mesma coisa de formas diferentes**:
-
-1. **Levantar cada lado em termos de produto**: quem fez (nome do autor, quando identificável), o que o cliente vê/faz em cada versão. Usar nomes de tela e códigos de jornada da documentação de jornadas do projeto ([`user-journey-docs.md`](user-journey-docs.md)) quando existir; senão, títulos das telas e o changelog.
-2. **Evidência visual** quando a diferença é de aparência: print de cada lado (seção abaixo).
-3. **Decidir sozinho ou perguntar** (próxima seção).
-4. **Perguntar via `grill-me`** quando for o caso (seção "Grill em linguagem de produto").
-5. Se o resultado muda sequência/ramificação de telas, a documentação de jornadas entra na régua de sempre (confirmar antes de alterar).
-
-### Decidir sozinho × perguntar
-
-Auditoria cruzada obrigatória ao integrar: comparar o design system documentado do projeto com o que o código integrado de fato usa nas áreas alteradas. Divergência significa que **alguém esqueceu de atualizar o design system, ou alguém ignorou o design system** — e ser a versão mais recente do documento não prova que ele está certo.
-
-| Situação | Decisão |
+| Dizer | Nunca dizer (a quem é `product`) |
 |---|---|
-| Um lado é o outro com ajuste (já inclui a decisão do outro) | Ficar com o mais completo; relatar |
-| Design system documentado resolve, e só um lado o segue sem justificativa registrada (valor "quase igual" a um token, estilo acidental) | Ficar com o lado que segue o design system; corrigir o outro; relatar |
-| Mudança intencional (aparece no changelog/mensagem de commit ou nos dois lados) que o design system ainda não registra | Perguntar se as duas são válidas; se uma for escolhida, **atualizar o design system primeiro** e só então o código |
-| Sequência/ordem de telas, bifurcação, remoção de tela, texto jurídico, valor ou regra visível | **Sempre perguntar** — nunca decidir sozinho |
-| As duas versões são coerentes entre si e com o design system | Perguntar |
-| Sem critério claro | Perguntar |
+| "versão oficial" (a que o cliente avalia) | `main`, branch, ramo |
+| "versão de testes do time" (beta) | merge, rebase, commit, push, pull, fetch |
+| "meu rascunho" | conflito, diff, repositório, PR, hash, trailer |
+| "compartilhar com o time" / "salvar só para mim" | arquivo, linha, `dist`, config, schema, JSON |
+| "trazer as novidades do time" | script, flag, exit code |
+| "publicar para o cliente" | componente, props, estado, cabeçalho de contrato |
 
-Decisão tomada sozinha vai para o relatório do passo 7 com o motivo em uma frase, e o usuário pode revertê-la. Correções de design system entram na entrada `Pendente` do changelog.
+Antes de enviar o relatório de cada rodada, **releia a mensagem contra esta lista** (item do checklist de fim de rodada). Regras técnicas vivem no código e em `docs/`, nunca na conversa com quem é `product`.
 
-## Grill em linguagem de produto
+## Ativação
 
-Aplicar `grill-me` (até 3 perguntas independentes por vez, contexto completo, recomendação do agente) com estas restrições:
+O arquivo `prototype.config.json` na raiz do protótipo, no formato v2 (com `skill`, `branches`, `policy`, `docs`, `members`, `artifacts`), validado pelo schema `templates/prototype.config.schema.json` por `scripts/config-validate.py`.
 
-- **Vocabulário proibido nas perguntas**: branch, merge, rebase, commit, push, pull, conflito, arquivo, linha, diff, repositório. Substituições: "o trabalho da pessoa X", "a versão da pessoa X", "o que o cliente vê", "a tela de <nome>".
-- **Cada pergunta traz**: as duas versões descritas como o cliente as vive (sequência de passos ou o que muda na tela), o print lado a lado quando for visual, a recomendação com o motivo em termos de produto, e o que cada escolha implica para quem fez a outra.
-- Termos técnicos só se o usuário perguntar ou usar primeiro.
+- `groupMode` ausente, `false` ou arquivo inexistente → comportamento normal da skill (um autor só).
+- Ler o config **no início de toda rodada**, não só na ativação: ele pode ter mudado.
+- O config é exclusivo do protótipo: não é referenciado por `index.html`/`build.py`, não entra no `dist/` e não migra para o produto.
+- `groupMode: true` sem remoto, sem a branch beta ou sem acesso de envio: o **preflight** (`scripts/group-preflight.py`) falha. Resolver antes de seguir (ver [`group-sync.md`](group-sync.md) → "Pré-requisitos") e, enquanto isso, valer a regra "sem sincronização, sem versionamento".
+- A ativação completa (versão da skill, identidade, artefatos, novidades) é o **Passo 0**: [`skill-lifecycle.md`](skill-lifecycle.md) e [`checklists.md`](checklists.md) → C0.
 
-<exemplo-de-pergunta>
-**Bom:** "A tela de taxas aparece antes da escolha da maquininha na versão de <pessoa A> e depois dela na de <pessoa B>. [print A] [print B]. Hoje o cliente decide a maquininha sem conhecer o custo na versão B. Recomendo a ordem de <pessoa A>, porque o cliente compara as taxas antes de escolher. Qual vale?"
+## Mapa dos assets — ler o do processo em curso
 
-**Ruim:** "Há conflito de merge em `screens/index.js` entre a sua branch e `origin/main`; resolver mantendo HEAD ou incoming?" — fala de código, não diz o que muda para o cliente, não dá recomendação.
-</exemplo-de-pergunta>
+| Processo | Ler |
+|---|---|
+| Ativar a skill; versão da skill; migrar um protótipo antigo | [`skill-lifecycle.md`](skill-lifecycle.md) |
+| Quem é a pessoa; auto-registro; verificação de identidade | [`group-identity.md`](group-identity.md) |
+| Aprovar/reprovar pessoas novas; rollback e reintegração | [`group-members.md`](group-members.md) |
+| Aprovar um lote; compartilhar; salvar só para mim; trazer novidades | [`group-sync.md`](group-sync.md) |
+| Publicar para o cliente; correção urgente; desfazer promoção | [`group-promotion.md`](group-promotion.md) |
+| Publicar, atualizar ou alertar sobre artefatos | [`group-artifacts.md`](group-artifacts.md) |
+| Dois trabalhos mudaram a mesma coisa | [`group-conflicts.md`](group-conflicts.md) |
+| Qualquer situação fora do fluxo feliz (resposta ambígua, sem rede, hotfix, membro saindo…) | [`group-scenarios.md`](group-scenarios.md) |
+| Criar componente, regra de negócio, documentação | [`components-and-docs.md`](components-and-docs.md) |
+| Conferir cada etapa (ativação, fim de rodada, compartilhar, promover, migrar, vetar) | [`checklists.md`](checklists.md) |
 
-## Evidência visual (print de cada lado)
+## Regras que não se negociam
 
-Objetivo: o usuário decide olhando, não imaginando. Tentar nesta ordem e declarar o que não foi possível:
-
-1. **Ferramenta de browser da sessão**, se disponível: subir cada lado e capturar.
-2. **Chrome em modo headless** (precisa estar instalado): renderizar cada lado numa cópia temporária — por exemplo uma cópia do repositório no diretório de scratch da sessão —, rodar `python3 build.py` nela e capturar:
-
-```bash
-"$CHROME_BIN" --headless --disable-gpu --no-sandbox --hide-scrollbars \
-  --window-size=1280,900 --screenshot="<saida>.png" "file://<cópia>/dist/index.html"
-```
-
-   Detectar o executável pelos caminhos padrão do sistema operacional e permitir override por `CHROME_BIN`; se não existir (ou o override apontar para algo inexistente), falhar com mensagem clara em vez de cair em outro motor. Para mobile, `--window-size=390,844`. Ignorar o ruído de stderr do Chrome headless; sucesso = arquivo gerado.
-3. Só com URL, o headless captura o estado inicial: para chegar a uma tela específica use o jeito que o protótipo já oferece (hash, parâmetro, atalho de estado); sem isso, use a opção 1.
-4. **Sem nenhuma das duas**: descrever em texto e dizer explicitamente que a diferença não foi verificada visualmente.
-
-Prints são material de decisão, não de entrega: ficam no scratch, não vão para o repositório, e são apresentados ao usuário pelo recurso de envio de imagem/arquivo do harness (ou o caminho do arquivo, se não houver).
-
-## Sem sincronização possível (offline, sem permissão, remoto fora do ar)
-
-**Sem sincronização, sem versionamento.** O trabalho continua normal:
-
-- Commit local permitido. **Nada de número de versão novo e nada de publicar/atualizar artefato**: a entrada continua `Pendente (não commitado)` e o badge continua na última versão realmente compartilhada.
-- Avisar em linguagem de produto que o trabalho ainda não chegou ao time, e **lembrar disso no início de cada rodada seguinte** enquanto houver commits não compartilhados.
-- Na próxima chance, rodar o ciclo de sincronização inteiro.
-
-**Exceção, só com pedido explícito do usuário de versionar mesmo assim.** Antes de aceitar, o agente explica: (a) o número escolhido pode colidir com o de um colega, porque ele não vê o trabalho do time; (b) se colidir, o número vai mudar na sincronização (regra abaixo), inclusive em artefatos ou mensagens que o usuário já tenha compartilhado. Só com o aceite depois dessa explicação, numerar normalmente.
-
-**Colisão de versões na sincronização** — missão do primeiro agente que sincronizar e a encontrar: ordenar as versões colidentes pela data de criação; a mais antiga vira `vX.Y.Za`, as seguintes `b`, `c`… Ajustar as entradas do changelog, o badge (mostra a mais recente do grupo) e os nomes de artefatos publicados. O sufixo não consome número: a próxima versão nova parte de `X.Y.Z` e segue as regras de incremento de sempre.
-
-## O código do protótipo não muda de natureza
-
-O modo grupo é processo, não arquitetura: nada de sincronização ou configuração entra em `js/`/`styles/` do protótipo. Ao integrar, manter as regras de [`split-into-files.md`](split-into-files.md): uma responsabilidade por arquivo, um componente por arquivo, ordem de carregamento no `index.html`. Resolver o conflito **escolhendo ou combinando**, nunca deixando as duas versões lado a lado nem criando uma cópia paralela do componente ("versão b"). Depois de integrar, `node --check` em cada script tocado e navegar pelos fluxos afetados. Se o mesmo arquivo gera conflito repetidamente, é sinal de que mistura duas responsabilidades: propor ao usuário dividi-lo, sem dividir por conta própria no meio da sincronização.
+1. **Passo 0 em toda ativação e reativação**, e antes de compartilhar e de promover: recarregar `grill-me` e `hallucination-guard`, conferir versão da skill, identidade e artefatos. Sem isso, nada é alterado.
+2. **Nunca numerar versão antes de sincronizar e de aprovação explícita.** Sem sincronização possível, sem número novo e sem artefato publicado.
+3. **Nunca forçar envio, nunca reescrever histórico publicado.** Desfazer é sempre um commit novo que inverte o anterior.
+4. **Nunca decidir sozinho** conflito que muda o que o cliente vê (sequência de telas, texto, regra visível, cor, componente), nem aprovar/reprovar pessoa, nem promover.
+5. **Só promoter promove.** Aprovação de promoção é explícita e traz a lista "irá também ao cliente".
+6. **Toda publicação de artefato usa o artefato registrado para a camada**; sem permissão, o alerta é obrigatório e o trabalho continua salvo.
+7. **Identidade é verificada pelas camadas descritas em `group-identity.md`**; divergência vira modo consulta, nunca palpite.
+8. **Código modular:** elemento com potencial de compartilhamento vira componente; regras e contratos ficam no código e em `docs/`, ocultos da conversa com quem é `product`.
+9. **Documentação padrão (`docs/`) é mantida na mesma rodada**, dentro da autorização registrada em `docs.autoMaintain`; mudar jornada (remover/reordenar etapas) continua exigindo confirmação.
+10. **Em dúvida entre dois comportamentos, perguntar via `grill-me`** com contexto completo e recomendação — nunca assumir.

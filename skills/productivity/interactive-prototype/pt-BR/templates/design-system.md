@@ -34,13 +34,14 @@ Escala de espaçamento `--space-*`, raios `--radius-*`, sombras `--shadow-*` (va
 
 ## 5. Componentes
 
-Prefixo de classe: **`@@PREFIX@@-`** para componentes de produto (ex.: `.@@PREFIX@@-btn-primary`); utilitários de estrutura (`.field`, `.card`) sem prefixo. Cada componente documenta: quando usar, variantes, estados (hover, foco, desabilitado, erro, carregando) e onde está definido.
+Prefixo de classe: **`@@PREFIX@@-`** para componentes de produto (ex.: `.@@PREFIX@@-btn-primary`); utilitários de estrutura (`.field`, `.card`) sem prefixo. O contrato de cada componente (props, estado, eventos, acessibilidade) fica no cabeçalho do seu arquivo em `js/components/` e no catálogo gerado `components.md`. Aqui, cada componente documenta o visual: quando usar, variantes, estados (hover, foco, desabilitado, erro, carregando) e onde está definido.
 
 | Componente | Classe | Definido em | Estados |
 |---|---|---|---|
 | Botão primário / ghost | `.@@PREFIX@@-btn-primary`, `.@@PREFIX@@-btn-ghost` | `styles/components.css` | hover, foco, desabilitado |
 | Campo de texto | `.field` + `.@@PREFIX@@-input` | `styles/components.css` | foco, erro (`.has-error`) |
 | Stepper | `.stepper` | `styles/components.css` | done, current |
+| Modal | `.@@PREFIX@@-modal-overlay` + `.@@PREFIX@@-modal` (`is-sm`/`is-md`/`is-lg`) | `styles/components.css` (lógica em `js/components/modal.js`) | aberto (`is-open`), foco preso |
 | Toast | `#toast` | `styles/components.css` | show |
 
 ## 6. Animações
