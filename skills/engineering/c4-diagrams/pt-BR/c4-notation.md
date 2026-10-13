@@ -59,3 +59,11 @@ Todas as perguntas são de resposta sim/não (que todas devam ser "sim" é a lei
 - O C4 não cobre processos de negócio, workflows, máquinas de estado, modelos de domínio e de dados; complementar com BPMN, UML, ER etc.
 - Menos adequado a firmware embarcado e a soluções de customização pesada (SAP, Salesforce).
 - Com arc42: Context and Scope = System Context; Building Block View nível 1 = Container; nível 2 = Component; nível 3 = Code. O diagrama de implantação não é mapeado pelo FAQ; usá-lo na seção 7 do arc42 é aproximação desta skill.
+
+## Complementos do livro (Simon Brown, *The C4 model for visualising software architecture*, Leanpub, 2022; paráfrase)
+
+- **Obrigatório vs. opcional:** todo sistema deve ter contexto (cap. 6) e contêineres (cap. 7). Componentes são opcionais para documentação duradoura (esforço de manter; poluição visual com mais de um punhado de componentes); em geral não se desenha para armazenamento de dados nem contêineres muito simples. Código: opcional, em geral não recomendado.
+- **Microsserviços e serverless:** os que o time não controla = sistemas externos; os que o time possui = contêineres, e seus armazenamentos são outros contêineres; funções serverless (Lambda, Functions) = contêineres, por serem implantáveis separadamente.
+- **Evite "módulo" e "subsistema"** (difícil mapear para a base real); frameworks e bibliotecas são escolhas de tecnologia de componentes, não componentes.
+- **Atributos de qualidade:** podem entrar como texto na descrição do elemento ou na seta (volume, latência-alvo); segurança e outras preocupações transversais ficam melhor em documentação complementar; replicação e clustering, no diagrama de implantação.
+- **Vocabulário:** se a organização já tem um, mantenha-o desde que explicitamente definido; a hierarquia de abstração é o que importa.
