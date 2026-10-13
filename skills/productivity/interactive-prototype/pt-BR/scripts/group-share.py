@@ -177,7 +177,7 @@ def load_decisions(path):
         items = raw['decisions']
         out = {}
         for it in items:
-            keep, what, rel = it['keep'], gs.clean_decision_text(it['what']), str(it['path']).lstrip('./')
+            keep, what, rel = it['keep'], gs.clean_decision_text(it['what']), str(it['path']).removeprefix('./')
             if keep not in ('mine', 'theirs', 'combined') or not what:
                 raise ValueError(f'decisão inválida para {rel}: keep deve ser mine|theirs|combined e what não '
                                  'pode ser vazio')

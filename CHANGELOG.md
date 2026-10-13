@@ -9,6 +9,15 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.28.1] — 2026-10-13
+
+### Fixed
+
+- `interactive-prototype`: `--decisions combined` no `prototype.config.json` passou a partir da fusão mecânica dos dois lados, aceitar do arquivo só as chaves em conflito e exigir que o resultado passe no `config-validate.py`; um arquivo vazio ou inválido não grava mais um config que travava o grupo, e mudanças sem conflito do outro lado não se perdem. Só promoter aprovado decide o config; `members` e `artifacts` vêm sempre da fusão (nenhuma decisão sobre pessoas se desfaz).
+- `interactive-prototype`: decisões para arquivos com ponto no início do caminho (`.gitignore`, `.claude/…`) voltam a casar com o conflito (`removeprefix('./')` no lugar de `lstrip`); o caminho `file` de um `combined` pode ser relativo ao JSON de decisões; o `--help` de `conflict-decisions.py` descreve `dropped` como o código e a documentação.
+
+---
+
 ## [0.28.0] — 2026-10-13
 
 ### Added

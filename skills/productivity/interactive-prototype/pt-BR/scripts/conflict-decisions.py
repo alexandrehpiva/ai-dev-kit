@@ -2,8 +2,9 @@
 """Lista, na beta, as decisões de conflito que descartaram o trabalho de uma pessoa (modo grupo v2).
 
 Só leitura, só stdlib. Procura o trailer `Prototype-Conflict-Decision` nos commits da beta (ref remota quando
-existir) e devolve as decisões em que a pessoa informada está entre os `dropped` (todos os autores cujo
-trabalho no arquivo foi descartado nos trechos em conflito).
+existir) e devolve as decisões em que a pessoa informada está entre os `dropped`: em `mine`/`theirs`, todos os
+autores do lado descartado que tocaram o arquivo (inclusive quem teve só mudanças mantidas); em `combined`, todos
+os autores menos quem decidiu.
 
   python3 conflict-decisions.py --repo . --actor-email bia@example.test [--since <commit-ou-data>]
 

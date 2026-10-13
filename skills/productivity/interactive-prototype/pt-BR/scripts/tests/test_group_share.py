@@ -268,6 +268,39 @@ class Execute(ShareBase, unittest.TestCase):
         self.assertEqual(by_email[DANI[1]]['status'], 'rejected')
         self.assertIn(CAIO[1], by_email)
 
+    def test_given_promoter_combined_config_is_empty_or_invalid_then_conflict_remains(self):
+        self._config_conflict_setup((self.b, BIA), (self.a, ANA), 5, 3)
+        beta_before = remote_file(self.remote, 'beta', 'prototype.config.json')
+        for name, mutate in (('empty', lambda cfg: cfg.clear()),
+                             ('bad-value', lambda cfg: cfg['policy'].update(pendingExpiryDays='x'))):
+            dec = self._config_decision(self.a, name, mutate)
+            code, env, _, _ = share(self.a, ANA, '--execute', '--vetting-done', '--decisions', dec)
+            self.assertEqual((code, env['status']), (1, 'CONFLICTS'), name)
+            self.assertEqual(remote_file(self.remote, 'beta', 'prototype.config.json'), beta_before)
+
+    def test_given_promoter_combined_config_then_only_conflicting_keys_come_from_the_file(self):
+        self._config_conflict_setup((self.b, BIA), (self.a, ANA), 5, 3)
+
+        def sneaky(cfg):
+            cfg['docs']['autoMaintain'] = True
+        dec = self._config_decision(self.a, 'sneaky', sneaky)
+        code, env, out, err = share(self.a, ANA, '--execute', '--vetting-done', '--decisions', dec)
+        self.assertEqual((code, env['status']), (0, 'SHARED'), out + err)
+        beta_cfg = json.loads(remote_file(self.remote, 'beta', 'prototype.config.json'))
+        self.assertEqual(beta_cfg['policy']['pendingExpiryDays'], 4)
+        self.assertFalse(beta_cfg['docs']['autoMaintain'])
+
+    def test_given_decision_paths_with_leading_dot_then_only_literal_prefix_is_removed(self):
+        import configtools
+        mod = configtools.load_script('group-share.py')
+        path = Path(self.tmp) / 'dots.json'
+        path.write_text(json.dumps({'decisions': [
+            {'path': '.gitignore', 'keep': 'mine', 'what': 'a'},
+            {'path': './js/screens/a.js', 'keep': 'theirs', 'what': 'b'}]}), encoding='utf-8')
+        decisions, err = mod.load_decisions(str(path))
+        self.assertIsNone(err)
+        self.assertEqual(set(decisions), {'.gitignore', 'js/screens/a.js'})
+
     def test_given_invalid_decisions_file_then_refuses_without_touching_anything(self):
         self._conflict_setup()
         bad = Path(self.tmp) / 'bad.json'

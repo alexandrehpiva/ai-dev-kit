@@ -15,6 +15,7 @@ from datetime import date
 from pathlib import Path
 
 import changelog_tools as ct
+import configtools
 import protolib
 from protolib import git
 
@@ -360,29 +361,50 @@ def _favor_side(base, ours, theirs, keep):
 def _combined_config(content, base, ours, theirs, by):
     """Conteúdo final do config num `combined`, ou None se recusado.
 
-    Só promoter aprovado (no roster da beta) decide o config. `members` e `artifacts` do arquivo são
-    ignorados: valem as fusões mecânicas dos dois lados (decisão de pessoa nunca se desfaz, ninguém some).
+    Só promoter aprovado (no roster da beta) decide o config. A base é a fusão mecânica dos dois lados:
+    `members`/`artifacts` vêm sempre dela (ninguém some, decisão de pessoa não se desfaz) e as chaves sem
+    conflito também. Do arquivo entram só as chaves que de fato conflitam. O resultado precisa passar no
+    validador de config (`config-validate.py`) como VALID; senão o conflito continua.
     """
     try:
         final, o, t = json.loads(content), json.loads(ours), json.loads(theirs)
         b = json.loads(base) if base else {}
     except ValueError:
         return None
-    if not isinstance(final, dict) or not isinstance(o, dict) or not isinstance(t, dict):
+    if not all(isinstance(x, dict) for x in (final, o, t, b)):
         return None
     member = protolib.find_member(t, by) if by else None
     if not (member and member.get('status') == 'approved' and protolib.is_promoter(member)):
         return None
     lists = ('members', 'artifacts')
-    merged = ct.merge_config({k: v for k, v in b.items() if k in lists} if isinstance(b, dict) else {},
-                             {k: v for k, v in o.items() if k in lists},
-                             {k: v for k, v in t.items() if k in lists})
-    for k in lists:
-        if k in merged:
-            final[k] = merged[k]
-        else:
-            final.pop(k, None)
-    return json.dumps(final, ensure_ascii=False, indent=2) + '\n'
+    try:
+        out = ct.merge_config(b, o, t)
+    except ct.ConflictError as e:
+        out = {}
+        for k in list(o) + [k for k in t if k not in o]:
+            if k in lists:
+                continue
+            ov, tv, bv = o.get(k, ct._MISSING), t.get(k, ct._MISSING), b.get(k, ct._MISSING)
+            if ov == tv:
+                val = ov
+            elif ov == bv:
+                val = tv
+            elif tv == bv:
+                val = ov
+            elif k in final:
+                val = final[k]
+            else:
+                return None
+            if val is not ct._MISSING:
+                out[k] = val
+        merged_lists = ct.merge_config({k: v for k, v in b.items() if k in lists},
+                                       {k: v for k, v in o.items() if k in lists},
+                                       {k: v for k, v in t.items() if k in lists})
+        out.update(merged_lists)
+    status, _, problems = configtools.load_script('config-validate.py').validate_config(out)
+    if status != 'VALID' or problems:
+        return None
+    return json.dumps(out, ensure_ascii=False, indent=2) + '\n'
 
 
 def apply_decisions(repo, perceptible, decisions, ours_rng, theirs_rng, by=None):
@@ -391,7 +413,8 @@ def apply_decisions(repo, perceptible, decisions, ours_rng, theirs_rng, by=None)
     mine/theirs: a escolha vale só para os trechos em conflito; o resto do arquivo mantém as mudanças dos
     dois lados. Arquivo apagado de um lado segue a escolha inteira. combined: grava o conteúdo final
     fornecido (a combinação feita pelo agente com o usuário). No config só vale `combined`, só para promoter
-    aprovado, e `members`/`artifacts` vêm sempre da fusão mecânica dos dois lados (nunca descarta roster).
+    aprovado, parte da fusão mecânica dos dois lados (`members`/`artifacts` e chaves sem conflito não vêm do
+    arquivo) e só vale se o resultado passar no config-validate (nunca descarta roster).
     Devolve (restantes, decididos). `mine` = lado do rascunho (HEAD); `theirs` = lado da beta (MERGE_HEAD).
     O merge segue aberto; quem chama conclui ou aborta.
     """
