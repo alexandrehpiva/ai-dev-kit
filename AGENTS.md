@@ -121,6 +121,26 @@ Skills focadas em código: construir, revisar, depurar e operar sistemas.
 
 ---
 
+## c4-diagrams
+
+**Arquivo:** `skills/engineering/c4-diagrams/pt-BR/SKILL.md`
+
+**Descrição:** Desenha diagramas C4 em `.drawio` editável com lib Python stdlib (`scripts/c4_drawio_lib.py`) que aplica as regras de notação de c4model.com (título com escopo, legenda automática, tipo/descrição/tecnologia, seta unidirecional rotulada) e recusa gravar diagrama que as viole. Assets: `c4-notation.md` (abstrações, tabela de diagramas, notação, checklist de 21 perguntas, FAQ), `engine.md` (API, tokens WCAG, lições de layout), `scripts/` (lib, tokens, exemplo e cinco diagramas renderizados).
+
+**Quando usar:** o usuário pedir "diagrama C4", "diagrama de contexto/contêineres/componentes", "desenha a arquitetura em C4", ou revisar um diagrama C4 contra o checklist oficial. Infra de nuvem com ícones: `architecture-diagrams`; processos: `bpmn-flow-diagrams`.
+
+---
+
+## architecture-docs
+
+**Arquivo:** `skills/engineering/architecture-docs/pt-BR/SKILL.md`
+
+**Descrição:** Documenta arquitetura com o template arc42 (12 seções; Building Block View obrigatória) escolhendo só as seções necessárias, e registra decisões como ADR (estrutura de Nygard), ligando cada seção ao diagrama C4 correspondente. Assets: `arc42-sections.md` (o que cada seção pede, literal da fonte), `templates/arc42-skeleton.md`, `templates/adr-nygard.md`. Conteúdo arc42 em CC BY-SA 4.0.
+
+**Quando usar:** o usuário pedir "documentação de arquitetura", "arc42", "ADR", "registro de decisão", "metas de qualidade", "estratégia de solução". Diagramas: `c4-diagrams`.
+
+---
+
 ## dev-squad
 
 **Arquivo:** `skills/engineering/dev-squad/pt-BR/SKILL.md` (também disponível em `en-US`)

@@ -1,0 +1,49 @@
+{
+  "_comment": "Tokens visuais deste kit para diagramas C4. O C4 não prescreve cores (c4model.com/diagrams/notation); estes valores são escolha própria, com contraste WCAG >= 4.5:1 entre texto e preenchimento, e com distinção também por forma/borda (impressão P&B, daltonismo).",
+  "colors": {
+    "ink": "#1B2733",
+    "muted": "#5F6B76",
+    "edge": "#44505C",
+    "boundary": "#5F6B76",
+    "node_fill": "#F4F6F8",
+    "person": "#08427B",
+    "person_external": "#5F6B76",
+    "system": "#1168BD",
+    "system_border": "#0B4A8A",
+    "system_external": "#5F6B76",
+    "system_external_border": "#3F4A54",
+    "container": "#2F6FB5",
+    "container_border": "#1F4F85",
+    "component": "#CFE3F7",
+    "component_border": "#2F6FB5"
+  },
+  "contrast_wcag": {
+    "white_on_person": 10.12,
+    "white_on_system": 5.62,
+    "white_on_external": 5.45,
+    "white_on_container": 5.17,
+    "ink_on_component": 11.54
+  },
+  "non_color_cues": {
+    "external_system": "borda tracejada + rótulo 'External Software System'",
+    "person": "forma de pessoa + rótulo '[Person]'",
+    "database": "cilindro + tecnologia no rótulo",
+    "async_relationship": "linha tracejada + legenda",
+    "boundary": "retângulo tracejado, sem preenchimento, com título e tipo"
+  },
+  "sizes_px": {
+    "person": [200, 150],
+    "system": [240, 130],
+    "container": [240, 130],
+    "component": [240, 120],
+    "grid_gap_h": 140,
+    "grid_gap_v": 110
+  },
+  "typography": {
+    "name": "14px bold",
+    "type_line": "11px, entre colchetes: [Person] [Software System] [Container: tecnologia] [Component: tecnologia]",
+    "description": "12px",
+    "edge_label": "11px bold; segunda linha [tecnologia/protocolo]",
+    "title": "18px bold: '<Tipo> diagram for <Escopo>'"
+  }
+}

@@ -9,6 +9,15 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.27.0] — 2026-10-13
+
+### Added
+
+- `engineering/c4-diagrams`: diagramas C4 em `.drawio` com lib stdlib que valida a notação do c4model.com (`lint()` recusa gravar), tokens com contraste WCAG ≥ 4.5:1, exemplo executável e cinco diagramas renderizados; assets `c4-notation.md` e `engine.md`.
+- `engineering/architecture-docs`: documentação de arquitetura com arc42 (12 seções, adaptável) e ADR na estrutura de Nygard, com `arc42-sections.md` e templates (CC BY-SA 4.0, atribuição no frontmatter).
+
+---
+
 ## [0.26.1] — 2026-10-12
 
 ### Changed
