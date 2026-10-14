@@ -116,6 +116,23 @@ If the project has separate staging/production environments, read
 
 ---
 
+## Phase 5 — Merge and cleanup (no PO approval needed)
+
+**Owner:** Orchestrator
+
+Dispatching the Tech Lead review, the QA and the merge of an approved item is the flow itself: **do not ask the PO for permission** to run a step that this document already prescribes. Ask only when a rule here calls for escalation.
+
+### Steps
+
+1. After the QA report is `approved` and the PO-facing notice is sent, merge the branch into the base branch (locally, or the PR flow the project uses).
+2. **Immediately after the merge**, remove the task's worktree and its local branch, provided nothing is left pending in them. Verify before removing: the worktree has no uncommitted changes and the branch is an ancestor of the base (`git merge-base --is-ancestor <branch> <base>`). Use `git worktree remove <path>` and `git branch -d <branch>` (no `--force`); if either refuses, report why and keep it.
+3. Never remove a worktree or branch that is not merged or has uncommitted work; list it in the delivery notes instead.
+4. Leave no stale worktrees behind: the PO does not want clutter in the workspace.
+
+> Shell note: in zsh `path` is tied to `PATH`; never name a loop variable `path` when iterating worktrees.
+
+---
+
 ## PO escalation rules
 
 Escalate to the PO (via `po-proxy/protocol.md`) when:

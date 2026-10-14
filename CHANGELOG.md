@@ -9,6 +9,13 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.28.2] — 2026-10-13
+
+### Changed
+- `engineering/dev-squad` (en-US e pt-BR): nova Fase 5 em `orchestrator/flow.md` (merge e limpeza). Despachar Tech Lead, QA e merge de item aprovado é o próprio fluxo e não pede permissão ao PO; imediatamente após o merge, o worktree e a branch local da tarefa são removidos quando nada ficou pendente (sem alterações não commitadas, branch ancestral da base, sem `--force`). Ciclo de vida em `SKILL.md` ganhou o passo [6]. Nota de shell: em zsh a variável `path` é amarrada a `PATH`.
+
+---
+
 ## [0.28.1] — 2026-10-13
 
 ### Fixed

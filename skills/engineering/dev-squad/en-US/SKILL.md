@@ -191,6 +191,7 @@ This keeps concurrent requests from fragmenting an in-flight batch into a half-f
 [4] QA                 QA tests → local status: in-qa
         ↓ approved         ↑ bugs → developer fixes → back to Tech Lead
 [5] Delivery Ready     local status: done → notify PO with QA report and delivery notes
+[6] Merge + cleanup    merge, then remove the task's worktree and local branch if nothing is pending (no PO approval needed; see orchestrator/flow.md, Phase 5)
 ```
 
 For phase details and decision rules, read `orchestrator/flow.md`.

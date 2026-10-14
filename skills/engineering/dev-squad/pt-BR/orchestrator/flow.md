@@ -116,6 +116,23 @@ Se o projeto tiver ambientes separados de staging/produção, leia
 
 ---
 
+## Fase 5 — Merge e limpeza (sem pedir aprovação ao PO)
+
+**Responsável:** Orquestrador
+
+Despachar a revisão do Tech Lead, o QA e o merge de um item aprovado é o próprio fluxo: **não peça permissão ao PO** para executar um passo que este documento já prescreve. Pergunte só quando uma regra daqui mandar escalar.
+
+### Passos
+
+1. Com o relatório de QA `approved` e o aviso ao PO enviado, faça o merge da branch na base (local, ou pelo fluxo de PR do projeto).
+2. **Imediatamente após o merge**, remova o worktree da tarefa e a branch local, desde que não reste nada pendente neles. Confira antes: o worktree sem alterações não commitadas e a branch ancestral da base (`git merge-base --is-ancestor <branch> <base>`). Use `git worktree remove <caminho>` e `git branch -d <branch>` (sem `--force`); se algum recusar, explique o motivo e mantenha.
+3. Nunca remova worktree ou branch não mergeada ou com trabalho não commitado; liste-os nas notas de entrega.
+4. Não deixe worktrees obsoletos: o PO não quer lixo no espaço de trabalho.
+
+> Nota de shell: no zsh `path` é amarrada a `PATH`; nunca chame uma variável de laço de `path` ao iterar worktrees.
+
+---
+
 ## Regras de escalada ao PO
 
 Escale ao PO (via `po-proxy/protocol.md`) quando:

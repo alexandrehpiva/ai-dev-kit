@@ -191,6 +191,7 @@ Isso evita que pedidos concorrentes fragmentem um lote em andamento num estado m
 [4] QA                 QA testa → status local: in-qa
         ↓ aprovado         ↑ bugs → dev corrige → volta ao Tech Lead
 [5] Pronto p/ entrega  status local: done → notificar o PO com relatório de QA e notas de entrega
+[6] Merge + limpeza    merge e, em seguida, remover worktree e branch local da tarefa se nada ficou pendente (sem pedir aprovação ao PO; ver orchestrator/flow.md, Fase 5)
 ```
 
 Para detalhes das fases e regras de decisão, leia `orchestrator/flow.md`.
