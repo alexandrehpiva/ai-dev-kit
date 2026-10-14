@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.30.0] — 2026-10-14
+
+### Changed
+
+- `productivity/grill-me`: o agente passa a poder acionar a skill por conta própria, sem invocação manual (removido `disable-model-invocation: true`; a `description` ganhou o gatilho dinâmico). Nova seção "Acionamento pelo agente (dinâmico)" com critérios de quando acionar (decisão bloqueante que código, documentação e padrões não resolvem; ação difícil de reverter com escopo ambíguo; outra skill manda decidir via grill-me; premissa que contradiz os fatos), quando não acionar e como conduzir (uma linha de aviso, só as decisões bloqueantes, continuar o que não depende da resposta).
+
+---
+
 ## [0.29.0] — 2026-10-14
 
 ### Added

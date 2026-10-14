@@ -301,9 +301,9 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 
 **Descrição:** Entrevistar o usuário de forma implacável sobre um plano, design ou decisão técnica até atingir entendimento compartilhado completo. Uma pergunta por vez, com recomendação do agente. Encerramento com resumo de decisões e Q&A salvo em `tmp/`.
 
-**Quando usar:** o usuário pedir "grill me", "challenge my plan", "questione meu plano", quiser que o design seja desafiado antes de ser construído.
+**Quando usar:** o usuário pedir "grill me", "challenge my plan", "questione meu plano", quiser que o design seja desafiado antes de ser construído; ou o agente, por conta própria, diante de uma decisão ambígua ou de alto impacto que o código e a documentação não resolvem.
 
-**Nota:** `disable-model-invocation: true` — não acionar por inferência; só quando explicitamente solicitado.
+**Nota:** acionável também pelo agente, sem pedido manual (sem `disable-model-invocation`), só para decisões bloqueantes que código, documentação e padrões não resolvem; a seção "Acionamento pelo agente (dinâmico)" do `SKILL.md` define quando acionar e quando não.
 
 ---
 

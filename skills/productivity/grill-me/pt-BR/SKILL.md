@@ -6,8 +6,10 @@ description: >-
   resolvendo dependências uma a uma, sempre fornecendo a resposta recomendada pelo agente.
   Usar quando o usuário pedir para ser questionado sobre um plano; quiser stress-test de design;
   mencionar "grill me", "me questione", "me interrogue", "me desafie sobre", "teste meu plano",
-  ou quando esta skill for nomeada explicitamente.
-disable-model-invocation: true
+  ou quando esta skill for nomeada explicitamente. O agente também a aciona por conta própria,
+  sem pedido manual, quando uma decisão ambígua ou de alto impacto (escopo, contrato, arquitetura,
+  ação difícil de reverter) não pode ser resolvida pelo código, pela documentação nem por um padrão
+  sensato, ou quando outra skill ou instrução manda decidir "via grill-me".
 ---
 
 # grill-me — Guia para Agentes
@@ -22,6 +24,33 @@ Quando uma instrução do usuário contradisser algo aqui, prevalece sempre a in
 ## O que esta skill faz
 
 Conduz uma entrevista técnica implacável sobre qualquer plano, design, decisão arquitetural ou ideia que o usuário apresentar. O objetivo é chegar a um entendimento compartilhado completo — sem pontas soltas, sem suposições ocultas, sem ambiguidades não resolvidas.
+
+---
+
+## Acionamento pelo agente (dinâmico)
+
+A skill pode ser acionada pelo agente sem o usuário pedir, mas só para destravar uma decisão que de fato bloqueia o trabalho. Motivo: sem isso o agente escolhe sozinho em silêncio (e o usuário descobre depois) ou enche o usuário de perguntas triviais; os dois são falhas.
+
+**Acionar por conta própria quando** pelo menos uma for verdadeira:
+
+- há uma decisão que muda o resultado, com duas ou mais opções razoáveis, e código, documentação, memória e padrões do projeto não a resolvem;
+- a ação é difícil de reverter ou sai do computador do usuário (publicar, apagar, enviar, migrar) e faltam parâmetros ou há ambiguidade sobre o escopo;
+- outra skill ou instrução manda decidir "via grill-me";
+- uma premissa do pedido parece contradizer o que o código ou os fatos mostram.
+
+**Não acionar quando:**
+
+- a resposta está no código ou na documentação (ler em vez de perguntar);
+- existe um padrão convencional e a escolha é reversível (escolher, seguir e relatar a escolha);
+- o usuário já decidiu o ponto na conversa (nunca repetir pergunta resolvida);
+- o usuário pediu para não ser interrompido ou o trabalho é autônomo e a decisão não bloqueia.
+
+**Como conduzir quando o acionamento foi do agente:**
+
+1. Dizer em uma linha que abre uma rodada de perguntas e por quê.
+2. Perguntar só as decisões bloqueantes (até 3 independentes por vez, com contexto completo e recomendação), sem ampliar para uma entrevista sobre o plano inteiro; se o usuário quiser aprofundar, ele pede.
+3. Continuar o que não depende da resposta enquanto espera; o que depende dela não é executado.
+4. Ao receber a resposta, registrar a decisão e seguir. A persistência incremental abaixo continua valendo.
 
 ---
 
