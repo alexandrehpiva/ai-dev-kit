@@ -9,6 +9,15 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.31.0] — 2026-10-14
+
+### Changed
+
+- `engineering/security-verification`: o agente passa a poder acionar a skill sem invocação manual (removido `disable-model-invocation: true`; a `description` ganhou o gatilho). Nova seção "Acionamento pelo agente": só a varredura (Fases 1 e 2, somente leitura) antes de publicar/dar push/commitar arquivos com sinal de credencial; a remediação (Fase 3: rotação, reescrita de histórico, force-push) nunca é automática e exige confirmação explícita; segredo nunca é ecoado no chat.
+- `productivity/hallucination-guard`: a seção "Como acionar o `grill-me`" deixa de afirmar que a skill só pode ser acionada pelo usuário; o agente a invoca pela ferramenta de skills (o acionamento dinâmico da `grill-me` passou a ser permitido na 0.30.0), com o protocolo aplicado na conversa como fallback quando a skill não estiver instalada ou o ambiente não permitir.
+
+---
+
 ## [0.30.0] — 2026-10-14
 
 ### Changed

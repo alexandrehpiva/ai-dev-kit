@@ -159,9 +159,9 @@ Skills focadas em código: construir, revisar, depurar e operar sistemas.
 
 **Descrição:** Verificações de segurança em repositórios: varredura de segredos com Gitleaks (histórico e working tree), distinção segredo vs PII, higiene de `.env`/`.gitignore` e remediação segura (rotacionar o segredo primeiro, depois reescrever histórico com `git filter-repo` e force-push — procedimento em `purgar-historico.md`).
 
-**Quando usar:** o usuário pedir para verificar segurança, procurar vazamentos/segredos, rodar gitleaks, auditar histórico de commits ou remover dados sensíveis do repositório.
+**Quando usar:** o usuário pedir para verificar segurança, procurar vazamentos/segredos, rodar gitleaks, auditar histórico de commits ou remover dados sensíveis do repositório; ou o agente, por conta própria, para a varredura antes de publicar/enviar código a um remote com sinal de segredo.
 
-**Nota:** `disable-model-invocation: true`.
+**Nota:** acionável também pelo agente (sem `disable-model-invocation`), só para a varredura (somente leitura); a remediação destrutiva (rotação, reescrita de histórico, force-push) nunca é automática e exige confirmação explícita.
 
 ---
 

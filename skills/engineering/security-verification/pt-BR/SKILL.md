@@ -7,8 +7,10 @@ description: >-
   segredo + reescrita de histórico com git filter-repo e force-push). Usar quando
   o usuário pedir para verificar segurança, procurar vazamentos/segredos, rodar
   gitleaks, auditar o histórico de commits, remover dados sensíveis ou PII do
-  repositório, "limpar rastro inseguro", ou quando esta skill for nomeada.
-disable-model-invocation: true
+  repositório, "limpar rastro inseguro", ou quando esta skill for nomeada. O agente também a
+  aciona por conta própria, sem pedido manual, para a varredura (somente leitura) antes de
+  publicar ou enviar código a um remote quando houver sinal de segredo; a remediação destrutiva
+  só com confirmação explícita.
 ---
 
 # security-verification — Guia para Agentes
@@ -16,6 +18,12 @@ disable-model-invocation: true
 **Princípio-âncora: um segredo que foi commitado e enviado a um remote deve ser tratado como comprometido — para sempre.** Reescrever o histórico **não desfaz** o vazamento (o valor já foi clonado/cacheado/indexado). Por isso a ordem é sempre: **(1) rotacionar/revogar o segredo, (2) só então limpar o histórico.** Varredura é barata — rode antes de publicar/pushar quando houver qualquer dúvida.
 
 Quando uma instrução do usuário contradisser algo aqui, prevalece a instrução do usuário.
+
+## Acionamento pelo agente
+
+O agente pode acionar esta skill sem pedido manual, mas só **a varredura** (Fases 1 e 2, somente leitura): antes de publicar um repositório, de dar `push` para um remote ou de commitar arquivos que parecem conter credenciais (`.env`, chaves, tokens, dumps), e ao notar uma credencial no working tree. Motivo: a varredura é barata e o vazamento depois do push é irreversível. Nunca ecoar o valor de um segredo no chat; reportar tipo, arquivo e linha.
+
+**Nunca automático:** a Fase 3. Rotacionar/revogar o segredo é do usuário; reescrever histórico e `push --force` só com pedido ou confirmação explícita, depois de ler `purgar-historico.md`. Achado confirmado interrompe o `push` pretendido e vai ao usuário com a recomendação.
 
 ---
 

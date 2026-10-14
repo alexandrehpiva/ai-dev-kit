@@ -78,7 +78,7 @@ No passo 3, **artefato de conteúdo** (nota, documentação, diagrama, spec, mem
 
 ## Como acionar o `grill-me`
 
-Em alguns ambientes a skill `grill-me` só pode ser acionada pelo usuário, não pelo agente. Acionar "via grill-me" aqui significa: aplicar o protocolo dela diretamente na conversa — até 3 perguntas independentes por vez, cada uma curta, com opções descritas e a recomendação do agente. Se a skill não estiver disponível, o protocolo continua valendo.
+A skill `grill-me` pode ser acionada pelo próprio agente (o acionamento dinâmico dela é permitido). Acionar "via grill-me" aqui significa invocá-la pela ferramenta de skills e seguir o protocolo dela — até 3 perguntas independentes por vez, cada uma curta, com opções descritas e a recomendação do agente. Se a skill não estiver instalada ou o ambiente não permitir o acionamento pelo agente, aplicar o mesmo protocolo diretamente na conversa; o protocolo continua valendo.
 
 ## Assets
 
