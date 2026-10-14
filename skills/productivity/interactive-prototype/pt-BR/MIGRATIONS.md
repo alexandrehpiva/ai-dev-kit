@@ -32,3 +32,9 @@ Versão sem entrada aqui = não exige mudança de arquivos em protótipos existe
 **Não faz:** operações de git (criar a branch beta, enviar). Isso é feito depois, pelo preflight (`--create-beta`) e pelo fluxo de compartilhamento, com aprovação.
 
 **Verificação:** `config-validate.py` → `VALID`; `skill-status.py` → `UP_TO_DATE`; arquivos novos presentes.
+
+## 2.0.0 → 2.1.0 — previews guardados no remoto (sem mudança de arquivos)
+
+Não exige alterar o protótipo: sem entrada de migração, `migrate.py` aplica só o passo `version-bump` (atualiza `skill.version`, sem perguntas, com a aprovação do promoter). Novidades que passam a valer: `scripts/group-preview.py` (guarda o código de cada preview na branch `preview/<membro>/<id>` e audita trabalho sem cópia) e o subcomando `artifacts.py update-source`. O formato do `prototype.config.json` não muda (`branch` e `sourceRef` já existiam para previews).
+
+**Verificação:** `skill-status.py` → `UP_TO_DATE`; `group-preview.py --mode audit` → `SAFE` ou a lista do que guardar.

@@ -6,6 +6,7 @@
         --owner EMAIL [--branch B] [--url URL | --path P] [--label T] [--purpose T] [--source-ref T]
   python3 artifacts.py --repo <pasta> published --id ID --version vX.Y.Z[-beta.N] --actor EMAIL
   python3 artifacts.py --repo <pasta> mark-stale --id ID --pending-version vX.Y.Z[-beta.N]
+  python3 artifacts.py --repo <pasta> update-source --id ID --branch preview/<membro>/<id> --source-ref <branch>@<sha7>
   python3 artifacts.py --repo <pasta> revoke --id ID --reason TEXTO
   python3 artifacts.py --repo <pasta> set-status --id ID --status current|stale|revoked|missing
 
@@ -13,7 +14,8 @@ Regras: exige config v2; escrita atômica (temporário + rename); após cada mud
 revalidado e a escrita é recusada se surgir problema NOVO. Versão: official = vX.Y.Z, beta =
 vX.Y.Z-beta.N, preview = sem numeração (version pode ser omitida e fica null). Publicar o oficial exige
 actor promoter aprovado; beta/preview aceitam actor membro pending/approved. Artefato `revoked` só volta
-a ser usado via set-status. Exit: 0 ok, 1 recusado, 2 uso incorreto.
+a ser usado via set-status. `update-source` (só preview) grava a branch e o commit de origem do link, vindos de
+group-preview.py (`data.branch`, `data.sourceRef`). Exit: 0 ok, 1 recusado, 2 uso incorreto.
 """
 
 import argparse
@@ -164,6 +166,14 @@ def prepare(args, cfg, validator):
         art.update({'status': 'stale', 'pendingVersion': normalize_version(args.pending_version)})
         return 'STALE', {'artifact': art}
 
+    if args.cmd == 'update-source':
+        if art['kind'] != 'preview':
+            raise Refuse('BAD_KIND', 'update-source vale só para artefato preview (official/beta usam a branch da camada)')
+        if art['status'] == 'revoked':
+            raise Refuse('REVOKED', f'artefato "{art_id}" está revogado')
+        art.update({'branch': args.branch, 'sourceRef': args.source_ref})
+        return 'SOURCE_SET', {'artifact': art}
+
     if args.cmd == 'revoke':
         if not args.reason.strip():
             raise Refuse('BAD_REASON', '--reason não pode ser vazio')
@@ -213,6 +223,10 @@ def build_parser():
     s = sub.add_parser('mark-stale')
     s.add_argument('--id', required=True)
     s.add_argument('--pending-version', dest='pending_version', required=True)
+    u = sub.add_parser('update-source')
+    u.add_argument('--id', required=True)
+    u.add_argument('--branch', required=True)
+    u.add_argument('--source-ref', dest='source_ref', required=True)
     v = sub.add_parser('revoke')
     v.add_argument('--id', required=True)
     v.add_argument('--reason', required=True)
