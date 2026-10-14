@@ -19,7 +19,7 @@ Só vale como aprovação uma resposta **inequívoca** a favor de um dos caminho
 | Aprovação parcial ("só a tela A") | Só se o lote for separável por arquivos: divide a entrada `Pendente` à mão (o script não divide), compartilha só a parte aprovada e mantém o resto pendente. Se não for separável, explica o motivo e oferece o lote inteiro |
 | "Compartilha só com fulano" | Não é suportado (a versão de testes é do grupo todo). Oferece gerar um **preview** avulso |
 | "Publica para o cliente" (promoter) | Compartilha na beta e promove, numa aprovação, com a lista "irá também ao cliente": [`group-promotion.md`](group-promotion.md). Quem não é promoter: explica que precisa de um responsável |
-| "Gera um preview para comparar" | Gera o artefato avulso (sem número, sem commit), rotulado e registrado: [`group-artifacts.md`](group-artifacts.md) |
+| "Gera um preview para comparar" | Guarda o código numa branch própria (`group-preview.py`, sem tocar no trabalho), gera o artefato avulso (sem número, sem entrada no changelog), rotulado e registrado com a origem: [`group-artifacts.md`](group-artifacts.md) |
 | "Desfaz" / "volta" | Reversão total da entrada `Pendente` (regra de espelho do trabalho em [`versioning-and-changelog.md`](versioning-and-changelog.md)) |
 | Aprova vários lotes de uma vez | Um lote por vez; cada lote tem relatório e número próprios |
 | Aprova, mas o checklist crítico falha | Compartilhar fica bloqueado até corrigir; "salvar só para mim" continua permitido, com `⚠️` |
@@ -45,7 +45,8 @@ Só vale como aprovação uma resposta **inequívoca** a favor de um dos caminho
 | Cliente pede algo maior | Fluxo normal: beta e promoção |
 | Foi publicado algo que não devia | Nova versão oficial com o conteúdo anterior (`--restore-version`); nunca reescrever histórico |
 | O artefato não pôde ser atualizado por falta de permissão | Alerta, o trabalho segue salvo, repetir depois: [`group-artifacts.md`](group-artifacts.md) |
-| O cliente quer comparar duas opções | Dois previews rotulados; escolhida a opção, o trabalho entra pela beta e pela promoção |
+| O cliente quer comparar duas opções | Dois previews rotulados, cada um com a sua branch guardada; escolhida a opção, o trabalho entra pela beta e pela promoção |
+| Há uma variante guardada só em stash, ou alterações sem cópia | Auditoria (`group-preview.py --mode audit`) avisa; guarda como preview (`--source 'stash@{N}'`) ou "salvar só para mim" com a aprovação da pessoa |
 | Promoção bloqueada pelo checklist | Para depois da beta, explica o motivo e o que falta |
 | Anomalia na oficial (commit sem marcador de promoção) | Relata ao promoter com autor e conteúdo; pergunta se mantém ou desfaz |
 

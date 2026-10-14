@@ -9,6 +9,17 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.29.0] — 2026-10-14
+
+### Added
+- `interactive-prototype` 2.1.0: previews deixam de existir só no computador de quem os gerou. Novo `scripts/group-preview.py` guarda o código de cada preview (ou de um stash, com `--source 'stash@{N}'`) numa branch `preview/<membro>/<id>` no remoto, com commit montado por comandos de baixo nível do git (índice temporário, `commit-tree`, `update-ref`): não faz checkout, stash nem reset, não toca na branch atual nem nos arquivos da pessoa, respeita o `.gitignore`, nunca leva `dist/`, envia sem force, acrescenta commits em vez de reescrever e funciona sem rede (`NOT_SYNCED`). `--mode audit` (somente leitura) lista alterações não commitadas, stashes, branches sem cópia no remoto e previews registrados sem branch (`SAFE`/`AT_RISK`).
+- `interactive-prototype`: `artifacts.py update-source` grava a branch e o `sourceRef` de um preview; `group_sync.remote_roster` passa a ser compartilhado por `group-share.py` e `group-preview.py`.
+
+### Changed
+- `interactive-prototype`: `group-artifacts.md` (nova seção "Preview: o código nunca fica só no computador"), `group-mode.md` (camada preview com branch e regra 11), `group-scenarios.md`, `checklists.md` (C0 item 8 e C1 com a auditoria), `versioning-and-changelog.md` e `MIGRATIONS.md` (2.0.0 → 2.1.0 só com `version-bump`). Regra nova: em modo grupo, stash nunca guarda variante ou trabalho em andamento.
+
+---
+
 ## [0.28.2] — 2026-10-13
 
 ### Changed

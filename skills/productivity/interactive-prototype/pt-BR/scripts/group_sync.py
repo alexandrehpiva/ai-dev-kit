@@ -193,6 +193,19 @@ def evidence(member):
     return (member or {}).get('identityEvidence') or 'unverified'
 
 
+def remote_roster(repo, cfg):
+    """Config da beta no remoto (fonte da verdade do roster); a local se não houver."""
+    remote = cfg.get('remote', 'origin')
+    beta = cfg.get('branches', {}).get('beta', 'beta')
+    r = git(repo, 'show', f'refs/remotes/{remote}/{beta}:{protolib.CONFIG_NAME}')
+    if r.returncode == 0:
+        try:
+            return json.loads(r.stdout)
+        except json.JSONDecodeError:
+            pass
+    return cfg
+
+
 def actor_trailers(member):
     return {protolib.T_ACTOR: protolib.norm_email(member.get('email')),
             protolib.T_MEMBER_STATUS: member.get('status'),

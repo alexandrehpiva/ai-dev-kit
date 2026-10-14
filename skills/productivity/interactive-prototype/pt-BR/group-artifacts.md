@@ -17,7 +17,7 @@ Manter pelo script, nunca à mão: `python3 <skill>/scripts/artifacts.py --repo 
 1. **Resolver** no config qual artefato pertence à camada (oficial → artefato oficial; beta → artefato beta; preview → o preview em questão).
 2. **Ler** o artefato (passo técnico automático; a pessoa não o vê). Confirma que ele existe, que há **permissão de edição** e qual é a versão publicada de fato.
 3. **Comparar** três versões: a registrada no config, a que está ao vivo e a da camada que será publicada.
-4. **Publicar** no artefato registrado, **a partir do commit exato** da camada (oficial e beta nunca saem de trabalho não commitado; preview pode sair do trabalho em andamento). Nunca criar um artefato paralelo por conta própria.
+4. **Publicar** no artefato registrado, **a partir do commit exato** da camada (oficial e beta nunca saem de trabalho não commitado; preview pode sair do trabalho em andamento, mas só **depois** de guardado: ver "Preview: o código nunca fica só no computador"). Nunca criar um artefato paralelo por conta própria.
 5. **Gravar** no config: `version`, `publishedAt`, `publishedBy`, `status: current`, `pendingVersion: null`.
 
 Nome do arquivo ou título: `<slug>-<versão>` (ver [`versioning-and-changelog.md`](versioning-and-changelog.md)). O artefato sempre mostra um **rótulo visível** do que é ("Versão oficial", "Versão de testes", "Opção A — <rótulo>").
@@ -55,3 +55,23 @@ No início da rodada (Passo 0), ler cada artefato registrado e classificar: pode
 - **Conflito no config** (duas pessoas atualizaram `artifacts[].version`): mecânico, vale a maior versão de cada artefato.
 - **Repositório antigo sem `artifacts`:** a migração cria a seção e pergunta ao promoter se reaproveita links existentes ([`skill-lifecycle.md`](skill-lifecycle.md)); até lá, publicar fica bloqueado com alerta e o commit segue permitido.
 - **Preview para comparar:** pode vir de rascunho, beta ou oficial; `kind: preview`, sem número, sem changelog, nunca promovido direto. Registrar rótulo, base e para que serve.
+
+## Preview: o código nunca fica só no computador
+
+O link de um preview é uma cópia fechada; sem o código por trás, ele não pode ser refeito nem comparado depois, e um computador que falha leva o trabalho junto. Por isso, **antes de publicar qualquer preview**, o agente guarda o código numa branch própria no remoto, sem mexer no que a pessoa está fazendo:
+
+1. `python3 <skill>/scripts/group-preview.py --repo <pasta> --actor-email <e-mail> --id <id-do-preview>` (simulação) e, lido o plano, o mesmo com `--execute`. O script cria `preview/<membro>/<id>` por comandos de baixo nível do git: **não faz checkout, stash nem reset**, não toca na branch atual, no índice nem nos arquivos; leva alterações e arquivos novos, respeita o `.gitignore` e nunca leva `dist/`; envia sem force.
+2. Para uma variante que já está guardada em stash: `--source 'stash@{N}'` (o stash é mantido; a branch ganha cópia dele, com os arquivos novos).
+3. Publicar o artefato (fluxo acima). Se o artefato ainda não estiver registrado: `artifacts.py register --kind preview --label … --purpose …`.
+4. Gravar a origem do link: `artifacts.py update-source --id <id> --branch <data.branch> --source-ref <data.sourceRef>`.
+5. Repetir o mesmo `--id` acrescenta um commit em cima da branch (nunca reescreve); foto idêntica à anterior não cria commit.
+
+Preview **não vira camada de versão**: a branch não é promovida e não entra no changelog; escolhida a opção, o trabalho entra pela beta como qualquer lote. Pessoa pendente também gera previews (como no resto da skill); pessoa reprovada ou removida não.
+
+**Se o envio falhar** (sem rede ou remoto recusou): o commit local fica feito e o status é `NOT_SYNCED`/`PUSH_REJECTED`. O preview ainda pode ser publicado, com `⚠️` no relatório ("o código deste preview ainda não está no servidor") e repetição do comando na próxima chance. Nunca relatar "guardado" para o que não foi enviado.
+
+**Nunca use `git stash` para guardar uma variante ou um trabalho em andamento** em modo grupo: stash é local e invisível ao time. Para estacionar uma variante enquanto trabalha em outra, guarde-a com `group-preview.py` e siga.
+
+### Auditoria — `group-preview.py --mode audit`
+
+Somente leitura; roda no Passo 0 e no início de cada rodada (C0 e C1). Lista o que existe só neste computador: alterações não commitadas (`UNSAVED_WORK`), stashes (`STASHED_WORK`), branches com commits que o remoto não tem (`UNPUSHED_BRANCH`) e previews registrados sem branch (`PREVIEW_WITHOUT_BRANCH`) ou com a branch fora do remoto (`PREVIEW_BRANCH_NOT_PUSHED`). Status `SAFE` ou `AT_RISK`. Em `AT_RISK`, o agente conta em linguagem de produto o que está sem cópia e oferece guardar (alteração do rascunho → "salvar só para mim"; variante ou stash → preview guardado), sem executar sem o pedido da pessoa, exceto o preview que ela acabou de pedir.

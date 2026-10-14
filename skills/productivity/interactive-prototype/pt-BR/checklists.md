@@ -17,11 +17,12 @@ Ordem obrigatória; parar no primeiro item que bloqueia.
 - [ ] 5. Só se `groupMode: true`: `python3 <skill>/scripts/group-preflight.py --repo <pasta> --json` → remoto, branches, acesso de envio e anomalias na oficial relatadas.
 - [ ] 6. Só se `groupMode: true`: artefatos lidos (permissão de edição e versão ao vivo): [`group-artifacts.md`](group-artifacts.md).
 - [ ] 7. Só se `groupMode: true`: novidades do time, avisos de decisões de conflito que afetam a pessoa, mudança do status dela, pendências de aprovação (se promoter) e trabalho aprovado não compartilhado ([`group-sync.md`](group-sync.md)).
-- [ ] 8. Anunciado em **uma linha**: quem é a pessoa, o papel, e se há algo em atenção.
+- [ ] 8. Só se `groupMode: true`: `python3 <skill>/scripts/group-preview.py --repo <pasta> --actor-email <e-mail> --mode audit` → `SAFE`, ou `AT_RISK` com o que está só neste computador relatado e a oferta de guardar ([`group-artifacts.md`](group-artifacts.md)).
+- [ ] 9. Anunciado em **uma linha**: quem é a pessoa, o papel, e se há algo em atenção.
 
 ## C1 — Início de rodada (conversa continua sem reativar a skill)
 
-- [ ] Itens 5 a 7 do C0 reexecutados (o config e a beta podem ter mudado).
+- [ ] Itens 5 a 8 do C0 reexecutados (o config e a beta podem ter mudado; a auditoria de trabalho sem cópia vale a cada rodada).
 - [ ] `prototype.config.json` relido.
 - [ ] Trabalho aprovado e ainda não compartilhado lembrado à pessoa.
 

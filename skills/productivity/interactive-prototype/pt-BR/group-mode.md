@@ -24,7 +24,7 @@ Princípio: **sincronizar antes de numerar, separar o que o cliente vê do que o
 | **Oficial** | "a versão que o cliente está avaliando" | branch oficial (padrão `main`) — só recebe promoção da beta | `<slug>-vX.Y.Z` |
 | **Beta** | "a versão de testes do time" | branch compartilhada (padrão `beta`) | `<slug>-vX.Y.Z-beta.N` |
 | **Meu rascunho** | "o meu trabalho" | branch pessoal (padrão `draft/{membro}`) | só local |
-| **Preview** | "uma opção para comparar" | qualquer ponto de partida, sem numeração | `<slug>-<oficial>-preview-<rótulo>-<AAAAMMDD-HHMM>` |
+| **Preview** | "uma opção para comparar" | branch `preview/<membro>/<id>` (cópia do trabalho no remoto, criada por `group-preview.py`), sem numeração | `<slug>-<oficial>-preview-<rótulo>-<AAAAMMDD-HHMM>` |
 
 - **Invariante beta ⊇ oficial:** tudo que está na oficial está na beta. A oficial só avança por promoção da beta (avanço direto, sem reescrever histórico). A única exceção é a correção urgente (ver [`group-promotion.md`](group-promotion.md)), que também traz a correção para a beta.
 - **Versões:** oficial `vX.Y.Z`; beta `vX.Y.Z-beta.N`, onde X.Y.Z é a última oficial e N é um contador contínuo que recomeça em 1 a cada promoção. Preview **não consome número, não entra no changelog e nunca é promovido diretamente**: para virar oficial precisa passar pela beta e pela promoção.
@@ -96,3 +96,4 @@ O arquivo `prototype.config.json` na raiz do protótipo, no formato v2 (com `ski
 8. **Código modular:** elemento com potencial de compartilhamento vira componente; regras e contratos ficam no código e em `docs/`, ocultos da conversa com quem é `product`.
 9. **Documentação padrão (`docs/`) é mantida na mesma rodada**, dentro da autorização registrada em `docs.autoMaintain`; mudar jornada (remover/reordenar etapas) continua exigindo confirmação.
 10. **Em dúvida entre dois comportamentos, perguntar via `grill-me`** com contexto completo e recomendação — nunca assumir.
+11. **Nenhum trabalho fica só no computador.** Todo preview é guardado numa branch `preview/<membro>/<id>` no remoto **antes** de o artefato ser publicado (`group-preview.py`); variante de design nunca fica só em stash ou em alteração pendente; o Passo 0 e o início de cada rodada rodam `group-preview.py --mode audit` e avisam do que estiver sem cópia ([`group-artifacts.md`](group-artifacts.md)).
