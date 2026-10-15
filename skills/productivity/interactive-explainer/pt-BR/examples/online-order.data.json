@@ -1,0 +1,903 @@
+{
+  "meta": {
+    "title": "Do clique em Pagar à entrega",
+    "eyebrow": "Loja Exemplo · pedidos online",
+    "heading": "Como um pedido online vira <em>entrega</em>",
+    "lead": "Cada etapa separada por quem faz o quê: o que cada papel responde, o que entrega, quando está pronto e um exemplo real do que ele produz. Na segunda aba, o mesmo caminho por dentro: quais peças do sistema trabalham e o que as vigia.",
+    "theme": "dark",
+    "lang": "pt-BR"
+  },
+  "pieceTypes": {
+    "person": {
+      "label": "Pessoa",
+      "hint": "pede ou decide",
+      "color": "#FFFFFF",
+      "colorLight": "#26272D",
+      "icon": "person"
+    },
+    "service": {
+      "label": "Serviço",
+      "hint": "programa que responde a pedidos",
+      "color": "#7D9BFF",
+      "colorLight": "#3558E6",
+      "icon": "cloud"
+    },
+    "store": {
+      "label": "Banco",
+      "hint": "onde o dado fica guardado",
+      "color": "#5FC8D6",
+      "colorLight": "#0F7C8C",
+      "icon": "db"
+    },
+    "queue": {
+      "label": "Fila",
+      "hint": "mensagem que espera a sua vez",
+      "color": "#C3A1FF",
+      "colorLight": "#7A45D6",
+      "icon": "queue"
+    },
+    "external": {
+      "label": "Sistema externo",
+      "hint": "de outra empresa",
+      "color": "#F2867A",
+      "colorLight": "#B3382B",
+      "icon": "bolt"
+    },
+    "rule": {
+      "label": "Regra",
+      "hint": "trava automática que vigia uma peça",
+      "color": "#E8B23E",
+      "colorLight": "#8A6100",
+      "icon": "shield",
+      "guard": true
+    },
+    "file": {
+      "label": "Arquivo",
+      "hint": "documento ou registro que entra ou sai",
+      "color": "#5FC8D6",
+      "colorLight": "#0F7C8C",
+      "icon": "file"
+    }
+  },
+  "catalog": {
+    "service": [
+      {
+        "id": "orders-api",
+        "name": "API de pedidos",
+        "rows": [
+          [
+            "O que faz",
+            "Recebe o pedido, confere o carrinho e pede a cobrança. Nunca guarda número de cartão."
+          ],
+          [
+            "Quando entra",
+            "Quando o cliente clica em <code>Pagar</code>."
+          ],
+          [
+            "Trava",
+            "@rule:idempotency"
+          ]
+        ]
+      }
+    ],
+    "rule": [
+      {
+        "id": "idempotency",
+        "name": "Idempotência",
+        "rows": [
+          [
+            "Dispara",
+            "Antes de cobrar, para cada pedido novo"
+          ],
+          [
+            "Bloqueia",
+            "Cobrar duas vezes o mesmo pedido, mesmo que o cliente clique duas vezes"
+          ]
+        ]
+      },
+      {
+        "id": "attempts",
+        "name": "Limite de tentativas",
+        "rows": [
+          [
+            "Dispara",
+            "A cada clique em <code>Pagar</code>"
+          ],
+          [
+            "Bloqueia",
+            "Mais de 5 tentativas de pagamento por pedido em 10 minutos"
+          ]
+        ]
+      }
+    ],
+    "store": [
+      {
+        "id": "orders-db",
+        "name": "Banco de pedidos",
+        "rows": [
+          [
+            "O que guarda",
+            "O pedido e o estado dele: <code>CRIADO</code>, <code>PAGO</code>, <code>SEPARADO</code>, <code>ENVIADO</code>"
+          ],
+          [
+            "Quem escreve",
+            "@service:orders-api"
+          ]
+        ]
+      }
+    ],
+    "external": [
+      {
+        "id": "gateway",
+        "name": "Gateway de pagamento",
+        "rows": [
+          [
+            "O que faz",
+            "Autoriza o cartão e devolve aprovado ou recusado"
+          ],
+          [
+            "Atenção",
+            "Sem ambiente de teste do cliente: no teste usamos um simulador"
+          ]
+        ]
+      }
+    ],
+    "queue": [
+      {
+        "id": "events",
+        "name": "Fila de eventos",
+        "rows": [
+          [
+            "O que carrega",
+            "A mensagem <code>pedido.pago</code> com o número do pedido, sem dados do cartão"
+          ],
+          [
+            "Quem lê",
+            "A equipe de separação"
+          ]
+        ]
+      }
+    ]
+  },
+  "tabs": [
+    {
+      "id": "papeis",
+      "label": "Por papel",
+      "blocks": [
+        {
+          "type": "rail",
+          "id": "esteira",
+          "eyebrow": "O caminho do pedido",
+          "title": "Onde cada papel entra",
+          "intro": "Clique nas etapas marcadas para abrir os papéis. As verdes são as que decidem se o pedido segue.",
+          "steps": [
+            {
+              "n": 1,
+              "title": "Carrinho",
+              "body": "O cliente escolhe os produtos"
+            },
+            {
+              "n": 2,
+              "title": "Pagamento",
+              "body": "Cobrança autorizada ou recusada",
+              "pill": {
+                "text": "gate",
+                "kind": "q"
+              },
+              "key": true,
+              "go": "papeis/pagamento"
+            },
+            {
+              "n": 3,
+              "title": "Antifraude",
+              "body": "O pedido parece legítimo?",
+              "pill": {
+                "text": "gate",
+                "kind": "q"
+              },
+              "key": true,
+              "go": "tecnico/fluxo"
+            },
+            {
+              "n": 4,
+              "title": "Separação",
+              "body": "Itens retirados do estoque",
+              "go": "papeis/pagamento"
+            },
+            {
+              "n": 5,
+              "title": "Envio",
+              "body": "Transportadora recebe o pacote"
+            },
+            {
+              "n": 6,
+              "title": "Entrega",
+              "body": "Cliente recebe e confirma"
+            }
+          ],
+          "loop": {
+            "from": [
+              2,
+              3
+            ],
+            "to": 1,
+            "label": "recusado no pagamento ou na análise: volta ao carrinho"
+          },
+          "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o documento ou o código que confirma o conteúdo do bloco"
+        },
+        {
+          "type": "matrix",
+          "id": "quem-faz",
+          "eyebrow": "Visão geral",
+          "title": "Quem faz o quê em cada etapa",
+          "corner": "Papel",
+          "columns": [
+            "2 · Pagamento",
+            "3 · Antifraude",
+            "4 · Separação",
+            "5 · Envio"
+          ],
+          "rows": [
+            {
+              "label": "Cliente",
+              "cells": [
+                "Informa o cartão e confirma",
+                "Confirma por SMS se pedido",
+                "—",
+                "Acompanha o rastreio"
+              ]
+            },
+            {
+              "label": "Atendimento",
+              "cells": [
+                "—",
+                {
+                  "text": "Libera pedido retido",
+                  "good": true,
+                  "tip": {
+                    "title": "O que o atendimento faz com um pedido retido",
+                    "items": [
+                      "Liga para o cliente e confirma nome e endereço",
+                      "Registra o motivo da liberação no pedido",
+                      "Só libera pedidos com valor abaixo do limite da alçada",
+                      "Pedidos acima do limite vão para o Financeiro"
+                    ]
+                  }
+                },
+                "—",
+                "Resolve extravio"
+              ]
+            },
+            {
+              "label": "Financeiro",
+              "cells": [
+                "Concilia cobranças do dia",
+                {
+                  "text": "Decide pedidos de alto valor",
+                  "good": true,
+                  "tip": {
+                    "title": "O que o Financeiro decide",
+                    "items": [
+                      "Aprova ou recusa pedidos acima do limite",
+                      "Pede comprovante de residência quando necessário",
+                      "Prazo: 2 horas úteis"
+                    ]
+                  }
+                },
+                "—",
+                "—"
+              ]
+            },
+            {
+              "label": "Sistema",
+              "cells": [
+                "Cobra uma única vez",
+                "Pontua o risco de 0 a 100",
+                "Reserva o estoque",
+                "Gera a etiqueta"
+              ]
+            }
+          ],
+          "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o documento ou o código que confirma o conteúdo do bloco"
+        },
+        {
+          "type": "cards",
+          "cols": 4,
+          "id": "regras",
+          "items": [
+            {
+              "label": "Regra 1",
+              "title": "Cobra uma vez",
+              "body": "O mesmo pedido nunca gera duas cobranças, mesmo com clique duplo."
+            },
+            {
+              "label": "Regra 2",
+              "title": "Recusou, volta",
+              "body": "Pedido recusado volta ao carrinho com o motivo em linguagem simples."
+            },
+            {
+              "label": "Regra 3",
+              "title": "Quem libera não cobra",
+              "body": "O Atendimento libera, o Sistema cobra: ninguém faz as duas coisas."
+            },
+            {
+              "label": "Regra 4",
+              "title": "Todo estado fica",
+              "body": "Cada mudança de estado do pedido registra quem e quando."
+            }
+          ],
+          "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o documento ou o código que confirma o conteúdo do bloco"
+        },
+        {
+          "type": "phrase",
+          "text": "O pedido só avança quando a cobrança é única, a análise de risco passa e o estoque está reservado; em qualquer recusa ele volta ao carrinho com o motivo."
+        },
+        {
+          "type": "roles",
+          "id": "pagamento",
+          "eyebrow": "Etapa 2 · Pagamento",
+          "title": "A cobrança tem duas camadas: pedido e dinheiro",
+          "intro": "O Sistema registra o pedido e pede a cobrança; o Financeiro confere no fim do dia. Escolha um papel para ver o que ele faz e um exemplo do que entrega.",
+          "roles": [
+            {
+              "name": "Cliente",
+              "badge": {
+                "text": "Decide",
+                "kind": "q"
+              },
+              "summary": "Confirma o que quer comprar e como vai pagar.",
+              "does": [
+                "Confere itens, quantidade e frete antes de pagar",
+                "Informa o cartão no campo seguro do gateway",
+                "Confirma por SMS quando o banco pedir"
+              ],
+              "fields": [
+                {
+                  "label": "Entrega",
+                  "value": "Um pedido confirmado"
+                },
+                {
+                  "label": "Pronto quando",
+                  "value": "A tela mostra o número do pedido"
+                },
+                {
+                  "label": "Ferramenta",
+                  "value": "Site ou aplicativo da loja"
+                }
+              ],
+              "sampleTitle": "O que o cliente vê, e o que o sistema recebe",
+              "samples": [
+                {
+                  "kind": "note",
+                  "title": "Chegou assim:",
+                  "text": "\"Quero pagar em 3x no cartão e receber na sexta.\""
+                },
+                {
+                  "kind": "code",
+                  "keywords": [
+                    "POST",
+                    "pedido",
+                    "parcelas"
+                  ],
+                  "code": "# o que o site envia ao clicar em Pagar\nPOST /pedidos\n{\n  \"itens\": [{ \"sku\": \"CAM-001\", \"qtd\": 2 }],\n  \"parcelas\": 3,\n  \"entrega\": \"2026-10-23\"   // sexta\n}"
+                }
+              ]
+            },
+            {
+              "name": "Sistema",
+              "badge": {
+                "text": "Executa",
+                "kind": "dev"
+              },
+              "summary": "Cobra uma única vez e registra cada passo.",
+              "does": [
+                "Reserva o estoque antes de cobrar",
+                "Pede a cobrança ao gateway com o código do pedido",
+                "Grava o estado e quem mudou"
+              ],
+              "fields": [
+                {
+                  "label": "Entrega",
+                  "value": "Pedido em <code>PAGO</code> ou <code>RECUSADO</code>"
+                },
+                {
+                  "label": "Pronto quando",
+                  "value": "O gateway respondeu e o estado foi gravado"
+                },
+                {
+                  "label": "Ferramenta",
+                  "value": "API de pedidos"
+                }
+              ],
+              "sampleTitle": "A saída de uma cobrança recusada",
+              "samples": [
+                {
+                  "kind": "code",
+                  "code": "Cobrança · pedido PED-1042\n\n✓ idempotência: primeira tentativa\n✓ estoque reservado: 2 un\n✕ gateway: recusado (saldo insuficiente)\n! cliente já tentou 2 vezes\n\nResultado: RECUSADO · volta ao carrinho"
+                }
+              ]
+            },
+            {
+              "name": "Atendimento",
+              "badge": {
+                "text": "Libera",
+                "kind": "qa"
+              },
+              "summary": "Resolve pedidos retidos sem cobrar de novo.",
+              "does": [
+                "Lê o motivo da retenção",
+                "Confirma os dados com o cliente",
+                "Libera ou escala para o Financeiro"
+              ],
+              "fields": [
+                {
+                  "label": "Entrega",
+                  "value": "Pedido liberado, com o motivo registrado"
+                },
+                {
+                  "label": "Pronto quando",
+                  "value": "Nenhum pedido retido sem decisão"
+                },
+                {
+                  "label": "Ferramenta",
+                  "value": "Painel de pedidos"
+                }
+              ],
+              "sampleTitle": "Fila de pedidos retidos",
+              "samples": [
+                {
+                  "kind": "table",
+                  "columns": [
+                    "Pedido",
+                    "Motivo",
+                    "Decisão",
+                    "Quem"
+                  ],
+                  "goodColumn": 2,
+                  "rows": [
+                    [
+                      "PED-1042",
+                      "Endereço diferente do cartão",
+                      "Liberado após ligação",
+                      "Atendimento"
+                    ],
+                    [
+                      "PED-1051",
+                      "Valor acima da alçada",
+                      "Escalado",
+                      "Financeiro"
+                    ],
+                    [
+                      "PED-1060",
+                      "Duas tentativas seguidas",
+                      "Liberado",
+                      "Atendimento"
+                    ]
+                  ]
+                }
+              ]
+            },
+            {
+              "name": "Financeiro",
+              "badge": {
+                "text": "Aprova o gate",
+                "kind": "q"
+              },
+              "summary": "Confere o dinheiro e decide os casos de alto valor.",
+              "does": [
+                "Concilia as cobranças do dia com o gateway",
+                "Decide pedidos acima do limite",
+                "Registra a decisão com o motivo"
+              ],
+              "fields": [
+                {
+                  "label": "Entrega",
+                  "value": "Conciliação diária fechada"
+                },
+                {
+                  "label": "Pronto quando",
+                  "value": "Checklist inteiro em sim"
+                },
+                {
+                  "label": "Ferramenta",
+                  "value": "Relatório do gateway"
+                }
+              ],
+              "sampleTitle": "Checklist da conciliação",
+              "samples": [
+                {
+                  "kind": "gate",
+                  "title": "Conciliação do dia",
+                  "failLabel": "pendente",
+                  "passLabel": "fechada",
+                  "miss": 2,
+                  "items": [
+                    {
+                      "text": "Total cobrado bate com o gateway",
+                      "hint": "diferença de até R$ 0,00",
+                      "group": "Dinheiro"
+                    },
+                    {
+                      "text": "Estornos do dia estão registrados",
+                      "hint": "cada estorno com pedido e motivo",
+                      "group": "Dinheiro"
+                    },
+                    {
+                      "text": "Pedidos sem cobrança foram explicados",
+                      "hint": "nenhum pedido PAGO sem cobrança",
+                      "group": "Dinheiro"
+                    },
+                    {
+                      "text": "Todo pedido liberado tem motivo",
+                      "hint": "texto livre com pelo menos uma frase",
+                      "group": "Decisões"
+                    },
+                    {
+                      "text": "Alto valor tem segunda assinatura",
+                      "hint": "duas pessoas diferentes",
+                      "group": "Decisões"
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o documento ou o código que confirma o conteúdo do bloco"
+        }
+      ]
+    },
+    {
+      "id": "tecnico",
+      "label": "Por dentro",
+      "blocks": [
+        {
+          "type": "board",
+          "id": "fluxo",
+          "start": 1,
+          "eyebrow": "Por dentro do pedido",
+          "title": "Como o sistema trabalha em cada etapa",
+          "intro": "Escolha uma etapa e siga as setas da esquerda para a direita: quem pede, que peça trabalha, o que ela chama, o que sai e quem decide. As caixas tracejadas embaixo são as regras, presas à peça que vigiam. Clique numa caixa para ver o detalhe.",
+          "statesLabel": "Estado do pedido",
+          "stages": [
+            {
+              "n": 0,
+              "title": "Carrinho",
+              "tag": "antes de pagar",
+              "summary": "O cliente monta o pedido. Nada é cobrado nem reservado ainda.",
+              "states": [
+                "RASCUNHO",
+                "CRIADO"
+              ],
+              "graph": {
+                "nodes": [
+                  {
+                    "id": "cli",
+                    "type": "person",
+                    "title": "Cliente",
+                    "sub": "escolhe os produtos",
+                    "detail": "Pode voltar a esta etapa quantas vezes quiser antes de pagar.",
+                    "col": 0,
+                    "row": 0,
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o documento ou o código que confirma a peça"
+                  },
+                  {
+                    "id": "web",
+                    "type": "service",
+                    "title": "Site da loja",
+                    "sub": "mostra preço e frete",
+                    "col": 1,
+                    "row": 0,
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o documento ou o código que confirma a peça",
+                    "detail": "A página que o cliente usa; guarda o carrinho a cada alteração."
+                  },
+                  {
+                    "id": "cart",
+                    "type": "store",
+                    "title": "Carrinho",
+                    "sub": "guardado por 7 dias",
+                    "col": 2,
+                    "row": 0,
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o documento ou o código que confirma a peça",
+                    "detail": "Lista de itens e quantidades; deixa de existir como carrinho quando o pedido é pago."
+                  }
+                ],
+                "edges": [
+                  {
+                    "from": "cli",
+                    "to": "web",
+                    "label": "adiciona",
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o arquivo e o trecho que confirmam a ligação"
+                  },
+                  {
+                    "from": "web",
+                    "to": "cart",
+                    "label": "grava",
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o arquivo e o trecho que confirmam a ligação"
+                  }
+                ]
+              }
+            },
+            {
+              "n": 2,
+              "title": "Pagamento",
+              "gate": true,
+              "summary": "O cliente paga, o sistema cobra uma única vez e o pedido fica PAGO ou RECUSADO.",
+              "states": [
+                "CRIADO",
+                "PAGO ou RECUSADO"
+              ],
+              "focus": "api",
+              "graph": {
+                "nodes": [
+                  {
+                    "id": "cli",
+                    "type": "person",
+                    "title": "Cliente clica em Pagar",
+                    "sub": "\"Pagar 3x\"",
+                    "detail": "O clique envia o pedido e o código de tentativa.",
+                    "col": 0,
+                    "row": 1,
+                    "source": "fluxo de checkout descrito pela equipe"
+                  },
+                  {
+                    "id": "api",
+                    "type": "service",
+                    "title": "API de pedidos",
+                    "sub": "valida e pede a cobrança",
+                    "refs": [
+                      "service:orders-api"
+                    ],
+                    "col": 1,
+                    "row": 1,
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o documento ou o código que confirma a peça",
+                    "detail": "Confere o carrinho, pede a cobrança e nunca guarda número de cartão."
+                  },
+                  {
+                    "id": "gw",
+                    "type": "external",
+                    "title": "Gateway",
+                    "sub": "autoriza o cartão",
+                    "refs": [
+                      "external:gateway"
+                    ],
+                    "col": 2,
+                    "row": 0,
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o documento ou o código que confirma a peça",
+                    "detail": "Autoriza ou recusa o cartão. É de outra empresa, então a resposta pode demorar."
+                  },
+                  {
+                    "id": "db",
+                    "type": "store",
+                    "title": "Banco de pedidos",
+                    "sub": "grava o estado",
+                    "refs": [
+                      "store:orders-db"
+                    ],
+                    "col": 2,
+                    "row": 2,
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o documento ou o código que confirma a peça",
+                    "detail": "Guarda o pedido e o estado dele, com quem mudou e quando."
+                  },
+                  {
+                    "id": "ev",
+                    "type": "queue",
+                    "title": "Fila de eventos",
+                    "sub": "pedido.pago",
+                    "refs": [
+                      "queue:events"
+                    ],
+                    "col": 3,
+                    "row": 1,
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o documento ou o código que confirma a peça",
+                    "detail": "Avisa o resto da loja de que o pedido foi pago, sem dados do cartão."
+                  },
+                  {
+                    "id": "rec",
+                    "type": "file",
+                    "title": "Recibo",
+                    "sub": "e-mail para o cliente",
+                    "col": 4,
+                    "row": 1,
+                    "detail": "Enviado só depois de <code>pedido.pago</code>.",
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o documento ou o código que confirma a peça"
+                  },
+                  {
+                    "id": "r1",
+                    "type": "rule",
+                    "title": "Limite de tentativas",
+                    "sub": "5 em 10 min",
+                    "refs": [
+                      "rule:attempts"
+                    ],
+                    "col": 0,
+                    "row": 3,
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o documento ou o código que confirma a peça",
+                    "detail": "Antes de cada tentativa, conta quantas houve nos últimos 10 minutos."
+                  },
+                  {
+                    "id": "r2",
+                    "type": "rule",
+                    "title": "Idempotência",
+                    "sub": "não cobra duas vezes",
+                    "refs": [
+                      "rule:idempotency"
+                    ],
+                    "col": 1,
+                    "row": 3,
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o documento ou o código que confirma a peça",
+                    "detail": "Antes de cobrar, confere se este pedido já foi cobrado."
+                  }
+                ],
+                "edges": [
+                  {
+                    "from": "cli",
+                    "to": "api",
+                    "label": "envia",
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o arquivo e o trecho que confirmam a ligação"
+                  },
+                  {
+                    "from": "api",
+                    "to": "gw",
+                    "label": "cobra",
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o arquivo e o trecho que confirmam a ligação"
+                  },
+                  {
+                    "from": "api",
+                    "to": "db",
+                    "label": "grava",
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o arquivo e o trecho que confirmam a ligação"
+                  },
+                  {
+                    "from": "gw",
+                    "to": "ev",
+                    "label": "confirma",
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o arquivo e o trecho que confirmam a ligação"
+                  },
+                  {
+                    "from": "ev",
+                    "to": "rec",
+                    "label": "gera",
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o arquivo e o trecho que confirmam a ligação"
+                  },
+                  {
+                    "from": "r1",
+                    "to": "cli",
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o arquivo e o trecho que confirmam a ligação"
+                  },
+                  {
+                    "from": "r2",
+                    "to": "api",
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o arquivo e o trecho que confirmam a ligação"
+                  }
+                ]
+              }
+            },
+            {
+              "n": 3,
+              "title": "Separação e envio",
+              "tag": "layout automático",
+              "summary": "Este quadro não traz coluna nem linha nos nós: o motor organiza sozinho em camadas e desenha o retorno por baixo.",
+              "states": [
+                "PAGO",
+                "SEPARADO",
+                "ENVIADO"
+              ],
+              "graph": {
+                "nodes": [
+                  {
+                    "id": "ev",
+                    "type": "queue",
+                    "title": "pedido.pago",
+                    "sub": "chega na fila",
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o documento ou o código que confirma a peça",
+                    "detail": "A mensagem que chega à equipe de separação."
+                  },
+                  {
+                    "id": "sep",
+                    "type": "service",
+                    "title": "Separação",
+                    "sub": "retira do estoque",
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o documento ou o código que confirma a peça",
+                    "detail": "Retira os itens do estoque; se faltar item, chama Compras."
+                  },
+                  {
+                    "id": "conf",
+                    "type": "service",
+                    "title": "Conferência",
+                    "sub": "item e quantidade",
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o documento ou o código que confirma a peça",
+                    "detail": "Confere itens e quantidades contra o pedido antes de embalar."
+                  },
+                  {
+                    "id": "falta",
+                    "type": "person",
+                    "title": "Compras repõe",
+                    "sub": "quando falta item",
+                    "detail": "O pedido fica esperando e volta para a separação assim que o estoque chega.",
+                    "status": "hipotese",
+                    "note": "O processo de reposição ainda não foi confirmado com a equipe de Compras."
+                  },
+                  {
+                    "id": "emb",
+                    "type": "service",
+                    "title": "Embalagem",
+                    "sub": "gera a etiqueta",
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o documento ou o código que confirma a peça",
+                    "detail": "Monta o pacote e imprime a etiqueta."
+                  },
+                  {
+                    "id": "tr",
+                    "type": "external",
+                    "title": "Transportadora",
+                    "sub": "coleta o pacote",
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o documento ou o código que confirma a peça",
+                    "detail": "Leva o pacote ao cliente e avisa o sistema quando entrega."
+                  },
+                  {
+                    "id": "cp",
+                    "type": "file",
+                    "title": "Comprovante",
+                    "sub": "rastreio no e-mail",
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o documento ou o código que confirma a peça",
+                    "detail": "Registro de que o pacote saiu, com data e responsável."
+                  }
+                ],
+                "edges": [
+                  {
+                    "from": "ev",
+                    "to": "sep",
+                    "label": "avisa",
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o arquivo e o trecho que confirmam a ligação"
+                  },
+                  {
+                    "from": "sep",
+                    "to": "conf",
+                    "label": "separa",
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o arquivo e o trecho que confirmam a ligação"
+                  },
+                  {
+                    "from": "sep",
+                    "to": "falta",
+                    "label": "sem item",
+                    "status": "hipotese"
+                  },
+                  {
+                    "from": "falta",
+                    "to": "sep",
+                    "label": "estoque volta",
+                    "status": "hipotese"
+                  },
+                  {
+                    "from": "conf",
+                    "to": "emb",
+                    "label": "aprova",
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o arquivo e o trecho que confirmam a ligação"
+                  },
+                  {
+                    "from": "emb",
+                    "to": "tr",
+                    "label": "entrega",
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o arquivo e o trecho que confirmam a ligação"
+                  },
+                  {
+                    "from": "tr",
+                    "to": "cp",
+                    "label": "gera",
+                    "source": "cenário fictício desta skill (Loja Exemplo); em um caso real, cite o arquivo e o trecho que confirmam a ligação"
+                  }
+                ]
+              }
+            },
+            {
+              "n": 4,
+              "title": "Entrega",
+              "tag": "fora do sistema",
+              "off": true,
+              "empty": "A transportadora cuida desta etapa. O sistema só recebe o aviso de entrega e muda o pedido para ENTREGUE."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

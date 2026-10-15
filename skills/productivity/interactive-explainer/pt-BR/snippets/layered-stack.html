@@ -1,0 +1,51 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Camadas empilhadas</title>
+<!--
+  FORMATO: camadas empilhadas (arquitetura em camadas). Responde "por onde uma requisição passa, e o que cada camada faz e NÃO faz?".
+  COMO ADAPTAR: edite LAYERS (de cima para baixo: nome, responsabilidade, "não faz") e SCENARIOS (lista de índices de camada
+  percorridos, descendo e subindo). IDEIA CENTRAL: escolher um cenário numera as camadas na ordem em que são tocadas
+  (1, 2, 3 ... na descida e na volta) e esmaece as que ele não toca; o painel diz o que cada camada fez NAQUELE cenário.
+-->
+<style>
+:root{color-scheme:dark light;--bg:#1C1C1F;--card:#26262B;--line:#38383E;--panel:#16233B;--panel-line:#2C3F66;--well:#0E1730;--ink:#fff;--text:#E4E4E7;--soft:#C9C9CE;--muted:#9A9AA0;--brand:#5C80FF;--eyebrow:#7D9BFF;--ok:#43D07E;--warn:#E8B23E;--danger:#F2867A;--sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace}
+@media (prefers-color-scheme:light){:root{--bg:#F6F6F4;--card:#fff;--line:#D9D9DF;--panel:#EAF0FF;--panel-line:#BFCDF5;--well:#F0F3FA;--ink:#101114;--text:#25262B;--soft:#4A4B52;--muted:#6B6C74;--brand:#3558E6;--eyebrow:#3558E6;--ok:#157A43;--warn:#8A6100;--danger:#B3382B}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 var(--sans);padding:clamp(16px,3vw,40px)}
+h1{font-size:clamp(24px,3vw,32px);margin:0 0 6px;color:var(--ink);font-weight:500;letter-spacing:-.02em}.lead{color:var(--soft);margin:0 0 20px;max-width:820px}
+.eyebrow{font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--eyebrow)}
+button{font:inherit}:focus-visible{outline:2px solid var(--eyebrow);outline-offset:2px}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}.seg button{background:transparent;color:var(--soft);border:1px solid var(--line);border-radius:8px;padding:7px 14px;cursor:pointer;font-weight:600;font-size:14px}.seg button[aria-pressed=true]{background:var(--card);border-color:var(--brand);color:var(--ink)}
+.wrap{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px;align-items:start}@media(max-width:900px){.wrap{grid-template-columns:1fr}}
+.stack{display:grid;gap:10px}
+.layer{position:relative;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px 14px 56px;text-align:left;color:var(--text);cursor:pointer;transition:opacity .2s,border-color .2s}
+.layer h3{margin:0;font-size:16px;color:var(--ink)}.layer p{margin:2px 0 0;color:var(--muted);font-size:14px}
+.layer.off{opacity:.3}.layer.sel{border-color:var(--brand);box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 25%,transparent)}
+.layer .no{position:absolute;left:14px;top:50%;transform:translateY(-50%);display:flex;gap:4px}
+.badge{min-width:26px;height:26px;border-radius:50%;background:var(--brand);color:#fff;font-size:13px;font-weight:700;display:grid;place-items:center;padding:0 4px}.badge.up{background:var(--warn);color:#1a1405}
+.layer:not(:last-child)::after{content:"";position:absolute;left:50%;bottom:-10px;height:10px;width:2px;background:var(--line)}
+.side{background:var(--panel);border:1px solid var(--panel-line);border-radius:14px;padding:18px;display:grid;gap:12px}.side h2{margin:0;font-size:18px;color:var(--ink)}.side dt{font-size:12px;letter-spacing:.1em;text-transform:uppercase;font-weight:600;color:var(--muted)}.side dd{margin:2px 0 10px;color:var(--soft);font-size:15px}
+.legend{font-size:13px;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;align-items:center}
+@media (prefers-reduced-motion:reduce){.layer{transition:none}}
+</style></head><body>
+<div class="eyebrow">Formato · camadas</div><h1>Por onde passa um pedido, camada por camada</h1>
+<p class="lead">Escolha um cenário: as camadas que ele toca ganham número na ordem de passagem (azul na descida, âmbar na volta) e as outras esmaecem. Clique numa camada para ver o que ela faz, e o que ela nunca deve fazer.</p>
+<div class="seg" id="seg"></div>
+<div class="wrap"><div><div class="stack" id="stack"></div><div class="legend"><span><span class="badge" style="display:inline-grid">1</span> descida</span><span><span class="badge up" style="display:inline-grid">4</span> volta</span></div></div><aside class="side" id="side"></aside></div>
+<script>
+const LAYERS=[
+ {n:'Tela',r:'Mostra os dados e recebe o clique.',no:'Nunca aplica regra de negócio nem fala com o banco.'},
+ {n:'API',r:'Recebe a requisição, autentica e devolve a resposta.',no:'Nunca guarda estado entre requisições.'},
+ {n:'Regras de negócio',r:'Decide se o pedido pode ser criado e quanto custa.',no:'Nunca sabe se o dado vem de tela, fila ou teste.'},
+ {n:'Acesso a dados',r:'Lê e grava no banco, em transação.',no:'Nunca decide regra: só persiste o que as regras mandaram.'},
+ {n:'Banco',r:'Guarda o pedido e o estado dele.',no:'Nunca é acessado direto pela tela.'}];
+const SCENARIOS=[
+ {n:'Criar pedido',path:[0,1,2,3,4],note:{0:'Envia o carrinho',1:'Valida o token',2:'Confere estoque e preço',3:'Grava em uma transação',4:'Persiste'}},
+ {n:'Pedido recusado',path:[0,1,2],note:{0:'Envia o carrinho',1:'Valida o token',2:'Recusa: valor acima do limite'}},
+ {n:'Consulta de status',path:[0,1,3,4],note:{0:'Pede o status',1:'Valida o token',3:'Lê sem regra: é só leitura',4:'Devolve a linha'}}];
+let sc=0,sel=null;const seg=document.getElementById('seg'),stack=document.getElementById('stack'),side=document.getElementById('side');
+function render(){const s=SCENARIOS[sc];seg.innerHTML=SCENARIOS.map((x,i)=>`<button type="button" data-i="${i}" aria-pressed="${i===sc}">${x.n}</button>`).join('');
+ const down=s.path,up=[...s.path].reverse().slice(1);
+ stack.innerHTML=LAYERS.map((l,i)=>{const on=s.path.includes(i);const nums=on?[`<span class="badge">${down.indexOf(i)+1}</span>`,...(up.includes(i)?[`<span class="badge up">${down.length+up.indexOf(i)+1}</span>`]:[])].join(''):'';
+  return `<button type="button" class="layer${on?'':' off'}${sel===i?' sel':''}" data-l="${i}"><span class="no">${nums}</span><h3>${l.n}</h3><p>${on?(s.note[i]||l.r):'Não participa deste cenário'}</p></button>`}).join('');
+ const l=LAYERS[sel==null?s.path[0]:sel];side.innerHTML=`<h2>${l.n}</h2><dl><dt>O que faz</dt><dd>${l.r}</dd><dt>O que nunca faz</dt><dd>${l.no}</dd><dt>Neste cenário</dt><dd>${s.note[LAYERS.indexOf(l)]||'Não é tocada.'}</dd></dl>`}
+seg.addEventListener('click',e=>{const b=e.target.closest('button');if(b){sc=+b.dataset.i;sel=null;render()}});
+stack.addEventListener('click',e=>{const b=e.target.closest('.layer');if(b){sel=+b.dataset.l;render()}});render();
+</script></body></html>

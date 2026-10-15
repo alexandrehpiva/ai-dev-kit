@@ -1,0 +1,60 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Raias por responsável</title>
+<!--
+  FORMATO: raias (swimlane). Responde "quem faz o quê, e onde o trabalho muda de mãos?".
+  COMO ADAPTAR: edite LANES (uma raia por responsável), STEPS (lane + col = posição no tempo) e FLOWS (pares de ids).
+  IDEIA CENTRAL: a seta que ATRAVESSA raias é uma passagem de bastão; é onde nascem atrasos e mal-entendidos.
+  Por isso as passagens são desenhadas em âmbar e contadas, e as setas dentro da mesma raia ficam neutras.
+-->
+<style>
+:root{color-scheme:dark light;--bg:#1C1C1F;--card:#26262B;--line:#38383E;--panel:#16233B;--panel-line:#2C3F66;--well:#0E1730;--ink:#fff;--text:#E4E4E7;--soft:#C9C9CE;--muted:#9A9AA0;--brand:#5C80FF;--eyebrow:#7D9BFF;--ok:#43D07E;--warn:#E8B23E;--danger:#F2867A;--sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace}
+@media (prefers-color-scheme:light){:root{--bg:#F6F6F4;--card:#fff;--line:#D9D9DF;--panel:#EAF0FF;--panel-line:#BFCDF5;--well:#F0F3FA;--ink:#101114;--text:#25262B;--soft:#4A4B52;--muted:#6B6C74;--brand:#3558E6;--eyebrow:#3558E6;--ok:#157A43;--warn:#8A6100;--danger:#B3382B}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 var(--sans);padding:clamp(16px,3vw,40px)}
+h1{font-size:clamp(24px,3vw,32px);margin:0 0 6px;color:var(--ink);font-weight:500;letter-spacing:-.02em}.lead{color:var(--soft);margin:0 0 20px;max-width:820px}
+.eyebrow{font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--eyebrow)}
+button{font:inherit}:focus-visible{outline:2px solid var(--eyebrow);outline-offset:2px}
+.board{overflow-x:auto;border:1px solid var(--panel-line);border-radius:14px;background:var(--well)}
+.lanes{position:relative;display:grid;grid-template-columns:132px repeat(var(--cols),minmax(150px,1fr));min-width:calc(132px + var(--cols) * 170px)}
+.lane-h{padding:14px 12px;font-weight:600;color:var(--ink);border-right:1px solid var(--panel-line);border-bottom:1px solid var(--panel-line);display:flex;align-items:center;background:var(--panel);font-size:14px}
+.lane-bg{grid-column:2 / -1;border-bottom:1px solid var(--panel-line)}
+.lane-bg.alt{background:color-mix(in srgb,var(--panel) 35%,transparent)}
+.step{position:relative;z-index:1;margin:14px 10px;padding:10px 12px;background:var(--card);border:1px solid var(--line);border-radius:12px;text-align:left;color:var(--text);cursor:pointer;font-size:14px;line-height:1.35}
+.step:hover,.step.sel{border-color:var(--brand)}.step.sel{box-shadow:0 0 0 3px color-mix(in srgb,var(--brand) 30%,transparent)}
+.step small{display:block;color:var(--muted);font-size:12px}
+svg.over{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:0}
+.over path{fill:none;stroke:color-mix(in srgb,var(--muted) 80%,transparent);stroke-width:1.6}
+.over marker path{stroke:none}  /* sem esta linha a regra acima desenha contorno na ponta; o preenchimento vem inline em cada marker */
+.over path.hand{stroke:var(--warn);stroke-width:2}.over path.on{stroke:var(--ink);stroke-width:2.6}
+.stats{display:flex;gap:16px;flex-wrap:wrap;margin:16px 0;color:var(--soft);font-size:14px}.stats b{color:var(--warn);font-size:20px;margin-right:6px}
+.note{margin-top:12px;color:var(--soft);font-size:14px;min-height:22px}
+</style></head><body>
+<div class="eyebrow">Formato · raias</div><h1>Quem faz o quê, e onde o trabalho muda de mãos</h1>
+<p class="lead">Cada linha é um responsável; o tempo corre da esquerda para a direita. Setas âmbar atravessam raias: são as passagens de bastão. Clique num passo para destacar o que entra e o que sai dele.</p>
+<div class="board"><div class="lanes" id="lanes"></div></div>
+<div class="stats"><span><b id="hand">0</b>passagens entre responsáveis</span><span><b id="steps" style="color:var(--brand)">0</b>passos</span></div>
+<p class="note" id="note">Clique num passo.</p>
+<script>
+const LANES=[{id:'cli',name:'Cliente'},{id:'sis',name:'Sistema'},{id:'fin',name:'Financeiro'},{id:'log',name:'Logística'}];
+const STEPS=[
+ {id:'a',lane:'cli',col:0,t:'Faz o pedido',d:'Escolhe os itens e confirma o endereço.'},
+ {id:'b',lane:'sis',col:1,t:'Valida o carrinho',d:'Confere estoque e frete.'},
+ {id:'c',lane:'sis',col:2,t:'Cobra o cartão',d:'Uma única cobrança por pedido.'},
+ {id:'d',lane:'fin',col:3,t:'Concilia',d:'Compara a cobrança com o gateway no fim do dia.'},
+ {id:'e',lane:'log',col:3,t:'Separa o pedido',d:'Retira os itens do estoque.'},
+ {id:'f',lane:'log',col:4,t:'Envia',d:'Entrega o pacote à transportadora.'},
+ {id:'g',lane:'cli',col:5,t:'Recebe e confirma',d:'Marca como entregue no aplicativo.'}];
+const FLOWS=[['a','b'],['b','c'],['c','d'],['c','e'],['e','f'],['f','g']];
+const el=document.getElementById('lanes');const cols=Math.max(...STEPS.map(s=>s.col))+1;el.style.setProperty('--cols',cols);
+let html='';LANES.forEach((l,i)=>{html+=`<div class="lane-h" style="grid-row:${i+1};grid-column:1">${l.name}</div><div class="lane-bg${i%2?' alt':''}" style="grid-row:${i+1};grid-column:2 / -1"></div>`});
+STEPS.forEach(s=>{const r=LANES.findIndex(l=>l.id===s.lane)+1;html+=`<button class="step" data-id="${s.id}" style="grid-row:${r};grid-column:${s.col+2}">${s.t}</button>`});
+el.innerHTML=html+'<svg class="over" id="over" aria-hidden="true"><defs>'+[['mn','var(--muted)'],['mh','var(--warn)'],['mo','var(--ink)']].map(([id,c])=>`<marker id="${id}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" style="fill:${c}"/></marker>`).join('')+'</defs></svg>';
+const byId=Object.fromEntries(STEPS.map(s=>[s.id,s]));let sel=null;
+function draw(){const base=el.getBoundingClientRect(),box={};el.querySelectorAll('.step').forEach(b=>{const r=b.getBoundingClientRect();box[b.dataset.id]={l:r.left-base.left,r:r.right-base.left,t:r.top-base.top,b:r.bottom-base.top,cx:r.left-base.left+r.width/2,cy:r.top-base.top+r.height/2}});
+ let p='';FLOWS.forEach(([a,c],i)=>{const A=box[a],B=box[c];if(!A||!B)return;const hand=byId[a].lane!==byId[c].lane,on=sel&&(a===sel||c===sel);const x1=A.r,y1=A.cy,x2=B.l,y2=B.cy,xm=(x1+x2)/2;
+  let d;if(Math.abs(x2-x1)<4){d=`M${A.cx} ${A.b} L${B.cx} ${B.t}`}else{const r=Math.min(10,Math.abs(y2-y1)/2),sy=y2>=y1?1:-1;d=Math.abs(y2-y1)<1?`M${x1} ${y1} L${x2} ${y2}`:`M${x1} ${y1} L${xm-r} ${y1} Q${xm} ${y1} ${xm} ${y1+sy*r} L${xm} ${y2-sy*r} Q${xm} ${y2} ${xm+r} ${y2} L${x2} ${y2}`}
+  p+=`<path d="${d}" class="${hand?'hand':''} ${on?'on':''}" marker-end="url(#${on?'mo':hand?'mh':'mn'})"/>`});
+ document.getElementById('over').innerHTML=document.getElementById('over').querySelector('defs').outerHTML+p}
+document.getElementById('hand').textContent=FLOWS.filter(([a,c])=>byId[a].lane!==byId[c].lane).length;document.getElementById('steps').textContent=STEPS.length;
+el.addEventListener('click',e=>{const b=e.target.closest('.step');if(!b)return;sel=sel===b.dataset.id?null:b.dataset.id;el.querySelectorAll('.step').forEach(x=>x.classList.toggle('sel',x.dataset.id===sel));
+ const s=byId[sel];document.getElementById('note').textContent=s?`${s.t} (${LANES.find(l=>l.id===s.lane).name}): ${s.d}`:'Clique num passo.';draw()});
+new ResizeObserver(()=>requestAnimationFrame(draw)).observe(el);(document.fonts&&document.fonts.ready||Promise.resolve()).then(()=>requestAnimationFrame(draw));draw();
+</script></body></html>

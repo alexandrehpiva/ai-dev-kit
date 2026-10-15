@@ -1,0 +1,50 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Anatomia com chamadas numeradas</title>
+<!--
+  FORMATO: anatomia com chamadas numeradas (hotspots). Responde "o que é cada parte DESTA coisa?" apontando para a coisa.
+  COMO ADAPTAR: monte a peça real em .subject (HTML/CSS) e liste HOTSPOTS com a posição em % (x, y) do ponto, o alvo (seletor
+  da parte) e o texto. IDEIA CENTRAL: o número no desenho e o item na lista são o MESMO objeto: passar o mouse (ou o foco) em
+  um destaca o outro e contorna a parte real. Sem linha de chamada longa cruzando o desenho: o número fica na margem do cartão, na MESMA linha da parte, e nunca cobre texto.
+-->
+<style>
+:root{color-scheme:dark light;--bg:#1C1C1F;--card:#26262B;--line:#38383E;--panel:#16233B;--panel-line:#2C3F66;--well:#0E1730;--ink:#fff;--text:#E4E4E7;--soft:#C9C9CE;--muted:#9A9AA0;--brand:#5C80FF;--eyebrow:#7D9BFF;--ok:#43D07E;--warn:#E8B23E;--danger:#F2867A;--sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace}
+@media (prefers-color-scheme:light){:root{--bg:#F6F6F4;--card:#fff;--line:#D9D9DF;--panel:#EAF0FF;--panel-line:#BFCDF5;--well:#F0F3FA;--ink:#101114;--text:#25262B;--soft:#4A4B52;--muted:#6B6C74;--brand:#3558E6;--eyebrow:#3558E6;--ok:#157A43;--warn:#8A6100;--danger:#B3382B}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 var(--sans);padding:clamp(16px,3vw,40px)}
+h1{font-size:clamp(24px,3vw,32px);margin:0 0 6px;color:var(--ink);font-weight:500;letter-spacing:-.02em}.lead{color:var(--soft);margin:0 0 20px;max-width:820px}
+.eyebrow{font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--eyebrow)}
+button{font:inherit}:focus-visible{outline:2px solid var(--eyebrow);outline-offset:2px}
+.wrap{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:24px;align-items:start}@media(max-width:900px){.wrap{grid-template-columns:1fr}}
+.stagebox{position:relative;border:1px solid var(--panel-line);border-radius:14px;background:var(--well);padding:44px 36px}
+.subject{position:relative;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px 18px 18px 52px;display:grid;gap:12px;max-width:440px;margin:0 auto}
+.subject .ttl{font-weight:600;color:var(--ink)}.subject .sub{color:var(--muted);font-size:14px}.subject .row{display:flex;justify-content:space-between;gap:10px;font-size:14px;border-top:1px solid var(--line);padding-top:10px}
+.subject .price{font-size:26px;font-weight:600;color:var(--ink)}.subject .btn{background:var(--brand);color:#fff;border-radius:10px;padding:10px;text-align:center;font-weight:600}.subject .tag{justify-self:start;background:color-mix(in srgb,var(--ok) 18%,transparent);color:var(--ok);border-radius:999px;padding:1px 10px;font-size:12px;font-weight:700}
+.part{position:relative;border-radius:8px;transition:outline-color .15s;outline:2px solid transparent;outline-offset:4px}.part.on{outline-color:var(--warn)}
+.pin{position:absolute;z-index:2;width:26px;height:26px;border-radius:50%;background:var(--warn);color:#1a1405;font:700 13px var(--sans);display:grid;place-items:center;border:0;cursor:pointer;transform:translate(-50%,-50%);box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.pin.on,.pin:hover{background:var(--ink);color:var(--bg);transform:translate(-50%,-50%) scale(1.15)}
+ol.list{list-style:none;margin:0;padding:0;display:grid;gap:10px}ol.list li{display:grid;grid-template-columns:30px 1fr;gap:12px;padding:12px;border:1px solid var(--line);border-radius:12px;background:var(--card);cursor:pointer}
+ol.list li.on{border-color:var(--warn)}ol.list .n{width:26px;height:26px;border-radius:50%;background:var(--warn);color:#1a1405;font:700 13px var(--sans);display:grid;place-items:center}ol.list b{color:var(--ink)}ol.list p{margin:2px 0 0;color:var(--soft);font-size:14px}
+@media (prefers-reduced-motion:reduce){.part,.pin{transition:none}}
+</style></head><body>
+<div class="eyebrow">Formato · anatomia</div><h1>As partes de um cartão de produto</h1>
+<p class="lead">Passe o mouse (ou use Tab) num número do desenho ou num item da lista: a parte correspondente é contornada. Cada número fica na margem do cartão, na mesma linha da sua parte, sem linha atravessando o desenho.</p>
+<div class="wrap"><div class="stagebox"><div class="subject" id="subject">
+ <span class="tag part" data-p="1">Em estoque</span>
+ <div><div class="ttl part" data-p="2">Camiseta básica algodão</div><div class="sub">Tamanhos P ao GG</div></div>
+ <div class="price part" data-p="3">R$ 79,90</div>
+ <div class="row part" data-p="4"><span>Frete para 01310-100</span><span>R$ 12,00 · 3 dias</span></div>
+ <div class="btn part" data-p="5">Adicionar ao carrinho</div></div></div>
+<ol class="list" id="list"></ol></div>
+<script>
+const HOTSPOTS=[{p:1,t:'Disponibilidade',d:'Diz se dá para comprar agora. Some quando o estoque zera, para não prometer o que não existe.'},
+ {p:2,t:'Nome e variações',d:'O nome é o que o cliente procura; as variações aparecem logo abaixo para ele não precisar abrir outra tela.'},
+ {p:3,t:'Preço',d:'O maior número do cartão. Sempre o valor final, sem surpresa de taxa mais adiante.'},
+ {p:4,t:'Frete e prazo',d:'Calculado pelo CEP já informado. Mostrar cedo evita abandono no pagamento.'},
+ {p:5,t:'Chamada principal',d:'Um único botão de destaque. A ação mais provável da tela, com verbo claro.'}];
+const subject=document.getElementById('subject'),list=document.getElementById('list');
+// posição do número: coluna na margem esquerda do cartão, na altura do centro da parte; calculada em tempo de execução (não fixa em %), então acompanha o layout e nunca cobre texto
+HOTSPOTS.forEach(h=>{const part=subject.querySelector(`[data-p="${h.p}"]`);const b=document.createElement('button');b.type='button';b.className='pin';b.dataset.h=h.p;b.textContent=h.p;b.setAttribute('aria-label',`${h.p}: ${h.t}`);subject.appendChild(b)});
+function place(){HOTSPOTS.forEach(h=>{const part=subject.querySelector(`[data-p="${h.p}"]`),pin=subject.querySelector(`.pin[data-h="${h.p}"]`),s=subject.getBoundingClientRect(),r=part.getBoundingClientRect();pin.style.left='24px';pin.style.top=(r.top-s.top+r.height/2)+'px'})}
+list.innerHTML=HOTSPOTS.map(h=>`<li data-h="${h.p}" tabindex="0"><span class="n">${h.p}</span><div><b>${h.t}</b><p>${h.d}</p></div></li>`).join('');
+function on(p){subject.querySelectorAll('.part').forEach(x=>x.classList.toggle('on',+x.dataset.p===p));subject.querySelectorAll('.pin').forEach(x=>x.classList.toggle('on',+x.dataset.h===p));list.querySelectorAll('li').forEach(x=>x.classList.toggle('on',+x.dataset.h===p))}
+['mouseover','focusin'].forEach(ev=>document.addEventListener(ev,e=>{const t=e.target.closest('[data-h]');if(t)on(+t.dataset.h)}));['mouseout','focusout'].forEach(ev=>document.addEventListener(ev,e=>{if(e.target.closest('[data-h]'))on(null)}));
+new ResizeObserver(place).observe(subject);(document.fonts&&document.fonts.ready||Promise.resolve()).then(place);place();
+</script></body></html>

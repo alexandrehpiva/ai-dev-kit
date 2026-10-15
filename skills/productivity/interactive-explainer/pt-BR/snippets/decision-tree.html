@@ -1,0 +1,58 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Árvore de decisão</title>
+<!--
+  FORMATO: árvore de decisão guiada. Responde "o que eu faço no MEU caso?" sem obrigar a ler todos os casos.
+  COMO ADAPTAR: edite TREE (cada nó: q = pergunta completa, s = rótulo CURTO para o mapa, yes/no apontando para ids; ou r = resultado com d = texto e t = tom ok|warn|no).
+  RÓTULO CURTO: o mapa tem ~130px por caixa; a pergunta completa vai no painel da esquerda e no tooltip (<title>) do mapa.
+  IDEIA CENTRAL: duas vistas da MESMA árvore. À esquerda o leitor responde uma pergunta por vez (foco); à direita o mapa
+  completo mostra por onde ele está e quanto falta (contexto). O caminho percorrido é destacado no mapa.
+-->
+<style>
+:root{color-scheme:dark light;--bg:#1C1C1F;--card:#26262B;--line:#38383E;--panel:#16233B;--panel-line:#2C3F66;--well:#0E1730;--ink:#fff;--text:#E4E4E7;--soft:#C9C9CE;--muted:#9A9AA0;--brand:#5C80FF;--eyebrow:#7D9BFF;--ok:#43D07E;--warn:#E8B23E;--danger:#F2867A;--sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace}
+@media (prefers-color-scheme:light){:root{--bg:#F6F6F4;--card:#fff;--line:#D9D9DF;--panel:#EAF0FF;--panel-line:#BFCDF5;--well:#F0F3FA;--ink:#101114;--text:#25262B;--soft:#4A4B52;--muted:#6B6C74;--brand:#3558E6;--eyebrow:#3558E6;--ok:#157A43;--warn:#8A6100;--danger:#B3382B}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 var(--sans);padding:clamp(16px,3vw,40px)}
+h1{font-size:clamp(24px,3vw,32px);margin:0 0 6px;color:var(--ink);font-weight:500;letter-spacing:-.02em}.lead{color:var(--soft);margin:0 0 20px;max-width:820px}
+.eyebrow{font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--eyebrow)}
+button{font:inherit}:focus-visible{outline:2px solid var(--eyebrow);outline-offset:2px}
+.wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:16px;align-items:start}@media(max-width:900px){.wrap{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:14px}
+.q{font-size:20px;color:var(--ink);font-weight:500;letter-spacing:-.01em;line-height:1.35}.hint{color:var(--muted);font-size:14px}
+.ans{display:flex;gap:10px;flex-wrap:wrap}.ans button{flex:1;min-width:120px;background:transparent;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:10px 16px;cursor:pointer;font-weight:600}.ans button:hover{border-color:var(--brand)}
+.res{border-left:4px solid var(--c);padding-left:14px}.res.ok{--c:var(--ok)}.res.warn{--c:var(--warn)}.res.no{--c:var(--danger)}.res h2{margin:0;font-size:20px;color:var(--ink)}
+.crumbs{display:flex;flex-wrap:wrap;gap:6px;font-size:13px;color:var(--soft)}.crumbs span{background:var(--well);border:1px solid var(--panel-line);border-radius:999px;padding:2px 10px}
+.row{display:flex;gap:8px}.row button{background:transparent;color:var(--eyebrow);border:1px solid var(--panel-line);border-radius:8px;padding:5px 12px;cursor:pointer;font-size:14px;font-weight:600}.row button[disabled]{opacity:.4;cursor:default}
+.map{border:1px solid var(--panel-line);border-radius:14px;background:var(--well);overflow:auto}svg{display:block;min-width:var(--vw)}
+.n rect{fill:var(--card);stroke:var(--line);stroke-width:1.4}.n text{fill:var(--text);font:600 12px var(--sans);text-anchor:middle;dominant-baseline:central}.n.res rect{stroke-dasharray:4 3}
+.n.path rect{stroke:var(--brand);stroke-width:2.4}.n.cur rect{fill:color-mix(in srgb,var(--brand) 22%,var(--card));stroke:var(--brand);stroke-width:3}.n.dim{opacity:.4}
+.e{fill:none;stroke:color-mix(in srgb,var(--muted) 70%,transparent);stroke-width:1.5}.e.path{stroke:var(--brand);stroke-width:2.6}.el{fill:var(--muted);font:600 11px var(--sans);text-anchor:middle;paint-order:stroke;stroke:var(--well);stroke-width:4px}
+</style></head><body>
+<div class="eyebrow">Formato · árvore de decisão</div><h1>Posso aprovar este pedido sem o gestor?</h1>
+<p class="lead">Responda uma pergunta por vez. O mapa ao lado mostra o caminho que você já percorreu e as saídas que ainda existem.</p>
+<div class="wrap"><div class="card" id="card"></div><div class="map"><svg id="svg" aria-label="Mapa da árvore de decisão"></svg></div></div>
+<script>
+const START='a';
+const TREE={
+ a:{q:'O valor do pedido é maior que R$ 10.000,00?',s:'Acima de 10 mil?',yes:'b',no:'c'},
+ b:{q:'A área do pedido tem um gestor cadastrado?',s:'Área tem gestor?',yes:'d',no:'r2'},
+ c:{q:'O comprador já tem pedido em aberto hoje?',s:'Já pediu hoje?',yes:'r3',no:'r1'},
+ d:{q:'O gestor é da MESMA área do pedido?',s:'Mesma área?',yes:'r4',no:'r5'},
+ r1:{r:'Aprovado automaticamente',t:'ok',d:'Valores até R$ 10.000,00 seguem sem o gestor.'},
+ r2:{r:'Envio bloqueado',t:'no',d:'Mensagem: "Área sem aprovador". Peça o cadastro de um gestor.'},
+ r3:{r:'Aprovado, com aviso',t:'warn',d:'O sistema registra a repetição para revisão semanal.'},
+ r4:{r:'Aguarda o gestor',t:'warn',d:'O pedido fica "aguardando aprovação" e o gestor é avisado.'},
+ r5:{r:'Ação negada e registrada',t:'no',d:'Gestor de outra área não aprova; a tentativa vai para auditoria.'}};
+let path=[START];const crumbs=[];
+// layout em camadas: x pela folha, y pela profundidade (árvore compacta)
+const pos={};let leaf=0;function lay(id,d){const n=TREE[id];if(n.r){pos[id]={x:leaf++,y:d};return}const a=lay(n.yes,d+1),b=lay(n.no,d+1);pos[id]={x:(pos[n.yes].x+pos[n.no].x)/2,y:d}}lay(START,0);
+const NW=130,NH=44,GX=150,GY=100,PX=80,PY=40;const maxY=Math.max(...Object.values(pos).map(p=>p.y));
+const vw=PX*2+(leaf-1)*GX,vh=PY*2+maxY*GY;const svg=document.getElementById('svg');svg.setAttribute('viewBox',`0 0 ${vw} ${vh}`);svg.style.setProperty('--vw',vw+'px');
+const P=id=>({x:PX+pos[id].x*GX,y:PY+pos[id].y*GY});
+function drawMap(){let h='';const inPath=(a,b)=>{const i=path.indexOf(a);return i>=0&&path[i+1]===b};
+ Object.entries(TREE).forEach(([id,n])=>{if(n.r)return;[['yes','Sim'],['no','Não']].forEach(([k,l])=>{const a=P(id),b=P(n[k]),on=inPath(id,n[k]);h+=`<path class="e${on?' path':''}" d="M${a.x} ${a.y+NH/2} C${a.x} ${a.y+NH/2+34},${b.x} ${b.y-NH/2-34},${b.x} ${b.y-NH/2}"/><text class="el" x="${(a.x+b.x)/2}" y="${(a.y+b.y)/2}">${l}</text>`})});
+ Object.entries(TREE).forEach(([id,n])=>{const p=P(id),cur=id===path[path.length-1],on=path.includes(id);h+=`<g class="n${n.r?' res':''}${on?' path':''}${cur?' cur':''}${!on&&path.length>1?' dim':''}"><title>${n.q||n.r}</title><rect x="${p.x-NW/2}" y="${p.y-NH/2}" width="${NW}" height="${NH}" rx="10"/><text x="${p.x}" y="${p.y}">${n.s||n.r}</text></g>`});svg.innerHTML=h}
+function drawCard(){const id=path[path.length-1],n=TREE[id],c=document.getElementById('card');
+ const bc=path.slice(0,-1).map((p,i)=>`<span>${TREE[p].q.replace(/\?$/,'')}: <b>${path[i+1]&&TREE[p].yes===path[i+1]?'Sim':'Não'}</b></span>`).join('');
+ c.innerHTML=(bc?`<div class="crumbs">${bc}</div>`:'')+(n.q?`<div class="q">${n.q}</div><div class="ans"><button data-k="yes" type="button">Sim</button><button data-k="no" type="button">Não</button></div><div class="hint">Pergunta ${path.length} de até ${depthQ(START)}</div>`:`<div class="res ${n.t}"><div class="hint">Resultado</div><h2>${n.r}</h2><p>${n.d}</p></div>`)+`<div class="row"><button id="back" type="button"${path.length<2?' disabled':''}>◀ Voltar uma pergunta</button><button id="restart" type="button"${path.length<2?' disabled':''}>Recomeçar</button></div>`}
+function depthQ(id){const n=TREE[id];return n.r?0:1+Math.max(depthQ(n.yes),depthQ(n.no))}
+document.getElementById('card').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.k){path.push(TREE[path[path.length-1]][b.dataset.k])}else if(b.id==='back'){path.pop()}else if(b.id==='restart'){path=[START]}drawCard();drawMap()});
+drawCard();drawMap();
+</script></body></html>

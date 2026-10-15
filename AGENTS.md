@@ -455,6 +455,16 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 
 ---
 
+## interactive-explainer
+
+**Arquivo:** `skills/productivity/interactive-explainer/pt-BR/SKILL.md`
+
+**Descrição:** Cria explicadores visuais interativos em um único HTML autossuficiente (sem rede nem biblioteca) que mostram como um processo, recurso ou sistema funciona: boards de etapas, canvas de nós e setas com auto-layout e roteamento medido, matrizes papel × etapa com dica, cartões de papel com amostras reais e verificação viva ("devolvido" → "passa"), catálogo de fichas com chips navegáveis, tema claro/escuro, teclado e URL com âncora. Traz um motor por dados (`templates/explainer-template.html` + JSON validado por `scripts/validate-explainer.py`, gerado por `build-explainer.py` e conferido por `render-check.py` em Chrome headless nas larguras 1440/768/375, com autoteste de geometria das setas e capturas), 15 `snippets/` de outros formatos (raias, máquina de estados, sequência, árvore de decisão, antes/depois, camadas, fluxo animado, mapa de calor, anatomia, "e se…", hierarquia, funil, jornada, simulador, linha do tempo) e guias completos (escolha do visual, anatomia, canvas, técnicas de seta, vocabulário visual, interações, divulgação progressiva, mostre-não-descreva, tokens, escrita, acessibilidade, verificação, armadilhas, exemplo de ponta a ponta). Estrutura livre (sem tipos de peça nem campos obrigatórios além do mínimo; blocos `sample` e `embed` para compor formatos). Defesas contra desenho inventado: `source` em nó e aresta (`--require-source`), hipótese visível (`status: "hipotese"`), conferência do arquivo e do trecho citados (`--source-root`, `quote`) e verificador independente (`source-packet.py`).
+
+**Quando usar:** o usuário pedir "explica visualmente", "faz um explicador interativo", "monta um board/canvas com setas", "diagrama clicável", "mostra como esse recurso funciona", "artefato HTML que explica o fluxo", "jornada clicável", ou quando um texto longo sobre funcionamento ficaria melhor como algo que se explora. Não substitui diagrama formal estático (`bpmn-flow-diagrams`, `c4-diagrams`, `architecture-diagrams`) nem protótipo navegável de produto (`interactive-prototype`).
+
+---
+
 # Knowledge
 
 Skills que leem/mantêm conhecimento persistente: template de Knowledge Base compartilhada (gera skill custom), disciplina operacional de cofre de notas e memória do agente sobre o desenvolvedor.

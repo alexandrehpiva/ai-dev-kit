@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.33.0] — 2026-10-15
+
+### Added
+
+- `productivity/interactive-explainer` (pt-BR): nova skill para criar explicadores visuais interativos em um único HTML autossuficiente. Inclui um motor por dados (`templates/explainer-template.html`: tokens claro/escuro, esteira com laço, matriz com dica, cartões de papel com amostras `code`/`note`/`table`/`list`/`gate`/`html`, catálogo com chips `@tipo:id`, board de etapas com canvas de nós e setas medidos por `getBoundingClientRect`, auto-layout por camadas com arestas de retorno, rótulos que deslizam pela curva para não colidir, travas tracejadas, foco e contexto, teclado, passo a passo, navegação por hash, autoteste de geometria); `scripts/` com `validate-explainer.py` (contrato, avisos de qualidade e `--require-source`), `build-explainer.py`, `render-check.py` (Chrome headless em 1440/768/375 com iframe de largura exata, console, capturas), `source-packet.py` (pacote de afirmações para o verificador independente) e 81 testes; um exemplo genérico (`examples/online-order.data.json`); 15 `snippets/` de formatos adicionais (raias, máquina de estados, sequência, árvore de decisão, antes/depois, camadas, fluxo animado, mapa de calor, anatomia, "e se…", hierarquia, funil, mapa de jornada, simulador, linha do tempo); e 18 guias (escolha do visual, anatomia, canvas, técnicas de seta, vocabulário visual, interações, divulgação progressiva, mostre-não-descreva, verificação de fontes, catálogo de formatos, tokens, escrita, responsivo e acessibilidade, verificação visual, algoritmos de layout, armadilhas, exemplo de ponta a ponta e contrato de dados). Defesas contra desenho inventado em cinco camadas: leitura da fonte antes de desenhar; `--require-source` (nó **e aresta** sem `source` são erro, fonte genérica é recusada); `status: "hipotese"` (selo "a confirmar" na tela, seta pontilhada com "?", pergunta devolvida pelo validador); `--source-root` e `quote` (o arquivo citado existe e o trecho literal está nele, sem seguir caminhos fora da raiz; `--require-quote` exige o trecho em tudo); e verificador independente via `source-packet.py` e `source-verification.md`. Estrutura livre: o motor não traz tipo de peça nem campo obrigatório além do mínimo (o conteúdo decide a estrutura; `summary`, `empty`, `does`, `samples`, `miss`, ids de bloco etc. são opcionais e o validador não avisa que faltam), blocos soltos `sample` e `embed` (um dos 15 snippets ou HTML próprio dentro de uma aba, em iframe isolado, arquivo final único), textos da interface configuráveis em `meta.labels` e `source`/`quote`/`status` em qualquer bloco, item ou etapa. Dependência soft de `hallucination-guard`.
+
+---
+
 ## [0.31.0] — 2026-10-14
 
 ### Changed

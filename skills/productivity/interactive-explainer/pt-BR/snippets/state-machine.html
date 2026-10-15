@@ -1,0 +1,61 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Máquina de estados</title>
+<!--
+  FORMATO: máquina de estados. Responde "em que situação a coisa pode estar e o que a faz mudar?".
+  COMO ADAPTAR: edite STATES (id, rótulo, posição x/y em unidades de grade), TRANS (de, para, evento) e START.
+  IDEIA CENTRAL: o leitor DISPARA eventos e vê o estado mudar. Só os eventos válidos no estado atual ficam habilitados:
+  o que não pode acontecer fica visivelmente impossível, e isso ensina as regras melhor que um parágrafo.
+  GEOMETRIA: a linha vai da borda de um estado à borda do outro (não do centro); pares de ida e volta usam curvas
+  com desvio oposto para não se sobrepor.
+-->
+<style>
+:root{color-scheme:dark light;--bg:#1C1C1F;--card:#26262B;--line:#38383E;--panel:#16233B;--panel-line:#2C3F66;--well:#0E1730;--ink:#fff;--text:#E4E4E7;--soft:#C9C9CE;--muted:#9A9AA0;--brand:#5C80FF;--eyebrow:#7D9BFF;--ok:#43D07E;--warn:#E8B23E;--danger:#F2867A;--sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace}
+@media (prefers-color-scheme:light){:root{--bg:#F6F6F4;--card:#fff;--line:#D9D9DF;--panel:#EAF0FF;--panel-line:#BFCDF5;--well:#F0F3FA;--ink:#101114;--text:#25262B;--soft:#4A4B52;--muted:#6B6C74;--brand:#3558E6;--eyebrow:#3558E6;--ok:#157A43;--warn:#8A6100;--danger:#B3382B}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 var(--sans);padding:clamp(16px,3vw,40px)}
+h1{font-size:clamp(24px,3vw,32px);margin:0 0 6px;color:var(--ink);font-weight:500;letter-spacing:-.02em}.lead{color:var(--soft);margin:0 0 20px;max-width:820px}
+.eyebrow{font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--eyebrow)}
+button{font:inherit}:focus-visible{outline:2px solid var(--eyebrow);outline-offset:2px}
+.wrap{display:grid;gap:16px}
+.stage{border:1px solid var(--panel-line);border-radius:14px;background:var(--well);overflow-x:auto}
+svg{display:block;width:100%;min-width:var(--vw);height:auto}  /* tamanho natural: o texto do SVG não encolhe, o palco rola */
+.st rect{fill:var(--card);stroke:var(--line);stroke-width:1.5}.st text{fill:var(--ink);font:600 14px var(--sans);text-anchor:middle;dominant-baseline:central}
+.st.cur rect{stroke:var(--brand);stroke-width:3;fill:color-mix(in srgb,var(--brand) 14%,var(--card))}
+.st.final rect{stroke-dasharray:none;stroke:var(--ok)}.st.start rect{stroke:var(--muted)}
+.tr path{fill:none;stroke:color-mix(in srgb,var(--muted) 75%,transparent);stroke-width:1.6}.tr text{fill:var(--soft);font:600 11.5px var(--sans);text-anchor:middle;paint-order:stroke;stroke:var(--well);stroke-width:4px}
+.tr.able path{stroke:var(--warn);stroke-width:2.2}.tr.fired path{stroke:var(--ok);stroke-width:3}
+marker path{stroke:none}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;align-items:start}.panel>div{display:grid;gap:10px}
+.panel h2{margin:0;font-size:15px;color:var(--ink)}.ev{display:grid;gap:8px}
+.ev button{text-align:left;background:transparent;color:var(--text);border:1px solid var(--line);border-radius:10px;padding:8px 12px;cursor:pointer}
+.ev button:not([disabled]):hover{border-color:var(--warn)}.ev button[disabled]{opacity:.35;cursor:not-allowed}.ev small{color:var(--muted)}
+.log{font:13px/1.5 var(--mono);color:var(--soft);max-height:160px;overflow:auto;margin:0;padding-left:18px}
+.reset{justify-self:start;background:transparent;color:var(--eyebrow);border:1px solid var(--panel-line);border-radius:8px;padding:5px 12px;cursor:pointer}
+</style></head><body>
+<div class="eyebrow">Formato · máquina de estados</div><h1>O que pode acontecer com um pedido, e em que ordem</h1>
+<p class="lead">A pílula de borda azul é o estado atual. Os botões abaixo do diagrama são os únicos eventos permitidos agora (as setas âmbar mostram para onde levam); clique num deles e veja o estado mudar.</p>
+<div class="wrap"><div class="stage"><svg id="svg" aria-label="Diagrama da máquina de estados"></svg></div>
+<div class="panel"><div><h2>Estado atual: <span id="cur" style="color:var(--brand)"></span></h2><div class="ev" id="ev"></div></div><div><h2>Caminho percorrido</h2><ol class="log" id="log"></ol><button class="reset" id="reset" type="button">Reiniciar</button></div></div></div>
+<script>
+const START='criado';
+const STATES=[{id:'criado',label:'Criado',x:0,y:0},{id:'pago',label:'Pago',x:1,y:0},{id:'separado',label:'Separado',x:2,y:0},{id:'enviado',label:'Enviado',x:3,y:0},{id:'entregue',label:'Entregue',x:4,y:0,final:true},{id:'cancelado',label:'Cancelado',x:1,y:1.3,final:true},{id:'devolvido',label:'Devolvido',x:3,y:1.3,final:true}];
+const TRANS=[{from:'criado',to:'pago',ev:'Paga'},{from:'pago',to:'separado',ev:'Separa'},{from:'separado',to:'enviado',ev:'Coleta'},{from:'enviado',to:'entregue',ev:'Recebe'},{from:'criado',to:'cancelado',ev:'Desiste'},{from:'pago',to:'cancelado',ev:'Cancela'},{from:'enviado',to:'devolvido',ev:'Recusa'},{from:'entregue',to:'devolvido',ev:'Devolve em 7 dias'}];
+const W=116,H=46,GX=216,GY=110,PX=70,PY=50;  // GX - W é o vão que precisa caber o maior rótulo (~6,3px por letra)
+const pos=Object.fromEntries(STATES.map(s=>[s.id,{cx:PX+s.x*GX,cy:PY+s.y*GY}]));
+const svg=document.getElementById('svg');const vw=PX*2+Math.max(...STATES.map(s=>s.x))*GX,vh=PY*2+Math.max(...STATES.map(s=>s.y))*GY;svg.setAttribute('viewBox',`0 0 ${vw} ${vh}`);svg.style.setProperty('--vw',vw+'px');
+function edge(a,b,bend){const A=pos[a],B=pos[b];let dx=B.cx-A.cx,dy=B.cy-A.cy;const len=Math.hypot(dx,dy)||1;dx/=len;dy/=len;
+ const clip=(c,ux,uy)=>{const tx=Math.abs(ux)>1e-6?(W/2+4)/Math.abs(ux):1e9,ty=Math.abs(uy)>1e-6?(H/2+4)/Math.abs(uy):1e9,t=Math.min(tx,ty);return{x:c.cx+ux*t,y:c.cy+uy*t}};
+ const p1=clip(A,dx,dy),p2=clip(B,-dx,-dy);const mx=(p1.x+p2.x)/2,my=(p1.y+p2.y)/2;const nx=-dy,ny=dx;const off=bend?bend*34:0;
+ return{d:off?`M${p1.x} ${p1.y} Q${mx+nx*off} ${my+ny*off} ${p2.x} ${p2.y}`:`M${p1.x} ${p1.y} L${p2.x} ${p2.y}`,lx:mx+nx*off*.5,ly:my+ny*off*.5-(off?0:8)}}
+let html='<defs>'+[['mn','var(--muted)'],['mw','var(--warn)'],['mf','var(--ok)']].map(([i,c])=>`<marker id="${i}" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" style="fill:${c}"/></marker>`).join('')+'</defs>';
+TRANS.forEach((t,i)=>{const both=TRANS.some(u=>u.from===t.to&&u.to===t.from);const e=edge(t.from,t.to,both?1:0);html+=`<g class="tr" data-i="${i}"><path d="${e.d}" marker-end="url(#mn)"/><text x="${e.lx}" y="${e.ly}">${t.ev}</text></g>`});
+STATES.forEach(s=>{const p=pos[s.id];html+=`<g class="st${s.final?' final':''}" data-id="${s.id}"><rect x="${p.cx-W/2}" y="${p.cy-H/2}" width="${W}" height="${H}" rx="${H/2}"/><text x="${p.cx}" y="${p.cy}">${s.label}</text></g>`});
+svg.innerHTML=html;
+let cur=START,path=[START],fired=-1;
+function render(){document.getElementById('cur').textContent=STATES.find(s=>s.id===cur).label;
+ svg.querySelectorAll('.st').forEach(g=>g.classList.toggle('cur',g.dataset.id===cur));
+ svg.querySelectorAll('.tr').forEach(g=>{const t=TRANS[g.dataset.i],able=t.from===cur,f=+g.dataset.i===fired;g.classList.toggle('able',able&&!f);g.classList.toggle('fired',f);g.querySelector('path').setAttribute('marker-end',`url(#${f?'mf':able?'mw':'mn'})`)});
+ const ev=document.getElementById('ev');const opts=TRANS.map((t,i)=>({t,i})).filter(o=>o.t.from===cur);
+ ev.innerHTML=opts.length?opts.map(o=>`<button type="button" data-i="${o.i}">${o.t.ev}<br><small>vai para ${STATES.find(s=>s.id===o.t.to).label}</small></button>`).join(''):'<button disabled>Estado final: nenhum evento possível</button>';
+ document.getElementById('log').innerHTML=path.map(p=>`<li>${STATES.find(s=>s.id===p).label}</li>`).join('')}
+document.getElementById('ev').addEventListener('click',e=>{const b=e.target.closest('button[data-i]');if(!b)return;fired=+b.dataset.i;cur=TRANS[fired].to;path.push(cur);render()});
+document.getElementById('reset').onclick=()=>{cur=START;path=[START];fired=-1;render()};render();
+</script></body></html>

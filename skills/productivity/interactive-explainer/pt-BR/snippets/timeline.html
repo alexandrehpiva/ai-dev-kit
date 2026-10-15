@@ -1,0 +1,41 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Linha do tempo</title>
+<!--
+  FORMATO: linha do tempo. Responde "o que aconteceu (ou vai acontecer), em que ordem e com que duração?".
+  COMO ADAPTAR: edite EVENTS (data ISO, título, categoria, texto) e CATS (rótulo e cor). IDEIA CENTRAL: o espaço vertical
+  CRESCE com o tempo real (um intervalo longo parece longo), não só uma sequência de caixas; há um mínimo para marcos próximos. Filtros por categoria
+  recolhem o que não interessa SEM mudar a escala, e o espaço vazio entre eventos distantes é desenhado como "vão"
+  rotulado ("3 meses sem eventos") para o leitor não achar que algo foi omitido.
+-->
+<style>
+:root{color-scheme:dark light;--bg:#1C1C1F;--card:#26262B;--line:#38383E;--panel:#16233B;--panel-line:#2C3F66;--well:#0E1730;--ink:#fff;--text:#E4E4E7;--soft:#C9C9CE;--muted:#9A9AA0;--brand:#5C80FF;--eyebrow:#7D9BFF;--ok:#43D07E;--warn:#E8B23E;--danger:#F2867A;--sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;--mono:ui-monospace,Menlo,Consolas,monospace}
+@media (prefers-color-scheme:light){:root{--bg:#F6F6F4;--card:#fff;--line:#D9D9DF;--panel:#EAF0FF;--panel-line:#BFCDF5;--well:#F0F3FA;--ink:#101114;--text:#25262B;--soft:#4A4B52;--muted:#6B6C74;--brand:#3558E6;--eyebrow:#3558E6;--ok:#157A43;--warn:#8A6100;--danger:#B3382B}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px/1.6 var(--sans);padding:clamp(16px,3vw,40px)}
+h1{font-size:clamp(24px,3vw,32px);margin:0 0 6px;color:var(--ink);font-weight:500;letter-spacing:-.02em}.lead{color:var(--soft);margin:0 0 20px;max-width:820px}
+.eyebrow{font-size:13px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--eyebrow)}
+button{font:inherit}:focus-visible{outline:2px solid var(--eyebrow);outline-offset:2px}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}.seg button{display:inline-flex;gap:8px;align-items:center;background:transparent;color:var(--soft);border:1px solid var(--line);border-radius:8px;padding:6px 12px;cursor:pointer;font-weight:600;font-size:14px}.seg button[aria-pressed=true]{background:var(--card);border-color:var(--c);color:var(--ink)}.seg .dot{width:9px;height:9px;border-radius:50%;background:var(--c)}
+.tl{position:relative;margin-left:96px;border-left:2px solid var(--line);padding-left:28px}
+.ev{position:relative;background:var(--card);border:1px solid var(--line);border-left:4px solid var(--c);border-radius:12px;padding:12px 16px;max-width:620px;cursor:pointer;text-align:left;width:100%;color:inherit;display:block}
+.ev::before{content:"";position:absolute;left:-39px;top:18px;width:14px;height:14px;border-radius:50%;background:var(--c);border:3px solid var(--bg)}
+.ev time{position:absolute;left:-134px;top:12px;width:84px;text-align:right;font:600 12px var(--mono);color:var(--muted)}
+.ev h3{margin:0;font-size:16px;color:var(--ink)}.ev p{margin:4px 0 0;color:var(--soft);font-size:14px;display:none}.ev[aria-expanded=true] p{display:block}.ev:hover{border-color:var(--c)}
+.gap{position:relative;color:var(--muted);font-size:13px;display:flex;align-items:center;gap:10px;margin-left:-28px;padding-left:28px;border-left:2px dashed var(--line);margin-left:-30px}
+.gap span{background:var(--bg);padding:0 6px;margin-left:-4px}
+@media(max-width:640px){.tl{margin-left:70px}.ev time{left:-104px;width:62px}}
+</style></head><body>
+<div class="eyebrow">Formato · linha do tempo</div><h1>Do primeiro protótipo à entrega ao cliente</h1>
+<p class="lead">O espaço vertical entre os marcos cresce com o tempo real (com um mínimo, para marcos próximos não se sobreporem). Os trechos pontilhados são vãos sem eventos, rotulados para não parecer que algo foi omitido. Filtre por categoria e clique num marco para abri-lo.</p>
+<div class="seg" id="seg" role="group" aria-label="Categorias"></div><div class="tl" id="tl"></div>
+<script>
+const CATS={prod:{n:'Produto',c:'#7D9BFF'},eng:{n:'Engenharia',c:'#43D07E'},cli:{n:'Cliente',c:'#E8B23E'}};
+const EVENTS=[{d:'2026-01-12',t:'Primeiro protótipo navegável',c:'prod',x:'Telas principais clicáveis; validado com 3 pessoas.'},{d:'2026-01-30',t:'Regras de negócio fechadas',c:'prod',x:'Valores-limite e perfis definidos em cenários de teste.'},{d:'2026-02-14',t:'Primeira versão da API',c:'eng',x:'Pedidos e pagamento; cobertura de testes de 70%.'},{d:'2026-05-20',t:'Homologação com o cliente',c:'cli',x:'Duas rodadas de ajustes de texto e de fluxo.'},{d:'2026-06-03',t:'Correção de segurança',c:'eng',x:'Injeção de SQL no campo de busca corrigida e coberta por teste.'},{d:'2026-06-25',t:'Entrega e aceite',c:'cli',x:'Selo de qualidade e segurança emitido.'}];
+const on=new Set(Object.keys(CATS));const seg=document.getElementById('seg'),tl=document.getElementById('tl');
+seg.innerHTML=Object.entries(CATS).map(([k,v])=>`<button type="button" data-k="${k}" aria-pressed="true" style="--c:${v.c}"><span class="dot"></span>${v.n}</button>`).join('');
+const open=new Set();const DAY=864e5,PX_PER_DAY=3.2,MIN=0;
+function fmt(d){return new Date(d+'T12:00:00').toLocaleDateString('pt-BR',{day:'2-digit',month:'short',year:'2-digit'}).replace(/\./g,'').replace(/ de /g,' ')}
+function draw(){const evs=EVENTS.filter(e=>on.has(e.c));let html='',prev=null;
+ evs.forEach((e,i)=>{const t=new Date(e.d+'T12:00:00').getTime();if(prev){const days=Math.round((t-prev)/DAY),h=Math.min(260,Math.max(8,days*PX_PER_DAY-84));html+=days>45?`<div class="gap" style="height:${Math.max(40,h)}px"><span>${Math.round(days/30)} meses sem eventos</span></div>`:`<div style="height:${Math.max(10,h)}px"></div>`}
+  html+=`<button type="button" class="ev" data-i="${EVENTS.indexOf(e)}" aria-expanded="${open.has(EVENTS.indexOf(e))}" style="--c:${CATS[e.c].c}"><time datetime="${e.d}">${fmt(e.d)}</time><h3>${e.t}</h3><p>${e.x}</p></button>`;prev=t});tl.innerHTML=html||'<p class="lead">Nenhuma categoria selecionada.</p>'}
+seg.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;const k=b.dataset.k;on.has(k)?on.delete(k):on.add(k);b.setAttribute('aria-pressed',on.has(k));draw()});
+tl.addEventListener('click',e=>{const b=e.target.closest('.ev');if(!b)return;const i=+b.dataset.i;open.has(i)?open.delete(i):open.add(i);draw()});draw();
+</script></body></html>
