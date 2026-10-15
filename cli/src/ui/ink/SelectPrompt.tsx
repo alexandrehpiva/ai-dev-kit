@@ -2,10 +2,11 @@ import { Box, Text, useInput } from 'ink';
 import React, { useMemo, useState } from 'react';
 
 import {
-  fitDescriptionLine,
+  DESCRIPTION_MAX_LINES,
   fitTerminal,
   promptListPageSize,
   terminalColumns,
+  wrapDescription,
 } from '../../utils/terminal-text.js';
 
 export type SelectItem<T> = {
@@ -34,7 +35,7 @@ export function SelectPrompt<T>({
   onDone,
 }: SelectPromptProps<T>): React.ReactElement {
   const [focus, setFocus] = useState(() => initialIndex(options, initialValue));
-  const pageSize = promptListPageSize(6);
+  const pageSize = promptListPageSize(4 + DESCRIPTION_MAX_LINES);
   const width = terminalColumns();
 
   const windowStart = useMemo(() => {
@@ -82,7 +83,13 @@ export function SelectPrompt<T>({
       </Box>
       {focused?.hint?.trim() ? (
         <Box marginTop={1}>
-          <Text dimColor>{fitDescriptionLine(focused.hint, width)}</Text>
+          <Box flexDirection="column">
+            {wrapDescription(focused.hint, width - 2).map((line, i) => (
+              <Text key={i} dimColor>
+                {line}
+              </Text>
+            ))}
+          </Box>
         </Box>
       ) : null}
       <Box marginTop={1}>

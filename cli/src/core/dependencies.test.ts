@@ -86,10 +86,9 @@ describe('dependency cascade', () => {
   const b = skill('b', ['c']);
   const c = skill('c');
 
-  it('Given a->b->c When selecting a Then cascade selects b and c; deselecting c drops a and b', () => {
+  it('Given a->b->c When selecting a Then cascade pulls in b and c', () => {
     const cascade = buildDependencyCascade(buildInteractiveSkillEntries([a, b, c], new Set()));
     assert.deepEqual(cascade.onSelect('a').sort(), ['b', 'c']);
-    assert.deepEqual(cascade.onDeselect('c').sort(), ['a', 'b']);
   });
 
   it('Given dependency already installed When expanding Then it is not added again', () => {

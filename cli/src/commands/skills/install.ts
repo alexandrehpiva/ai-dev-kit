@@ -10,12 +10,14 @@ import type { InstalledSkill, SkillInfo, Target } from '../../types.js';
 import {
   cancel,
   confirm,
+  fitDescriptionLine,
   intro,
   isCancel,
   multiselect,
   outro,
   select,
   spinner,
+  terminalColumns,
   text,
 } from '../../utils/ui.js';
 
@@ -303,12 +305,15 @@ async function resolveInteractiveEntry(
         {
           value: 'custom' satisfies VariantChoice,
           label: `custom/${entry.name}`,
-          hint: entry.custom.description.slice(0, 50),
+          hint: fitDescriptionLine(entry.custom.description, Math.max(24, terminalColumns() - 30)),
         },
         {
           value: 'official' satisfies VariantChoice,
           label: `${entry.official.bucket}/${entry.name}`,
-          hint: entry.official.description.slice(0, 50),
+          hint: fitDescriptionLine(
+            entry.official.description,
+            Math.max(24, terminalColumns() - 30),
+          ),
         },
       ],
     });

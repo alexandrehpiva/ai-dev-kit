@@ -113,14 +113,12 @@ function entryInfo(entry: InteractiveSkillEntry): SkillInfo | undefined {
 }
 
 /**
- * Multiselect cascade over entry names: selecting a skill also selects its
- * transitive dependencies; deselecting one also deselects everything that
- * depends on it (directly or not). Dependencies absent from `entries`
- * (e.g. already installed) are ignored.
+ * Multiselect cascade over entry names: selecting a skill also marks its
+ * transitive dependencies (shown in another color and kept while the skill stays
+ * selected). Dependencies absent from `entries` (e.g. already installed) are ignored.
  */
 export function buildDependencyCascade(entries: InteractiveSkillEntry[]): {
   onSelect: (name: string) => string[];
-  onDeselect: (name: string) => string[];
 } {
   const infos = entries.map(entryInfo).filter((i): i is SkillInfo => Boolean(i));
   const byName = new Map(infos.map((i) => [i.name, i]));
@@ -129,11 +127,6 @@ export function buildDependencyCascade(entries: InteractiveSkillEntry[]): {
       const root = byName.get(name);
       if (!root) return [];
       return resolveDependencyClosure([root], infos).added.map((s) => s.name);
-    },
-    onDeselect: (name: string): string[] => {
-      const root = byName.get(name);
-      if (!root) return [];
-      return resolveDependents([root], infos).map((s) => s.name);
     },
   };
 }

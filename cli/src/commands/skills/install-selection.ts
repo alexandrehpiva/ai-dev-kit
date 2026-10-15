@@ -55,8 +55,8 @@ export function groupSkillsByName(skills: SkillInfo[]): Map<string, SkillInfo[]>
 
 function shortHint(skill: SkillInfo): string {
   if (skill.localeHint) return skill.localeHint;
-  // Prefer short fragment; terminal fit happens again in ui.formatOptionName.
-  return skill.description.replace(/\s+/g, ' ').trim().slice(0, 40);
+  // Full text: the prompt wraps it to the terminal width (wrapDescription), never cut here.
+  return skill.description.replace(/\s+/g, ' ').trim();
 }
 
 function variantHint(defaultVariant: VariantChoice): string {

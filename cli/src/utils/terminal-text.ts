@@ -29,6 +29,48 @@ export function fitDescriptionLine(text: string, maxWidth?: number): string {
   return `${slice}…`;
 }
 
+/** Max lines shown for the focused option's description under list prompts. */
+export const DESCRIPTION_MAX_LINES = 3;
+
+/**
+ * Description under list prompts, wrapped on word boundaries into at most `maxLines` lines.
+ * Only the last line gets an ellipsis, and only when the text did not fit, so a long
+ * description is read in full instead of being clipped mid-word on a single line.
+ */
+export function wrapDescription(
+  text: string,
+  maxWidth?: number,
+  maxLines = DESCRIPTION_MAX_LINES,
+): string[] {
+  const width = Math.max(8, maxWidth ?? Math.max(24, terminalColumns() - 2));
+  const words = text.replace(/\s+/g, ' ').trim().split(' ').filter(Boolean);
+  if (words.length === 0) return [];
+  const lines: string[] = [];
+  let current = '';
+  let consumed = 0;
+  for (const word of words) {
+    if (lines.length === maxLines) break;
+    const chunk = word.length > width ? word.slice(0, width) : word;
+    if (current === '') {
+      current = chunk;
+    } else if (current.length + 1 + chunk.length <= width) {
+      current = `${current} ${chunk}`;
+    } else {
+      lines.push(current);
+      if (lines.length === maxLines) break;
+      current = chunk;
+    }
+    consumed += 1;
+  }
+  if (lines.length < maxLines && current !== '') lines.push(current);
+  if (consumed < words.length) {
+    const last = lines.length - 1;
+    lines[last] = fitDescriptionLine(`${lines[last]} …`, width).replace(/ …$/, '…');
+    if (!lines[last]!.endsWith('…')) lines[last] = fitTerminal(`${lines[last]}…`, width);
+  }
+  return lines;
+}
+
 /** Leave room under the list for help tip + one description line. */
 export function promptListPageSize(reservedBottomLines = 7): number {
   const rows = typeof process.stdout.rows === 'number' ? process.stdout.rows : 24;

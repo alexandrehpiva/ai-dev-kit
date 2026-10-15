@@ -9,6 +9,18 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.33.1] — 2026-10-15
+
+### Fixed
+
+- `cli`: a descrição da skill no seletor de `skills install` não é mais cortada no meio da palavra. O store guardava só 100 caracteres e o hint do seletor mais 40; agora a descrição é completa e o seletor a quebra em até 3 linhas na largura do terminal, com reticências só no fim e só se ainda não couber. O seletor de variante (custom ou oficial) também deixou de cortar em 50 caracteres.
+
+### Changed
+
+- `cli`: no seletor múltiplo, skills marcadas por tabela (dependências no `install`, dependentes no `uninstall`) aparecem em amarelo com "(dependência)", em outra cor da seleção direta (verde), com legenda e a dica "Marca junto: …" / "Marcada por: …". Uma dependência exigida não pode ser desmarcada enquanto quem a exige estiver marcado (avisa quem exige), e a seleção direta de quem a exigia devolve exatamente o que tinha trazido. Substitui o cascade que desmarcava os dependentes.
+
+---
+
 ## [0.33.0] — 2026-10-15
 
 ### Added

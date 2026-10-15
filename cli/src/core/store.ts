@@ -111,10 +111,10 @@ function extractDescription(skillMdPath: string): string {
   const content = fs.readFileSync(skillMdPath, 'utf-8');
   const match = content.match(/^description:\s*[>|]?\s*\n?([\s\S]*?)(?=\n\w|\n---)/m);
   if (match) {
-    return match[1].replace(/^\s+/gm, '').replace(/\n/g, ' ').trim().slice(0, 100);
+    return match[1].replace(/^\s+/gm, '').replace(/\n/g, ' ').trim();
   }
   const inlineMatch = content.match(/^description:\s*(.+)$/m);
-  if (inlineMatch) return inlineMatch[1].trim().slice(0, 100);
+  if (inlineMatch) return inlineMatch[1].trim();
   return '(sem descrição)';
 }
 

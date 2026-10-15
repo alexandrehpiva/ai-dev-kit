@@ -15,6 +15,7 @@ export {
   promptListPageSize,
   summarizeSelectedChoices,
   terminalColumns,
+  wrapDescription,
 } from './terminal-text.js';
 
 /** Shared cancel sentinel — keeps call sites compatible with prior `isCancel` APIs. */

@@ -2,12 +2,15 @@ import { Box, Text, useInput } from 'ink';
 import React, { useMemo, useState } from 'react';
 
 import {
-  fitDescriptionLine,
+  DESCRIPTION_MAX_LINES,
   fitTerminal,
   promptListPageSize,
   summarizeSelectedChoices,
   terminalColumns,
+  wrapDescription,
 } from '../../utils/terminal-text.js';
+
+import { computeSelection, impliedBy, pullsIn, toggleItem } from './multiselect-selection.js';
 
 export type MultiSelectItem<T> = {
   value: T;
@@ -21,18 +24,31 @@ export type MultiSelectPromptProps<T> = {
   options: MultiSelectItem<T>[];
   required?: boolean;
   /**
-   * Extra values to switch together with a toggled one (e.g. transitive
-   * dependencies on select, dependents on deselect). Must be transitive.
+   * Values pulled in by a picked one (install: transitive dependencies; uninstall: dependents).
+   * Must be transitive. They are shown marked in another color and cannot be unpicked while the
+   * item that requires them stays picked.
    */
   cascade?: {
     onSelect?: (value: T) => T[];
-    onDeselect?: (value: T) => T[];
   };
   onDone: (value: T[] | 'cancel') => void;
 };
 
 function focusableIndexes<T>(options: MultiSelectItem<T>[]): number[] {
   return options.map((item, index) => (item.separator ? -1 : index)).filter((index) => index >= 0);
+}
+
+/** Hint in the "dependency" color, wrapped to at most two lines of the terminal width. */
+function YellowLines({ text, width }: { text: string; width: number }): React.ReactElement {
+  return (
+    <Box flexDirection="column">
+      {wrapDescription(text, width - 2, 2).map((line, i) => (
+        <Text key={i} color="yellow">
+          {line}
+        </Text>
+      ))}
+    </Box>
+  );
 }
 
 export function MultiSelectPrompt<T>({
@@ -44,10 +60,11 @@ export function MultiSelectPrompt<T>({
 }: MultiSelectPromptProps<T>): React.ReactElement {
   const selectable = useMemo(() => focusableIndexes(options), [options]);
   const [focusPos, setFocusPos] = useState(0);
-  const [selected, setSelected] = useState<Set<number>>(() => new Set());
+  const [explicit, setExplicit] = useState<Set<number>>(() => new Set());
+  const [notice, setNotice] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const pageSize = promptListPageSize(6);
+  const pageSize = promptListPageSize(6 + DESCRIPTION_MAX_LINES);
   const width = terminalColumns();
   const focusIndex = selectable.length === 0 ? -1 : (selectable[focusPos] ?? selectable[0]!);
   const focusedItem = focusIndex >= 0 ? options[focusIndex] : undefined;
@@ -61,32 +78,28 @@ export function MultiSelectPrompt<T>({
 
   const visible = options.slice(windowStart, windowStart + pageSize);
 
+  const selection = useMemo(
+    () => computeSelection(options, explicit, cascade),
+    [options, explicit, cascade],
+  );
+  const labelOf = (index: number): string => options[index]?.label.replace(/^[^/]+\//, '') ?? '';
+
   const toggle = (index: number): void => {
-    if (index < 0 || options[index]?.separator) return;
-    setSelected((prev) => {
-      const next = new Set(prev);
-      const turningOn = !next.has(index);
-      const value = options[index]!.value;
-      const linked = (turningOn ? cascade?.onSelect : cascade?.onDeselect)?.(value) ?? [];
-      const indexes = [index];
-      for (const v of linked) {
-        const i = options.findIndex((o) => !o.separator && Object.is(o.value, v));
-        if (i >= 0) indexes.push(i);
-      }
-      for (const i of indexes) {
-        if (turningOn) next.add(i);
-        else next.delete(i);
-      }
-      return next;
-    });
+    const result = toggleItem(options, index, selection, cascade);
+    setExplicit(result.explicit);
+    setNotice(
+      result.blockedBy
+        ? `Exigida por ${result.blockedBy.map(labelOf).join(', ')}: desmarque-${
+            result.blockedBy.length > 1 ? 'as' : 'a'
+          } antes.`
+        : null,
+    );
     setError(null);
   };
 
   const toggleAll = (): void => {
-    setSelected((prev) => {
-      if (prev.size === selectable.length) return new Set();
-      return new Set(selectable);
-    });
+    setExplicit((prev) => (prev.size === selectable.length ? new Set() : new Set(selectable)));
+    setNotice(null);
     setError(null);
   };
 
@@ -113,7 +126,7 @@ export function MultiSelectPrompt<T>({
       return;
     }
     if (key.return) {
-      const values = [...selected].sort((a, b) => a - b).map((i) => options[i]!.value);
+      const values = [...selection.all].sort((a, b) => a - b).map((i) => options[i]!.value);
       if (required && values.length === 0) {
         setError('Select at least one option');
         return;
@@ -122,9 +135,14 @@ export function MultiSelectPrompt<T>({
     }
   });
 
-  const selectedLabels = [...selected]
+  const selectedLabels = [...explicit]
     .sort((a, b) => a - b)
     .map((i) => ({ short: options[i]?.label ?? '' }));
+  const focusedPulls = focusIndex >= 0 ? pullsIn(options, focusIndex, cascade) : [];
+  const focusedRequiredBy =
+    focusIndex >= 0 && selection.implied.has(focusIndex)
+      ? impliedBy(options, focusIndex, explicit, cascade)
+      : [];
 
   return (
     <Box flexDirection="column" marginBottom={1}>
@@ -140,35 +158,61 @@ export function MultiSelectPrompt<T>({
             );
           }
           const isFocused = absolute === focusIndex;
-          const isSelected = selected.has(absolute);
-          const mark = isSelected ? '●' : '○';
-          const label = fitTerminal(opt.label, width - 6);
+          const isExplicit = explicit.has(absolute);
+          const isImplied = selection.implied.has(absolute);
+          const mark = isExplicit || isImplied ? '●' : '○';
+          const markColor = isExplicit ? 'green' : isImplied ? 'yellow' : undefined;
+          const tag = isImplied ? ' (dependência)' : '';
+          const label = fitTerminal(opt.label, width - 6 - tag.length);
           return (
             <Text key={absolute} color={isFocused ? 'cyan' : undefined} bold={isFocused}>
               {isFocused ? '❯ ' : '  '}
-              <Text color={isSelected ? 'green' : undefined}>{mark} </Text>
+              <Text color={markColor}>{mark} </Text>
               {label}
+              {isImplied ? <Text color="yellow">{tag}</Text> : null}
             </Text>
           );
         })}
       </Box>
       {focusedItem && !focusedItem.separator && focusedItem.hint?.trim() ? (
         <Box marginTop={1}>
-          <Text dimColor>{fitDescriptionLine(focusedItem.hint, width)}</Text>
+          <Box flexDirection="column">
+            {wrapDescription(focusedItem.hint, width - 2).map((line, i) => (
+              <Text key={i} dimColor>
+                {line}
+              </Text>
+            ))}
+          </Box>
         </Box>
       ) : null}
-      {selectedLabels.length > 0 ? (
+      {focusedRequiredBy.length > 0 ? (
+        <YellowLines
+          text={`Marcada por: ${focusedRequiredBy.map(labelOf).join(', ')}`}
+          width={width}
+        />
+      ) : focusedPulls.length > 0 ? (
+        <YellowLines text={`Marca junto: ${focusedPulls.map(labelOf).join(', ')}`} width={width} />
+      ) : null}
+      {selectedLabels.length > 0 || selection.implied.size > 0 ? (
         <Box marginTop={1}>
-          <Text dimColor>Selected: {summarizeSelectedChoices(selectedLabels)}</Text>
+          <Text dimColor>
+            Selected: {summarizeSelectedChoices(selectedLabels)}
+            {selection.implied.size > 0 ? ` · +${selection.implied.size} por dependência` : ''}
+          </Text>
         </Box>
       ) : null}
+      {notice ? <YellowLines text={notice} width={width} /> : null}
       {error ? (
         <Box marginTop={1}>
           <Text color="red">{error}</Text>
         </Box>
       ) : null}
       <Box marginTop={1}>
-        <Text dimColor>space · a all · enter · esc</Text>
+        <Text dimColor>
+          space · a all · enter · esc
+          {selection.implied.size > 0 ? '   ' : ''}
+        </Text>
+        {selection.implied.size > 0 ? <Text color="yellow">● dependência (vai junto)</Text> : null}
       </Box>
     </Box>
   );
