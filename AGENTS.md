@@ -203,9 +203,9 @@ Skills focadas em código: construir, revisar, depurar e operar sistemas.
 
 **Arquivo:** `skills/engineering/dev-ts-nest/pt-BR/SKILL.md` (também disponível em `en-US`)
 
-**Descrição:** Desenvolver, refatorar e revisar código NestJS/TypeScript no padrão sênior. Cobre anatomia de módulo (module-first, DI por construtor), DTOs com `class-validator`, uso de RxJS para chamadas HTTP (`Observable` vs `lastValueFrom`), mapeamento de erro do upstream, logging e segurança. Asset `nest-patterns.md` contém pares Bom/Ruim canônicos.
+**Descrição:** Desenvolver, refatorar e revisar código NestJS/TypeScript no padrão sênior. Cobre anatomia de módulo (module-first, DI por construtor), DTOs com `class-validator`, uso de RxJS para chamadas HTTP (`Observable` vs `lastValueFrom`), mapeamento de erro do upstream, logging e segurança. Asset `nest-patterns.md` contém pares Bom/Ruim canônicos; asset `prisma-orm.md` traz o checklist de Prisma (schema, `onDelete`, índices, migrations, transações, camadas, testes) com fontes da documentação oficial e da comunidade, lido quando o projeto usa Prisma.
 
-**Quando usar:** o usuário for implementar, refatorar ou revisar módulos, controllers, services ou DTOs NestJS; trabalhar em um projeto BFF NestJS; ou mencionar NestJS, Nest, RxJS, HttpService ou código TypeScript de backend.
+**Quando usar:** o usuário for implementar, refatorar ou revisar módulos, controllers, services ou DTOs NestJS; trabalhar em um projeto BFF NestJS; ou mencionar NestJS, Nest, RxJS, HttpService, código TypeScript de backend ou Prisma (schema, migrations).
 
 ---
 

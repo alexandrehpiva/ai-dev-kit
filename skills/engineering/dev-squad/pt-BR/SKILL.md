@@ -145,6 +145,8 @@ Agent({
 
 **Isolamento obrigatório.** Todo subagente delegado que vá tocar branches git de um repositório é lançado com `isolation: "worktree"` — mesmo quando nenhum outro subagente estiver confirmadamente rodando em paralelo no momento do lançamento. Nunca deixe dois subagentes ativos compartilharem o mesmo diretório de trabalho físico de um repositório: um `git checkout` em um pode mover silenciosamente a branch ativa debaixo do outro, fazendo commits caírem na branch errada (isso aconteceu na prática — dois subagentes Dev Sênior em épicos não relacionados compartilharam um diretório, e a troca de branch de um deslocou o commit do outro).
 
+**O worktree precisa ser do repositório-alvo.** `isolation: "worktree"` isola o diretório de trabalho da *sessão*. Se a sessão está aberta em outro lugar (um cofre de documentos, um monorepo de specs) e o código a alterar vive em outro repositório, o subagente recebe uma cópia do lugar errado e pode "trabalhar" nela sem perceber (aconteceu na prática: o Dev recebeu uma cópia do cofre, não do backend). Nesse caso, o prompt manda o subagente criar o próprio worktree no repositório-alvo (`git worktree add ../<repo>-wt-<tarefa> -b <branch> <base>`), instalar dependências e trabalhar só nele, sem tocar o clone principal (que pode ter alterações não commitadas do usuário), e devolver o caminho do worktree, a branch e o último SHA. O Orquestrador confere esses três antes de despachar o Tech Lead.
+
 Para detalhes de estado e protocolo de comunicação, leia `orchestrator/state.md`.
 
 ---

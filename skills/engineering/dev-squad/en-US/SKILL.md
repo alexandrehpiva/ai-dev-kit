@@ -145,6 +145,8 @@ Agent({
 
 **Mandatory isolation.** Every delegated subagent that will touch git branches in a repository is launched with `isolation: "worktree"` — even when no other subagent is confirmed to be running in parallel at launch time. Never let two active subagents share the same physical working directory of a repository: a `git checkout` in one can silently move the active branch out from under the other, landing commits on the wrong branch (this happened in practice — two Senior Developer subagents on unrelated epics shared a directory, and one agent's branch switch relocated the other's commit).
 
+**The worktree must belong to the target repository.** `isolation: "worktree"` isolates the *session's* working directory. If the session is open elsewhere (a documents vault, a specs monorepo) and the code to change lives in another repository, the subagent gets a copy of the wrong place and can "work" in it without noticing (it happened: the Developer received a copy of the vault, not of the backend). In that case the prompt tells the subagent to create its own worktree in the target repository (`git worktree add ../<repo>-wt-<task> -b <branch> <base>`), install dependencies and work only there, never touching the main clone (which may hold the user's uncommitted changes), and to return the worktree path, the branch and the last SHA. The Orchestrator checks these three before dispatching the Tech Lead.
+
 For state and communication protocol details, read `orchestrator/state.md`.
 
 ---

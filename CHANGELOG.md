@@ -9,6 +9,19 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.34.0] — 2026-10-16
+
+### Added
+
+- `engineering/dev-ts-nest`: novo asset `prisma-orm.md` (pt-BR e en-US), checklist de Prisma para NestJS + PostgreSQL com fontes da documentação oficial (Prisma 6 e 7, NestJS, PostgreSQL) e da comunidade, rotuladas: convenções de schema, `onDelete` e retenção, índices em FK, `@updatedAt` e SQL cru, fluxo de migrations (incluindo quando editar uma migration gerada), `prisma format --check` no hook e na CI, transações e concorrência, ciclo de vida do client no Nest, erros, camadas, testes, performance, dados pessoais, limites do Prisma 6 e notas de versão (a documentação sem prefixo de versão já serve o Prisma 8). Inclui `@default(uuid(7))` (aceito no Prisma 6.19, gerado no cliente, migration vazia, ids v4 e v7 convivem, `uuid` 11.x para projeto CommonJS) e o aviso de que `migrate deploy` não regenera o client (sintoma: `PrismaClientUnknownRequestError` com o backend rodando contra um banco já migrado).
+
+### Changed
+
+- `engineering/dev-ts-nest`: `SKILL.md` aponta o asset de Prisma como leitura obrigatória quando o projeto usa Prisma; a regra "sem exception filters" deixa de ser absoluta e passa a seguir o padrão do projeto (filtro global com mapa de erros em um só lugar); nova regra de que a separação de camadas declarada pelo projeto deve ser imposta por lint.
+- `engineering/dev-squad`: `SKILL.md` (pt-BR e en-US) esclarece que o worktree do subagente precisa ser do repositório-alvo (`isolation: "worktree"` isola o diretório da sessão, que pode ser outro repositório) e como o subagente cria o próprio.
+
+---
+
 ## [0.33.1] — 2026-10-15
 
 ### Fixed

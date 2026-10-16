@@ -1,6 +1,6 @@
 ---
 name: dev-ts-nest
-description: Desenvolver, refatorar e revisar código NestJS/TypeScript no padrão sênior. Usar quando o usuário for implementar, refatorar ou revisar módulos, controllers, services, DTOs ou interceptors NestJS; trabalhar em um projeto BFF NestJS; ou mencionar NestJS, Nest, módulos, controllers, RxJS, HttpService ou código TypeScript de backend. Também dispara em "implementar endpoint", "adicionar módulo", "corrigir controller", "adicionar service", "escrever testes", "revisar código NestJS".
+description: Desenvolver, refatorar e revisar código NestJS/TypeScript no padrão sênior. Usar quando o usuário for implementar, refatorar ou revisar módulos, controllers, services, DTOs ou interceptors NestJS; trabalhar em um projeto BFF NestJS; ou mencionar NestJS, Nest, módulos, controllers, RxJS, HttpService ou código TypeScript de backend; ou trabalhar com Prisma (schema, migrations, repositórios). Também dispara em "implementar endpoint", "adicionar módulo", "corrigir controller", "adicionar service", "escrever testes", "revisar código NestJS".
 ---
 
 # dev-ts-nest
@@ -12,6 +12,7 @@ description: Desenvolver, refatorar e revisar código NestJS/TypeScript no padr�
 - **Confirme o escopo**: confirme a tarefa principal e as sub-tarefas. Pergunte antes de assumir ambiguidades.
 - **Consulte a spec do domínio** *(crítico)*: projetos Nest mantêm specs em `.specs/features/<domínio>/spec.md`. Antes de implementar qualquer feature, leia a spec correspondente e identifique os requisitos (REQ-*) e critérios de aceite (AC-*) cobertos pelo trabalho. Se não existir spec para o domínio, use uma skill de *spec-driven* se estiver disponível no harness ou nas pastas de skills do repositório (`.cursor/skills/`, `.claude/skills/`, etc.); se nenhuma existir, peça orientação ao usuário antes de codificar.
 - **Leia a versão do NestJS primeiro**: `cat package.json | grep '"@nestjs/core"'`. Nunca use APIs ou padrões depreciados na versão detectada.
+- **Projeto com Prisma** *(crítico)*: antes de tocar `schema.prisma`, migrations, repositórios, transações ou testes de integração, leia [prisma-orm.md](prisma-orm.md) por completo e aplique o checklist, salvo divergência registrada pelo projeto (constituição/ADR).
 - **Estude o projeto primeiro**: é uma app Nest standalone ou uma app dentro de um monorepo Nx? Case com o layout de módulos já existente (`src/<feature>/` flat vs `src/app/<feature>/` aninhado) — não invente uma terceira convenção.
 - **Reutilize antes de criar**: se um recurso compartilhado existe (`common/`, `utils/`, `services/`), use-o. Potencial real de reuso → construa como um recurso que um sênior extrairia.
 - Leia o código relacionado antes de alterá-lo, para evitar quebrar comportamento existente.
@@ -31,6 +32,7 @@ Veja [nest-patterns.md](nest-patterns.md) para exemplos canônicos e a tabela de
 - **Module-first**: cada feature vive em seu próprio módulo — `<feature>.module.ts`, `.controller.ts`, `.service.ts`, `dto/*.dto.ts`, cada um com um `.spec.ts` co-localizado.
 - **Injeção apenas por construtor** — sem `new` manual, sem service locators. Providers request-scoped (`@Inject(REQUEST)`) são legítimos mas raros; se usar um, o provider DEVE declarar `scope: Scope.REQUEST` — combinar `@Inject(REQUEST)` com o scope padrão (singleton) é um bug real, não um atalho.
 - **DTOs, não objetos simples ou interfaces**: DTOs de requisição usam `class-validator` + `class-transformer` (`@ValidateNested()` + `@Type(() => X)` para formas aninhadas). DTOs de resposta também são classes — nunca interfaces puras, que não carregam metadata do plugin do Swagger e não podem ser decoradas.
+- **Regra de camadas imposta por máquina:** se o projeto declara dependências "para dentro" (domínio sem Nest/ORM; aplicação sem infraestrutura), a regra precisa estar no lint (`eslint-plugin-boundaries`, `dependency-cruiser` ou `no-restricted-imports` por camada); só em prosa ela é violada sem ninguém ver. Ao encontrar violação, corrija na raiz (porta nova ou parâmetro na porta), não com exceção.
 - Zero `any`. Zero non-null assertions (`!`). Zero floating promises (`@typescript-eslint/no-floating-promises` é erro, não sugestão).
 
 ## Uso de RxJS *(crítico)*
@@ -42,7 +44,7 @@ Veja [nest-patterns.md](nest-patterns.md) para exemplos canônicos e a tabela de
 
 ## Tratamento de erro e config
 
-- Sem exception filters (`@Catch()`) aqui — os services Nest mapeiam erros do upstream (axios) manualmente: extraem status/data do erro capturado, relançam como `HttpException`. Veja `extractHttpStatus`/`extractHttpData` em [nest-patterns.md](nest-patterns.md).
+- **Siga o padrão de erro do projeto.** Em BFF sem filtros (`@Catch()`), os services Nest mapeiam erros do upstream (axios) manualmente: extraem status/data do erro capturado, relançam como `HttpException` (veja `extractHttpStatus`/`extractHttpData` em [nest-patterns.md](nest-patterns.md)). Em projeto com filtro global (ex.: Problem Details) e erros de domínio, o mapa `classe de erro -> status/code` vive num só lugar (o filtro); controller não repete `catch` + `instanceof` e a camada de domínio não importa `@nestjs/*`.
 - **Nunca leia `process.env` diretamente em services** — sempre `ConfigService.get(...)`. Valide o formato do env uma vez, no bootstrap, via `class-validator` (`validateSync` + `plainToInstance`), conectado a `ConfigModule.forRoot({ isGlobal: true, validate })`.
 
 ## Auth — saiba o que existe de fato

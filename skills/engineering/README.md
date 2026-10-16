@@ -20,7 +20,7 @@ Skills focadas em código: construir, revisar, depurar e operar sistemas.
 | ~~`dev-python-fastapi`~~ | **Deprecated** — substituída por `dev-python` |
 | [`dev-go`](dev-go/pt-BR/SKILL.md) | Desenvolvimento Go/Gin multi-tenant sobre DynamoDB/Cognito — anatomia de serviço, regra de ouro multi-tenant, anti-padrões de segurança (`go-patterns.md`) |
 | [`dev-ts-angular`](dev-ts-angular/en-US/SKILL.md) | Desenvolvimento TypeScript/Angular v17+ (`angular-patterns.md`) |
-| [`dev-ts-nest`](dev-ts-nest/pt-BR/SKILL.md) | Desenvolvimento NestJS/TypeScript — anatomia de módulo, DI, DTOs, RxJS, mapeamento de erro (`nest-patterns.md`) |
+| [`dev-ts-nest`](dev-ts-nest/pt-BR/SKILL.md) | Desenvolvimento NestJS/TypeScript — anatomia de módulo, DI, DTOs, RxJS, mapeamento de erro (`nest-patterns.md`), checklist de Prisma (`prisma-orm.md`) |
 | [`dev-ts-react`](dev-ts-react/pt-BR/SKILL.md) | Desenvolvimento React/TypeScript SPA (Vite) — feature-first, data-fetching, estados de UI, formulários (`react-patterns.md`) |
 | [`diagnose`](diagnose/pt-BR/SKILL.md) | Depurar via loop de reprodução + hipóteses falsificáveis |
 | [`write-a-dev-stack`](write-a-dev-stack/pt-BR/SKILL.md) | Desenhar/implementar CLI de orquestração de stacks locais (jornada, janelas, health, config em camadas) |
