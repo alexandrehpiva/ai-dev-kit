@@ -47,6 +47,7 @@ Todas verdadeiras:
 - [ ] Toda seta corresponde a uma integração confirmada no código/IaC, com fonte registrada.
 - [ ] Fronteiras visíveis: nuvem/rede privada/externo distinguidos, nada externo desenhado dentro da nuvem.
 - [ ] Toda seta tem ordem ou rótulo; síncrono e assíncrono são visualmente distintos; há legenda dizendo isso.
+- [ ] Nenhuma face de cartão tem duas setas no mesmo ponto; rotas paralelas aninhadas, sem cruzamento em T evitável; rótulos sem sobreposição e legenda contendo todas as linhas (`visual-patterns.md`, padrão 11).
 - [ ] A imagem renderizada foi realmente lida antes do envio.
 
 Se não for possível confirmar uma seta no código, ela fica de fora ou sai tracejada com o rótulo "não confirmado", e o relatório diz isso. Nunca entregue suposição como fato.

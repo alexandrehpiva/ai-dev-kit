@@ -26,6 +26,12 @@ Um diagrama tecnicamente correto ainda falha quando o leitor não entende de rel
 
 **10. Textos curtos.** Título do cartão: 1–3 palavras. Rótulo de seta: verbo + objeto curto. Tudo mais é nota.
 
+**11. Âncoras e rotas das setas.** A lib ancora toda seta no **meio** da face do cartão, a menos que você passe `src_at`/`dst_at`; quando duas ou mais setas tocam a mesma face, elas viram uma só linha e a ponta de uma esconde a outra. Depois do primeiro render:
+- Distribua as setas de uma mesma face em pontos diferentes (frações como 0,25 / 0,5 / 0,75 do lado), inclusive saída e entrada no mesmo cartão.
+- Em rotas paralelas pelo mesmo corredor, escolha a ordem das faixas para as setas ficarem **aninhadas** (a que vai mais longe passa por fora) e separe as faixas em ~15 px. Cruzamento em "T" (uma horizontal atravessando a vertical de outra) quase sempre é ordem de faixa errada, não falta de espaço.
+- Deslize o rótulo ao longo da seta (posição relativa) para ele não cair sobre outro rótulo, um cruzamento ou o canto de uma curva; rótulos de setas paralelas ficam escalonados.
+- A caixa da legenda cabe todas as linhas, inclusive a frase da numeração; os cartões de nota ficam com espaçamento uniforme.
+
 ## Anti-padrões
 
 - **Setas em todas as direções** sem ordem: numere e roteie.
@@ -33,6 +39,7 @@ Um diagrama tecnicamente correto ainda falha quando o leitor não entende de rel
 - **Detalhe técnico dentro do cartão**: vira nota.
 - **Externo dentro do contêiner da nuvem**: afirma que é seu.
 - **Legenda ausente** ou que explica só a cor e não síncrono vs assíncrono.
+- **Várias setas no mesmo ponto da face** ou rotas paralelas que se cruzam por ordem de faixa errada: espalhe as âncoras e aninhe as faixas (padrão 11).
 
 ## Checklist
 
@@ -42,3 +49,5 @@ Um diagrama tecnicamente correto ainda falha quando o leitor não entende de rel
 - [ ] Cor do ícone segue a categoria do serviço
 - [ ] Setas numeradas, tema de cor por fluxo, tracejado = assíncrono
 - [ ] Detalhe técnico em notas no rodapé
+- [ ] Nenhuma face de cartão emite ou recebe duas setas no mesmo ponto; âncoras espalhadas
+- [ ] Rotas paralelas aninhadas, sem cruzamento em T evitável; rótulos sem sobreposição; legenda contém todas as linhas

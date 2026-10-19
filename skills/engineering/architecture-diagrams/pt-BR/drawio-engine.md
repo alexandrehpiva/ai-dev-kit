@@ -18,7 +18,7 @@
 | `add_actor(dia, x, y, rotulo)` | Usuário/cliente de origem |
 | `add_service(dia, x, y, titulo, desc, icon, category)` | Cartão com ícone oficial; `icon` é o nome depois de `mxgraph.aws4.`; `category` colore |
 | `add_external(dia, x, y, titulo, funcao, color)` | Caixa pastel de sistema externo |
-| `add_edge(dia, src, lado, dst, lado, label, step, theme, asynchronous, via)` | Seta numerada; lados `l r t b`; `via` = pontos intermediários |
+| `add_edge(dia, src, lado, dst, lado, label, step, theme, asynchronous, via, src_at, dst_at, label_at)` | Seta numerada; lados `l r t b`; `via` = pontos intermediários; `src_at`/`dst_at` (0 a 1) espalham as âncoras ao longo do lado; `label_at` (-1 a 1) desliza o rótulo |
 | `add_legend(dia, x, y, [(tema, texto, assincrono)])` | Legenda |
 | `add_notes(dia, x, y, [(titulo, [linhas])])` | Cartões de nota no rodapé |
 
@@ -38,6 +38,7 @@ Ordem de criação = empilhamento: grupos primeiro, cartões depois, setas por �
 Se a CLI do draw.io não existir, entregue só o `.drawio` e diga isso — o usuário abre no draw.io e não pode confiar em nada que você não viu renderizado.
 
 4. Passe o portão do `SKILL.md`. Os defeitos mais comuns na primeira leitura: rótulo de seta sobre caixa (aumente o espaçamento ou use `via`), seta atravessando um cartão (use `via`), nota maior que o conteúdo (reduza `h`).
+4b. Sem `src_at`/`dst_at` a lib ancora no meio de cada lado; use-os para espalhar âncoras (padrão 11). **Se o usuário ajustou o `.drawio` à mão, o arquivo editado vira a fonte de verdade:** não regere por cima sem avisar; compare geometria e estilos (âncoras, pontos de rota, posição dos rótulos) e porte o que ele mudou para o script, ou diga que o script ficou desatualizado.
 5. Entregue `.drawio` (fonte, versionável) + `.png` + a tabela de evidências.
 
 ## Estrutura no repositório

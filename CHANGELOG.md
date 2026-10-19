@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.34.1] — 2026-10-16
+
+### Changed
+
+- `engineering/architecture-diagrams`: novo padrão visual 11 (âncoras e rotas das setas) em `visual-patterns.md` e três itens no portão do `SKILL.md` e no checklist: setas de uma mesma face em âncoras diferentes (a lib ancora tudo no meio), rotas paralelas aninhadas sem cruzamento em T, rótulos escalonados e legenda que contém todas as linhas. `scripts/drawio_arch_lib.py`: `add_edge` aceita `src_at`, `dst_at` (âncora ao longo do lado) e `label_at` (posição do rótulo na seta), e a caixa da legenda passa a conter a frase da numeração. `drawio-engine.md` avisa que o `.drawio` ajustado à mão vira a fonte de verdade e não deve ser regerado por cima. Origem: ajustes manuais do usuário em um diagrama gerado pela skill.
+
+---
+
 ## [0.34.0] — 2026-10-16
 
 ### Added

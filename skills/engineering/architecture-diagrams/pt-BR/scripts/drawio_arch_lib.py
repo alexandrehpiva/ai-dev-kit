@@ -189,20 +189,32 @@ def add_external(dia, x, y, title, role, color="purple", w=310, h=80):
                    f"align=center;verticalAlign=middle;fontSize=11;fontColor={INK};", x, y, w, h)
 
 
+def _anchor(side, at):
+    """Âncora (x, y) relativa do lado; `at` desloca ao longo dele (None = meio)."""
+    x, y = SIDES[side]
+    if at is None:
+        return x, y
+    return (x, at) if side in ("l", "r") else (at, y)
+
+
 def add_edge(dia, src_id, src_side, dst_id, dst_side, label=None, step=None,
-             theme="main", asynchronous=False, via=None):
+             theme="main", asynchronous=False, via=None, src_at=None, dst_at=None, label_at=None):
     """Seta ortogonal entre dois ids. `step` numera a ordem do fluxo ("1. ...");
     `theme` colore o caminho; `asynchronous=True` tracejado (evento/fila);
-    `via` lista (x, y) para forçar a rota e evitar cruzar caixas."""
+    `via` lista (x, y) para forçar a rota e evitar cruzar caixas.
+    `src_at`/`dst_at` (0 a 1) deslocam a âncora ao longo do lado, para duas
+    setas da mesma face não caírem no mesmo ponto (0.25, 0.5, 0.75).
+    `label_at` (-1 a 1) desliza o rótulo ao longo da seta (0 = meio)."""
     _check(src_side, SIDES, "src_side")
     _check(dst_side, SIDES, "dst_side")
     _check(theme, THEMES, "theme")
     color = THEMES[theme]
     text = f"{step}. {label}" if step is not None and label else (str(step) if step is not None else (label or ""))
-    ex, ey = SIDES[src_side]
-    tx, ty = SIDES[dst_side]
+    ex, ey = _anchor(src_side, src_at)
+    tx, ty = _anchor(dst_side, dst_at)
     dash = "dashed=1;dashPattern=6 4;strokeWidth=1.5;" if asynchronous else "strokeWidth=2;"
     eid = dia.new_id("edge")
+    lx = f' x="{label_at}"' if label_at is not None else ""
     pts = "".join(f'<mxPoint x="{px}" y="{py}"/>' for px, py in (via or []))
     wp = f'<Array as="points">{pts}</Array>' if pts else ""
     dia.add_cell(
@@ -211,7 +223,7 @@ def add_edge(dia, src_id, src_side, dst_id, dst_side, label=None, step=None,
         f'fontColor={color};fontStyle=1;fontSize=11;labelBackgroundColor=#FFFFFF;'
         f'exitX={ex};exitY={ey};exitDx=0;exitDy=0;entryX={tx};entryY={ty};entryDx=0;entryDy=0;" '
         f'edge="1" parent="1" source="{src_id}" target="{dst_id}">'
-        f'<mxGeometry relative="1" as="geometry">{wp}</mxGeometry></mxCell>'
+        f'<mxGeometry{lx} relative="1" as="geometry">{wp}</mxGeometry></mxCell>'
     )
     dia.edges.append((eid, src_id, dst_id))
     return eid
@@ -220,7 +232,7 @@ def add_edge(dia, src_id, src_side, dst_id, dst_side, label=None, step=None,
 def add_legend(dia, x, y, entries, w=420):
     """Legenda: `entries` é lista de (tema, texto, assíncrono). Desenha uma
     caixa e uma amostra de linha por entrada, mais a regra da numeração."""
-    h = 36 + 22 * (len(entries) + 1)
+    h = 35 + 24 * (len(entries) + 1)
     _vertex(dia, "leg", f"&lt;b&gt;Legenda&lt;/b&gt;",
             f"rounded=1;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor={BORDER};align=left;"
             f"verticalAlign=top;spacingLeft=10;spacingTop=4;fontSize=12;fontColor={INK};", x, y, w, h)
