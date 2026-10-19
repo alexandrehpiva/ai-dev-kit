@@ -24,7 +24,7 @@
 {TASK-ID} - {short task name} - {approved|bugs|partial}.md
 ```
 
-- `approved` — all of the task's BDD scenarios passed
+- `approved` — all of the task's acceptance criteria (BDD scenarios or checklist items) passed
 - `bugs` — there are open bugs; send back to dev
 - `partial` — external blocker (DNS, access); pending scenarios listed explicitly
 
@@ -32,7 +32,7 @@
 
 ## Mandatory report template
 
-QA **copies the task's BDD scenarios** and fills in each one. The PO must be able to re-run them without reading the chat.
+QA **copies the task's acceptance criteria** (BDD scenarios or checklist items) and fills in each one. The PO must be able to re-run them without reading the chat.
 
 ```markdown
 ---
@@ -63,7 +63,7 @@ environment: dev | staging | production
 # exact copyable commands
 \`\`\`
 
-## BDD scenarios (copied from the task)
+## Acceptance criteria (copied from the task)
 
 ### Scenario 1: {title from the task}
 
@@ -82,7 +82,7 @@ environment: dev | staging | production
 
 ### Scenario 2: ...
 
-(repeat for **all** of the task's scenarios + edge cases tested)
+(repeat for **all** of the task's scenarios + edge cases tested. For a checklist-style criterion, use the same block with the item in place of Given/When/Then: `- [ ] {item}` + re-test steps + evidence)
 
 ## Automated tests
 
@@ -125,7 +125,7 @@ environment: dev | staging | production
 ## QA rules
 
 1. **Never** approve without a report saved in `{NotesRoot}`
-2. **Every BDD scenario** of the task appears in the report — even if blocked (mark as pending)
+2. **Every acceptance criterion** of the task (BDD scenario or checklist item) appears in the report — even if blocked (mark as pending)
 3. Commands must be **copyable** — full paths, URLs, headers
 4. The **PO result** column leaves empty checkboxes for the PO to fill in
 5. After saving the report: the Orchestrator commits in the repository that holds `{NotesRoot}`:

@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.34.2] — 2026-10-19
+
+### Changed
+
+- `engineering/task-writing` e `engineering/dev-squad`: critérios de aceite deixam de ser "sempre Dado/Quando/Então". BDD só quando houver comportamento que o QA consiga exercitar (teste: "o QA consegue executar este cenário e ver o resultado?"); entrega sem comportamento de sistema (documentação, processo, pesquisa, decisão, revisão, infra pura) usa checklist de entregáveis verificáveis, sem limite de itens e sem omitir informação para encurtar; task mista combina os dois. `task-writing`: diagnóstico do modo de falha no `SKILL.md`, nova seção "Critérios de aceite: BDD ou checklist" no `US-FORMAT.md`, ajustes em `lean-writing.md` e `readability.md`. `dev-squad` (pt-BR e en-US): `SKILL.md`, `task-management.md` (modelo de checklist) e `qa-reports.md` (o QA copia os critérios da task, cenário ou item). Origem: história de documentação criada com três cenários BDD sem comportamento a testar.
+
+---
+
 ## [0.34.1] — 2026-10-16
 
 ### Changed

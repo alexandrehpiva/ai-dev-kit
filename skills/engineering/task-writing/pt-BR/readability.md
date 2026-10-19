@@ -28,7 +28,7 @@ O alvo é o **meio-termo**: prosa limpa para humanos + detalhe técnico preserva
    o repositório.
 2. **Sem código no meio de frases.** Descreva o comportamento em linguagem natural; nomes de
    arquivo, classe e linha não entram na prosa corrida.
-3. **Critérios de aceite (BDD) e DoD livres de código.** Só comportamento observável. Nada de
+3. **Critérios de aceite (BDD ou checklist) e DoD livres de código.** Só comportamento observável. Nada de
    nomes de método, paths, payloads ou trechos de código.
 4. **Detalhe técnico preservado, mas isolado.** Concentre paths, nomes de arquivo/classe e
    decisões de implementação numa seção **"Notas técnicas"** e/ou **"Referências de código"**
@@ -65,7 +65,7 @@ O alvo é o **meio-termo**: prosa limpa para humanos + detalhe técnico preserva
 1. **Contexto** — por que a task existe, em linguagem de negócio (2–4 frases; ver enxutez).
 2. **Objetivo / Requisitos** — o que o sistema passa a fazer, em prosa.
 3. **Contrato de API** *(se houver)* — em tabela.
-4. **Critérios de Aceite (BDD)** — comportamento observável, sem código.
+4. **Critérios de Aceite (BDD ou checklist)** — comportamento observável ou entregáveis verificáveis, sem código.
 5. **DoD** — evidências desta entrega, sem código.
 6. **Notas técnicas** *(opcional)* — decisões de implementação como fatos; paths e nomes de
    arquivo são permitidos aqui, em lista.

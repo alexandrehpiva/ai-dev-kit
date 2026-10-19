@@ -91,15 +91,15 @@ section "Hierarchy: story vs subtask" — epic and US sit at the same level (wik
 `[[EPIC-{n}...]]` and the task, as in the template above, not file nesting); subtask is
 reserved for the Tech Lead's technical breakdown. When publishing to a connected tracker, also apply
 `tracker-hierarchy.md` from this skill (link mechanism, not `parent`, between epic and US).
-Acceptance criteria in Given/When/Then.
+Acceptance criteria: Given/When/Then only when there is behavior QA can exercise; deliverables with no system behavior (documentation, process, research, decision) use a verifiable deliverables checklist. Full rule in `task-writing`'s `US-FORMAT.md`.
 
 ### Banner on technical tasks
 
 ```
-> ⚠️ **Technical-scope task.** Contains technical terms and implementation references. Product/QA: focus on **Context** and **Acceptance Criteria (BDD)**.
+> ⚠️ **Technical-scope task.** Contains technical terms and implementation references. Product/QA: focus on **Context** and **Acceptance Criteria**.
 ```
 
-### Acceptance criteria: BDD
+### Acceptance criteria: BDD (only for behavior QA can exercise)
 
 ```markdown
 ### Scenario N: {title}
@@ -107,6 +107,12 @@ Acceptance criteria in Given/When/Then.
 **Given** {context}
 **When** {action}
 **Then** {result}
+```
+
+### Acceptance criteria: checklist (no system behavior)
+
+```markdown
+- [ ] {deliverable or condition} — {how it is verified / who confirms}
 ```
 
 ## Updating status

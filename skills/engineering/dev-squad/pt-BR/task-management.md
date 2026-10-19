@@ -91,15 +91,15 @@ seção "Hierarquia: história vs subtask" — épico e US ficam no mesmo nível
 `[[EPIC-{n}...]]` e a task, como no template acima, não aninhamento de arquivo); subtask é
 reservada ao detalhamento técnico do Tech Lead. Ao publicar num tracker conectado, aplicar
 também `tracker-hierarchy.md` desta skill (mecanismo de link, não `parent`, entre épico e US).
-Critérios de aceite em Given/When/Then.
+Critérios de aceite: Given/When/Then só quando houver comportamento testável por QA; entrega sem comportamento de sistema (documentação, processo, pesquisa, decisão) usa checklist de entregáveis. Regra completa em `US-FORMAT.md` da `task-writing` ("Critérios de aceite: BDD ou checklist").
 
 ### Banner em tasks técnicas
 
 ```
-> ⚠️ **Tarefa de escopo técnico.** Contém termos técnicos e referências de implementação. Produto/QA: foque em **Contexto** e **Critérios de Aceite (BDD)**.
+> ⚠️ **Tarefa de escopo técnico.** Contém termos técnicos e referências de implementação. Produto/QA: foque em **Contexto** e **Critérios de Aceite**.
 ```
 
-### Critérios de aceite: BDD
+### Critérios de aceite: BDD (só com comportamento testável por QA)
 
 ```markdown
 ### Cenário N: {título}
@@ -107,6 +107,12 @@ Critérios de aceite em Given/When/Then.
 **Given** {contexto}
 **When** {ação}
 **Then** {resultado}
+```
+
+### Critérios de aceite: checklist (sem comportamento de sistema)
+
+```markdown
+- [ ] {entregável ou condição} — {como se verifica / quem confirma}
 ```
 
 ## Atualizar status

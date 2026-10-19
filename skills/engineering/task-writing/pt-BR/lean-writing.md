@@ -62,7 +62,7 @@ existir, não na descrição.
 
 ### 4. Critérios de aceite que validam trabalho alheio
 
-Cada cenário BDD deve ser **verificável pelo executor desta task**, sem depender de entrega já
+Cada critério (cenário BDD ou item de checklist) deve ser **verificável pelo executor desta task**, sem depender de entrega já
 feita ou futura de outra task.
 
 | Ruim | Bom |
@@ -85,7 +85,7 @@ práticas genéricas já implícitas no tipo de trabalho.
 
 - [ ] Decisões escritas como fatos, sem procedência (data, reunião, ferramenta, pessoa)
 - [ ] Nenhum componente fora do escopo, salvo dependência explícita desta task
-- [ ] Cada cenário BDD é testável **por quem pega esta task**
+- [ ] Cada critério (cenário BDD ou item de checklist) é verificável **por quem pega esta task**
 - [ ] Dependências: links na seção Dependências; bloqueio forte no campo nativo do tracker
 - [ ] DoD só com entregáveis desta task
 - [ ] Contexto cabe em 2–4 frases; se passou disso, corte a narrativa do épico

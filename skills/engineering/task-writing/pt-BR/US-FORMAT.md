@@ -17,14 +17,18 @@ riscos conhecidos.
 Qualidade, performance, segurança, UX, acessibilidade, logs/monitoramento, restrições
 técnicas (ex.: tempo de resposta, design system, observabilidade).
 
-## 4. Critérios de Aceite x Cenários de Teste (BDD)
-Regras verificáveis. **Formato obrigatório** Dado/Quando/Então (Given/When/Then), um cenário
-por bloco:
+## 4. Critérios de Aceite *(BDD quando houver comportamento testável; checklist nos demais casos)*
+Regras verificáveis. O formato segue a natureza da entrega — ver "Critérios de aceite: BDD ou
+checklist" abaixo. Em BDD, Dado/Quando/Então (Given/When/Then), um cenário por bloco:
 
 ### Cenário 1: <nome>
 **Dado** <contexto>
 **Quando** <ação>
 **Então** <resultado esperado>
+
+Em checklist, um item por entregável ou condição verificável:
+
+- [ ] <entregável ou condição> — <como se verifica / quem confirma>
 
 ## 5. Cenários de Teste (QA) *(opcional)*
 Lista prática para validar: casos positivos, negativos, extremos, navegação/UX.
@@ -96,6 +100,26 @@ Tech Lead cria **dentro** de uma US já aprovada.
 - Mecanismo concreto no ClickUp (como linkar sem usar `parent`, onde ficam os vínculos): ver a
   skill `dev-squad`, asset `tracker-hierarchy.md`.
 
+## Critérios de aceite: BDD ou checklist
+
+**Use BDD somente quando houver comportamento que o QA consiga exercitar:** um ator (usuário,
+sistema, serviço) faz algo e um resultado observável pode ser conferido executando o cenário
+(fluxo de tela, contrato de API, regra de negócio com condições, integração). Teste de decisão:
+*"o QA consegue executar este cenário e ver o resultado?"* Se a resposta é não, não escreva
+cenário.
+
+**Sem comportamento de sistema** (documentação, processo, pesquisa, decisão, revisão, infra pura),
+use **checklist de entregáveis verificáveis**: um item por entregável ou condição, dizendo como
+ou por quem é confirmado. Não há limite de itens — registre tudo que precisa estar entregue e
+nada que não precise; não omita informação para encurtar.
+
+**Task mista** (parte com comportamento, parte sem): BDD só para a parte comportamental, checklist
+para o resto.
+
+| Ruim (BDD forçado) | Bom (checklist) |
+|---|---|
+| Dado que o documento existe, Quando a equipe o lê, Então entende a arquitetura. | - [ ] PDF final gerado e revisado pelo responsável. - [ ] Documento enviado à área destinatária e retorno registrado na task. |
+
 ## Redação enxuta e legível
 
 Depois de decidir os detalhes técnicos e redigir na estrutura acima, aplique:
@@ -109,7 +133,7 @@ Depois de decidir os detalhes técnicos e redigir na estrutura acima, aplique:
 
 ## Regras gerais
 
-- Critérios de aceite (seção 4) são **obrigatórios** e sempre em Dado/Quando/Então.
+- Critérios de aceite (seção 4) são **obrigatórios**; em Dado/Quando/Então só quando houver comportamento testável por QA, senão em checklist de entregáveis (ver seção acima).
 - Seja específico sobre o contrato técnico (nomes de campos, endpoints, estados) — decididos antes
   de escrever, conforme o processo da skill.
 - Prefira descrições de comportamento/interface em vez de paths de arquivos (durabilidade).

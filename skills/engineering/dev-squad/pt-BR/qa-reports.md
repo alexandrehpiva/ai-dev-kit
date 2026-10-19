@@ -24,7 +24,7 @@
 {TASK-ID} - {nome curto da task} - {aprovado|bugs|parcial}.md
 ```
 
-- `aprovado` — todos os cenários BDD da task passaram
+- `aprovado` — todos os critérios de aceite da task (cenários BDD ou itens de checklist) passaram
 - `bugs` — há bugs abertos; devolver para dev
 - `parcial` — bloqueio externo (DNS, acesso); cenários pendentes listados explicitamente
 
@@ -32,7 +32,7 @@
 
 ## Template obrigatório do relatório
 
-O QA **copia os cenários BDD da task** e preenche cada um. O PO deve conseguir re-executar sem ler o chat.
+O QA **copia os critérios de aceite da task** (cenários BDD ou itens de checklist) e preenche cada um. O PO deve conseguir re-executar sem ler o chat.
 
 ```markdown
 ---
@@ -63,7 +63,7 @@ ambiente: dev | staging | producao
 # comandos exatos copiáveis
 \`\`\`
 
-## Cenários BDD (copiados da task)
+## Critérios de aceite (copiados da task)
 
 ### Cenário 1: {título da task}
 
@@ -82,7 +82,7 @@ ambiente: dev | staging | producao
 
 ### Cenário 2: ...
 
-(repetir para **todos** os cenários da task + edge cases testados)
+(repetir para **todos** os cenários da task + edge cases testados. Para critério em formato de checklist, use o mesmo bloco com o item no lugar de Dado/Quando/Então: `- [ ] {item}` + passos de re-teste + evidência)
 
 ## Testes automatizados
 
@@ -125,7 +125,7 @@ ambiente: dev | staging | producao
 ## Regras do QA
 
 1. **Nunca** aprovar sem relatório salvo em `{NotesRoot}`
-2. **Todo cenário BDD** da task aparece no relatório — mesmo se bloqueado (marcar pendente)
+2. **Todo critério de aceite** da task (cenário BDD ou item de checklist) aparece no relatório — mesmo se bloqueado (marcar pendente)
 3. Comandos devem ser **copiáveis** — paths, URLs, headers completos
 4. Coluna **Resultado PO** deixa checkboxes vazios para o PO preencher
 5. Após salvar relatório: Orquestrador faz commit no repositório que guarda `{NotesRoot}`:
