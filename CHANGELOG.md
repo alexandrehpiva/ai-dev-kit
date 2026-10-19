@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.35.0] — 2026-10-19
+
+### Added
+
+- `engineering/infosec-review-doc`: nova skill para produzir o documento de produto, arquitetura e controles de segurança e privacidade pedido pela área de Segurança da Informação do cliente. PDF único e confidencial com origem identificada em cada afirmação (chips por classe de fonte), itens ainda não decididos como "Proposta · a confirmar", diagrama de arquitetura em vetor com fluxos numerados, fluxo do dado sensível, privacidade/LGPD, anexo de superfície de exposição (inventário de capacidades quando o desenvolvimento não começou; rotas reais quando o código é a fonte) e glossário. Processo em fases com portões (pedido literal, quadro de afirmações, regra de nomes, varredura de decisão tardia, verificador independente via `hallucination-guard`) e entrega preparada para o autor enviar. Assets: `source-gathering.md`, `DOCUMENT-STRUCTURE.md`, `provenance-tags.md`, `architecture-section.md`, `security-controls-catalog.md`, `privacy-and-data-flow.md`, `exposure-annex.md`, `visual-layout.md`, `verification.md`, `delivery.md`. Scripts stdlib: `doc_lib.py` (CSS de impressão, helpers, Chrome headless, sumário em duas passagens por `pdftotext`) e `lint_doc.py` (marcadores esquecidos, link interno quebrado, origem vazia, termo proibido, nome ambíguo, página órfã), com testes; `templates/build_doc.example.py` com conteúdo fictício. Origem: documento real elaborado para a segurança de um cliente, generalizado sem dados do caso.
+
+---
+
 ## [0.34.2] — 2026-10-19
 
 ### Changed

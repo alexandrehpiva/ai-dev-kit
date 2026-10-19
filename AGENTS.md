@@ -73,7 +73,7 @@ Skills focadas em código: construir, revisar, depurar e operar sistemas.
 
 **Arquivo:** `skills/engineering/task-writing/pt-BR/SKILL.md`
 
-**Descrição:** Escrever tarefas e histórias de usuário no padrão US. Decide os detalhes técnicos concretos (endpoints, nomes de campos, payloads, estados) antes de escrever, depois aplica o formato do `US-FORMAT.md`. Critérios de aceite em Given/When/Then são obrigatórios. Asset `US-FORMAT.md` é o contrato de saída — lê-lo antes de redigir qualquer task.
+**Descrição:** Escrever tarefas e histórias de usuário no padrão US. Decide os detalhes técnicos concretos (endpoints, nomes de campos, payloads, estados) antes de escrever, depois aplica o formato do `US-FORMAT.md`. Critérios de aceite obrigatórios: Given/When/Then só com comportamento testável por QA, checklist de entregáveis nos demais casos (documentação, processo, pesquisa, decisão). Asset `US-FORMAT.md` é o contrato de saída — lê-lo antes de redigir qualquer task.
 
 **Quando usar:** o usuário pedir para escrever, detalhar, dividir ou criar uma task ou subtask; quiser transformar um requisito em história estruturada; mencionar "user story", "US", "escrever task", "critérios de aceite".
 
@@ -128,6 +128,16 @@ Skills focadas em código: construir, revisar, depurar e operar sistemas.
 **Descrição:** Desenha diagramas C4 em `.drawio` editável com lib Python stdlib (`scripts/c4_drawio_lib.py`) que aplica as regras de notação de c4model.com (título com escopo, legenda automática, tipo/descrição/tecnologia, seta unidirecional rotulada) e recusa gravar diagrama que as viole. Assets: `c4-notation.md` (abstrações, tabela de diagramas, notação, checklist de 21 perguntas, FAQ), `engine.md` (API, tokens WCAG, lições de layout), `scripts/` (lib, tokens, exemplo e cinco diagramas renderizados).
 
 **Quando usar:** o usuário pedir "diagrama C4", "diagrama de contexto/contêineres/componentes", "desenha a arquitetura em C4", ou revisar um diagrama C4 contra o checklist oficial. Infra de nuvem com ícones: `architecture-diagrams`; processos: `bpmn-flow-diagrams`.
+
+---
+
+## infosec-review-doc
+
+**Arquivo:** `skills/engineering/infosec-review-doc/pt-BR/SKILL.md`
+
+**Descrição:** Produz o documento de produto, arquitetura e controles de segurança e privacidade que a área de Segurança da Informação (ou o comitê de arquitetura) do cliente pede antes de aprovar uma solução: PDF único e confidencial, com diagrama de arquitetura, **origem identificada em cada afirmação** (chips), itens não decididos marcados como "Proposta · a confirmar", fluxo do dado sensível, privacidade/LGPD, inventário preliminar da superfície de exposição e glossário. Processo em sete fases (pedido literal → fontes → quadro de afirmações → estrutura → diagrama → geração → verificação independente → entrega revisada pelo autor). Assets: `source-gathering.md`, `DOCUMENT-STRUCTURE.md`, `provenance-tags.md`, `architecture-section.md`, `security-controls-catalog.md`, `privacy-and-data-flow.md`, `exposure-annex.md`, `visual-layout.md`, `verification.md`, `delivery.md`; scripts `doc_lib.py` (HTML→PDF por Chrome headless, sumário em duas passagens) e `lint_doc.py` (marcadores, links, origem vazia, termos proibidos, páginas órfãs), com testes, e `templates/build_doc.example.py`. Usa `architecture-diagrams`/`c4-diagrams`, `hallucination-guard` e `grill-me`.
+
+**Quando usar:** o usuário pedir "documentação para a SI", "documento para a segurança da informação", "dossiê de segurança", "documentação de arquitetura para o CAT", "lista de endpoints para o time de segurança", "preparar o documento para o pentest", ou uma reunião de segurança exigir documentação do produto.
 
 ---
 
