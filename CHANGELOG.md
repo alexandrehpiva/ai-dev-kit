@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.37.0] — 2026-10-22
+
+### Changed
+
+- `productivity/subagent-orchestration`: passa a cobrir também a conversa livre e o briefing anti-alucinação. Novos assets: `free-conversation.md` (principal delega em segundo plano, reserva a conversa ao usuário, leva decisões completas enquanto os agentes rodam e relata o que não deu certo), `briefing.md` (prompt autocontido com pedido literal, objetivo e fora de escopo, estado verificado com origem, decidido x em aberto, referências, regra anti-invenção, limites, formato do relatório e isolamento; exemplo bom e ruim), `session-history.md` (transcript da sessão principal como fonte primária, busca pontual com grep/jq, privacidade), `squad-cycle.md` (papéis independentes, levantamento antes de implementar, leitura do relatório antes do despacho) e `closing.md` (checklist de fechamento com evidência e limpeza de worktrees). `SKILL.md` ganha diagnóstico do modo de falha, tabela de roteamento e novos gatilhos na `description`; `delegation.md` aponta para `briefing.md`. Origem: pedido do usuário de manter a conversa livre enquanto agentes trabalham, com contexto bem explicado para que não alucinem.
+
+---
+
 ## [0.36.0] — 2026-10-22
 
 ### Added

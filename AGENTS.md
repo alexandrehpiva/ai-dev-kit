@@ -363,9 +363,9 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 
 **Arquivo:** `skills/productivity/subagent-orchestration/pt-BR/SKILL.md`
 
-**Descrição:** Orquestra trabalho com subagentes em paralelo quando fizer sentido: o agente principal parte lotes disjuntos, lança subagentes com protocolo explícito, monitora até conclusão, trata falhas recuperáveis e consolida resultado — sem criar scripts monolíticos para fazer o trabalho que agentes deveriam executar. Subagente que não resolve dentro do escopo devolve BLOCKED ao principal; o principal relança com outra abordagem no mesmo escopo ou pergunta ao usuário em bloqueios sérios. Agnóstica de domínio (código, backup, CI, etc.).
+**Descrição:** Orquestra trabalho com subagentes em paralelo quando fizer sentido: o agente principal parte lotes disjuntos, lança subagentes com protocolo explícito, monitora até conclusão, trata falhas recuperáveis e consolida resultado — sem criar scripts monolíticos para fazer o trabalho que agentes deveriam executar. Subagente que não resolve dentro do escopo devolve BLOCKED ao principal; o principal relança com outra abordagem no mesmo escopo ou pergunta ao usuário em bloqueios sérios. Mantém a conversa livre para o usuário responder decisões pendentes enquanto os agentes trabalham, exige briefing autocontido anti-alucinação (pedido literal, estado verificado com origem, referências por caminho, limites, isolamento), usa o transcript da sessão principal como fonte primária via busca pontual, separa papéis no ciclo de desenvolvimento e fecha com evidência e limpeza. Agnóstica de domínio (código, backup, CI, etc.).
 
-**Quando usar:** tarefa grande ou paralelizável; usuário pedir subagentes, paralelismo ou autonomia até terminar; ou quando surgir tentação de script único no lugar de delegação.
+**Quando usar:** tarefa grande ou paralelizável; usuário pedir subagentes, "orquestre com subagentes", "mantenha a conversa livre", "passe contexto bem explicado", "deixa um agente fazendo isso", paralelismo ou autonomia até terminar; ou quando surgir tentação de script único no lugar de delegação.
 
 ---
 

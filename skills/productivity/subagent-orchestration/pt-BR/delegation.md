@@ -4,7 +4,7 @@
 
 1. Definir **critério de pronto** (ex.: "585 arquivos verificados e deletados ou BLOCKED com motivo").
 2. Partir em lotes **disjuntos** — sem overlap de `file_id`, path ou recurso exclusivo.
-3. Escrever prompt por subagente com:
+3. Escrever o prompt por subagente seguindo [`briefing.md`](briefing.md) (obrigatório: pedido literal, estado verificado, referências, limites, isolamento). No mínimo:
    - escopo exato (lista, range de linhas, pasta);
    - protocolo passo a passo;
    - paths e ferramentas;
