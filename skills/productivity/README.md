@@ -9,6 +9,7 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 | [`hallucination-guard`](hallucination-guard/pt-BR/SKILL.md) | Verificar antes de virar verdade: checklist de diretivas verbatim, verificação em dois níveis (autoconferência e subagente independente) e marcação de proveniência |
 | [`handoff`](handoff/SKILL.md) | Produzir um handoff denso de sessão para continuidade |
 | [`archive-session`](archive-session/pt-BR/SKILL.md) | Criar arquivo histórico autossuficiente de sessão/fase — snapshot congelado no tempo, não passagem de bastão |
+| [`ask-with-context`](ask-with-context/pt-BR/SKILL.md) | Perguntas, decisões e riscos ao usuário sempre autossuficientes no chat: exemplo concreto, opções, recomendação e efeito de cada resposta |
 | [`grill-me`](grill-me/SKILL.md) | Entrevistar o usuário de forma implacável para pressure-test de um plano |
 | [`zoom-out`](zoom-out/SKILL.md) | Mapear uma área desconhecida do codebase antes de mergulhar |
 | [`teach-to-build`](teach-to-build/SKILL.md) | Ensinar o usuário a construir um projeto do zero com tutoriais guiados na pasta `learn/` |

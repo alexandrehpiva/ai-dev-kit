@@ -181,6 +181,44 @@ Isso evita que pedidos concorrentes fragmentem um lote em andamento num estado m
 
 ---
 
+## Diretiva crítica — Jornada ou regra fora do protótipo navegável não se desenvolve sem autorização
+
+**Modo de falha:** o Dev encontra um caso que a spec não cobre (falha de rede, conflito, erro do parceiro) e decide sozinho um comportamento: um bloqueio, uma mensagem, um destino de tela. O PO só descobre ao testar ("caiu num disjuntor que eu nem sabia que existia"), e o retrabalho custa mais que a pergunta.
+
+Quando o projeto tem **protótipo navegável aprovado**, ele é a fonte de verdade do que se desenvolve. Regras:
+
+1. **Nenhuma jornada, regra de negócio, mensagem ou bloqueio que não esteja no protótipo (nem em história aprovada pelo PO) é desenvolvida** sem que o PO receba uma explicação em linguagem de produto (o que a pessoa vê e faz, antes e depois, por que a regra existe, alternativas, recomendação) e responda com autorização explícita. Silêncio não autoriza.
+2. **Dev e Tech Lead não decidem produto.** O que a spec não cobre sobe ao PO pelo Orquestrador (`po-proxy/protocol.md`); a parte afetada espera, o resto segue. Proteções técnicas invisíveis ao usuário (limite de chamadas, log, idempotência) seguem o padrão do projeto, mas qualquer efeito que a pessoa perceba (bloqueio, texto, tela) é decisão de produto.
+3. **Mudança demonstrável que ainda não está no protótipo** (a limitação do protótipo pode impedir algumas, p.ex. falhas reais de infraestrutura) segue esta ordem: ajustar o protótipo → PO aprova → versão beta → versão oficial → só então o Dev implementa no código e nos testes. O Orquestrador não despacha a implementação antes do OK do PO sobre o protótipo.
+4. **Mudança de backend sem efeito visível** (coluna nova, operação interna) pode seguir em paralelo; o que depende de tela espera o protótipo.
+5. Na auditoria do QA e do Tech Lead, **comportamento implementado que não consta do protótipo nem de história aprovada é achado** (severidade alta), mesmo que pareça sensato.
+
+---
+
+## Diretiva crítica — Decisão que diverge do protótipo vira documentação, e a documentação do protótipo acompanha
+
+**Modo de falha:** o time decide (com o PO) que o produto se comporta diferente do protótipo, mas a decisão fica só no chat ou no código. O protótipo, as jornadas e os cenários de teste continuam dizendo o contrário; a skill de prototipagem (ou outra sessão) "corrige" o produto de volta ao que o protótipo diz, ou o QA testa a regra velha.
+
+Toda vez que o time decidir que o comportamento do produto precisa ser diferente do protótipo (ou do que a documentação diz), **é obrigatório, no mesmo ciclo**:
+
+1. **Registrar na documentação de produto** o contexto, a explicação e a decisão (quem decidiu, quando, por quê, o que substitui), em linguagem de produto, num lugar versionado (log de decisões e documento de regras do tema).
+2. **Refletir nos critérios de aceite/BDD** das histórias afetadas: a regra nova vira cenário testável; o cenário antigo é removido ou marcado como substituído.
+3. **Se o protótipo tem documentos que carregam a regra** (jornadas de usuário, BDD, README, regras de negócio, changelog), **alterá-los também**, com um comentário curto e datado do PO ou do Tech Lead no trecho alterado (formato sugerido: "Decisão do PO em AAAA-MM-DD: o que mudou e por quê. Substitui: comportamento anterior."). Alterar o protótipo em si segue a skill de prototipagem, se existir; alterar só a documentação do protótipo não exige criar documento novo.
+4. O Orquestrador **não encerra o ciclo** (nem declara a entrega) enquanto a divergência não estiver registrada nos três lugares; o QA confere isso como item de aceite.
+
+## Diretiva crítica — Bloqueio de segurança exige modelo de ameaça, não reflexo
+
+**Modo de falha:** o time declara "precisa de aprovação da Segurança da Informação" ou "é risco de privacidade" sobre qualquer coisa que envolva dado pessoal, sem dizer quem poderia obter o quê e com que prova. O PO perde tempo e o escopo trava por um risco que não existe, enquanto o risco real (credencial que nunca expira, enumeração, dado devolvido a quem não provou nada) passa despercebido.
+
+Antes de classificar algo como bloqueio de segurança ou de privacidade, escreva em três linhas o **modelo de ameaça**: (a) quem recebe o dado; (b) que prova ele apresentou (credencial com posse e prazo, como um cookie de sessão que expira; um código enviado ao dono; nada); (c) o que ele já sabia (a própria pessoa recebendo de volta o que ela mesma digitou, no aparelho que provou a posse, não é divulgação nova). Regras:
+
+1. **Devolver a uma pessoa o que ela mesma informou, sob credencial vinculada ao aparelho e com prazo, não é por si só um bloqueio**; o risco que sobra é a credencial (prazo, teto de vida, escopo), e esse é o controle a exigir.
+2. **Outro aparelho** só recebe dados depois de uma prova nova (por exemplo, um código enviado ao contato do titular), com limite de tentativas e prazo.
+3. O que é só **informação** para a área de segurança (o desenho, os limites, os riscos residuais) é comunicado, sem virar pré-requisito de entrega; o que é **controle** (limites, expiração, escopo mínimo, cifragem) é implementado.
+4. Se o PO já explicou o modelo de ameaça dele, **avalie tecnicamente e diga o que concorda e o que permanece** (risco residual), em vez de repetir o alarme ou de concordar por reflexo.
+
+---
+
 ## Ciclo de vida
 
 ```

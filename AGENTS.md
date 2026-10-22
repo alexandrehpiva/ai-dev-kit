@@ -305,6 +305,16 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 
 ---
 
+## ask-with-context
+
+**Arquivo:** `skills/productivity/ask-with-context/pt-BR/SKILL.md`
+
+**Descrição:** Escreve toda pergunta, decisão pendente, risco ou pedido de autorização ao usuário de forma autossuficiente no próprio chat: o que é em linguagem simples, exemplo concreto do que a pessoa final vê, o que o usuário já disse sobre o tema, opções, recomendação com razão, efeito de cada resposta e o que não foi verificado. Evita rótulos soltos, "sim, como recomendei" e ponteiros para notas.
+
+**Quando usar:** o usuário disser "traga contexto", "não entendi nadinha", "pare de ser vago", "/ask-with-context"; ou o agente for levantar decisões, perguntas, riscos ou pendências (inclusive no fechamento de turnos longos e ao relatar achados de agentes).
+
+---
+
 ## grill-me
 
 **Arquivo:** `skills/productivity/grill-me/pt-BR/SKILL.md`

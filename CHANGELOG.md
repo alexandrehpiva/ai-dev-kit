@@ -9,6 +9,26 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.36.0] — 2026-10-22
+
+### Added
+
+- `productivity/ask-with-context`: nova skill (pt-BR) que obriga toda pergunta, decisão pendente, risco ou pedido de autorização ao usuário a ser autossuficiente no chat (o que é, exemplo concreto, o que o usuário já disse, opções, recomendação com razão, efeito de cada resposta, o que não foi verificado), sem rótulos soltos, "sim, como recomendei" nem ponteiro para nota. Origem: usuário precisou rolar a conversa para responder itens citados só por rótulo.
+
+### Changed
+
+- `engineering/dev-squad` (pt-BR e en-US): duas novas diretivas críticas. (1) Decisão que diverge do protótipo vira documentação de produto, BDD e documentação do protótipo, com comentário datado do PO ou Tech Lead, no mesmo ciclo. (2) Bloqueio de segurança ou privacidade exige modelo de ameaça escrito (quem recebe, com que prova, o que já sabia) em vez de reflexo; controle é implementado, informação é comunicada.
+
+---
+
+## [0.35.1] — 2026-10-22
+
+### Changed
+
+- `engineering/dev-squad` (pt-BR e en-US) e `productivity/interactive-prototype`: nova diretiva crítica "o protótipo vem primeiro". Jornada, regra, mensagem ou bloqueio que não está no protótipo navegável aprovado (nem em história aprovada) não é desenvolvido sem explicação em linguagem de produto e autorização explícita do PO; mudança demonstrável segue protótipo, aprovação, beta, oficial e só então implementação; comportamento implementado fora do protótipo vira achado de severidade alta na auditoria. Origem: bloqueio de contato recusado implementado pelo Dev sem o PO saber.
+
+---
+
 ## [0.35.0] — 2026-10-19
 
 ### Added

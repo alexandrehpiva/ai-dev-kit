@@ -181,6 +181,44 @@ This keeps concurrent requests from fragmenting an in-flight batch into a half-f
 
 ---
 
+## Critical directive — No journey or rule outside the navigable prototype without authorization
+
+**Failure mode:** the Dev meets a case the spec does not cover (network failure, conflict, partner error) and decides a behavior alone: a block, a message, a screen destination. The PO only finds out while testing, and the rework costs more than the question would have.
+
+When the project has an **approved navigable prototype**, it is the source of truth for what gets built:
+
+1. **No journey, business rule, message or block that is absent from the prototype (and from a PO-approved story) is developed** until the PO gets a plain product-language explanation (what the person sees and does, before and after, why the rule exists, alternatives, recommendation) and answers with explicit authorization. Silence is not authorization.
+2. **Dev and Tech Lead do not decide product.** Whatever the spec does not cover goes to the PO through the Orchestrator (`po-proxy/protocol.md`); the affected part waits, the rest continues. Technical protections invisible to the user (rate limit, logging, idempotency) follow the project pattern, but any effect the person can notice (block, text, screen) is a product decision.
+3. **A demonstrable change that is not yet in the prototype** (prototype limits may prevent some, e.g. real infrastructure failures) follows this order: adjust the prototype → PO approves → beta version → official version → only then the Dev implements code and tests. The Orchestrator does not dispatch the implementation before the PO's OK on the prototype.
+4. **Backend changes with no visible effect** (new column, internal operation) may proceed in parallel; whatever depends on a screen waits for the prototype.
+5. In QA and Tech Lead audits, **implemented behavior that is in neither the prototype nor an approved story is a finding** (high severity), even if it looks sensible.
+
+---
+
+## Critical directive — A decision that diverges from the prototype becomes documentation, and the prototype's documentation follows
+
+**Failure mode:** the team decides (with the PO) that the product behaves differently from the prototype, but the decision stays in chat or in code. The prototype, journeys and test scenarios keep saying the opposite; the prototyping skill (or another session) "fixes" the product back to what the prototype says, or QA tests the old rule.
+
+Whenever the team decides the product must behave differently from the prototype (or from what the documentation says), **in the same cycle it is mandatory to**:
+
+1. **Record in the product documentation** the context, explanation and decision (who decided, when, why, what it replaces), in product language, in a versioned place (decision log and the topic's rules document).
+2. **Reflect it in the acceptance criteria/BDD** of the affected stories: the new rule becomes a testable scenario; the old scenario is removed or marked as superseded.
+3. **If the prototype has documents that carry the rule** (user journeys, BDD, README, business rules, changelog), **change them too**, with a short dated PO or Tech Lead comment at the changed passage (suggested format: "PO decision on YYYY-MM-DD: what changed and why. Replaces: previous behavior."). Changing the prototype itself follows the prototyping skill, if there is one; changing only its documentation does not require creating a new document.
+4. The Orchestrator **does not close the cycle** (nor declare delivery) until the divergence is recorded in all three places; QA checks it as an acceptance item.
+
+## Critical directive — A security block requires a threat model, not a reflex
+
+**Failure mode:** the team declares "needs Information Security approval" or "privacy risk" about anything involving personal data, without saying who could obtain what, with what proof. The PO loses time and scope stalls over a risk that does not exist, while the real risk (a credential that never expires, enumeration, data returned to someone who proved nothing) goes unnoticed.
+
+Before classifying something as a security or privacy block, write the **threat model** in three lines: (a) who receives the data; (b) what proof they presented (a possession-bound, expiring credential such as a session cookie; a code sent to the owner; nothing); (c) what they already knew (the person receiving back what they typed themselves, on the device that proved possession, is not new disclosure). Rules:
+
+1. **Returning to a person what they themselves provided, under a device-bound credential with an expiry, is not by itself a block**; the remaining risk is the credential (lifetime, absolute cap, scope), and that is the control to require.
+2. **Another device** only receives data after a new proof (for example a code sent to the holder's contact), with an attempt limit and an expiry.
+3. What is only **information** for the security team (the design, limits, residual risks) is communicated without becoming a delivery prerequisite; what is a **control** (limits, expiry, minimal scope, encryption) is implemented.
+4. If the PO has already explained their threat model, **assess it technically and say what you agree with and what remains** (residual risk), instead of repeating the alarm or agreeing by reflex.
+
+---
+
 ## Lifecycle
 
 ```
