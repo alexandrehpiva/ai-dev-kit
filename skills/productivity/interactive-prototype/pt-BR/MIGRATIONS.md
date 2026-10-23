@@ -38,3 +38,9 @@ Versão sem entrada aqui = não exige mudança de arquivos em protótipos existe
 Não exige alterar o protótipo: sem entrada de migração, `migrate.py` aplica só o passo `version-bump` (atualiza `skill.version`, sem perguntas, com a aprovação do promoter). Novidades que passam a valer: `scripts/group-preview.py` (guarda o código de cada preview na branch `preview/<membro>/<id>` e audita trabalho sem cópia) e o subcomando `artifacts.py update-source`. O formato do `prototype.config.json` não muda (`branch` e `sourceRef` já existiam para previews).
 
 **Verificação:** `skill-status.py` → `UP_TO_DATE`; `group-preview.py --mode audit` → `SAFE` ou a lista do que guardar.
+
+## 2.1.0 → 2.2.0 — comunicação entre pessoas (opcional, sem mudança obrigatória de arquivos)
+
+Não exige alterar o protótipo: sem entrada de migração, `migrate.py` aplica só o passo `version-bump`. A comunicação do time nasce **desligada**; o bloco `comms` do `prototype.config.json` é opcional e só passa a existir quando um promoter roda `scripts/comms-setup.py --enable`. Novidades: `comms-setup/send/inbox/ack/hook/watch` (ver `group-comms.md`) e a linha `.claude/settings.local.json` no `.gitignore` (os hooks de cada pessoa ficam só na máquina dela).
+
+**Verificação:** `skill-status.py` → `UP_TO_DATE`; `config-validate.py` → `VALID`.

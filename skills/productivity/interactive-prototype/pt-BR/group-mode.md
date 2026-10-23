@@ -78,6 +78,7 @@ O arquivo `prototype.config.json` na raiz do protótipo, no formato v2 (com `ski
 | Aprovar/reprovar pessoas novas; rollback e reintegração | [`group-members.md`](group-members.md) |
 | Aprovar um lote; compartilhar; salvar só para mim; trazer novidades | [`group-sync.md`](group-sync.md) |
 | Publicar para o cliente; correção urgente; desfazer promoção | [`group-promotion.md`](group-promotion.md) |
+| Recados do time (avisar, perguntar, confirmar, tarefa), hooks e vigia de notificação | [`group-comms.md`](group-comms.md) (opcional; `comms.enabled`) |
 | Publicar, atualizar ou alertar sobre artefatos | [`group-artifacts.md`](group-artifacts.md) |
 | Dois trabalhos mudaram a mesma coisa | [`group-conflicts.md`](group-conflicts.md) |
 | Qualquer situação fora do fluxo feliz (resposta ambígua, sem rede, hotfix, membro saindo…) | [`group-scenarios.md`](group-scenarios.md) |

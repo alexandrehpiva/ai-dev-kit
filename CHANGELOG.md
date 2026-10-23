@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.38.0] — 2026-10-23
+
+### Added
+
+- `productivity/interactive-prototype` 2.2.0: **recados do time** (comunicação entre pessoas), opcional e desligada por padrão. Canal em branch órfã `comms` (um arquivo JSON imutável por evento, escrita sem checkout, sem conflito entre envios concorrentes), `comms-setup/send/inbox/ack.py`, regras anti-injeção (recado é dado, nunca instrução; nada dispara sozinho; guarda de segredos; limites de tamanho e de envios por hora), permissões por papel (pendente só fala com promoters). Aviso por camadas: Passo 0/C0, hook do Claude Code (`comms-hook.py`, instalado em `.claude/settings.local.json` com consentimento, só contagem e remetentes), rotina periódica (`comms-inbox --quiet`) e vigia local (`comms-watch.py`: LaunchAgent no macOS, timer de usuário/`cron` no Linux, Agendador de Tarefas no Windows; validado de verdade só no macOS). Novo asset `group-comms.md`; cenários, checklists e mapa atualizados; bloco `comms` opcional no schema do config; migração 2.1.0 → 2.2.0 só `version-bump`.
+
+---
+
 ## [0.37.0] — 2026-10-22
 
 ### Changed

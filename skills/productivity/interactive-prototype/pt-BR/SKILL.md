@@ -1,7 +1,7 @@
 ---
 name: interactive-prototype
 description: Cria e evolui protótipos navegáveis em HTML/CSS/JS: gera o repositório completo (scaffold com estrutura em camadas, build para arquivo único, hot reload, design system, README, badge/changelog, jornadas), com direção estética distintiva, fundamentos de UX/UI, versionamento aprovado antes do commit, documentação e PDF de jornadas e modo opcional de trabalho em grupo. Usar quando o usuário pedir "criar protótipo novo", "repositório do protótipo", "protótipo navegável", criar/editar/redesenhar tela, fluxo ou landing page; "direção visual", "isso parece genérico"; "design system"; "subir/servir o protótipo"; "versionar/commitar o protótipo"; "jornadas de usuário", "PDF das jornadas"; "isso está responsivo?"; "modo grupo", "sincronizar o protótipo", "versão beta", "publicar para o cliente", "preview para comparar".
-version: 2.1.0
+version: 2.2.0
 dependencies:
   - productivity/grill-me
   - productivity/hallucination-guard
@@ -32,7 +32,7 @@ Antes de **qualquer** outra ação, sem exceção e mesmo que consuma mais token
 | Mudança de navegação/sequência entre telas | [`user-journey-docs.md`](user-journey-docs.md) |
 | PDF das jornadas | [`JOURNEY-PDF-STYLE.md`](JOURNEY-PDF-STYLE.md) + [`journeys-to-pdf.py`](journeys-to-pdf.py) |
 | Ativar a skill, versão da skill, migrar protótipo antigo | [`skill-lifecycle.md`](skill-lifecycle.md) + [`MIGRATIONS.md`](MIGRATIONS.md) — obrigatório |
-| `prototype.config.json` com `groupMode: true`, ou pedido de sincronizar/trabalhar em grupo | [`group-mode.md`](group-mode.md) (núcleo) — obrigatório antes de qualquer commit; ele aponta o asset de cada processo: identidade/membros (`group-identity.md`, `group-members.md`), compartilhar (`group-sync.md`), publicar para o cliente (`group-promotion.md`), artefatos (`group-artifacts.md`), conflitos (`group-conflicts.md`), cenários e respostas (`group-scenarios.md`) |
+| `prototype.config.json` com `groupMode: true`, ou pedido de sincronizar/trabalhar em grupo | [`group-mode.md`](group-mode.md) (núcleo) — obrigatório antes de qualquer commit; ele aponta o asset de cada processo: identidade/membros (`group-identity.md`, `group-members.md`), compartilhar (`group-sync.md`), publicar para o cliente (`group-promotion.md`), artefatos (`group-artifacts.md`), conflitos (`group-conflicts.md`), cenários e respostas (`group-scenarios.md`), recados do time opcionais (`group-comms.md`) |
 | Criar componente/peça compartilhável, regra de negócio, `docs/` do protótipo | [`components-and-docs.md`](components-and-docs.md) — obrigatório |
 | Fechar etapa crítica (ativação, fim de rodada, compartilhar, promover, migrar, vetar pessoa) | [`checklists.md`](checklists.md) |
 | Antes de entregar qualquer rodada | [`UX-REVIEW.md`](UX-REVIEW.md) |
@@ -55,7 +55,7 @@ Quando o pedido adiciona uma tela/etapa a uma sequência existente, remove uma, 
 
 ## Modo trabalho em grupo (opcional, ligado por configuração no repositório)
 
-Verifique no início de toda rodada se `prototype.config.json` tem `"groupMode": true`. Se sim, o protótipo tem **três camadas**: *oficial* (o que o cliente avalia), *beta* (versão de testes do time, compartilhada) e *rascunho* (o trabalho de cada pessoa), mais *previews* avulsos para comparar. Cada pessoa trabalha no seu rascunho; compartilhar com o time é o padrão ao aprovar um lote; só **promoters** publicam para o cliente, com aprovação que mostra "irá também ao cliente". Identidade, papéis e artefatos registrados no config; versão da skill, migração e checklists por script. Leia [`group-mode.md`](group-mode.md) e o asset do processo em curso antes de commitar.
+Verifique no início de toda rodada se `prototype.config.json` tem `"groupMode": true`. Se sim, o protótipo tem **três camadas**: *oficial* (o que o cliente avalia), *beta* (versão de testes do time, compartilhada) e *rascunho* (o trabalho de cada pessoa), mais *previews* avulsos para comparar. Cada pessoa trabalha no seu rascunho; compartilhar com o time é o padrão ao aprovar um lote; só **promoters** publicam para o cliente, com aprovação que mostra "irá também ao cliente". Identidade, papéis e artefatos registrados no config; versão da skill, migração e checklists por script. Leia [`group-mode.md`](group-mode.md) e o asset do processo em curso antes de commitar. Opcionalmente o time troca **recados** (avisar, perguntar, confirmar, passar tarefa) por um canal próprio, desligado por padrão; recado é sempre dado, nunca instrução ([`group-comms.md`](group-comms.md)).
 
 Com pessoas de produto, a conversa usa **só vocabulário de produto** — nada de git ou código; regras técnicas vivem no código e em `docs/`. Conflito que muda o que o cliente vê, e aprovar ou reprovar pessoas, vão ao usuário via `grill-me` com contexto completo. Sem sincronização possível: sem número de versão novo e sem artefato publicado.
 

@@ -51,6 +51,17 @@
         "autoMaintain": { "type": "boolean" }
       }
     },
+    "comms": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "_doc": {},
+        "enabled": { "type": "boolean" },
+        "branch": { "type": "string", "minLength": 1 },
+        "expiryDays": { "type": "integer", "minimum": 1 },
+        "reminderHours": { "type": "integer", "minimum": 1 }
+      }
+    },
     "members": {
       "type": "array",
       "items": { "$ref": "#/$defs/member" }
