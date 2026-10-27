@@ -149,6 +149,10 @@ Política oficial: cada versão principal recebe correções até existirem **du
 - **Mutex por valor** (struct com `sync.Mutex` passada por valor): `go vet copylocks`.
 - **`context.Context` guardado em struct de serviço**: ver checklist C.
 
+## Dados e persistência
+
+Ver `data/go-sql.md` (aquele guia é esta seção para Go).
+
 ## Segurança específica da stack
 
 - **Protegido por padrão:** memória segura (sem aritmética de ponteiro fora de `unsafe`); `html/template` escapa por contexto; TLS da stdlib com padrões modernos (pós-quântico híbrido por padrão desde 1.24/1.26; `GODEBUG` de TLS legado removidos na 1.27); heap com base aleatória em 64 bits desde 1.26.

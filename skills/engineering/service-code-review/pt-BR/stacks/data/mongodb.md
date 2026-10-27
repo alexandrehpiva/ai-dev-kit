@@ -62,7 +62,7 @@ Aqui "estrutura" é **modelagem**.
 
 - **Índices declarados em código versionado e criados por migração/deploy, não com `autoIndex` em produção** — `autoIndex` cria índice no startup, sem controle de quando e em qual carga. *Como checar:* `autoIndex` na conexão/schema; `syncIndexes()` no boot. *Régua:* oficial (o guia do Mongoose recomenda desligar `autoIndex` em produção pela carga do build). *Vale a partir de:* todas. *Severidade típica:* Média.
 - **Campo de versão de schema quando a forma do documento muda** — leitores precisam saber qual forma estão lendo. *Como checar:* `schemaVersion`/`schema_version` e código que trata as versões; migrações preguiçosas. *Régua:* oficial (Schema Versioning). *Vale a partir de:* todas. *Severidade típica:* Média.
-- **Nomes de campo consistentes e curtos o bastante** — nomes se repetem em cada documento; mas legibilidade vence micro-otimização [comunidade]. *Severidade típica:* Baixa.
+- **Nomes de campo consistentes e curtos o bastante** — nomes se repetem em cada documento; mas legibilidade vence micro-otimização. *Como checar:* schemas/modelos com mistura de convenções (`camelCase` e `snake_case`) ou abreviações ilegíveis (`a1`, `tsx`); o mesmo conceito com nomes diferentes entre coleções. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Baixa.
 
 ### C. Qualidade do código
 
@@ -89,13 +89,13 @@ Aqui "estrutura" é **modelagem**.
 - **Sem índices desnecessários** — índice redundante (prefixo de outro) ou nunca usado custa escrita e RAM. *Como checar:* `$indexStats` (`accesses.ops` = 0 após período representativo); prefixos duplicados. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Baixa.
 - **Índice parcial em vez de `sparse` para subconjuntos; único parcial para unicidade condicional** — *Como checar:* `sparse: true` onde `partialFilterExpression` expressa melhor a regra. *Régua:* comunidade (a doc trata os dois como opções distintas, sem preferência declarada). *Vale a partir de:* todas. *Severidade típica:* Baixa.
 - **TTL para dados com expiração** — índice TTL em campo `Date` com `expireAfterSeconds`; a tarefa de remoção roda a cada 60 s e pode atrasar sob carga — não há garantia de remoção no instante da expiração; campo sem data não expira. *Como checar:* coleções de sessão/token/log sem TTL; TTL em campo que não é `Date`. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Média.
-- **Wildcard só para atributos realmente imprevisíveis** — não substitui índices pensados; na 8.0 não serve como índice de shard key. *Régua:* oficial. *Severidade típica:* Baixa.
+- **Wildcard só para atributos realmente imprevisíveis** — não substitui índices pensados; na 8.0 não serve como índice de shard key. *Como checar:* `"$**"` / `'$**'` em `createIndex`/`schema.index`; wildcard cobrindo campos com forma conhecida que caberiam num índice composto. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Baixa.
 
 **Consistência e transações**
-- **Write concern adequado** — o padrão implícito é `w: "majority"`, mas vira `w: 1` em replica set com árbitro em que os membros com dados não superam a maioria; `w: 0`/`w: 1` explícito em dado importante perde escrita no failover. *Como checar:* `w:` na URI/opções; topologia com árbitro (P-S-A). *Régua:* oficial. *Vale a partir de:* versão do padrão `majority` [não confirmado]. *Severidade típica:* Alta.
+- **Write concern adequado** — o padrão implícito é `w: "majority"`, mas vira `w: 1` em replica set com árbitro em que os membros com dados não superam a maioria; `w: 0`/`w: 1` explícito em dado importante perde escrita no failover. *Como checar:* `w:` na URI/opções; topologia com árbitro (P-S-A). *Régua:* oficial. *Vale a partir de:* todas (o padrão implícito `majority` vale em todas as versões cobertas). *Severidade típica:* Alta.
 - **Read concern/preference coerentes** — ler de secundário (`secondaryPreferred`) logo após escrever devolve dado velho. *Como checar:* `readPreference` na URI; fluxo escreve-e-lê. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Média.
 - **Transações multi-documento só quando a modelagem não resolve** — a doc recomenda modelos desnormalizados para reduzir a necessidade; transação tem limite de 60 s por padrão, não roda em standalone, aborta em conflito de escrita e, na 9.0, há teto padrão de 10.000 abertas. *Como checar:* `startSession`/`withTransaction` envolvendo um único documento (desnecessário) ou muitos documentos; uso de `withTransaction` (trata `TransientTransactionError` e `UnknownTransactionCommitResult` com retry) vs `startTransaction` manual sem retry. *Régua:* oficial. *Vale a partir de:* replica set (FCV 4.0), sharded (FCV 4.2). *Severidade típica:* Média (custo), Alta (sem retry em fluxo financeiro).
-- **Retryable writes ligados** — *Como checar:* `retryWrites=false` na URI. *Régua:* oficial [padrão ligado nos drivers atuais — não confirmado nesta revisão]. *Severidade típica:* Média.
+- **Retryable writes ligados** — *Como checar:* `retryWrites=false` na URI. *Régua:* oficial [padrão ligado nos drivers atuais — não confirmado nesta revisão]. *Vale a partir de:* todas. *Severidade típica:* Média.
 
 **Sharding**
 - **Shard key de alta cardinalidade, baixa frequência e não monotônica** — chave monotônica (timestamp, ObjectId) concentra inserções num chunk; baixa cardinalidade limita o número de shards e gera jumbo chunks; consultas sem a chave viram scatter-gather. *Como checar:* `sh.shardCollection` no código/IaC; `analyzeShardKey()` (7.0+); hashed para chaves monotônicas. *Régua:* oficial. *Vale a partir de:* análise: 7.0; reshard: 5.0. *Severidade típica:* Alta.
@@ -104,24 +104,24 @@ Aqui "estrutura" é **modelagem**.
 
 - **Sem injeção de operador em filtros** — corpo `{ "password": { "$ne": null } }` passado direto ao `find` contorna login. *Como checar:* `find(req.body)`, `findOne({ email: req.body.email })` sem validação de tipo; Mongoose `sanitizeFilter: true` (com versão ≥ 6.13.9/7.8.9/8.22.1/9.1.6) ou validação de schema na borda; `strictQuery` é `false` desde o Mongoose 7. *Régua:* oficial (Mongoose) + OWASP. *Vale a partir de:* todas. *Severidade típica:* Crítica.
 - **Sem `$where`/`$function`/`$accumulator` com dado do usuário** — JS no servidor voltou na 9.0. *Como checar:* `grep -rn "\$where\|\$function\|\$accumulator"`. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Crítica.
-- **Usuário do banco com papel mínimo, TLS e autenticação** — *Como checar:* URI com usuário `root`/admin; `tls=false`; `--noauth`/bind em `0.0.0.0` em IaC. *Régua:* oficial. *Severidade típica:* Alta.
+- **Usuário do banco com papel mínimo, TLS e autenticação** — *Como checar:* URI com usuário `root`/admin; `tls=false`; `--noauth`/bind em `0.0.0.0` em IaC. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Alta.
 - **Campos sensíveis com Client-Side Field Level Encryption ou Queryable Encryption quando a política exige** — na 9.0, usar a Automatic Encryption Shared Library (`mongocryptd` depreciado). *Como checar:* `autoEncryption` nas opções; CPF/documentos em texto puro. *Régua:* oficial. *Vale a partir de:* QE com prefixo/sufixo: 9.0. *Severidade típica:* Alta.
-- **Minimização e expiração de dados pessoais** — TTL/Archive para dado com prazo; snapshots e backups mantêm cópias. *Régua:* lei (LGPD/GDPR) + comunidade. *Severidade típica:* Média.
+- **Minimização e expiração de dados pessoais** — TTL/Archive para dado com prazo; snapshots e backups mantêm cópias. *Como checar:* coleções com dado pessoal sem índice TTL nem rotina de arquivamento/expurgo; projeções que gravam o documento de usuário inteiro em coleções auxiliares. *Régua:* lei (LGPD/GDPR) + comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
 
 ### F. Integrações e mensageria
 
-- **Change Streams com retomada (`resumeAfter`/`startAfter`) e token persistido** — sem token, reinício perde eventos. *Como checar:* `watch(` sem armazenar o `_id` do evento (token); retomada com pipeline/opções diferentes do original; token mais antigo que a janela do oplog falha; `startAfter` para retomar após evento `invalidate`. *Régua:* oficial. *Severidade típica:* Alta.
-- **Outbox na mesma transação/documento** em vez de "grava e publica". *Régua:* comunidade. *Severidade típica:* Alta.
+- **Change Streams com retomada (`resumeAfter`/`startAfter`) e token persistido** — sem token, reinício perde eventos. *Como checar:* `watch(` sem armazenar o `_id` do evento (token); retomada com pipeline/opções diferentes do original; token mais antigo que a janela do oplog falha; `startAfter` para retomar após evento `invalidate`. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Alta.
+- **Outbox na mesma transação/documento** em vez de "grava e publica". *Como checar:* `save`/`insertOne` seguido de `publish`/`send` a broker fora da mesma transação (ou sem gravar o evento no próprio documento/coleção outbox lida por Change Stream ou job). *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Alta.
 
 ### G. Testes
 
-- **Testes de integração contra MongoDB real (Testcontainers ou `mongodb-memory-server`) na versão de produção e, se usa transações, em replica set** — standalone não suporta transações. *Como checar:* config de teste; `replSet` no servidor de teste. *Régua:* comunidade. *Severidade típica:* Média.
-- **Testes de índice: consulta crítica com `explain` sem `COLLSCAN`** [comunidade]. *Severidade típica:* Baixa.
+- **Testes de integração contra MongoDB real (Testcontainers ou `mongodb-memory-server`) na versão de produção e, se usa transações, em replica set** — standalone não suporta transações. *Como checar:* config de teste; `replSet` no servidor de teste. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
+- **Testes de índice: consulta crítica com `explain` sem `COLLSCAN`** — índice removido ou consulta alterada passa despercebido sem esse teste. *Como checar:* teste que roda `explain("queryPlanner")` nas consultas críticas e afirma ausência de `COLLSCAN`. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Baixa.
 
 ### H. Qualidade automatizada e processo
 
-- **Versão suportada** — servidor ≤ 6.0, 8.1 e 8.2 fora de suporte; minor velha não recebe patch. *Régua:* oficial. *Severidade típica:* Alta.
-- **Monitoramento de consultas lentas** — profiler/`$queryStats`/Performance Advisor em uso. *Régua:* oficial. *Severidade típica:* Média.
+- **Versão suportada** — servidor ≤ 6.0, 8.1 e 8.2 fora de suporte; minor velha não recebe patch. *Como checar:* tag da imagem `mongo:<tag>`/versão no IaC do Atlas ou `db.version()` contra o calendário de lifecycles. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Alta.
+- **Monitoramento de consultas lentas** — profiler/`$queryStats`/Performance Advisor em uso. *Como checar:* `slowms`/`profile` na config ou IaC; alertas de consultas lentas na observabilidade; uso de `$queryStats` (padrão na 9.0). *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Média.
 
 ## Padrões de projeto recomendados hoje
 

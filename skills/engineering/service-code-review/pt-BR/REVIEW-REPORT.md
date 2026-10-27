@@ -32,9 +32,10 @@ Veredito geral e os três achados que mais importam.
 Com evidência. Não é cortesia: diz ao time o que preservar.
 
 ## 5. Achados
-| ID | Severidade | Dimensão | Local | Evidência | Impacto | Recomendação | Esforço (P/M/G) | Régua |
-|---|---|---|---|---|---|---|---|---|
+| ID | Severidade | Dimensão | Local | Evidência | Motivação do desenho | Impacto | Recomendação | Esforço (P/M/G) | Régua |
+|---|---|---|---|---|---|---|---|---|---|
 Régua: imposta | convenção | prática | oficial (<versão>) | comunidade. IDs estáveis (`RG-01`…) para a triagem e para reviews futuros citarem.
+"Motivação do desenho": quando o achado critica uma decisão de desenho, o problema que ela resolve e a fonte (decisão, README, commit), ou "não encontrada (procurei em …)" — ver METHOD.md, regra 13.
 
 ## 6. Checklist preenchido
 Seções A a J com Conforme / Parcial / Não conforme / Não verificado e evidência curta.
@@ -52,7 +53,39 @@ Perguntas que só o time responde; hipóteses não confirmadas; itens não verif
 | ID | Situação (resolvido | em aberto | novo | regrediu) | Evidência |
 
 ## 11. Triagem (preenchida depois, por quem conhece o contexto — ver TRIAGE.md)
+
+## 12. Painel de situação (gerado ao final, e regenerado a cada rodada de correções)
 ```
+
+## Painel de situação (seção 12)
+
+É a peça que o dono do serviço lê primeiro e a que ele pede de novo depois das correções: **todos** os achados, agrupados por severidade (Crítica → Alta → Média → Baixa → Observação), cada um dizendo a situação atual, o problema em linguagem simples e a solução. Gere ao fim da Fase 5 e regenere sempre que um lote de correções for concluído (só a seção 12 muda; as seções 1 a 10 ficam como foram entregues, para comparação). Entregue também no chat, não só no arquivo.
+
+<painel-de-situacao>
+**Legenda:** ✅ resolvido · 🟡 resolvido em parte · 🔴 em aberto (a fazer ou em andamento) · ⏳ adiado (com decisão do dono citada) · ❓ esperando decisão · ➖ mantido de propósito, sem ação · ✖️ descartado na triagem (premissa caiu)
+
+| Severidade | Total | ✅ | 🟡 | 🔴 | ⏳ | ❓ | ➖ | ✖️ |
+|---|---|---|---|---|---|---|---|---|
+| Crítica | … | | | | | | | |
+| … | | | | | | | | |
+| **Total** | | | | | | | | |
+
+### Alta
+| ID | Situação | Problema | Solução recomendada | O que foi feito / próximo passo |
+|---|---|---|---|---|
+| RG-02 | ✅ | <o que acontece, para quem não é especialista, com o efeito para o usuário ou a operação> | <a solução, em uma ou duas frases> | <o que foi feito, com referência à entrega (história, commit); ou o próximo passo e de quem depende> |
+
+(uma tabela por severidade, na ordem)
+
+**Pontos de atenção:** as decisões que estão com o dono (as que mais pesam primeiro) e o que mudou desde o painel anterior.
+</painel-de-situacao>
+
+Regras do painel:
+- **Problema** é escrito para quem não leu o relatório: sem sigla solta, com o efeito concreto ("uma conexão travada prendia a requisição do usuário por tempo indefinido"), não "sem timeout no SDK".
+- **Situação** reflete o estado verificado agora (história mesclada, commit, teste), nunca a intenção. "🟡" diz o que falta.
+- **Estado inicial vem da triagem:** Fazer agora → 🔴, Adiar → ⏳, Manter → ➖, Levar a decisão → ❓, Descartar → ✖️; depois muda conforme a entrega.
+- **⏳ só com a decisão do dono citada.** Sem decisão, o item é ❓ — o revisor e o orquestrador recomendam adiar, não decidem.
+- Contagens do resumo batem com as linhas das tabelas (confira antes de entregar).
 
 ## Regras de escrita
 

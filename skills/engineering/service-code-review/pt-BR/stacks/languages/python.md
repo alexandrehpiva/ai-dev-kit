@@ -59,7 +59,7 @@ Versão atual: **3.15** (3.15.0 em 2026-10-09; 3.15.2 em 2026-10-25). Desde a 3.
 - **`pyproject.toml` como fonte única** — configs espalhadas (`setup.cfg`, `.flake8`, `tox.ini`, `mypy.ini`) divergem. *Como checar:* `ls setup.py setup.cfg .flake8 mypy.ini tox.ini 2>/dev/null`. *Régua:* oficial (PyPA). *Vale a partir de:* todas. *Severidade típica:* Baixa.
 - **Lockfile presente e usado no CI/Docker** — sem lock, build não é reprodutível e CVE entra por dependência transitiva. *Como checar:* existência de `uv.lock`/`poetry.lock`/`pylock.toml`/`requirements.txt` com `==` e `--hash`; no `Dockerfile`, `uv sync --locked`/`--frozen` ou `poetry install --no-root` com lock. *Régua:* oficial (PEP 751; docs uv) + comunidade. *Vale a partir de:* todas. *Severidade típica:* Alta.
 - **`requires-python` coerente com a imagem e com o target do lint/typecheck** — divergência deixa passar sintaxe que não roda em produção. *Como checar:* comparar `requires-python`, `FROM python:`, `target-version`, `python_version`. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Média.
-- **Versão do Python suportada** — EOL não recebe correção de segurança. *Como checar:* piso/imagem vs tabela acima (3.9 EOL 2025-10-31; 3.10 EOL 2026-10). *Régua:* oficial (devguide). *Vale a partir de:* —. *Severidade típica:* Alta (EOL em produção), Média (EOL < 6 meses).
+- **Versão do Python suportada** — EOL não recebe correção de segurança. *Como checar:* piso/imagem vs tabela acima (3.9 EOL 2025-10-31; 3.10 EOL 2026-10). *Régua:* oficial (devguide). *Vale a partir de:* todas. *Severidade típica:* Alta (EOL em produção), Média (EOL < 6 meses).
 
 ### C. Qualidade do código
 
@@ -107,7 +107,7 @@ Versão atual: **3.15** (3.15.0 em 2026-10-09; 3.15.2 em 2026-10-25). Desde a 3.
 - **pytest-asyncio ≥ 1.0 sem fixture `event_loop`** — a fixture foi removida na 1.0 (2025-05-26); escopo de loop via `loop_scope` e `asyncio_default_fixture_loop_scope`. *Como checar:* `grep -rn "def event_loop" tests`; `asyncio_mode` e `asyncio_default_fixture_loop_scope` em `pyproject.toml`. *Régua:* oficial (changelog pytest-asyncio). *Vale a partir de:* pytest-asyncio 1.0. *Severidade típica:* Média (quebra a suíte ao atualizar).
 - **Factories em vez de fixtures JSON gigantes** — `factory_boy`/`polyfactory` deixam explícito o que o teste exige. *Como checar:* `tests/factories.py`; arquivos `*.json` de dados de teste grandes. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Baixa.
 - **Fakes de porta (Protocol) para unidade; banco real (container) para integração** — mock de ORM testa o mock. *Como checar:* `grep -rn "MagicMock(.*Session\|patch(.*session" tests`. *Régua:* comunidade (cosmicpython). *Vale a partir de:* todas. *Severidade típica:* Média.
-- **Testes nomeados por comportamento (Given-When-Then)** e cobertura medida (`coverage run -m pytest`; limiar no CI). *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Baixa.
+- **Testes nomeados por comportamento (Given-When-Then)** e cobertura medida. *Como checar:* nomes de teste como `test_<comportamento>_quando_<condição>` vs `test_1`; `coverage run -m pytest` com limiar (`--fail-under`/`fail_under`) no CI. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Baixa.
 
 ### H. Qualidade automatizada e processo
 

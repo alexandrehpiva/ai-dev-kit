@@ -1,6 +1,6 @@
 ---
 name: service-code-review
-description: Faz o review geral de um serviço inteiro (backend, frontend, worker, monorepo) — arquitetura e camadas, estrutura de pastas, qualidade, dados, segurança, integrações, testes e processo — com evidência arquivo:linha, régua declarada (regras do próprio projeto, documentação oficial da versão usada, comunidade) e guias por linguagem, framework, ORM e banco que registram como as convenções mudam entre versões; termina com triagem do que fazer, adiar ou manter. Usar quando pedirem "review geral do backend", "review completo do serviço", "auditoria do código", "avaliar a arquitetura deste repositório", "qual padrão de arquitetura é este e por quê", "o projeto segue as boas práticas do framework?", "code review do repositório inteiro", ou para criar/atualizar um guia de stack desta skill. Para revisar só um diff ou PR, usar `code-review`.
+description: Faz o review geral de um serviço inteiro (backend, frontend, worker, monorepo) — arquitetura e camadas, estrutura de pastas, qualidade, dados, segurança, integrações, testes e processo — com evidência arquivo:linha, régua declarada (regras do próprio projeto, documentação oficial da versão usada, comunidade) e guias por linguagem, framework, ORM e banco que registram como as convenções mudam entre versões; termina com triagem (adiar só com decisão do dono) e painel de situação por severidade. Usar quando pedirem "review geral do backend", "review completo do serviço", "auditoria do código", "avaliar a arquitetura deste repositório", "qual padrão de arquitetura é este e por quê", "o projeto segue as boas práticas do framework?", "code review do repositório inteiro", ou para criar/atualizar um guia de stack desta skill. Para revisar só um diff ou PR, usar `code-review`.
 ---
 
 # service-code-review
@@ -13,6 +13,8 @@ description: Faz o review geral de um serviço inteiro (backend, frontend, worke
 - **Régua da versão errada.** Acusa como erro o padrão oficial da versão usada (ex.: cobrar sintaxe de template nova num projeto travado numa versão anterior), ou deixa passar API depreciada.
 - **Verdade sem verificação.** "Não há ciclos", "o lint cobre", "todas as rotas validam" — sem comando rodado.
 - **Corrigir tudo.** Trata o relatório como lista de tarefas e gasta o prazo em polimento, inclusive contra decisões deliberadas.
+- **Trade-off sem motivo.** Recomenda o padrão de livro contra um desenho que existe para resolver outro problema (ex.: escrita dupla inconsistente entre banco e fila), sem ver que a alternativa perde a garantia.
+- **Decide prazo que não é dele.** Classifica como "fica para depois do lançamento" sem o dono ter decidido.
 
 ## Assets — leitura obrigatória antes de cada fase
 
@@ -58,16 +60,16 @@ Confirme (ou assuma e declare): repositório, escopo (inteiro, pastas, diff de b
 
 ### Fase 2 — Avaliação
 
-Percorra as dimensões A–J do CHECKLIST.md, somando os itens dos guias de stack na mesma dimensão. Rode o que é barato e seguro (lint, typecheck, testes unitários, auditoria de dependências, ciclos) e guarde os comandos. Nomeie e explique o padrão de arquitetura (guias de `architecture/`).
+Percorra as dimensões A–J do CHECKLIST.md, somando os itens dos guias de stack na mesma dimensão. Antes de apontar uma decisão de desenho como problema, procure a motivação dela e confira se a alternativa preserva a mesma garantia (METHOD.md, regra 13). Rode o que é barato e seguro (lint, typecheck, testes unitários, auditoria de dependências, ciclos) e guarde os comandos. Nomeie e explique o padrão de arquitetura (guias de `architecture/`).
 
 - [ ] Todo item marcado (Conforme / Parcial / Não conforme / Não verificado) com evidência
 - [ ] Toda contagem com o comando que a produziu
 
 ### Fase 3 — Verificação adversarial
 
-Tente derrubar cada achado Crítico e Alto (METHOD.md, regra 10). Recalibre a severidade.
+Tente derrubar cada achado Crítico, Alto e todo achado que critica uma decisão de desenho (METHOD.md, regra 10). Recalibre a severidade.
 
-- [ ] Críticos e Altos reconferidos no commit atual; quantos caíram, registrado
+- [ ] Críticos, Altos e achados de desenho reconferidos no commit atual; quantos caíram, registrado
 
 ### Fase 4 — Relatório
 
@@ -77,10 +79,11 @@ No formato de REVIEW-REPORT.md, salvo no destino combinado (fora do repositório
 
 ### Fase 5 — Triagem
 
-Quem tem o contexto (o dono do serviço ou o agente que orquestrou) classifica cada achado em fazer agora, adiar com motivo, manter, levar a decisão ou descartar (TRIAGE.md). O que for feito vira trabalho rastreável e segue o ciclo normal de desenvolvimento.
+Quem tem o contexto (o dono do serviço ou o agente que orquestrou) classifica cada achado em fazer agora, manter, levar a decisão ou descartar (TRIAGE.md). **Adiar é decisão do dono**: o agente recomenda adiar e leva a decisão; só marca "adiar com motivo" citando a decisão dele. O que for feito vira trabalho rastreável e segue o ciclo normal de desenvolvimento.
 
 - [ ] Todo achado com destino; nenhum Alto/Crítico em "manter" sem decisão de quem pode aceitar o risco
-- [ ] Decisões que não são técnicas levadas a quem decide, com contexto e recomendação
+- [ ] Decisões que não são técnicas levadas a quem decide, com contexto e recomendação; adiar para depois de um marco só com a decisão do dono citada
+- [ ] Painel de situação (REVIEW-REPORT.md, seção 12) entregue no chat e no relatório; regenerado depois de cada lote de correções
 
 ## Modo subagente
 

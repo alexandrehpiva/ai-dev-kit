@@ -84,7 +84,7 @@ ls package-lock.json pnpm-lock.yaml yarn.lock bun.lock 2>/dev/null
 - **`catch (e)` tratado como `unknown`** — acesso a `e.message` sem narrowing esconde erro não-`Error`. *Como checar:* `useUnknownInCatchVariables` (incluso em `strict`); `grep -rn "catch (e: any)" src`. *Régua:* oficial. *Vale a partir de:* TS 4.4. *Severidade típica:* Baixa.
 
 ### D — Dados e persistência
-- **Cliente de banco/SDK instanciado uma vez** (no composition root) e reaproveitado — instanciar por request esgota conexões. *Como checar:* `grep -rnE "new (PrismaClient|Pool|MongoClient|Redis)\(" src` fora de `main`/`infra`. *Régua:* oficial (docs dos drivers/ORMs). *Vale a partir de:* todas. *Severidade típica:* Alta. Detalhe em `typescript-orm`.
+- **Cliente de banco/SDK instanciado uma vez** (no composition root) e reaproveitado — instanciar por request esgota conexões. *Como checar:* `grep -rnE "new (PrismaClient|Pool|MongoClient|Redis)\(" src` fora de `main`/`infra`. *Régua:* oficial (docs dos drivers/ORMs). *Vale a partir de:* todas. *Severidade típica:* Alta (instância por request ou invocação); Média (só falta o cache em `globalThis` para o hot reload de dev). Detalhe em `typescript-orm`.
 
 ### E — Segurança e privacidade
 - **Config validada no boot, falha rápida** — variável ausente/errada deve derrubar o processo na subida, não no primeiro request. *Como checar:* `grep -rn "process.env" src | grep -v src/config` deve vir vazio; `config.ts` usa `zod`/`valibot`/`envalid` com `parse` no boot. *Régua:* comunidade (Node Best Practices). *Vale a partir de:* todas. *Severidade típica:* Média.

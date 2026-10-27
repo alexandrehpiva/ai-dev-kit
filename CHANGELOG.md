@@ -9,6 +9,15 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.40.0] — 2026-10-27
+
+### Changed
+
+- `engineering/service-code-review`: **painel de situação** ao final (seção 12 do relatório: todos os achados por severidade com situação ✅ 🟡 🔴 ⏳ ❓ ➖ ✖️, problema em linguagem simples, solução e próximo passo; regenerado a cada lote de correções); `METHOD.md` regra 13 — **motivação do desenho antes do veredito** (nomear o problema que o desenho resolve, conferir se a alternativa preserva a mesma garantia, pesar com números do projeto; vereditos procede/ajusta/Observação), coluna "Motivação do desenho" nos achados e verificação adversarial também dos achados de desenho; triagem: **adiar só com a decisão do dono citada**; `CHECKLIST.md` D: migrations criadas pelo comando da ferramenta, com evidência por carimbo (UTC) ou cadeia de revisões. Guias: detecção de `java-jpa`/`relational-schema-design` em Spring Boot com JPA e de `relational-schema-design` com psycopg2/asyncpg; todos os itens de checklist com os quatro campos obrigatórios; régua única para cliente de banco único (Next.js/typescript-orm/typescript-node); item "migration nasce do comando da ferramenta" nos guias de ORM. 15 testes no `detect_stack`.
+- `engineering/dev-squad`: artefatos gerados (migrations, lockfile, clientes gerados) nascem só do comando da ferramenta — nas que geram a partir do modelo, o conteúdo gerado é revisado e não reescrito; nas SQL-first (Flyway, golang-migrate, goose, Liquibase) o comando cria o arquivo e o SQL é escrito à mão; ajuste manual só com motivo, declarado em `AJUSTES_MANUAIS`. Dev declara `ARTEFATOS_GERADOS`/`AJUSTES_MANUAIS` em `implementar` e `corrigir`, e o plano diz qual comando gera cada migration; o Tech Lead recebe essas declarações, compara o carimbo da migration com a data do commit em UTC (ou confere a cadeia única em Alembic/Django/Flyway). Nova diretiva crítica: as **diretivas permanentes do usuário** vão com o texto literal em todo briefing de Dev, Tech Lead e QA (slot `DIRETIVAS_PERMANENTES`, conferidas em `DIRETIVAS_CONFERIDAS`, guardadas no estado). `flow.md` trata o retorno `bloqueado_em`.
+
+---
+
 ## [0.39.0] — 2026-10-27
 
 ### Added

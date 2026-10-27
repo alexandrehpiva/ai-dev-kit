@@ -168,6 +168,17 @@ A prompt built this way is longer than a one-line mission description — that l
 
 ---
 
+## Critical directive — The user's permanent directives go into every briefing and every review
+
+**Failure mode:** the user gives a process or code rule once (e.g., "migrations only through the ORM command, never hand-written"), it stays in an old conversation or in a document the subagent does not read, and the Dev does exactly what was forbidden. The Tech Lead does not catch it because their checklist does not have the rule. The user finds out in review weeks later.
+
+1. The Orchestrator keeps a list of the user's **permanent directives** for the project (in the repository's constitution/`CLAUDE.md`/README, in a project working-mode note, or in the agent's memory), each with the literal quote and the date.
+2. **Every** Dev, Tech Lead and QA prompt includes the directives that apply to the mission, with the literal text — not a summary, not a link — in the template's `PERMANENT_DIRECTIVES` slot (the list lives in `permanent_directives` in the state; see `orchestrator/state.md`).
+3. The Tech Lead checks each applicable directive in `review_code` (its own step in the template, with output in `DIRECTIVES_CHECKED`) and QA in the report (same field); a violation blocks approval.
+4. A directive that can be checked by a machine becomes tooling (lint rule, hook, test, CI check) as soon as a violation appears — a second violation of the same rule is a process failure, not an agent failure.
+
+---
+
 ## Critical Directive — New Requests Mid-Cycle
 
 A `/dev-squad` cycle can run long (parallel subagents, multi-item batches, background execution). While it's in progress, the user may send a new message with a fresh feature request or change — often explicitly flagged as "don't let this interrupt what you're doing." Treat that as the default expectation even when not stated:
@@ -205,6 +216,8 @@ Whenever the team decides the product must behave differently from the prototype
 2. **Reflect it in the acceptance criteria/BDD** of the affected stories: the new rule becomes a testable scenario; the old scenario is removed or marked as superseded.
 3. **If the prototype has documents that carry the rule** (user journeys, BDD, README, business rules, changelog), **change them too**, with a short dated PO or Tech Lead comment at the changed passage (suggested format: "PO decision on YYYY-MM-DD: what changed and why. Replaces: previous behavior."). Changing the prototype itself follows the prototyping skill, if there is one; changing only its documentation does not require creating a new document.
 4. The Orchestrator **does not close the cycle** (nor declare delivery) until the divergence is recorded in all three places; QA checks it as an acceptance item.
+
+---
 
 ## Critical directive — A security block requires a threat model, not a reflex
 
@@ -261,6 +274,7 @@ List only the skills and tools relevant to the mission:
 - [ ] Read `agents/dev-senior.md`, `agents/tech-lead.md`, `agents/qa.md`
 - [ ] Read `orchestrator/flow.md`
 - [ ] Read `orchestrator/state.md`
+- [ ] Load into the state (`permanent_directives`) the user's permanent directives for the project — constitution/`CLAUDE.md`/README, working-mode note, agent memory — each with the literal text and the date.
 - [ ] Initialize internal state with `task_ref`, `task_context`, and `current_phase = investigation`
 - [ ] Start the Senior Developer investigation mission.
 

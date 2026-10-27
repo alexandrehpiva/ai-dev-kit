@@ -23,7 +23,7 @@ If the task is in a connected tracker (Jira, ClickUp, Linear etc.), update the s
 
 ### Steps
 
-1. Spawn Senior Dev with mission `investigate` and the full task context
+1. Spawn Senior Dev with mission `investigate` and the full task context, with `permanent_directives` filled in (applies to every Dev, Tech Lead and QA spawn in this flow; see `orchestrator/state.md`)
 2. If the return contains `QUESTIONS_FOR_TECH_LEAD`:
    - Spawn Tech Lead with mission `answer_questions`
    - Include the TL's `ANSWERS` in the Dev's next spawn
@@ -57,7 +57,12 @@ If the task is in a connected tracker (Jira, ClickUp, Linear etc.), update the s
 4. If the return contains `QUESTIONS_FOR_PO`:
    - **Read `po-proxy/protocol.md` and relay to the user** (grill-me format: one question + recommendation)
 5. When Senior Dev returns `STATUS: implemented`:
+   - Record `GENERATED_ARTIFACTS` and `MANUAL_EDITS` in the state
    - Proceed to Phase 3
+6. If Senior Dev returns `STATUS: blocked_at`:
+   - Spawn Tech Lead with mission `answer_questions`, passing the block as a question (e.g., the migration tool does not generate the rename the plan asks for)
+   - If the answer resolves it without changing plan or scope: re-spawn Senior Dev `implement` with the answer in `resolved_questions`
+   - If the answer requires changing the plan: go back to `review_plan` (Phase 1) with the adjusted plan; if it requires changing scope or is an external blocker: escalate to the PO
 
 ---
 
@@ -76,10 +81,14 @@ If the project has separate staging/production environments, read
    - `branch` = the Dev's branch
    - `files` = the Dev's `MODIFIED_FILES`
    - `dev_summary` = the Dev's `SUMMARY`
+   - `dev_generated_artifacts` = the Dev's `GENERATED_ARTIFACTS` (accumulated from `implement` and `fix`)
+   - `dev_manual_edits` = the Dev's `MANUAL_EDITS` (accumulated)
+   - `permanent_directives` = applicable permanent directives, in literal text
 3. If `APPROVAL: yes`:
    - Proceed to Phase 4
 4. If `APPROVAL: no`:
    - Spawn Senior Dev with mission `fix`, passing the TL's problems
+   - Record in the state the `GENERATED_ARTIFACTS`/`MANUAL_EDITS` that `fix` returns
    - After the Dev returns, **re-spawn Tech Lead to review again** — do not skip to QA
 
 ### Loop rule — code review
@@ -100,6 +109,7 @@ If the project has separate staging/production environments, read
    - `branch` = current branch
    - `files` = list of modified files
    - `implementation_summary` = summary of what was implemented
+   - `permanent_directives` = applicable permanent directives, in literal text
 3. If `FINAL_VERDICT: approved for deploy`:
    - **Verify** the QA report in `qa-reports/` (local Markdown backlog — `qa-reports.md`)
    - Update the status to `ready for deploy` / Markdown `done`

@@ -64,6 +64,7 @@ Nenhuma é "a oficial"; julgue pela regra que o repositório escolheu e pela con
 
 - **Código gerado não editado e em dia** — sqlc/ent: regenerar e comparar. *Como checar:* `sqlc diff` ou `sqlc generate && git diff --exit-code`; `go generate ./ent && git diff --exit-code`. *Régua:* oficial (ferramentas). *Vale a partir de:* todas. *Severidade típica:* Média.
 - **Migrations versionadas, imutáveis e revisáveis** — arquivo já aplicado não é editado; nomes ordenáveis; `atlas.sum` atualizado quando usado. *Como checar:* `git log --follow` em migration antiga alterada; `atlas migrate validate`. *Régua:* oficial (golang-migrate, goose, Atlas). *Vale a partir de:* todas. *Severidade típica:* Alta.
+- **Arquivo de migration criado pelo comando da ferramenta** — em golang-migrate e goose o comando cria o arquivo com nome e versão (`migrate create -ext sql -dir <pasta> -seq <nome>`, `goose create <nome> sql`) e o SQL é escrito à mão por desenho; com Atlas/ent, `atlas migrate diff` gera o conteúdo a partir do schema desejado, que é revisado e não reescrito. Nome ou versão inventados à mão saem fora de ordem e divergem entre banco novo e bancos existentes; ajuste manual em arquivo gerado pelo Atlas vai com motivo no PR (e `atlas migrate hash`). *Como checar:* versões sequenciais sem buraco ou carimbo coerente com a data do commit que adicionou o arquivo, comparando em UTC (`TZ=UTC git log --diff-filter=A --date=format-local:%Y%m%d%H%M%S --format='%h %ad' -- <pasta de migrations>`); mistura de numeração sequencial e por carimbo na mesma pasta; `atlas migrate validate`. *Régua:* oficial (golang-migrate, goose, Atlas) + comunidade (heurística do carimbo). *Vale a partir de:* todas. *Severidade típica:* Média.
 - **`AutoMigrate`/`Schema.Create` fora do caminho de produção** — GORM avisa que não remove colunas e recomenda migrations versionadas; ent idem com Atlas. *Como checar:* `grep -rn 'AutoMigrate(\|Schema.Create(' --include=*.go | grep -v _test`. *Régua:* oficial (GORM, ent). *Vale a partir de:* GORM v2, ent 0.14. *Severidade típica:* Alta.
 
 ### C. Qualidade do código
@@ -85,7 +86,8 @@ Nenhuma é "a oficial"; julgue pela regra que o repositório escolheu e pela con
 - **Leitura de lote grande em streaming** — GORM `FindInBatches`/`Rows`; `rows.Next()` em vez de carregar tudo; `SELECT` com colunas explícitas. *Como checar:* `Find(&slice)` sem `Limit` em tabela grande; `SELECT *`. *Régua:* oficial (GORM performance). *Vale a partir de:* todas. *Severidade típica:* Média.
 - **Migration perigosa sinalizada** — `DROP`, renomear coluna usada pela versão anterior, `ALTER` com rewrite/lock em tabela grande, índice sem `CONCURRENTLY` no PostgreSQL (com goose: `-- +goose no transaction`). Mudança incompatível deve ser feita em etapas (expandir → migrar → contrair). *Como checar:* ler cada migration do PR; `atlas migrate lint` se houver Pro ou binário community. *Régua:* oficial (Atlas, goose) + comunidade (expand/contract). *Vale a partir de:* todas. *Severidade típica:* Alta (Crítica se perde dado).
 - **Estado dirty do golang-migrate tem runbook** — falha deixa a versão marcada como dirty e bloqueia próximas. *Como checar:* README/runbook menciona `migrate force`. *Régua:* oficial (FAQ). *Vale a partir de:* golang-migrate v4. *Severidade típica:* Baixa.
-- **Modelagem, chaves, índices e constraints** — ver `data/relational-schema-design.md`.
+
+Modelagem, chaves, índices e constraints: ver `data/relational-schema-design.md`.
 
 ### E. Segurança e privacidade
 
@@ -129,6 +131,10 @@ Nenhuma é "a oficial"; julgue pela regra que o repositório escolheu e pela con
 - **`SkipDefaultTransaction` ligado sem saber o que perde** — o GORM envolve cada escrita numa transação por padrão (consistência com hooks/associações); desligar ganha desempenho mas tira essa garantia. Correção: ligar só com transação explícita onde há hooks/associações.
 - **Consulta em `for` (N+1)**; **`SELECT *` com struct que muda**; **`LIMIT/OFFSET` profundo** em tabela grande (preferir keyset) [comunidade].
 - **Driver `lib/pq` em código novo** quando pgx está disponível [comunidade].
+
+## Dados e persistência
+
+Este guia já é a seção de dados e persistência de Go (o checklist D acima cobre migrations, transações, N+1 e pool); não há seção separada.
 
 ## Segurança específica da stack
 

@@ -99,7 +99,7 @@ Aqui "estrutura" é **modelagem**.
 - **Isolamento de tenant na chave** — partition key começando por `TENANT#<id>` e o `tenantId` vindo do token, não do corpo da requisição. *Como checar:* `tenantId` lido de `req.body`/query. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Crítica.
 - **Dados pessoais em chaves** — chave aparece em logs, métricas (Contributor Insights), streams e ARNs de erro. *Como checar:* e-mail/CPF em `PK`/`SK`; preferir ID opaco ou hash. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
 - **Cifragem com chave gerenciada pelo cliente quando a política exige** — padrão é chave da AWS. *Como checar:* `SSESpecification` com `KMSMasterKeyId`. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Média.
-- **Retenção/eliminação** — TTL ou job para dados com prazo; PITR mantém cópias por até 35 dias (considerar no atendimento a pedido de exclusão). *Régua:* oficial + lei. *Severidade típica:* Média.
+- **Retenção/eliminação** — TTL ou job para dados com prazo; PITR mantém cópias por até 35 dias (considerar no atendimento a pedido de exclusão). *Como checar:* `TimeToLiveSpecification` no IaC das tabelas com dado de prazo; atributo de expiração (epoch em segundos) gravado pelo código; `PointInTimeRecoverySpecification` e período configurado. *Régua:* oficial + lei. *Vale a partir de:* todas. *Severidade típica:* Média.
 
 ### F. Integrações e mensageria
 
@@ -109,7 +109,7 @@ Aqui "estrutura" é **modelagem**.
 ### G. Testes
 
 - **Testes de integração contra DynamoDB Local ou LocalStack com o mesmo schema do IaC** — mocks do cliente não pegam erro de expressão, chave ou índice. *Como checar:* `amazon/dynamodb-local` no compose/CI; tabela de teste criada a partir da definição real. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
-- **Casos de concorrência (condicional falha) e paginação (> 1 MB) testados** — *Régua:* comunidade. *Severidade típica:* Média.
+- **Casos de concorrência (condicional falha) e paginação (> 1 MB) testados** — *Como checar:* teste que provoca `ConditionalCheckFailedException` e afirma o tratamento; teste de listagem com volume acima de uma página que segue `LastEvaluatedKey`. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
 
 ### H. Qualidade automatizada e processo
 

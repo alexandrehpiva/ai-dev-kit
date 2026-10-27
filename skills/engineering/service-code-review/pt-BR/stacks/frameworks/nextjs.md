@@ -90,7 +90,7 @@ Cobre o que é específico do Next.js: App Router vs Pages Router, Server e Clie
 - **Revalidação após mutação com a API certa** — `updateTag` (ler o que escreveu, só em action), `revalidateTag(tag, 'max')` (SWR), `revalidatePath`, `refresh`. *Como checar:* actions que mutam sem nenhuma dessas chamadas; `revalidateTag('x')` com 1 argumento. *Régua:* oficial. *Vale a partir de:* 13.4 (`updateTag`/`refresh`/2 args: 16.0). *Severidade típica:* Média.
 - **Revalidação antes de `redirect`** — código após `redirect` não roda. *Como checar:* `revalidatePath` depois de `redirect(` na mesma action. *Régua:* oficial. *Vale a partir de:* 14.0. *Severidade típica:* Média.
 - **Busca em paralelo no servidor** — `await` sequencial de requisições independentes cria cascata. *Como checar:* vários `await getX()` seguidos sem dependência; preferir `Promise.all` ou componentes irmãos com Suspense. *Régua:* oficial. *Vale a partir de:* 13.4. *Severidade típica:* Baixa.
-- **Cliente de banco como singleton** — em dev, HMR recria conexões. *Como checar:* `new PrismaClient()` (ou pool) no corpo de módulo importado por várias rotas sem cache em `globalThis`. *Régua:* comunidade [padrão difundido; não verificado em doc oficial nesta pesquisa]. *Vale a partir de:* todas. *Severidade típica:* Média.
+- **Cliente de banco instanciado uma vez por processo** — instanciar por request ou invocação (dentro de handler, action ou componente) esgota conexões em produção; em dev, o hot reload recria o módulo e abre um pool novo a cada recarga, por isso o cliente fica em cache em `globalThis` fora de produção. *Como checar:* `new PrismaClient()` (ou pool) dentro de função de rota/action/componente; no módulo compartilhado, ausência do cache em `globalThis`. *Régua:* oficial (Prisma — Next.js). *Vale a partir de:* todas. *Severidade típica:* Alta (instância por request ou invocação); Média (só falta o cache em `globalThis` para o hot reload de dev). Mesma régua de `data/typescript-orm.md` e `languages/typescript-node.md`.
 
 ### E. Segurança e privacidade
 
@@ -191,6 +191,7 @@ O Next.js não traz ORM; os usuais são Prisma e Drizzle (guias em `data/`). Pon
 
 ## Fontes
 
+- Prisma — Next.js (instância única de PrismaClient em `globalThis` no hot reload) — https://www.prisma.io/docs/orm/more/troubleshooting/nextjs — oficial — acessado em 2026-10-27
 - Next.js Blog (índice de releases) — https://nextjs.org/blog — oficial — acessado em 2026-10-27
 - Next.js 14 — https://nextjs.org/blog/next-14 — oficial — acessado em 2026-10-27
 - Next.js 15 — https://nextjs.org/blog/next-15 — oficial — acessado em 2026-10-27

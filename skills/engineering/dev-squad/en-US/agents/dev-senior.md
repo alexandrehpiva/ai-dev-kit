@@ -38,6 +38,9 @@ TASK CONTEXT:
 
 TASK ID / PATH (if available): {task_id}
 
+PERMANENT_DIRECTIVES (the user's literal text — compliance is mandatory; empty if none):
+{permanent_directives}
+
 PHASE: Technical investigation — do NOT write code yet.
 
 What you must do:
@@ -46,7 +49,7 @@ What you must do:
 3. If the repository has spec-kit, read constitution.md, spec.md, plan.md, and data-model.md
 4. Read the code files at the points that will be impacted (Read + grep/find)
 5. Study the patterns already adopted in the repository (do not impose another project's stack)
-6. Formulate a detailed implementation plan: files, endpoints/functions, models, tests
+6. Formulate a detailed implementation plan: files, endpoints/functions, models, migrations and generated artifacts (with the tool command that will generate each one and any planned manual edit, with the reason), tests
 7. List ALL the doubts that block or create risk in the implementation
 
 Return EXACTLY in this format (respect the --- separators):
@@ -81,12 +84,23 @@ PLAN APPROVED BY THE TECH LEAD:
 DECISIONS AND ANSWERS (if any):
 {resolved_questions}
 
+PERMANENT_DIRECTIVES (the user's literal text — compliance is mandatory; empty if none):
+{permanent_directives}
+
+GENERATED ARTIFACTS RULE (applies before writing any file):
+- Files that a tool creates (database migrations, lockfile, generated client, snapshots) are born from the tool's command: file, name, version and timestamp are the ones the command produced at the real time. Never create the file by hand; never invent, round or rename the name/timestamp to "put it in order".
+- Migration in a tool that generates the content from the schema/model (e.g., `prisma migrate dev --create-only`, `alembic revision --autogenerate`, `manage.py makemigrations`, `dotnet ef migrations add`, `typeorm migration:generate`, `drizzle-kit generate`, `mikro-orm migration:create`): the content is what was generated — review it, do not rewrite it. To adjust it before applying, use the tool's generate-without-applying mode.
+- Migration in a SQL-first tool (e.g., Flyway, Liquibase, golang-migrate, goose, dbmate): create the file with the tool's create command (e.g., `migrate create -ext sql -dir <folder> -seq <name>`, `goose create <name> sql`, `dbmate new <name>`); if the project does not use that command, follow the naming convention and sequence already in the repository. The SQL is written by hand: in these tools that is the design, not an exception.
+- A manual edit to generated content only with a reason (e.g., replacing drop+create with a rename so data is not lost, seeding fixed system data): minimal, commented in the file itself and declared in MANUAL_EDITS.
+- If the tool cannot generate what the plan asks for, stop and return STATUS: blocked_at, explaining what was missing.
+
 What you must do:
 1. Implement the code exactly as the approved plan — no deviations without justification
 2. Write or update the corresponding unit and integration tests
 3. Run linting, formatting, and the project's test suite — report the result
-4. Commit with a message in the conventional format (feat/fix/refactor/test/chore)
-5. If necessary, create the feature branch from the correct branch (follow the branch flow of the stack skill, if any, or the repository convention)
+4. Check that the implementation complies with every item in PERMANENT_DIRECTIVES and with the GENERATED ARTIFACTS RULE
+5. Commit with a message in the conventional format (feat/fix/refactor/test/chore)
+6. If necessary, create the feature branch from the correct branch (follow the branch flow of the stack skill, if any, or the repository convention)
 
 Return EXACTLY in this format:
 ---
@@ -101,6 +115,10 @@ COMMIT:
 {commit hash or "pending" if it was not possible to commit}
 BRANCH:
 {name of the branch used}
+GENERATED_ARTIFACTS:
+{migrations, lockfile and other generated files, each with the exact command that generated it — empty if none}
+MANUAL_EDITS:
+{manual edits to generated files, with the reason — empty if none}
 QUESTIONS_FOR_TECH_LEAD:
 {technical questions that arose during implementation — empty if none}
 QUESTIONS_FOR_PO:
@@ -123,11 +141,23 @@ CURRENT BRANCH: {branch}
 REPORTED PROBLEMS (from {source: Tech Lead | QA}):
 {problems}
 
+PERMANENT_DIRECTIVES (the user's literal text — compliance is mandatory; empty if none):
+{permanent_directives}
+
+GENERATED ARTIFACTS RULE (applies before writing any file):
+- Files that a tool creates (database migrations, lockfile, generated client, snapshots) are born from the tool's command: file, name, version and timestamp are the ones the command produced at the real time. Never create the file by hand; never invent, round or rename the name/timestamp to "put it in order".
+- Migration in a tool that generates the content from the schema/model (e.g., `prisma migrate dev --create-only`, `alembic revision --autogenerate`, `manage.py makemigrations`, `dotnet ef migrations add`, `typeorm migration:generate`, `drizzle-kit generate`, `mikro-orm migration:create`): the content is what was generated — review it, do not rewrite it. To adjust it before applying, use the tool's generate-without-applying mode.
+- Migration in a SQL-first tool (e.g., Flyway, Liquibase, golang-migrate, goose, dbmate): create the file with the tool's create command (e.g., `migrate create -ext sql -dir <folder> -seq <name>`, `goose create <name> sql`, `dbmate new <name>`); if the project does not use that command, follow the naming convention and sequence already in the repository. The SQL is written by hand: in these tools that is the design, not an exception.
+- A manual edit to generated content only with a reason (e.g., replacing drop+create with a rename so data is not lost, seeding fixed system data): minimal, commented in the file itself and declared in MANUAL_EDITS.
+- If the tool cannot generate what the plan asks for, stop and return STATUS: blocked_at, explaining what was missing.
+
 What you must do:
 1. Analyze each reported problem — understand the root cause before fixing
 2. Apply the necessary fixes
-3. Run the tests to confirm the fixes work and didn't break anything
-4. Make a new commit with the fixes
+3. If the fix involves a generated artifact (migration, lockfile, generated client), redo it with the tool's command following the RULE above: migration not yet applied in any shared environment → delete it and generate it again; migration already applied → create a new migration that fixes it. Never rename or hand-edit to "fix" it, except for the manual edit with a reason allowed by the RULE, declared in MANUAL_EDITS
+4. Run the tests to confirm the fixes work and didn't break anything
+5. Check that the fixes comply with every item in PERMANENT_DIRECTIVES
+6. Make a new commit with the fixes
 
 Return EXACTLY in this format:
 ---
@@ -138,6 +168,10 @@ TESTS:
 {test result after the fix}
 COMMIT:
 {hash of the fixes commit}
+GENERATED_ARTIFACTS:
+{migrations, lockfile and other generated files, each with the exact command that generated it — empty if none}
+MANUAL_EDITS:
+{manual edits to generated files, with the reason — empty if none}
 QUESTIONS_FOR_TECH_LEAD:
 {technical questions — empty if none}
 QUESTIONS_FOR_PO:

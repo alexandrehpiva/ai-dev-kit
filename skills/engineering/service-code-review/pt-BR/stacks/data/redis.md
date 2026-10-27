@@ -72,7 +72,7 @@ Política de suporte do Redis Open Source por versão: [não confirmado] — nã
 - **Operações compostas atômicas** — `GET` → lógica → `SET` concorre; usar `INCR`, `SET NX`, `MULTI`/`WATCH`, Lua ou funções. *Como checar:* leitura seguida de escrita da mesma chave sem atomicidade. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Alta.
 - **Pipelining/`MGET` em vez de N idas e voltas** — laço com `await get` por item. *Como checar:* `for`/`map` com `await redis.get`. *Régua:* oficial (pipelining). *Vale a partir de:* todas. *Severidade típica:* Média.
 - **Conexão reutilizada (um cliente/pool por processo)** — criar cliente por requisição esgota conexões. *Como checar:* `createClient`/`new Redis(`/`redis.Redis(` dentro de handler. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Alta.
-- **Cliente recomendado para projeto novo em Node** — ioredis em manutenção "best-effort". *Como checar:* `package.json`. *Régua:* oficial (README do ioredis). *Vale a partir de:* —. *Severidade típica:* Baixa (Observação em projeto existente).
+- **Cliente recomendado para projeto novo em Node** — ioredis em manutenção "best-effort". *Como checar:* `package.json`. *Régua:* oficial (README do ioredis). *Vale a partir de:* todas. *Severidade típica:* Baixa (Observação em projeto existente).
 
 ### D. Dados e persistência
 
@@ -81,7 +81,7 @@ Política de suporte do Redis Open Source por versão: [não confirmado] — nã
 - **`maxmemory` e `maxmemory-policy` definidos para o papel** — `maxmemory 0` (sem limite) é o padrão em 64 bits; cache costuma ir de `allkeys-lru` (a doc indica como bom padrão), `allkeys-lfu` ou `allkeys-lrm` (8.6+). Com replicação/persistência, deixar folga para buffers. *Como checar:* config/parameter group; `INFO memory` (`mem_not_counted_for_evict`). *Régua:* oficial. *Vale a partir de:* LRM: 8.6. *Severidade típica:* Alta.
 - **Proteção contra stampede em chaves caras** — TTL com jitter, recomputação com lock/single flight ou expiração antecipada. *Como checar:* chaves populares com TTL fixo redondo; ausência de coalescência. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
 - **Invalidação na escrita** — atualizar a origem sem apagar/versionar a chave serve dado velho até o TTL. *Como checar:* caminhos de update/delete da entidade sem `del`/`unlink` da chave. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
-- **Cache de resultado negativo com TTL curto** — consulta a item inexistente martela a origem (e abre DoS). *Régua:* comunidade. *Severidade típica:* Baixa.
+- **Cache de resultado negativo com TTL curto** — consulta a item inexistente martela a origem (e abre DoS). *Como checar:* caminho de cache-miss que retorna sem gravar nada quando a origem devolve vazio/404; ausência de sentinela (ex.: valor `null`) com TTL curto. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Baixa.
 
 **Sessões e rate limiting**
 - **Sessão com TTL igual ao timeout de sessão e renovação controlada** — sessão eterna no Redis. *Como checar:* config do store (`ttl`, `rolling`). *Régua:* comunidade (OWASP Session Management). *Vale a partir de:* todas. *Severidade típica:* Alta.
@@ -90,42 +90,42 @@ Política de suporte do Redis Open Source por versão: [não confirmado] — nã
 **Locks**
 - **Lock com `SET key valor_único NX PX ttl` e liberação condicional** — `DEL` simples pode remover o lock de outro cliente que o adquiriu depois que o seu expirou. Liberar com `DELEX key IFEQ valor` (8.4+) ou script Lua compare-and-delete. *Como checar:* `setnx` + `expire` separados (não atômico); `del(lockKey)` sem checar valor; valor constante (`"1"`). *Régua:* oficial. *Vale a partir de:* `DELEX`: 8.4. *Severidade típica:* Alta.
 - **Lock de correção com fencing token, não só Redlock** — a doc oficial do Redlock manda implementar fencing tokens e alerta que o TTL usa relógio de parede; Kleppmann argumenta que, para correção, Redis/Redlock não basta (pausas de GC, rede) e indica sistema de consenso. Para eficiência (evitar trabalho duplicado), lock de instância única basta. *Como checar:* lock protegendo escrita em outro sistema sem token monotônico verificado no destino; Redlock com réplica/failover (a doc mostra a violação por replicação assíncrona). *Régua:* oficial + comunidade (debate Kleppmann × antirez). *Vale a partir de:* todas. *Severidade típica:* Crítica se protege dinheiro/estoque.
-- **TTL do lock maior que o trabalho, com renovação limitada** — *Como checar:* TTL fixo curto para tarefa longa sem extensão. *Régua:* oficial. *Severidade típica:* Alta.
+- **TTL do lock maior que o trabalho, com renovação limitada** — *Como checar:* TTL fixo curto para tarefa longa sem extensão. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Alta.
 
 **Filas e streams**
 - **Streams: `XACK` após processar, tratamento de pendentes e trimming** — sem `XACK` a PEL cresce; sem `XAUTOCLAIM`/`XCLAIM` mensagens de consumidor morto ficam presas; sem `MAXLEN`/`MINID` o stream cresce sem limite. *Como checar:* `xreadgroup` sem `xack`; ausência de rotina de reclaim; `xadd` sem `MAXLEN ~`. *Régua:* oficial. *Vale a partir de:* `XAUTOCLAIM`: 6.2 (remove da PEL entradas já apagadas desde 7.0). *Severidade típica:* Alta.
-- **Consumidor idempotente** — entrega é at-least-once. *Régua:* oficial + comunidade. *Severidade típica:* Alta.
-- **Pub/Sub não usado onde perda importa** — mensagens não são armazenadas. *Como checar:* `publish` para eventos de negócio sem outro registro. *Régua:* comunidade. *Severidade típica:* Alta.
-- **Fila em lista com padrão confiável** — `BRPOP` remove a mensagem antes de processar; o padrão confiável da doc move para uma lista de processamento com `LMOVE`/`BLMOVE` (6.2+, substitui o depreciado `RPOPLPUSH`) e remove com `LREM` ao terminar. Bibliotecas (BullMQ, Celery) já resolvem — conferir as opções de retry/remoção. *Severidade típica:* Média.
+- **Consumidor idempotente** — entrega é at-least-once. *Como checar:* handler de `xreadgroup`/job sem chave de deduplicação (id da mensagem ou chave de negócio registrada com `SET NX`/constraint única) antes do efeito colateral. *Régua:* oficial + comunidade. *Vale a partir de:* todas. *Severidade típica:* Alta.
+- **Pub/Sub não usado onde perda importa** — mensagens não são armazenadas. *Como checar:* `publish` para eventos de negócio sem outro registro. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Alta.
+- **Fila em lista com padrão confiável** — `BRPOP` remove a mensagem antes de processar; o padrão confiável da doc move para uma lista de processamento com `LMOVE`/`BLMOVE` (6.2+, substitui o depreciado `RPOPLPUSH`) e remove com `LREM` ao terminar. Bibliotecas (BullMQ, Celery) já resolvem — conferir as opções de retry/remoção. *Como checar:* `brpop`/`rpop` seguido de processamento sem lista de processamento; `rpoplpush` em código novo; ausência de `lrem` ao concluir. *Régua:* oficial (padrão reliable queue do `LMOVE`). *Vale a partir de:* `LMOVE`/`BLMOVE`: 6.2. *Severidade típica:* Média.
 
 **Persistência e cluster**
 - **Persistência coerente com o papel** — cache puro pode ficar sem persistência; dado importante pede RDB + AOF (`appendfsync everysec` é o padrão recomendado e perde até ~1 s). AOF sozinho é desencorajado pela doc. *Como checar:* `appendonly`, `appendfsync`, `save` na config. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Alta quando há dado de negócio.
-- **Backups fora da máquina** — RDB copiado para armazenamento externo; em 8.10+, comandos `BACKUP`. *Régua:* oficial. *Severidade típica:* Alta.
+- **Backups fora da máquina** — RDB copiado para armazenamento externo; em 8.10+, comandos `BACKUP`. *Como checar:* rotina/IaC que copia `dump.rdb` (ou snapshot do gerenciado) para storage externo com retenção; uso de `BACKUP` em 8.10+. *Régua:* oficial. *Vale a partir de:* todas (`BACKUP`: 8.10). *Severidade típica:* Alta.
 - **Cluster: chaves multi-chave no mesmo slot via hash tag, sem hot slot** — `MGET`, `MULTI`, Lua com chaves de slots diferentes falham (erro `CROSSSLOT`); hash tag igual para tudo concentra num nó. *Como checar:* cliente de cluster + comandos multi-chave; `{` nas chaves e cardinalidade do trecho tagueado. *Régua:* oficial (cluster spec). *Vale a partir de:* todas. *Severidade típica:* Alta.
-- **Big keys e hot keys** — chave enorme bloqueia na remoção/migração; chave quente satura um nó. *Como checar:* `redis-cli --bigkeys`/`--memkeys` e `--keystats` (7.4+); `INFO keysizes` (8.x). *Régua:* comunidade. *Severidade típica:* Média.
+- **Big keys e hot keys** — chave enorme bloqueia na remoção/migração; chave quente satura um nó. *Como checar:* `redis-cli --bigkeys`/`--memkeys` e `--keystats` (7.4+); `INFO keysizes` (8.x). *Régua:* comunidade. *Vale a partir de:* todas (`--keystats`: 7.4; `INFO keysizes`: 8.0 [não confirmado]). *Severidade típica:* Média.
 
 ### E. Segurança e privacidade
 
 - **Redis não exposto à internet; TLS e autenticação por ACL** — a doc diz que Redis foi feito para clientes confiáveis em rede confiável; um `FLUSHALL` externo apaga tudo. ACL (desde o Redis 6) é o método recomendado; `requirepass` é o legado. *Como checar:* security group/`bind 0.0.0.0`/`protected-mode no`; URL `redis://` sem senha fora de localhost; `rediss://`/`tls` no cliente; `aclfile`/usuários. *Régua:* oficial. *Vale a partir de:* ACL: 6.0. *Severidade típica:* Crítica.
 - **Comandos perigosos bloqueados por ACL** — `rename-command` está depreciado em favor de ACL; `CONFIG` permite gravar arquivo em caminho arbitrário. *Como checar:* usuário da app com `+@all`; ausência de `-@dangerous`/`-config`/`-flushall`. *Régua:* oficial. *Vale a partir de:* 6.0. *Severidade típica:* Alta.
-- **Sem corpo de script Lua montado com entrada externa** — o protocolo é binário e seguro, mas compor o script com string do usuário não é. *Como checar:* `eval(` com template string. *Régua:* oficial. *Severidade típica:* Alta.
-- **Dados pessoais/sensíveis no cache com TTL e, se exigido, cifrados** — cache vira cópia não inventariada de dado pessoal; tokens/sessões são credenciais. *Como checar:* objetos de usuário completos (CPF, e-mail, endereço) em cache sem necessidade; segredos em claro. *Régua:* lei (LGPD/GDPR) + comunidade. *Severidade típica:* Alta.
+- **Sem corpo de script Lua montado com entrada externa** — o protocolo é binário e seguro, mas compor o script com string do usuário não é. *Como checar:* `eval(` com template string. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Alta.
+- **Dados pessoais/sensíveis no cache com TTL e, se exigido, cifrados** — cache vira cópia não inventariada de dado pessoal; tokens/sessões são credenciais. *Como checar:* objetos de usuário completos (CPF, e-mail, endereço) em cache sem necessidade; segredos em claro. *Régua:* lei (LGPD/GDPR) + comunidade. *Vale a partir de:* todas. *Severidade típica:* Alta.
 - **Licença compatível com o uso** — Redis 7.4 (RSALv2/SSPLv1) e 8.x (inclui AGPLv3) têm obrigações diferentes de 7.2 (BSD) e do Valkey (BSD); relevante se o produto distribui ou oferece Redis como serviço, ou modifica o servidor. *Como checar:* versão e imagem usadas; se é serviço gerenciado, a licença é problema do provedor. *Régua:* oficial (página de licenças). *Vale a partir de:* 7.4. *Severidade típica:* Observação (Alta se o produto empacota o Redis).
 
 ### F. Integrações e mensageria
 
-- **Timeouts, retry com backoff e reconexão configurados no cliente** — *Como checar:* opções do cliente; `maxRetriesPerRequest` (ioredis) / `retry_strategy` / `reconnectStrategy`. *Régua:* comunidade. *Severidade típica:* Média.
-- **Fila de jobs (BullMQ/Celery/RQ) com política de retry, DLQ e remoção de jobs concluídos** — jobs concluídos acumulam memória. *Como checar:* `removeOnComplete`/`removeOnFail`, `attempts`, `backoff`. *Régua:* comunidade. *Severidade típica:* Média.
+- **Timeouts, retry com backoff e reconexão configurados no cliente** — *Como checar:* opções do cliente; `maxRetriesPerRequest` (ioredis) / `retry_strategy` / `reconnectStrategy`. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
+- **Fila de jobs (BullMQ/Celery/RQ) com política de retry, DLQ e remoção de jobs concluídos** — jobs concluídos acumulam memória. *Como checar:* `removeOnComplete`/`removeOnFail`, `attempts`, `backoff`. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
 
 ### G. Testes
 
-- **Testes de integração com Redis real (Testcontainers) na versão de produção** — mocks não pegam TTL, atomicidade nem `CROSSSLOT`. *Régua:* comunidade. *Severidade típica:* Média.
-- **Comportamento com Redis indisponível testado** — o serviço degrada em vez de cair. *Régua:* comunidade. *Severidade típica:* Média.
+- **Testes de integração com Redis real (Testcontainers) na versão de produção** — mocks não pegam TTL, atomicidade nem `CROSSSLOT`. *Como checar:* `testcontainers`/serviço `redis` no compose de teste com a mesma tag de produção vs `ioredis-mock`/`fakeredis`/`redis-mock` nos testes de integração. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
+- **Comportamento com Redis indisponível testado** — o serviço degrada em vez de cair. *Como checar:* teste que derruba/pausa o contêiner ou injeta erro/timeout no cliente e afirma a resposta do serviço (fallback para a origem). *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
 
 ### H. Qualidade automatizada e processo
 
-- **Monitoramento de memória, evictions, hit ratio e latência** — `INFO stats` (`keyspace_hits`, `keyspace_misses`, `evicted_keys`, `expired_keys`), `used_memory`. *Como checar:* alarmes no IaC/observabilidade. *Régua:* oficial. *Severidade típica:* Média.
-- **Versão sem RC em produção e com patch de segurança** — *Como checar:* tag de imagem `-rc`/`latest`. *Régua:* oficial. *Severidade típica:* Alta.
+- **Monitoramento de memória, evictions, hit ratio e latência** — `INFO stats` (`keyspace_hits`, `keyspace_misses`, `evicted_keys`, `expired_keys`), `used_memory`. *Como checar:* alarmes no IaC/observabilidade. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Média.
+- **Versão sem RC em produção e com patch de segurança** — *Como checar:* tag de imagem `-rc`/`latest`. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Alta.
 
 ## Padrões de projeto recomendados hoje
 

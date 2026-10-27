@@ -23,7 +23,7 @@ Se a task estiver em um tracker conectado (Jira, ClickUp, Linear etc.), atualize
 
 ### Passos
 
-1. Spawn Dev Sênior com missão `investigar` e o contexto completo da task
+1. Spawn Dev Sênior com missão `investigar` e o contexto completo da task, com `diretivas_permanentes` preenchido (vale para todo spawn de Dev, Tech Lead e QA deste fluxo; ver `orchestrator/state.md`)
 2. Se o retorno contiver `DUVIDAS_PARA_TECH_LEAD`:
    - Spawn Tech Lead com missão `responder_duvidas`
    - Incluir `RESPOSTAS` do TL no próximo spawn do Dev
@@ -57,7 +57,12 @@ Se a task estiver em um tracker conectado (Jira, ClickUp, Linear etc.), atualize
 4. Se retorno contiver `DUVIDAS_PARA_PO`:
    - **Leia `po-proxy/protocol.md` e relaye ao usuário** (formato grill-me: uma pergunta + recomendação)
 5. Quando Dev Sênior retornar `STATUS: implementado`:
+   - Registrar `ARTEFATOS_GERADOS` e `AJUSTES_MANUAIS` no estado
    - Avançar para Fase 3
+6. Se Dev Sênior retornar `STATUS: bloqueado_em`:
+   - Spawn Tech Lead com missão `responder_duvidas`, passando o bloqueio como dúvida (ex.: a ferramenta de migration não gera a renomeação que o plano pede)
+   - Se a resposta resolve sem mudar plano nem escopo: re-spawn Dev Sênior `implementar` com a resposta em `resolved_questions`
+   - Se a resposta exige mudar o plano: voltar a `revisar_plano` (Fase 1) com o plano ajustado; se exige mudar escopo ou é bloqueio externo: escalar ao PO
 
 ---
 
@@ -76,10 +81,14 @@ Se o projeto tiver ambientes separados de staging/produção, leia
    - `branch` = branch do Dev
    - `files` = `ARQUIVOS_MODIFICADOS` do Dev
    - `dev_summary` = `RESUMO` do Dev
+   - `dev_generated_artifacts` = `ARTEFATOS_GERADOS` do Dev (acumulados de `implementar` e `corrigir`)
+   - `dev_manual_edits` = `AJUSTES_MANUAIS` do Dev (acumulados)
+   - `diretivas_permanentes` = diretivas permanentes aplicáveis, em texto literal
 3. Se `APROVACAO: sim`:
    - Avançar para Fase 4
 4. Se `APROVACAO: não`:
    - Spawn Dev Sênior com missão `corrigir`, passando os problemas do TL
+   - Registrar no estado os `ARTEFATOS_GERADOS`/`AJUSTES_MANUAIS` que o `corrigir` devolver
    - Após retorno do Dev, **re-spawn Tech Lead para revisar novamente** — não pula para QA
 
 ### Regra de loop — code review
@@ -100,6 +109,7 @@ Se o projeto tiver ambientes separados de staging/produção, leia
    - `branch` = branch atual
    - `files` = lista de arquivos modificados
    - `implementation_summary` = resumo do que foi implementado
+   - `diretivas_permanentes` = diretivas permanentes aplicáveis, em texto literal
 3. Se `PARECER_FINAL: aprovado para deploy`:
    - **Verificar** relatório QA em `qa-reports/` (backlog Markdown local — `qa-reports.md`)
    - Atualizar status para `pronto para deploy` / Markdown `done`

@@ -103,12 +103,13 @@ Versão atual (2026-10-27): **4.1.2** (4.1.0 lançado em 2026-06-10). Suporte op
 - **Banco real com `@ServiceConnection`** — `@DataJpaTest` troca o datasource por banco embarcado por padrão; com Testcontainers, usar `@AutoConfigureTestDatabase(replace = NONE)` ou `@ServiceConnection`. *Como checar:* H2 em teste com Postgres em produção; `@DynamicPropertySource` só para URL/usuário/senha (3.1+). *Régua:* oficial (recurso) + comunidade (preferir banco real). *Vale a partir de:* 3.1. *Severidade típica:* Média.
 - **Cache de contexto preservado** — cada combinação diferente de `@MockitoBean`/propriedades cria um novo contexto; `@DirtiesContext` em excesso deixa a suíte lenta. *Como checar:* contar `@DirtiesContext` e variações de mocks por classe. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Baixa.
 - **Transação em teste com porta real** — com `RANDOM_PORT`/`DEFINED_PORT`, `@Transactional` no teste não faz rollback do que o servidor gravou. *Como checar:* `@SpringBootTest(webEnvironment = RANDOM_PORT)` + `@Transactional` contando com limpeza. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Média.
-- **Teste de módulo** — `@ApplicationModuleTest` (Modulith) em monólito modular. *Régua:* oficial. *Vale a partir de:* Modulith. *Severidade típica:* Baixa.
+- **Teste de módulo** — `@ApplicationModuleTest` (Modulith) em monólito modular. *Como checar:* `spring-modulith-starter-test` no build e `grep -rn "@ApplicationModuleTest" src/test`. *Régua:* oficial. *Vale a partir de:* Modulith. *Severidade típica:* Baixa.
 
 ### H. Qualidade automatizada e processo
 
 - **Upgrade em degraus** — 2.7 → 3.0 e 3.5 → 4.0, resolvendo depreciações antes (`-Dmaven.compiler.showDeprecation=true`), com `spring-boot-properties-migrator` temporário (removido depois). *Como checar:* PR de upgrade que pula a última minor; migrator esquecido no `pom.xml`. *Régua:* oficial (guias de migração) + comunidade. *Vale a partir de:* 3.0 / 4.0. *Severidade típica:* Média.
-- **Ferramentas** — as de `languages/java.md` (Spotless/Checkstyle, Error Prone/NullAway, ArchUnit, dependency-check) valem igual.
+
+Ferramentas: as de `languages/java.md` (Spotless/Checkstyle, Error Prone/NullAway, ArchUnit, dependency-check) valem igual.
 
 ## Padrões de projeto recomendados hoje
 

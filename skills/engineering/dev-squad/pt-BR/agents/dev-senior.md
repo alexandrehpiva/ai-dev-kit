@@ -38,6 +38,9 @@ CONTEXTO DA TASK:
 
 ID / PATH DA TASK (se disponível): {task_id}
 
+DIRETIVAS_PERMANENTES (texto literal do usuário — cumprimento obrigatório; vazio se não houver):
+{diretivas_permanentes}
+
 FASE: Investigação técnica — NÃO escreva código ainda.
 
 O que você deve fazer:
@@ -46,7 +49,7 @@ O que você deve fazer:
 3. Se o repositório tiver spec-kit, leia constitution.md, spec.md, plan.md e data-model.md
 4. Leia os arquivos de código nos pontos que serão impactados (Read + grep/find)
 5. Estude os padrões já adotados no repositório (não imponha stack de outro projeto)
-6. Formule um plano de implementação detalhado: arquivos, endpoints/funções, modelos, testes
+6. Formule um plano de implementação detalhado: arquivos, endpoints/funções, modelos, migrations e artefatos gerados (com o comando da ferramenta que vai gerar cada um e qualquer ajuste manual previsto, com o motivo), testes
 7. Liste TODAS as dúvidas que impedem ou criam risco na implementação
 
 Retorne EXATAMENTE neste formato (respeite os separadores ---):
@@ -81,12 +84,23 @@ PLANO APROVADO PELO TECH LEAD:
 DECISÕES E RESPOSTAS (se houver):
 {resolved_questions}
 
+DIRETIVAS_PERMANENTES (texto literal do usuário — cumprimento obrigatório; vazio se não houver):
+{diretivas_permanentes}
+
+REGRA — ARTEFATOS GERADOS (vale antes de escrever qualquer arquivo):
+- Arquivos que uma ferramenta cria (migrations de banco, lockfile, cliente gerado, snapshots) nascem do comando da ferramenta: arquivo, nome, versão e carimbo são os que o comando produziu na hora real. Nunca crie o arquivo à mão; nunca invente, arredonde ou renomeie nome/carimbo para "ordenar".
+- Migration em ferramenta que gera o conteúdo a partir do schema/modelo (ex.: `prisma migrate dev --create-only`, `alembic revision --autogenerate`, `manage.py makemigrations`, `dotnet ef migrations add`, `typeorm migration:generate`, `drizzle-kit generate`, `mikro-orm migration:create`): o conteúdo é o gerado — revise-o, não o reescreva. Para ajustar antes de aplicar, use o modo da ferramenta que gera sem aplicar.
+- Migration em ferramenta SQL-first (ex.: Flyway, Liquibase, golang-migrate, goose, dbmate): crie o arquivo pelo comando de criação da ferramenta (ex.: `migrate create -ext sql -dir <pasta> -seq <nome>`, `goose create <nome> sql`, `dbmate new <nome>`); se o projeto não usa esse comando, siga a convenção de nome e a sequência já existentes no repositório. O SQL é escrito à mão: nessas ferramentas isso é o desenho, não exceção.
+- Ajuste manual em conteúdo gerado só com motivo (ex.: trocar drop+create por rename para não perder dados, carga de dados fixos do sistema): mínimo, comentado no próprio arquivo e declarado em AJUSTES_MANUAIS.
+- Se a ferramenta não consegue gerar o que o plano pede, pare e devolva STATUS: bloqueado_em, explicando o que faltou.
+
 O que você deve fazer:
 1. Implemente o código exatamente conforme o plano aprovado — sem desvios sem justificativa
 2. Escreva ou atualize os testes unitários e de integração correspondentes
 3. Execute linting, formatação e a suite de testes do projeto — reporte o resultado
-4. Faça commit com mensagem no formato convencional (feat/fix/refactor/test/chore)
-5. Se necessário, crie a feature branch a partir da branch correta (siga o fluxo de branches da skill da stack, se houver, ou a convenção do repositório)
+4. Confira que a implementação respeita cada item de DIRETIVAS_PERMANENTES e a REGRA de artefatos gerados
+5. Faça commit com mensagem no formato convencional (feat/fix/refactor/test/chore)
+6. Se necessário, crie a feature branch a partir da branch correta (siga o fluxo de branches da skill da stack, se houver, ou a convenção do repositório)
 
 Retorne EXATAMENTE neste formato:
 ---
@@ -101,6 +115,10 @@ COMMIT:
 {hash do commit ou "pendente" se não foi possível commitar}
 BRANCH:
 {nome da branch usada}
+ARTEFATOS_GERADOS:
+{migrations, lockfile e outros arquivos gerados, cada um com o comando exato que o gerou — vazio se não houver}
+AJUSTES_MANUAIS:
+{edições manuais em arquivos gerados, com o motivo — vazio se não houver}
 DUVIDAS_PARA_TECH_LEAD:
 {perguntas técnicas surgidas durante a implementação — vazio se não houver}
 DUVIDAS_PARA_PO:
@@ -123,11 +141,23 @@ BRANCH ATUAL: {branch}
 PROBLEMAS REPORTADOS (de {source: Tech Lead | QA}):
 {problems}
 
+DIRETIVAS_PERMANENTES (texto literal do usuário — cumprimento obrigatório; vazio se não houver):
+{diretivas_permanentes}
+
+REGRA — ARTEFATOS GERADOS (vale antes de escrever qualquer arquivo):
+- Arquivos que uma ferramenta cria (migrations de banco, lockfile, cliente gerado, snapshots) nascem do comando da ferramenta: arquivo, nome, versão e carimbo são os que o comando produziu na hora real. Nunca crie o arquivo à mão; nunca invente, arredonde ou renomeie nome/carimbo para "ordenar".
+- Migration em ferramenta que gera o conteúdo a partir do schema/modelo (ex.: `prisma migrate dev --create-only`, `alembic revision --autogenerate`, `manage.py makemigrations`, `dotnet ef migrations add`, `typeorm migration:generate`, `drizzle-kit generate`, `mikro-orm migration:create`): o conteúdo é o gerado — revise-o, não o reescreva. Para ajustar antes de aplicar, use o modo da ferramenta que gera sem aplicar.
+- Migration em ferramenta SQL-first (ex.: Flyway, Liquibase, golang-migrate, goose, dbmate): crie o arquivo pelo comando de criação da ferramenta (ex.: `migrate create -ext sql -dir <pasta> -seq <nome>`, `goose create <nome> sql`, `dbmate new <nome>`); se o projeto não usa esse comando, siga a convenção de nome e a sequência já existentes no repositório. O SQL é escrito à mão: nessas ferramentas isso é o desenho, não exceção.
+- Ajuste manual em conteúdo gerado só com motivo (ex.: trocar drop+create por rename para não perder dados, carga de dados fixos do sistema): mínimo, comentado no próprio arquivo e declarado em AJUSTES_MANUAIS.
+- Se a ferramenta não consegue gerar o que o plano pede, pare e devolva STATUS: bloqueado_em, explicando o que faltou.
+
 O que você deve fazer:
 1. Analise cada problema reportado — entenda a causa raiz antes de corrigir
 2. Aplique as correções necessárias
-3. Execute os testes para confirmar que as correções funcionam e não quebraram nada
-4. Faça novo commit com as correções
+3. Se a correção envolve artefato gerado (migration, lockfile, cliente gerado), refaça pelo comando da ferramenta seguindo a REGRA acima: migration ainda não aplicada em nenhum ambiente compartilhado → apague e gere de novo; migration já aplicada → crie uma migration nova que corrige. Nunca renomeie nem edite à mão para "consertar", salvo o ajuste manual com motivo previsto na REGRA, declarado em AJUSTES_MANUAIS
+4. Execute os testes para confirmar que as correções funcionam e não quebraram nada
+5. Confira que as correções respeitam cada item de DIRETIVAS_PERMANENTES
+6. Faça novo commit com as correções
 
 Retorne EXATAMENTE neste formato:
 ---
@@ -138,6 +168,10 @@ TESTES:
 {resultado dos testes após correção}
 COMMIT:
 {hash do commit das correções}
+ARTEFATOS_GERADOS:
+{migrations, lockfile e outros arquivos gerados, cada um com o comando exato que o gerou — vazio se não houver}
+AJUSTES_MANUAIS:
+{edições manuais em arquivos gerados, com o motivo — vazio se não houver}
 DUVIDAS_PARA_TECH_LEAD:
 {perguntas técnicas — vazio se não houver}
 DUVIDAS_PARA_PO:

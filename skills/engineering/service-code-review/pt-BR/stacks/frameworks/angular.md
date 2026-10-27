@@ -117,7 +117,7 @@ Ver seção "Segurança específica da stack".
 ### H. Processo
 - **angular-eslint na mesma major do Angular** — *Como checar:* `package.json` `angular-eslint`/`@angular-eslint/*` vs `@angular/core`. *Régua:* oficial (README). *Vale a partir de:* 12. *Severidade típica:* Baixa.
 - **`strictTemplates` e `strict` ligados** — *Como checar:* `tsconfig.json` → `angularCompilerOptions.strictTemplates`; `ng update` da v22 adiciona `strictTemplates`. *Régua:* oficial. *Vale a partir de:* 12. *Severidade típica:* Média.
-- **Versão sem suporte** — *Como checar:* major < 20 em 2026-10. *Régua:* oficial. *Vale a partir de:* — . *Severidade típica:* Alta (app exposta à internet), Média (interna).
+- **Versão sem suporte** — *Como checar:* major < 20 em 2026-10. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Alta (app exposta à internet), Média (interna).
 
 ### J. Frontend
 - **Change detection eficiente** — OnPush (ou padrão v22) e estado em signals. *Como checar:* < v22: componentes sem `OnPush` (regra `prefer-on-push-component-change-detection`); v22+: `ChangeDetectionStrategy.Eager`; app zoneless usando `NgZone.onStable/onMicrotaskEmpty` (proibido no zoneless). *Régua:* oficial. *Vale a partir de:* todas; padrão OnPush na 22. *Severidade típica:* Média.

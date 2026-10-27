@@ -42,6 +42,8 @@ Guias de `kind: architecture` usam `detect: always` (sempre sugeridos).
 
 ## Corpo (seções nesta ordem; omita uma seção só se não se aplicar e diga por quê numa linha)
 
+Guias `kind: architecture` não têm versão de pacote: usam `## Evolução do consenso` no lugar da seção 2 e `## Como reconhecer o padrão no código` no lugar da seção 3; as demais seguem a ordem abaixo.
+
 1. **`# <Título>`** e um parágrafo: o que o guia cobre e o que **não** cobre (aponte o guia vizinho).
 2. **`## Versões e mudanças de convenção`** — tabela `Versão | Data de lançamento | O que mudou na convenção ou no padrão recomendado | Impacto no review | Fonte`. Cubra as versões ainda em uso real (incluindo as fora de suporte que ainda aparecem em repositórios) e diga qual é a versão atual e o calendário de suporte (LTS/EOL) com fonte.
 3. **`## Como identificar a versão e o estilo do repositório`** — arquivos e comandos que revelam versão, modo (ex.: standalone vs NgModule; App Router vs Pages Router; async vs sync) e ferramentas.

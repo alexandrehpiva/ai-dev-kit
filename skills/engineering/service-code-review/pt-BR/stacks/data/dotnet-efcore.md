@@ -90,6 +90,7 @@ EF Core segue o calendário do .NET. Atual: **EF Core 10 (LTS)**, lançado em no
 - **Migrate dentro de transação explícita** — no EF 9+ lança `MigrationsUserTransactionWarning`; remover a transação externa. *Como checar:* `BeginTransaction` em volta de `MigrateAsync`. *Régua:* oficial. *Vale a partir de:* EF 9. *Severidade típica:* Média.
 - **Mudança de modelo sem migration** — EF 9+ lança `PendingModelChangesWarning`; CI deve rodar `dotnet ef migrations has-pending-model-changes`. Suprimir o aviso em produção é desaconselhado. *Como checar:* `ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning))`; `HasData` com `DateTime.Now`/`Guid.NewGuid()` (modelo não determinístico). *Régua:* oficial. *Vale a partir de:* EF 9. *Severidade típica:* Média.
 - **Migration revisada** — renomear coluna pode virar drop + add (perda de dados). *Como checar:* `DropColumn` seguido de `AddColumn` com nome parecido no mesmo `Up`; `Down` vazio. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Crítica.
+- **Migration nasce do `dotnet ef migrations add`, não escrita à mão** — o comando gera o arquivo da migration, o `.Designer.cs` e atualiza o `ModelSnapshot`; arquivo escrito ou renomeado à mão deixa o snapshot fora de sincronia e erra o carimbo do id (`AAAAMMDDHHMMSS_Nome`), que define a ordem de aplicação. O conteúdo gerado é revisado; ajuste manual (ex.: trocar drop+add por `RenameColumn`, `migrationBuilder.Sql` para dado) só com motivo declarado no PR. *Como checar:* migration sem `.Designer.cs` correspondente; `ModelSnapshot` sem mudança no mesmo PR que muda o modelo; carimbo do id vs data do commit que adicionou o arquivo, comparando em UTC (`TZ=UTC git log --diff-filter=A --date=format-local:%Y%m%d%H%M%S --format='%h %ad' -- <pasta de migrations>`); `dotnet ef migrations has-pending-model-changes` no CI. *Régua:* oficial (fluxo de migrations do EF Core) + comunidade (heurística do carimbo). *Vale a partir de:* todas. *Severidade típica:* Média (Alta se renomeação virou drop+add).
 - **Identidade de deploy separada** — credencial com DDL só no passo de migração; app com permissão de leitura/escrita. Connection string de produção fora do repositório e do bundle. *Como checar:* mesma connection string para app e migração; `appsettings.Production.json` com senha. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Alta.
 - **Bundle com ambiente explícito** — sem `ASPNETCORE_ENVIRONMENT`/`DOTNET_ENVIRONMENT`, ferramentas assumem Development e podem ler user secrets. *Como checar:* script de pipeline gerando/rodando `efbundle`. *Régua:* oficial. *Vale a partir de:* EF 6+. *Severidade típica:* Média.
 
@@ -97,12 +98,14 @@ EF Core segue o calendário do .NET. Atual: **EF Core 10 (LTS)**, lançado em no
 
 - **SQL injection em SQL bruto** — `FromSql`/`SqlQuery`/`ExecuteSql` com interpolação são parametrizados; `FromSqlRaw`/`SqlQueryRaw`/`ExecuteSqlRaw` com concatenação/interpolação de entrada do usuário são vulneráveis (EF 10 tem analyzer que avisa). Nomes de coluna dinâmicos exigem lista branca. *Como checar:* `grep -rnE "(FromSqlRaw|SqlQueryRaw|ExecuteSqlRaw)\(" --include=*.cs` e inspecionar argumentos; em Dapper, `grep -rn 'QueryAsync<.*\$"' --include=*.cs` e concatenação em strings SQL. *Régua:* oficial. *Vale a partir de:* `FromSql` no EF 7; analyzer no EF 10. *Severidade típica:* Crítica.
 - **`EnableSensitiveDataLogging`/`EnableDetailedErrors` fora de Development** — grava valores de parâmetros (PII) em log. *Como checar:* grep sem guarda de ambiente. *Régua:* oficial. *Vale a partir de:* todas (EF 10 também redige constantes inlinadas). *Severidade típica:* Alta.
-- **Tenant isolation** — ver query filters e pooling acima.
+
+Tenant isolation: ver query filters e pooling acima.
 
 ### F. Integrações e mensageria
 
 - **Interceptors corretos** — `ISaveChangesInterceptor` para auditoria/timestamps, `DbConnectionInterceptor` para token de acesso; implementar versões sync e async (ou lançar no sync quando só faz sentido async). Interceptors singleton (`IMaterializationInterceptor`, `IQueryExpressionInterceptor`, `IIdentityResolutionInterceptor`) devem ser thread-safe, sem estado mutável e reutilizar a mesma instância (nova instância por configuração gera `ManyServiceProvidersCreatedWarning`). *Como checar:* `AddInterceptors(new X())` dentro de `AddDbContext` para interceptor singleton; interceptor com campos mutáveis. *Régua:* oficial. *Vale a partir de:* EF 5+ [não confirmado]. *Severidade típica:* Média.
-- **Evento publicado e dado gravado atomicamente** — publicar em broker depois de `SaveChanges` sem outbox perde ou duplica eventos [não confirmado — sem fonte EF específica; ver guia de arquitetura].
+
+Evento publicado e dado gravado atomicamente: publicar em broker depois de `SaveChanges` sem outbox perde ou duplica eventos [não confirmado — sem fonte EF específica; ver guia de arquitetura].
 
 ### G. Testes
 
@@ -111,7 +114,7 @@ EF Core segue o calendário do .NET. Atual: **EF Core 10 (LTS)**, lançado em no
 
 ### H. Qualidade automatizada e processo
 
-- **Gate de modelo pendente** — `dotnet ef migrations has-pending-model-changes` no CI. *Régua:* oficial. *Vale a partir de:* EF 8+ [não confirmado — versão do comando]. *Severidade típica:* Baixa.
+- **Gate de modelo pendente** — `dotnet ef migrations has-pending-model-changes` no CI. *Como checar:* `grep -rn "has-pending-model-changes"` nos arquivos de pipeline (`.github/workflows/`, `azure-pipelines.yml` etc.). *Régua:* oficial. *Vale a partir de:* EF 8+ [não confirmado — versão do comando]. *Severidade típica:* Baixa.
 - **Métrica de cache de query** — taxa de acerto abaixo de 100% estável indica queries com constantes dinâmicas (expression trees montadas com `Expression.Constant`). *Como checar:* métricas do EF; `Expression.Constant` em builders de filtro. *Régua:* oficial. *Vale a partir de:* EF 9 (métricas) [não confirmado]. *Severidade típica:* Baixa.
 
 ### J. Frontend

@@ -37,13 +37,17 @@ Branch: {branch}
 Arquivos: {files}
 Resumo do Dev: {implementation_summary}
 
+DIRETIVAS_PERMANENTES (texto literal do usuário — cumprimento obrigatório; vazio se não houver):
+{diretivas_permanentes}
+
 O que você deve fazer:
 1. Leia os critérios de aceite (Markdown da task, tracker conectado ou contexto inline)
 2. Execute a suite de testes automatizados e reporte o resultado
 3. Teste manualmente happy path
 4. Teste casos de borda e erros
 5. Documente bugs com reprodução, esperado, atual, severidade
-6. Salve relatório em `{NotesRoot}/{projeto}/qa-reports/` conforme `qa-reports.md`
+6. Confira cada item de DIRETIVAS_PERMANENTES que se aplica ao que foi entregue e registre o resultado no relatório; violação é bug que bloqueia a aprovação
+7. Salve relatório em `{NotesRoot}/{projeto}/qa-reports/` conforme `qa-reports.md`
 
 Retorne EXATAMENTE neste formato:
 ---
@@ -54,6 +58,8 @@ CENARIOS_TESTADOS:
 {lista}
 BUGS:
 {lista — vazio se aprovado}
+DIRETIVAS_CONFERIDAS:
+{cada diretiva aplicável → respeitada | violada, com evidência — vazio se não houver diretivas}
 PARECER_FINAL: aprovado para deploy | devolver para dev
 RELATORIO_QA_PATH: {caminho relativo a {NotesRoot}}
 ---

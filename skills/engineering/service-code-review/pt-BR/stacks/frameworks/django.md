@@ -57,12 +57,12 @@ Versões suportadas hoje: **5.2 LTS** (segurança até abril de 2028), **6.0** (
 
 - **Settings por ambiente sem segredo no repositório** — `base.py` + override, ou arquivo único lendo env (`django-environ`, pydantic-settings). *Como checar:* `grep -rn "SECRET_KEY = ['\"]" .`; `.env` versionado. *Régua:* oficial (checklist de deploy). *Vale a partir de:* todas. *Severidade típica:* Crítica (segredo real versionado).
 - **`DEFAULT_AUTO_FIELD` explícito** — evita migration surpresa ao subir para 6.0. *Como checar:* `grep -rn "DEFAULT_AUTO_FIELD\|default_auto_field" .`; `makemigrations --check` após upgrade. *Régua:* oficial (6.0). *Vale a partir de:* 3.2 (setting), 6.0 (novo default). *Severidade típica:* Média.
-- **Versão suportada** — *Como checar:* versão vs tabela (4.2/5.0/5.1 sem suporte). *Régua:* oficial. *Severidade típica:* Alta (sem suporte em produção).
+- **Versão suportada** — *Como checar:* versão vs tabela (4.2/5.0/5.1 sem suporte). *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Alta (sem suporte em produção).
 
 ### C. Qualidade do código
 
 - **`clean()`/validação vs constraints no banco** — validação só em Python não protege `bulk_create`, `update()` e concorrência. *Como checar:* `Meta.constraints` (`UniqueConstraint`, `CheckConstraint`) para regras invariantes. *Régua:* comunidade (HackSoft "Validation — constraints") + oficial (constraints). *Vale a partir de:* 2.2. *Severidade típica:* Média.
-- **Sem APIs removidas** — `Meta.index_together` (removido na 5.1; use `Meta.indexes`); `unique_together` ainda existe, mas `UniqueConstraint` é a forma mais expressiva [não confirmado: se há deprecação formal de `unique_together`]. *Como checar:* `grep -rn "index_together" .`; `python -Wd manage.py test`. *Régua:* oficial. *Severidade típica:* Média.
+- **Sem APIs removidas** — `Meta.index_together` (removido na 5.1; use `Meta.indexes`); `unique_together` ainda existe, mas `UniqueConstraint` é a forma mais expressiva [não confirmado: se há deprecação formal de `unique_together`]. *Como checar:* `grep -rn "index_together" .`; `python -Wd manage.py test`. *Régua:* oficial. *Vale a partir de:* 5.1 (remoção de `index_together`). *Severidade típica:* Média.
 - **Async views não chamam ORM síncrono direto** — gera `SynchronousOnlyOperation` ou bloqueia. *Como checar:* `async def` em views com `.objects.get(` sem `a`-prefixo ou `sync_to_async`. *Régua:* oficial (Asynchronous support). *Vale a partir de:* 4.1 (interface ORM assíncrona com prefixo `a`). *Severidade típica:* Alta.
 
 ### D. Dados e persistência
@@ -81,31 +81,31 @@ Versões suportadas hoje: **5.2 LTS** (segurança até abril de 2028), **6.0** (
 - **`manage.py check --deploy` limpo** — cobre `DEBUG`, `SECRET_KEY`, `ALLOWED_HOSTS`, cookies `Secure`, HSTS, SSL redirect. *Como checar:* `DJANGO_SETTINGS_MODULE=<prod> python manage.py check --deploy --fail-level WARNING`. *Régua:* oficial (deployment checklist). *Vale a partir de:* todas. *Severidade típica:* Alta (Crítica se `DEBUG=True` em produção).
 - **`DEBUG=False`, `ALLOWED_HOSTS` explícito, `SECRET_KEY` do ambiente** — `DEBUG=True` vaza settings e stack; `ALLOWED_HOSTS=["*"]` abre host header poisoning. *Como checar:* settings de produção. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Crítica/Alta.
 - **CSRF não desligado em views com sessão** — `@csrf_exempt` em endpoint autenticado por cookie. *Como checar:* `grep -rn "csrf_exempt" .`; DRF `SessionAuthentication` exige CSRF, `TokenAuthentication` não. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Alta.
-- **`CSRF_COOKIE_SECURE`/`SESSION_COOKIE_SECURE`/HSTS** em produção — *Como checar:* `check --deploy`. *Régua:* oficial. *Severidade típica:* Média.
+- **`CSRF_COOKIE_SECURE`/`SESSION_COOKIE_SECURE`/HSTS** em produção — *Como checar:* `check --deploy`. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Média.
 - **SQL cru parametrizado** — `raw()`, `extra()`, `RawSQL`, `cursor.execute` com f-string = injeção. *Como checar:* bandit B608/B610/B611; `grep -rnE "\.raw\(f|\.extra\(|RawSQL\(|execute\(f" .`. *Régua:* oficial + bandit. *Vale a partir de:* todas. *Severidade típica:* Crítica.
-- **`mark_safe`/`|safe` com dado de usuário** — XSS. *Como checar:* bandit B703; `grep -rn "mark_safe\||safe" .`. *Régua:* oficial. *Severidade típica:* Alta.
+- **`mark_safe`/`|safe` com dado de usuário** — XSS. *Como checar:* bandit B703; `grep -rn "mark_safe\||safe" .`. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Alta.
 - **CSP configurada (6.0+)** — *Como checar:* `django.middleware.csp.ContentSecurityPolicyMiddleware` em `MIDDLEWARE` e `SECURE_CSP`/`SECURE_CSP_REPORT_ONLY` definidos. *Régua:* oficial (6.0). *Vale a partir de:* 6.0. *Severidade típica:* Média.
 - **DRF: `DEFAULT_PERMISSION_CLASSES` restritivo e throttling** — padrão `AllowAny` deixa endpoint novo aberto. *Como checar:* `REST_FRAMEWORK` em settings; views com `permission_classes = [AllowAny]`; `DEFAULT_THROTTLE_CLASSES`. *Régua:* oficial (DRF permissions/throttling). *Vale a partir de:* todas. *Severidade típica:* Alta.
-- **Serializer não expõe campos sensíveis** — `fields = "__all__"`. *Como checar:* `grep -rn "__all__" */serializers.py`. *Régua:* comunidade. *Severidade típica:* Alta.
-- **Objeto filtrado pelo dono (IDOR)** — `get_queryset` filtrando por `request.user`/tenant; `has_object_permission`. *Como checar:* viewsets com `queryset = Model.objects.all()` sem filtro por usuário. *Régua:* comunidade (OWASP). *Severidade típica:* Crítica.
+- **Serializer não expõe campos sensíveis** — `fields = "__all__"`. *Como checar:* `grep -rn "__all__" */serializers.py`. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Alta.
+- **Objeto filtrado pelo dono (IDOR)** — `get_queryset` filtrando por `request.user`/tenant; `has_object_permission`. *Como checar:* viewsets com `queryset = Model.objects.all()` sem filtro por usuário. *Régua:* comunidade (OWASP). *Vale a partir de:* todas. *Severidade típica:* Crítica.
 
 ### F. Integrações e mensageria
 
-- **Tarefas enfileiradas após o commit** — `transaction.on_commit(lambda: task.delay(id))`; passar IDs, não instâncias. *Como checar:* `.delay(`/`.apply_async(`/`.enqueue(` dentro de `atomic`. *Régua:* oficial (Django transactions) + comunidade (HackSoft Celery). *Severidade típica:* Alta.
+- **Tarefas enfileiradas após o commit** — `transaction.on_commit(lambda: task.delay(id))`; passar IDs, não instâncias. *Como checar:* `.delay(`/`.apply_async(`/`.enqueue(` dentro de `atomic`. *Régua:* oficial (Django transactions) + comunidade (HackSoft Celery). *Vale a partir de:* todas (`.enqueue()`: 6.0). *Severidade típica:* Alta.
 - **Tasks idempotentes com retry configurado** (Celery: `autoretry_for`, `acks_late` conforme semântica). *Como checar:* decorators de task. *Régua:* oficial (Celery Tasks). *Vale a partir de:* todas. *Severidade típica:* Média.
 - **Django Tasks (6.0) com backend de produção** — backends embutidos são para dev/teste; o worker é externo. *Como checar:* setting `TASKS` em produção apontando para backend embutido. *Régua:* oficial (6.0). *Vale a partir de:* 6.0. *Severidade típica:* Alta.
-- **Chamadas externas com timeout, fora de transação longa** — *Como checar:* `requests.` dentro de `atomic`. *Régua:* comunidade. *Severidade típica:* Média.
+- **Chamadas externas com timeout, fora de transação longa** — *Como checar:* `requests.` dentro de `atomic`. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
 
 ### G. Testes
 
 - **pytest-django + factory_boy** — `@pytest.mark.django_db`, fixtures `client`/`django_assert_num_queries`; factories em vez de fixtures JSON. *Como checar:* `conftest.py`, `factories.py`. *Régua:* comunidade (HackSoft). *Vale a partir de:* todas. *Severidade típica:* Baixa.
-- **Contagem de queries nos endpoints de lista** — trava regressão de N+1. *Como checar:* `django_assert_num_queries`/`assertNumQueries`. *Régua:* oficial (TestCase) + comunidade. *Severidade típica:* Média.
-- **Testes de permissão por endpoint** (anônimo, outro usuário, dono). *Régua:* comunidade. *Severidade típica:* Média.
-- **Deprecações falhando o teste** — DRF recomenda `filterwarnings = ["error::rest_framework.deprecation.RemovedInNextDRFVersionWarning"]`; Django: `python -Wd manage.py test`. *Régua:* oficial. *Severidade típica:* Baixa.
+- **Contagem de queries nos endpoints de lista** — trava regressão de N+1. *Como checar:* `django_assert_num_queries`/`assertNumQueries`. *Régua:* oficial (TestCase) + comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
+- **Testes de permissão por endpoint** (anônimo, outro usuário, dono). *Como checar:* testes por endpoint com cliente anônimo, outro usuário e dono esperando 401/403/404 vs 200; endpoints sem nenhum teste de acesso negado. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
+- **Deprecações falhando o teste** — deprecação ignorada vira quebra no próximo upgrade. *Como checar:* `filterwarnings = ["error::rest_framework.deprecation.RemovedInNextDRFVersionWarning"]` na config do pytest (recomendado pelo DRF); Django: `python -Wd manage.py test`. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Baixa.
 
 ### H. Qualidade automatizada e processo
 
-- **CI com `makemigrations --check`, `check --deploy`, ruff (`DJ`), typecheck (`django-stubs` [não confirmado: versão compatível com 6.1])**. *Régua:* oficial/comunidade. *Severidade típica:* Média.
+- **CI com `makemigrations --check`, `check --deploy`, ruff (`DJ`), typecheck (`django-stubs` [não confirmado: versão compatível com 6.1])**. *Como checar:* workflow de CI rodando `python manage.py makemigrations --check --dry-run`, `python manage.py check --deploy`, `ruff check` e o typecheck. *Régua:* oficial/comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
 
 ### J. Frontend
 

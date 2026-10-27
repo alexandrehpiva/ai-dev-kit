@@ -12,6 +12,9 @@ approved_plan: <Dev's plan approved by the TL>
 branch: <branch name>
 modified_files: <list of files>
 po_decisions: <list of decisions made by the PO during the cycle>
+permanent_directives: <list of the process and code rules the user has already given for the project, each with the literal text, the date and where it is recorded (constitution/CLAUDE.md/README, working-mode note, agent memory)>
+generated_artifacts: <the Dev's accumulated GENERATED_ARTIFACTS (implement + fix), with the exact command>
+manual_edits: <the Dev's accumulated MANUAL_EDITS, with the reason>
 ciclos:
   investigation: 0      # increment on each plan_returned from the TL
   code_review: 0       # increment on each APPROVAL: no from the TL
@@ -65,6 +68,7 @@ Every subagent receives in its prompt:
 3. **This round's mission** — what needs to be done now
 4. **Available skills and tools** — explicitly list the ones relevant to the mission
 5. **Output contract** — the exact format of what it must return
+6. **Permanent directives** — the template's `PERMANENT_DIRECTIVES` slot filled with the literal text of the directives in `permanent_directives` that apply to the mission (not a summary, not a link); empty only if there are none
 
 The subagent **returns structured text**, it does not talk directly to the user. The Orchestrator processes it and decides the next step.
 

@@ -38,6 +38,7 @@ Versão atual de referência: Go 1.27 (suportadas 1.27 e 1.26), chi v5.5.0, gin 
 - Validação: `grep -n 'go-playground/validator\|ozzo-validation' go.mod`; tags `binding:"required"` (gin) ou `validate:"required"`.
 - DI: `grep -n 'google/wire\|uber-go/fx\|go.uber.org/fx\|samber/do' go.mod`; arquivos `wire.go`/`wire_gen.go`.
 - OpenAPI: `oapi-codegen`, `swaggo` (comentários `// @Router`), `ogen`.
+- O `scripts/detect_stack.py` não compara a versão dos roteadores: a primeira chave de `detect` deste guia é `lang:go`, que não traz versão. Confira gin/echo/chi/fiber no `go.mod` contra a tabela de versões acima.
 
 ## Estrutura e arquitetura recomendadas
 
@@ -100,7 +101,7 @@ Versão atual de referência: Go 1.27 (suportadas 1.27 e 1.26), chi v5.5.0, gin 
 
 - **Handlers testados com `httptest`** — `httptest.NewRecorder` + `handler.ServeHTTP` (net/http, chi, gin, echo); fiber usa `app.Test(req)`. Teste de ponta a ponta chamando `run(ctx, ...)` cobre o roteamento real. *Como checar:* `grep -rn 'httptest\|app.Test(' --include=*_test.go`. *Régua:* oficial (httptest) + comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
 - **Testes de rota sem auth retornam 401/403** — prova que o middleware está aplicado. *Como checar:* casos negativos nos testes de rota protegida. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Alta se ausentes em rota sensível.
-- **Connect sem rede** — `connectinprocess` em testes (v2). *Régua:* oficial. *Vale a partir de:* connect-go v2. *Severidade típica:* Baixa.
+- **Connect sem rede** — `connectinprocess` em testes (v2). *Como checar:* `grep -rn 'connectinprocess\|httptest.NewServer' --include=*_test.go` em testes de serviço Connect. *Régua:* oficial. *Vale a partir de:* connect-go v2. *Severidade típica:* Baixa.
 
 ### H. Qualidade automatizada e processo
 

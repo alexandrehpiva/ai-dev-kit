@@ -53,7 +53,7 @@ Estado atual: **SQLAlchemy 2.1 é a série corrente** (2.1.0 em 2026-09-24; 2.1.
 
 - **Estilo 2.0 em código novo** — `select()` + `session.scalars()/execute()`, `Mapped`/`mapped_column`, `DeclarativeBase`. *Como checar:* grep de legado acima; `SQLALCHEMY_WARN_20=1` em 1.4. *Régua:* oficial. *Vale a partir de:* 2.0 (1.4 como transição). *Severidade típica:* Baixa (legado funcional), Média (mistura no mesmo módulo).
 - **`naming_convention` no `MetaData`** — constraints anônimas não são detectadas pelo autogenerate e geram nomes diferentes por banco. *Como checar:* `MetaData(naming_convention=` em `base.py`. *Régua:* oficial (Alembic: anonymously named constraints não são detectadas) + comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
-- **Versão não-EOL** — *Como checar:* SQLAlchemy < 2.0 = EOL; Alembic ≥ 1.20 exige 2.0. *Régua:* oficial. *Severidade típica:* Alta (1.x em produção).
+- **Versão não-EOL** — *Como checar:* SQLAlchemy < 2.0 = EOL; Alembic ≥ 1.20 exige 2.0. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Alta (1.x em produção).
 - **Extras e driver explícitos (2.1)** — `sqlalchemy[asyncio]` quando usa async; URL com driver (`postgresql+psycopg://`). *Como checar:* lock sem `greenlet` com `AsyncSession` no código; URL `postgresql://` sem driver. *Régua:* oficial (migration_21). *Vale a partir de:* 2.1. *Severidade típica:* Alta (quebra no deploy).
 
 ### C. Qualidade do código
@@ -78,39 +78,40 @@ Estado atual: **SQLAlchemy 2.1 é a série corrente** (2.1.0 em 2026-09-24; 2.1.
 #### Alembic (migrations)
 
 - **Toda migration autogerada revisada à mão** — autogenerate é candidato: não detecta renomeação de tabela/coluna (gera drop+add = perda de dado), constraints anônimas, alguns tipos (Enum em certos bancos). *Como checar:* `op.drop_column` + `op.add_column` do mesmo tipo na mesma revisão; `drop_table` + `create_table` parecidos. *Régua:* oficial (autogenerate). *Vale a partir de:* todas. *Severidade típica:* Crítica (perda de dado), Média (constraint sem nome).
+- **Migration nasce do `alembic revision`, não escrita à mão** — arquivo criado à mão erra `revision`/`down_revision` e abre um segundo ramo na cadeia (duas cabeças), e o conteúdo diverge dos models. Com models declarativos, gere com `alembic revision --autogenerate -m "…"` e revise o candidato (sem reescrever); SQL próprio (carga de dados, operação que o autogenerate não detecta) vai numa revisão criada por `alembic revision -m "…"`. Ajuste manual no gerado só com motivo declarado no PR. *Como checar:* `alembic heads` com uma só cabeça; `alembic check` sem operações pendentes; `revision` com formato diferente do gerado (o padrão é um id hexadecimal aleatório; datas só existem se o `file_template` as incluir). *Régua:* oficial (Alembic autogenerate e branches). *Vale a partir de:* todas (`alembic check`: 1.9). *Severidade típica:* Média (Alta se renomeação virou drop+add).
 - **`downgrade()` implementado** — migrations reversíveis (comunidade: "static and reversible"); `downgrade` com `pass` só se documentado como irreversível. *Como checar:* `grep -n -A2 "def downgrade" alembic/versions/*.py | grep pass`. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
 - **Sem import de models da aplicação dentro de migration** — model muda e migration antiga quebra. *Como checar:* `grep -rn "from app\.\|from src\." alembic/versions`. Use `sa.table()`/`op.execute` com SQL estável. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
 - **Mudanças seguras em produção** — `NOT NULL` em coluna nova de tabela grande sem default/backfill, índice sem `postgresql_concurrently=True` (exige rodar fora de transação), troca de tipo com reescrita. *Como checar:* SQL gerado com `alembic upgrade <rev> --sql`. *Régua:* comunidade + oficial (opções do dialeto). *Vale a partir de:* todas. *Severidade típica:* Alta.
 - **`alembic check` no CI** e cadeia linear (`alembic heads` com uma head). *Como checar:* job de CI; `alembic heads`. *Régua:* oficial. *Vale a partir de:* 1.9. *Severidade típica:* Média.
-- **`compare_type`/`compare_server_default` configurados conforme o projeto** — *Como checar:* `env.py`. *Régua:* oficial. *Severidade típica:* Baixa.
-- **Nome de arquivo legível** — `file_template` com data e slug descritivo. *Régua:* comunidade (fastapi-best-practices). *Severidade típica:* Baixa.
+- **`compare_type`/`compare_server_default` configurados conforme o projeto** — *Como checar:* `env.py`. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Baixa.
+- **Nome de arquivo legível** — `file_template` com data e slug descritivo. *Como checar:* `file_template` em `alembic.ini`; arquivos em `migrations/versions/` só com hash no nome. *Régua:* comunidade (fastapi-best-practices). *Vale a partir de:* todas. *Severidade típica:* Baixa.
 
 #### SQLModel
 
 - **Separar modelo de tabela e modelos de API** — `Hero(table=True)` + `HeroCreate`/`HeroPublic`; devolver o modelo de tabela vaza campos. *Como checar:* `response_model`/retorno com classe `table=True`. *Régua:* oficial (tutorial FastAPI/SQLModel). *Vale a partir de:* todas. *Severidade típica:* Alta (campo sensível).
-- **Versão fixada e queda para SQLAlchemy quando necessário** — SQLModel é 0.0.x. *Como checar:* `sqlmodel>=` sem teto; `sa_column=` usado para contornar limitações. *Régua:* comunidade. *Severidade típica:* Baixa.
-- **Schema por Alembic, não `SQLModel.metadata.create_all`** em produção. *Régua:* oficial (tutorial trata `create_all` como simplificação) + comunidade. *Severidade típica:* Média.
+- **Versão fixada e queda para SQLAlchemy quando necessário** — SQLModel é 0.0.x. *Como checar:* `sqlmodel>=` sem teto; `sa_column=` usado para contornar limitações. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Baixa.
+- **Schema por Alembic, não `SQLModel.metadata.create_all`** em produção. *Como checar:* `grep -rn "metadata.create_all" .` fora de testes e scripts de dev; ausência de pasta de migrations. *Régua:* oficial (tutorial trata `create_all` como simplificação) + comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
 
 ### E. Segurança e privacidade
 
-- **Parâmetros vinculados sempre** (`text("... where id = :id")`, `bindparam`); identificadores dinâmicos (nome de coluna/ordenação) validados por lista permitida. *Como checar:* `order_by(text(` com entrada do usuário; `literal_column(` com dado externo. *Régua:* oficial. *Severidade típica:* Crítica.
-- **URL de conexão sem senha em código/log** — `echo=True` em produção loga parâmetros. *Como checar:* `create_engine("...://user:senha@` literal; `echo=True` fora de dev. *Régua:* comunidade. *Severidade típica:* Alta.
-- **Isolamento por tenant/dono nas queries** — filtros obrigatórios aplicados no repositório ou via evento `do_orm_execute` com `with_loader_criteria`. *Como checar:* queries de recurso sem filtro por dono. *Régua:* comunidade [não confirmado: padrão `with_loader_criteria` para multi-tenant não lido nesta tarefa]. *Severidade típica:* Crítica.
+- **Parâmetros vinculados sempre** (`text("... where id = :id")`, `bindparam`); identificadores dinâmicos (nome de coluna/ordenação) validados por lista permitida. *Como checar:* `order_by(text(` com entrada do usuário; `literal_column(` com dado externo. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Crítica.
+- **URL de conexão sem senha em código/log** — `echo=True` em produção loga parâmetros. *Como checar:* `create_engine("...://user:senha@` literal; `echo=True` fora de dev. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Alta.
+- **Isolamento por tenant/dono nas queries** — filtros obrigatórios aplicados no repositório ou via evento `do_orm_execute` com `with_loader_criteria`. *Como checar:* queries de recurso sem filtro por dono. *Régua:* comunidade [não confirmado: padrão `with_loader_criteria` para multi-tenant não lido nesta tarefa]. *Vale a partir de:* todas. *Severidade típica:* Crítica.
 
 ### F. Integrações e mensageria
 
-- **Efeitos externos depois do commit** (ou outbox na mesma transação) — publicar evento antes do commit expõe estado que pode sofrer rollback. *Como checar:* `publish(`/`send(` antes de `commit()`; evento `after_commit` usado. *Régua:* comunidade. *Severidade típica:* Alta.
+- **Efeitos externos depois do commit** (ou outbox na mesma transação) — publicar evento antes do commit expõe estado que pode sofrer rollback. *Como checar:* `publish(`/`send(` antes de `commit()`; evento `after_commit` usado. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Alta.
 
 ### G. Testes
 
-- **Banco real (contêiner) com transação revertida por teste** — SQLite em teste esconde diferenças de dialeto (tipos, `FOR UPDATE`, JSON). *Como checar:* `sqlite://` em `conftest.py` de projeto PostgreSQL. *Régua:* comunidade. *Severidade típica:* Média.
-- **Migrations testadas** — `upgrade head` e `downgrade -1`/`base` em banco vazio no CI. *Régua:* comunidade. *Severidade típica:* Média.
-- **Contagem de queries em endpoints de lista** — trava N+1. *Régua:* comunidade. *Severidade típica:* Média.
+- **Banco real (contêiner) com transação revertida por teste** — SQLite em teste esconde diferenças de dialeto (tipos, `FOR UPDATE`, JSON). *Como checar:* `sqlite://` em `conftest.py` de projeto PostgreSQL. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
+- **Migrations testadas** — migration sem teste quebra no deploy ou no rollback. *Como checar:* job de CI rodando `alembic upgrade head` e `alembic downgrade -1`/`base` em banco vazio. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
+- **Contagem de queries em endpoints de lista** — trava N+1. *Como checar:* teste de lista que conta statements com listener `before_cursor_execute` no engine e falha acima do limite. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
 
 ### H. Qualidade automatizada e processo
 
 - **Typecheck reconhece `Mapped[...]` nativamente (2.0+)** — o plugin mypy (`sqlalchemy.ext.mypy`) foi depreciado e **removido na 2.1** (assim como `declarative_mixin` foi depreciado), por ser desnecessário com o estilo declarativo moderno. *Como checar:* `sqlalchemy.ext.mypy.plugin` em `[tool.mypy] plugins`. *Régua:* oficial (changelog 2.1). *Vale a partir de:* 2.0 (desnecessário), 2.1 (removido). *Severidade típica:* Baixa (Média se bloqueia o upgrade).
-- **Deprecações falhando no CI** — `pytest -W error::sqlalchemy.exc.SADeprecationWarning`. *Régua:* oficial (classe definida em `sqlalchemy.exc`). *Vale a partir de:* todas. *Severidade típica:* Baixa.
+- **Deprecações falhando no CI** — aviso de deprecação ignorado vira quebra no próximo upgrade. *Como checar:* `pytest -W error::sqlalchemy.exc.SADeprecationWarning` (ou `filterwarnings` equivalente) no CI. *Régua:* oficial (classe definida em `sqlalchemy.exc`). *Vale a partir de:* todas. *Severidade típica:* Baixa.
 
 ### J. Frontend
 

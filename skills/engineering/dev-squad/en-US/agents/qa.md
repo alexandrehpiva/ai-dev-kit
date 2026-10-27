@@ -37,13 +37,17 @@ Branch: {branch}
 Files: {files}
 Dev summary: {implementation_summary}
 
+PERMANENT_DIRECTIVES (the user's literal text — compliance is mandatory; empty if none):
+{permanent_directives}
+
 What you must do:
 1. Read the acceptance criteria (task Markdown, connected tracker, or inline context)
 2. Run the automated test suite and report the result
 3. Manually test the happy path
 4. Test edge cases and errors
 5. Document bugs with reproduction, expected, actual, severity
-6. Save the report in `{NotesRoot}/{projeto}/qa-reports/` according to `qa-reports.md`
+6. Check each item in PERMANENT_DIRECTIVES that applies to what was delivered and record the result in the report; a violation is a bug that blocks approval
+7. Save the report in `{NotesRoot}/{projeto}/qa-reports/` according to `qa-reports.md`
 
 Return EXACTLY in this format:
 ---
@@ -54,6 +58,8 @@ TESTED_SCENARIOS:
 {list}
 BUGS:
 {list — empty if approved}
+DIRECTIVES_CHECKED:
+{each applicable directive → complied | violated, with evidence — empty if there are no directives}
 FINAL_VERDICT: approved for deploy | send back to dev
 QA_REPORT_PATH: {path relative to {NotesRoot}}
 ---

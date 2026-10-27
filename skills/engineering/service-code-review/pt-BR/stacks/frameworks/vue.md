@@ -77,7 +77,7 @@ Versão atual estável: **Vue 3.5** (3.5.44 em 2026-10-13). **Vue 3.6 está em r
 - **Perda de reatividade** — destructuring de `reactive()`/store, `ref` passado como `.value` para composable. *Como checar:* `const { a } = reactive(`; `const { x } = useStore()` sem `storeToRefs`. *Régua:* oficial. *Vale a partir de:* 3.0. *Severidade típica:* Média.
 - **`watch` onde `computed` basta** — estado derivado copiado via watcher dessincroniza. *Como checar:* `watch(` que só faz `y.value = f(x.value)`. *Régua:* oficial (computed para derivação). *Vale a partir de:* todas. *Severidade típica:* Baixa.
 - **Limpeza de efeitos** — listeners e timers sem remoção vazam. *Como checar:* `addEventListener`/`setInterval` sem `onUnmounted`/`onWatcherCleanup` (3.5+). *Régua:* oficial. *Vale a partir de:* 3.0 (`onWatcherCleanup` 3.5). *Severidade típica:* Média.
-- **Template refs** — `useTemplateRef('x')` em 3.5+; `ref` com mesmo nome do atributo segue válido. *Régua:* oficial. *Vale a partir de:* 3.5. *Severidade típica:* Observação.
+- **Template refs** — `useTemplateRef('x')` em 3.5+; `ref` com mesmo nome do atributo segue válido. *Como checar:* `grep -rn "useTemplateRef(\|ref=\"" --include=*.vue`; não acuse `const x = ref(null)` casado com `ref="x"` no template. *Régua:* oficial. *Vale a partir de:* 3.5. *Severidade típica:* Observação.
 - **APIs removidas** — Reactivity Transform (`$ref`, `$computed`), filtros, `$listeners`, `Vue.set`. *Como checar:* grep. *Régua:* oficial. *Vale a partir de:* 3.0 / 3.4. *Severidade típica:* Alta (não funciona).
 
 ### D. Dados e estado
@@ -99,20 +99,20 @@ Ver seção "Segurança específica da stack".
 - **Testar a interface pública** (props, eventos, slots, saída renderizada) e não estado privado; não depender só de snapshot. *Como checar:* `wrapper.vm.<privado>`; specs só com `toMatchSnapshot`. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Média.
 - **Composables testados** — simples: chamada direta; com lifecycle/provide: componente hospedeiro. *Como checar:* composables com lógica sem spec. *Régua:* oficial. *Vale a partir de:* 3.0. *Severidade típica:* Baixa.
 - **Pinia em teste** — `@pinia/testing` (`createTestingPinia`) ou `setActivePinia(createPinia())` por teste. *Como checar:* estado vazando entre testes. *Régua:* oficial (Pinia). *Vale a partir de:* Pinia 2 [não confirmado a versão inicial do pacote de teste]. *Severidade típica:* Média.
-- **E2E** — Playwright ou Cypress para fluxos críticos. *Régua:* oficial (guia de testes). *Severidade típica:* Média se fluxo crítico sem E2E.
+- **E2E** — Playwright ou Cypress para fluxos críticos. *Como checar:* `@playwright/test` ou `cypress` no `package.json` e specs cobrindo os fluxos críticos. *Régua:* oficial (guia de testes). *Vale a partir de:* todas. *Severidade típica:* Média se fluxo crítico sem E2E.
 
 ### H. Processo
 - **`vue-tsc --noEmit` no CI** — `tsc` puro não checa `.vue`. *Como checar:* script `type-check` no `package.json`/pipeline. *Régua:* comunidade (padrão do `create-vue` [não confirmado nesta pesquisa]). *Vale a partir de:* Vue 3 + TS. *Severidade típica:* Média.
 - **eslint-plugin-vue com preset compatível** — `flat/recommended` (Vue 3) ou `flat/vue2-recommended` (Vue 2). *Como checar:* `eslint.config.*`. *Régua:* oficial. *Vale a partir de:* eslint-plugin-vue 9+ (flat) [versão exata não confirmada]. *Severidade típica:* Baixa.
-- **Versões sem suporte** — Vue 2, Nuxt 2/3. *Como checar:* `package.json`. *Régua:* oficial. *Severidade típica:* Alta (exposto à internet) / Média.
+- **Versões sem suporte** — Vue 2, Nuxt 2/3. *Como checar:* `package.json`. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Alta (exposto à internet) / Média.
 
 ### J. Frontend
-- **`v-if` vs `v-show`** — `v-show` para alternância frequente, `v-if` para condição rara. *Como checar:* `v-if` em toggle de UI muito usado com componente pesado. *Régua:* oficial (guia de renderização condicional) [não reaberto nesta pesquisa]. *Severidade típica:* Baixa.
-- **Listas grandes** — `:key` estável (id, não índice) e virtualização acima de milhares de itens. *Como checar:* `:key="index"` em lista reordenável. *Régua:* oficial (key) + comunidade (virtualização). *Severidade típica:* Média.
+- **`v-if` vs `v-show`** — `v-show` para alternância frequente, `v-if` para condição rara. *Como checar:* `v-if` em toggle de UI muito usado com componente pesado. *Régua:* oficial (guia de renderização condicional) [não reaberto nesta pesquisa]. *Vale a partir de:* todas. *Severidade típica:* Baixa.
+- **Listas grandes** — `:key` estável (id, não índice) e virtualização acima de milhares de itens. *Como checar:* `:key="index"` em lista reordenável. *Régua:* oficial (key) + comunidade (virtualização). *Vale a partir de:* todas. *Severidade típica:* Média.
 - **Reatividade profunda desnecessária** — `shallowRef`/`markRaw` para objetos grandes e instâncias de bibliotecas (mapas, gráficos). *Como checar:* `ref(new Chart(...))`. *Régua:* oficial. *Vale a partir de:* 3.0. *Severidade típica:* Baixa.
-- **Componentes assíncronos e hidratação lazy** — `defineAsyncComponent` (com `hydrate` em 3.5+) para blocos pesados. *Régua:* oficial. *Vale a partir de:* 3.5 (hydrate). *Severidade típica:* Baixa.
+- **Componentes assíncronos e hidratação lazy** — `defineAsyncComponent` (com `hydrate` em 3.5+) para blocos pesados. *Como checar:* import estático de componente pesado abaixo da dobra; `grep -rn "defineAsyncComponent(" --include=*.vue --include=*.ts` e presença de `hydrate:` em app SSR. *Régua:* oficial. *Vale a partir de:* todas (`hydrate`: 3.5). *Severidade típica:* Baixa.
 - **IDs acessíveis estáveis em SSR** — `useId()` para `for`/`aria-describedby`. *Como checar:* IDs com `Math.random()`. *Régua:* oficial. *Vale a partir de:* 3.5. *Severidade típica:* Baixa.
-- **Acessibilidade** — elementos nativos, `label` associado, foco após navegação, `alt`. *Como checar:* `eslint-plugin-vuejs-accessibility` [não revisado nesta pesquisa]; `div @click` sem `role`/teclado. *Régua:* comunidade + WCAG. *Severidade típica:* Média.
+- **Acessibilidade** — elementos nativos, `label` associado, foco após navegação, `alt`. *Como checar:* `eslint-plugin-vuejs-accessibility` [não revisado nesta pesquisa]; `div @click` sem `role`/teclado. *Régua:* comunidade + WCAG. *Vale a partir de:* todas. *Severidade típica:* Média.
 
 ## Padrões de projeto recomendados hoje
 

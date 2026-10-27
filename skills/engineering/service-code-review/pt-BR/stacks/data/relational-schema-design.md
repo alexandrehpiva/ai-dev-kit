@@ -3,7 +3,7 @@ id: relational-schema-design
 title: Modelagem relacional e migrations (PostgreSQL, MySQL/MariaDB)
 kind: data
 language: any
-detect: npm:pg, npm:mysql2, pypi:psycopg, pypi:psycopg2-binary, go:github.com/jackc/pgx, file:schema.prisma, file:schema.sql
+detect: npm:pg, npm:mysql2, pypi:psycopg, pypi:psycopg2-binary, go:github.com/jackc/pgx, file:schema.prisma, file:schema.sql, pypi:psycopg2, pypi:asyncpg, pypi:pymysql, pypi:mysqlclient, maven:org.postgresql, maven:com.mysql, maven:org.mariadb.jdbc, nuget:Npgsql, nuget:Pomelo.EntityFrameworkCore.MySql
 versions_covered: "PostgreSQL 14 – 18; MySQL 8.0 – 9.7 LTS e 26.x innovation; MariaDB 11.4 – 11.8 LTS"
 last_verified: 2026-10-27
 related: dynamodb, mongodb, redis
@@ -137,7 +137,7 @@ Aqui "estrutura" é **modelagem**.
 ### H. Qualidade automatizada e processo
 
 - **Linter de migration no CI** — pega lock perigoso antes da produção. *Como checar:* `squawk` (ou equivalente) no pipeline sobre os arquivos novos. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
-- **Versão do motor suportada** — PG ≤ 13 e MySQL 8.0 estão fora de suporte; PG 14 sai em 2026-11-12. *Como checar:* seção "Como identificar". *Régua:* oficial. *Vale a partir de:* —. *Severidade típica:* Alta (fora de suporte), Média (fim em < 6 meses).
+- **Versão do motor suportada** — PG ≤ 13 e MySQL 8.0 estão fora de suporte; PG 14 sai em 2026-11-12. *Como checar:* seção "Como identificar". *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Alta (fora de suporte), Média (fim em < 6 meses).
 
 ## Padrões de projeto recomendados hoje
 

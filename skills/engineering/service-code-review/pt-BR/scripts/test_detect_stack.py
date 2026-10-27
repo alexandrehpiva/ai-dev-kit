@@ -120,6 +120,47 @@ class DetectStackTest(unittest.TestCase):
         r = self.run_detect()
         self.assertNotIn("nestjs", self.ids(r))
 
+    def test_given_spring_boot_with_data_jpa_and_postgres_when_detect_real_guides_then_jpa_and_schema(self):
+        write(self.repo, "pom.xml",
+              "<project xmlns='http://maven.apache.org/POM/4.0.0'>"
+              "<parent><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-parent</artifactId>"
+              "<version>3.3.1</version></parent><dependencies>"
+              "<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-data-jpa</artifactId></dependency>"
+              "<dependency><groupId>org.postgresql</groupId><artifactId>postgresql</artifactId></dependency>"
+              "</dependencies></project>")
+        r = ds.detect(self.repo, ds.STACKS_DIR, TODAY)
+        self.assertTrue({"spring-boot", "java", "java-jpa", "relational-schema-design"} <= self.ids(r), r)
+
+    def test_given_python_drivers_psycopg2_asyncpg_when_detect_real_guides_then_schema(self):
+        for driver in ("psycopg2", "asyncpg"):
+            with self.subTest(driver=driver):
+                write(self.repo, "requirements.txt", f"sqlalchemy==2.0.30\n{driver}==2.9.9\n")
+                r = ds.detect(self.repo, ds.STACKS_DIR, TODAY)
+                self.assertTrue({"python-sqlalchemy", "relational-schema-design"} <= self.ids(r), r)
+
+    def test_given_spring_boot_without_jpa_when_detect_real_guides_then_no_jpa(self):
+        write(self.repo, "pom.xml",
+              "<project xmlns='http://maven.apache.org/POM/4.0.0'><dependencies>"
+              "<dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-web</artifactId>"
+              "<version>3.3.1</version></dependency></dependencies></project>")
+        r = ds.detect(self.repo, ds.STACKS_DIR, TODAY)
+        self.assertIn("spring-boot", self.ids(r))
+        self.assertNotIn("java-jpa", self.ids(r))
+
+    def test_real_guides_checklist_items_have_required_fields(self):
+        marks = ("*Como checar:*", "*Régua:*", "*Vale a partir de:*", "*Severidade típica:*")
+        missing = []
+        for path in sorted(ds.STACKS_DIR.rglob("*.md")):
+            in_checklist = False
+            for n, line in enumerate(path.read_text(encoding="utf-8").splitlines(), 1):
+                if line.startswith("## "):
+                    in_checklist = "Checklist" in line
+                elif in_checklist and line.startswith("- **"):
+                    absent = [m for m in marks if m not in line]
+                    if absent:
+                        missing.append(f"{path.relative_to(ds.STACKS_DIR)}:{n} sem {', '.join(absent)}")
+        self.assertEqual(missing, [], "\n".join(missing))
+
     def test_real_guides_have_valid_frontmatter(self):
         for g in ds.load_guides():
             self.assertIn(g.get("kind"), {"language", "framework", "data", "architecture"}, g["path"])

@@ -93,7 +93,7 @@ Ver `dotnet-efcore`. Na linguagem: conexões e `DbContext` sempre com `using`/`a
 - **`NuGetAuditSuppress` sem justificativa** — supressão vale para todo o repositório. *Como checar:* `grep -rn NuGetAuditSuppress .`. *Régua:* oficial ("último recurso"). *Vale a partir de:* SDK 8.0.400. *Severidade típica:* Média.
 - **Segredos em `appsettings*.json` ou código** — *Como checar:* `grep -rniE "password|secret|apikey|connectionstring" appsettings*.json`; User Secrets só em Development. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Crítica.
 - **PII em logs** — *Como checar:* parâmetros de log com CPF/e-mail/token; uso de `Microsoft.Extensions.Compliance.Redaction` com classificação de dados. *Régua:* oficial (redação documentada). *Vale a partir de:* .NET 8 [não confirmado — versão do pacote não verificada]. *Severidade típica:* Alta.
-- **Runtime fora de suporte** — sem patches de segurança. *Como checar:* TFM × tabela. *Régua:* oficial. *Vale a partir de:* — . *Severidade típica:* Alta.
+- **Runtime fora de suporte** — sem patches de segurança. *Como checar:* TFM × tabela. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Alta.
 
 ### F. Integrações e mensageria
 
@@ -104,7 +104,7 @@ Ver `aspnet-core` (HttpClientFactory, resiliência, BackgroundService). Na lingu
 - **Framework e versão** — xUnit v3 (pacotes `xunit.v3.*`, projetos executáveis, `TestContext.Current.CancellationToken`), NUnit ou MSTest; misturar frameworks no mesmo repositório sem motivo é dívida. *Como checar:* grep de pacotes. *Régua:* comunidade. *Vale a partir de:* xUnit v3 estável [não confirmado — data da 1.0]. *Severidade típica:* Baixa.
 - **Licença da biblioteca de asserção** — FluentAssertions ≥ 8.0 usa a Xceed Community License (gratuita só para uso não comercial; uso comercial exige assinatura por desenvolvedor, de US$ 14,95 a US$ 129,95/dev/ano conforme o plano); 7.x segue Apache 2.0; AwesomeAssertions é o fork comunitário. *Como checar:* versão de `FluentAssertions` em `Directory.Packages.props`/csproj; projeto comercial com 8.x sem licença = risco jurídico. *Régua:* oficial (licença do pacote). *Vale a partir de:* v8 (14/01/2025). *Severidade típica:* Alta (comercial) / Observação (OSS).
 - **Testes de integração contra banco real** — Testcontainers (`Testcontainers.PostgreSql`, `.MsSql` etc.) em vez de provider in-memory. *Como checar:* pacotes `Testcontainers.*`; uso de `UseInMemoryDatabase` em testes. *Régua:* oficial (EF Core desaconselha o in-memory). *Vale a partir de:* todas. *Severidade típica:* Média.
-- **Testes HTTP com `WebApplicationFactory<Program>`** — ver `aspnet-core`. *Severidade típica:* Média.
+- **Testes HTTP com `WebApplicationFactory<Program>`** — ver `aspnet-core`. *Como checar:* pacote `Microsoft.AspNetCore.Mvc.Testing` no projeto de testes e `grep -rn "WebApplicationFactory<" tests/`. *Régua:* oficial. *Vale a partir de:* .NET 6 (entry point `Program`). *Severidade típica:* Média.
 - **Testes async corretos** — `async Task`, nunca `async void`, sem `.Result`. *Como checar:* grep em `tests/`. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
 
 ### H. Qualidade automatizada e processo
@@ -112,7 +112,7 @@ Ver `aspnet-core` (HttpClientFactory, resiliência, BackgroundService). Na lingu
 - **Analyzers ligados e travados** — *Como checar:* `AnalysisLevel` (ex.: `latest-recommended` ou número fixo como `10.0`), `EnforceCodeStyleInBuild=true`, `.editorconfig` com severidades. *Régua:* oficial. *Vale a partir de:* .NET 5 (analyzers no SDK). *Severidade típica:* Média.
 - **`TreatWarningsAsErrors` com saída para auditoria** — se ativo, a doc sugere `WarningsNotAsErrors` para NU1901–NU1904 ou pipeline de auditoria separado, para não travar correções urgentes. *Como checar:* `grep -rn "TreatWarningsAsErrors\|WarningsNotAsErrors\|WarningsAsErrors" .`. *Régua:* oficial. *Vale a partir de:* SDK 8.0.100. *Severidade típica:* Baixa.
 - **Supressões em massa** — `<NoWarn>` longo ou `dotnet_diagnostic.*.severity = none` sem comentário. *Como checar:* grep. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Baixa.
-- **Formatação verificada em CI** — `dotnet format --verify-no-changes` (sai com código ≠ 0 se houver mudança). *Régua:* oficial. *Vale a partir de:* SDK 6. *Severidade típica:* Baixa.
+- **Formatação verificada em CI** — `dotnet format --verify-no-changes` (sai com código ≠ 0 se houver mudança). *Como checar:* `grep -rn "dotnet format" .github/ azure-pipelines.yml` (ou o pipeline em uso) com `--verify-no-changes`. *Régua:* oficial. *Vale a partir de:* SDK 6. *Severidade típica:* Baixa.
 
 ### J. Frontend
 
@@ -201,3 +201,4 @@ Ver `dotnet-efcore` (EF Core, Dapper, migrations, concorrência) e `data/relatio
 - How to Build a Modular Monolith in .NET (Milan Jovanović) — https://milanjovanovic.tech/blog/build-modular-monolith-dotnet-step-by-step — comunidade — acessado em 2026-10-27
 - Shift Left With Architecture Testing in .NET — https://milanjovanovic.tech/blog/shift-left-with-architecture-testing-in-dotnet — comunidade — acessado em 2026-10-27
 - MediatR vs plain service classes in 2026 — https://startdebugging.net/2026/05/mediatr-vs-plain-service-classes-in-2026/ — comunidade — acessado em 2026-10-27
+- Integration tests in ASP.NET Core — https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests — oficial — acessado em 2026-10-27

@@ -55,50 +55,50 @@ Extensões: **Flask-SQLAlchemy 3.1.1** (2023-09-11; última no PyPI), Flask-Migr
 
 ### B. Estrutura de arquivos e convenções
 
-- **Blueprints por área funcional** — *Como checar:* `register_blueprint` na factory; rotas todas em um `app.py`. *Régua:* oficial. *Severidade típica:* Baixa.
-- **Configuração por ambiente sem segredo versionado** — `app.config.from_prefixed_env()` / `from_object` / `from_pyfile` em `instance/`. *Como checar:* `SECRET_KEY = "` em código; `instance/` no git. *Régua:* oficial (Configuration Handling). *Severidade típica:* Crítica (segredo real).
+- **Blueprints por área funcional** — *Como checar:* `register_blueprint` na factory; rotas todas em um `app.py`. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Baixa.
+- **Configuração por ambiente sem segredo versionado** — `app.config.from_prefixed_env()` / `from_object` / `from_pyfile` em `instance/`. *Como checar:* `SECRET_KEY = "` em código; `instance/` no git. *Régua:* oficial (Configuration Handling). *Vale a partir de:* todas (`from_prefixed_env`: 2.1). *Severidade típica:* Crítica (segredo real).
 - **Sem APIs removidas/depreciadas** — `before_first_request`, `FLASK_ENV`, `app.env`, `json_encoder`, `JSONIFY_*`, `from flask import Markup/escape`, `flask.__version__`. *Como checar:* grep pelos nomes; `pytest -W error::DeprecationWarning`. *Régua:* oficial (changelog 2.3/3.0). *Vale a partir de:* 2.3/3.0. *Severidade típica:* Média (Alta se a versão instalada já removeu).
 - **Preparado para 3.2** — código que depende de `RequestContext`, de status `302` em `redirect` após POST, ou sobrescreve métodos de dispatch. *Como checar:* `grep -rn "RequestContext\|full_dispatch_request\|dispatch_request\|== 302" .`. *Régua:* oficial (changelog unreleased). *Vale a partir de:* 3.2. *Severidade típica:* Baixa (Observação até o lançamento).
 
 ### C. Qualidade do código
 
-- **Tratamento de erro centralizado** — `@app.errorhandler`/`@bp.errorhandler` mapeando exceções de domínio; respostas JSON consistentes em APIs. *Como checar:* `errorhandler(`; `abort(` espalhado em serviços. *Régua:* oficial + comunidade. *Severidade típica:* Baixa.
-- **Validação de entrada explícita** — Flask não valida corpo; usar marshmallow, pydantic, Flask-WTF ou similar. *Como checar:* `request.json[...]`/`request.form[...]` usado direto em regra. *Régua:* comunidade. *Severidade típica:* Alta (dado sem validação em escrita).
+- **Tratamento de erro centralizado** — `@app.errorhandler`/`@bp.errorhandler` mapeando exceções de domínio; respostas JSON consistentes em APIs. *Como checar:* `errorhandler(`; `abort(` espalhado em serviços. *Régua:* oficial + comunidade. *Vale a partir de:* todas. *Severidade típica:* Baixa.
+- **Validação de entrada explícita** — Flask não valida corpo; usar marshmallow, pydantic, Flask-WTF ou similar. *Como checar:* `request.json[...]`/`request.form[...]` usado direto em regra. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Alta (dado sem validação em escrita).
 - **Async com propósito** — cada request async ainda ocupa um worker; tarefas criadas com `asyncio.create_task` são canceladas ao fim da view. *Como checar:* `create_task(` em views; `async def` sem nenhum `await` concorrente. *Régua:* oficial (Using async and await). *Vale a partir de:* 2.0. *Severidade típica:* Alta (trabalho perdido), Baixa (async inútil).
 
 ### D. Dados e persistência
 
 - **Estilo SQLAlchemy 2.0 no Flask-SQLAlchemy 3.x** — `db.session.execute(db.select(User).filter_by(...)).scalar_one()`, `db.get_or_404`, `db.paginate`; `Model.query` é **legado** (ainda existe). *Como checar:* `grep -rn "\.query\.\(filter\|get\|all\)" .`. *Régua:* oficial (Flask-SQLAlchemy "Legacy Query Interface"). *Vale a partir de:* Flask-SQLAlchemy 3.0. *Severidade típica:* Baixa.
 - **Sessão escopada ao app context** — desde Flask-SQLAlchemy 3.0 é necessário app context ativo; scripts/CLI/tarefas devem usar `with app.app_context():`. *Como checar:* jobs/threads acessando `db.session` fora de contexto; `RuntimeError: Working outside of application context` em logs. *Régua:* oficial. *Vale a partir de:* Flask-SQLAlchemy 3.0. *Severidade típica:* Média.
-- **Migrations com Flask-Migrate (Alembic) revisadas** — `flask db migrate` gera candidato; revisar renomeações (autogenerate vê como drop+add). *Como checar:* `migrations/versions/*.py` com `drop_column` + `add_column` do mesmo tipo. *Régua:* oficial (Alembic). *Severidade típica:* Alta (perda de dado). Ver `data/python-sqlalchemy`.
-- **`SQLALCHEMY_TRACK_MODIFICATIONS` não reativado sem necessidade** (padrão desligado desde 3.0). *Régua:* oficial. *Severidade típica:* Baixa.
+- **Migrations com Flask-Migrate (Alembic) revisadas** — `flask db migrate` gera candidato; revisar renomeações (autogenerate vê como drop+add). *Como checar:* `migrations/versions/*.py` com `drop_column` + `add_column` do mesmo tipo. *Régua:* oficial (Alembic). *Vale a partir de:* todas. *Severidade típica:* Alta (perda de dado). Ver `data/python-sqlalchemy`.
+- **`SQLALCHEMY_TRACK_MODIFICATIONS` não reativado sem necessidade** (padrão desligado desde 3.0). *Como checar:* `SQLALCHEMY_TRACK_MODIFICATIONS = True` na config sem uso de `models_committed`/`before_models_committed`. *Régua:* oficial. *Vale a partir de:* Flask-SQLAlchemy 3.0. *Severidade típica:* Baixa.
 
 ### E. Segurança e privacidade
 
 - **`SECRET_KEY` forte vinda do ambiente, com `SECRET_KEY_FALLBACKS` para rotação** — chave fraca permite forjar cookie de sessão. *Como checar:* `SECRET_KEY` definido em código ou `"dev"` em produção. *Régua:* oficial (config; 3.1 para fallbacks). *Vale a partir de:* todas (fallbacks: 3.1). *Severidade típica:* Crítica.
-- **Sessão Flask é cookie assinado, não criptografado** — não guardar dado sensível em `session`. *Como checar:* `session["..."] =` com tokens, PII. *Régua:* oficial (Quickstart — Sessions: o usuário consegue ler o conteúdo do cookie, só não modificá-lo). *Severidade típica:* Alta.
-- **Cookies `Secure`, `HttpOnly`, `SameSite`** — `SESSION_COOKIE_SECURE=True`, `SESSION_COOKIE_HTTPONLY=True`, `SESSION_COOKIE_SAMESITE="Lax"`. *Como checar:* config de produção. *Régua:* oficial (Security Considerations). *Severidade típica:* Média.
-- **CSRF em formulários com sessão** — Flask não tem CSRF nativo; usar `CSRFProtect` do Flask-WTF (`csrf.init_app(app)`). *Como checar:* forms POST sem `csrf_token`; `WTF_CSRF_ENABLED = False` fora de testes; `@csrf.exempt`. *Régua:* oficial (doc de segurança do Flask cita o problema; Flask-WTF implementa). *Severidade típica:* Alta.
-- **Debug desligado em produção e sem servidor de desenvolvimento** — debugger interativo permite execução de código. *Como checar:* `app.run(debug=True)`, `FLASK_DEBUG=1` no deploy; bandit B201 (`flask_debug_true`); `flask run`/`app.run` no Dockerfile. *Régua:* oficial. *Severidade típica:* Crítica.
+- **Sessão Flask é cookie assinado, não criptografado** — não guardar dado sensível em `session`. *Como checar:* `session["..."] =` com tokens, PII. *Régua:* oficial (Quickstart — Sessions: o usuário consegue ler o conteúdo do cookie, só não modificá-lo). *Vale a partir de:* todas. *Severidade típica:* Alta.
+- **Cookies `Secure`, `HttpOnly`, `SameSite`** — `SESSION_COOKIE_SECURE=True`, `SESSION_COOKIE_HTTPONLY=True`, `SESSION_COOKIE_SAMESITE="Lax"`. *Como checar:* config de produção. *Régua:* oficial (Security Considerations). *Vale a partir de:* todas. *Severidade típica:* Média.
+- **CSRF em formulários com sessão** — Flask não tem CSRF nativo; usar `CSRFProtect` do Flask-WTF (`csrf.init_app(app)`). *Como checar:* forms POST sem `csrf_token`; `WTF_CSRF_ENABLED = False` fora de testes; `@csrf.exempt`. *Régua:* oficial (doc de segurança do Flask cita o problema; Flask-WTF implementa). *Vale a partir de:* todas. *Severidade típica:* Alta.
+- **Debug desligado em produção e sem servidor de desenvolvimento** — debugger interativo permite execução de código. *Como checar:* `app.run(debug=True)`, `FLASK_DEBUG=1` no deploy; bandit B201 (`flask_debug_true`); `flask run`/`app.run` no Dockerfile. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Crítica.
 - **Limites de recurso configurados** — `MAX_CONTENT_LENGTH`, `MAX_FORM_MEMORY_SIZE`, `MAX_FORM_PARTS` (3.1). *Como checar:* config. *Régua:* oficial (Resource Use). *Vale a partir de:* 3.1 (form limits). *Severidade típica:* Média.
-- **`TRUSTED_HOSTS` configurado** quando não há proxy validando `Host`. *Régua:* oficial (3.1). *Vale a partir de:* 3.1. *Severidade típica:* Média.
-- **XSS** — Jinja autoescape ligado por padrão para `.html`; atributos sem aspas, `|safe` e `Markup()` com dado de usuário quebram a proteção. *Como checar:* `grep -rn "|safe\|Markup(" templates app`; bandit B701 (`jinja2_autoescape_false`). *Régua:* oficial. *Severidade típica:* Alta.
-- **SQL cru parametrizado** (`text()` com bind params). *Como checar:* `text(f"`/`execute(f"`; bandit B608. *Régua:* oficial (SQLAlchemy). *Severidade típica:* Crítica.
+- **`TRUSTED_HOSTS` configurado** quando não há proxy validando `Host`. *Como checar:* `grep -rn "TRUSTED_HOSTS" .` na config de produção; proxy reverso sem validação de `Host`. *Régua:* oficial (3.1). *Vale a partir de:* 3.1. *Severidade típica:* Média.
+- **XSS** — Jinja autoescape ligado por padrão para `.html`; atributos sem aspas, `|safe` e `Markup()` com dado de usuário quebram a proteção. *Como checar:* `grep -rn "|safe\|Markup(" templates app`; bandit B701 (`jinja2_autoescape_false`). *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Alta.
+- **SQL cru parametrizado** (`text()` com bind params). *Como checar:* `text(f"`/`execute(f"`; bandit B608. *Régua:* oficial (SQLAlchemy). *Vale a partir de:* todas. *Severidade típica:* Crítica.
 
 ### F. Integrações e mensageria
 
-- **Trabalho em segundo plano em fila** — a doc oficial recomenda fila de tarefas em vez de spawnar tarefas na view. *Como checar:* `threading.Thread(` ou `create_task(` em views. *Régua:* oficial (async-await) + comunidade (Celery/RQ). *Severidade típica:* Alta.
-- **Tarefas com app context** — Celery/RQ precisam empurrar `app.app_context()` para usar extensões. *Como checar:* worker usando `db.session` sem contexto. *Régua:* oficial (Flask-SQLAlchemy 3). *Severidade típica:* Média.
+- **Trabalho em segundo plano em fila** — a doc oficial recomenda fila de tarefas em vez de spawnar tarefas na view. *Como checar:* `threading.Thread(` ou `create_task(` em views. *Régua:* oficial (async-await) + comunidade (Celery/RQ). *Vale a partir de:* todas. *Severidade típica:* Alta.
+- **Tarefas com app context** — Celery/RQ precisam empurrar `app.app_context()` para usar extensões. *Como checar:* worker usando `db.session` sem contexto. *Régua:* oficial (Flask-SQLAlchemy 3). *Vale a partir de:* Flask-SQLAlchemy 3.0. *Severidade típica:* Média.
 
 ### G. Testes
 
-- **`create_app(test_config)` + `app.test_client()`/`test_cli_runner()` em fixtures pytest** — *Como checar:* `tests/conftest.py` com fixture `app` chamando a factory com `TESTING=True`. *Régua:* oficial (Testing Flask Applications). *Severidade típica:* Baixa.
-- **Banco isolado por teste** (transação revertida ou banco efêmero) e app context nas fixtures. *Régua:* comunidade. *Severidade típica:* Média.
-- **Testes de CSRF e de permissão** — com `WTF_CSRF_ENABLED=False` só no teste, e ao menos um teste com CSRF ligado. *Régua:* comunidade. *Severidade típica:* Baixa.
+- **`create_app(test_config)` + `app.test_client()`/`test_cli_runner()` em fixtures pytest** — *Como checar:* `tests/conftest.py` com fixture `app` chamando a factory com `TESTING=True`. *Régua:* oficial (Testing Flask Applications). *Vale a partir de:* todas. *Severidade típica:* Baixa.
+- **Banco isolado por teste** (transação revertida ou banco efêmero) e app context nas fixtures. *Como checar:* fixtures em `tests/conftest.py` com rollback por teste ou banco efêmero (SQLite em memória, container); dados vazando entre testes. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
+- **Testes de CSRF e de permissão** — CSRF desligado em todos os testes esconde regressão na proteção. *Como checar:* `WTF_CSRF_ENABLED=False` só na config de teste e ao menos um teste com CSRF ligado; testes de acesso negado por rota protegida. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Baixa.
 
 ### H. Qualidade automatizada e processo
 
-- **ruff (`S`, `B`, `UP`), typecheck, pytest e pip-audit no CI**; servidor WSGI de produção (gunicorn/waitress) no deploy. *Régua:* oficial (deploy) + comunidade. *Severidade típica:* Baixa (Crítica se o servidor de dev está em produção — ver E).
+- **ruff (`S`, `B`, `UP`), typecheck, pytest e pip-audit no CI**; servidor WSGI de produção (gunicorn/waitress) no deploy. *Como checar:* pipeline de CI rodando `ruff check`, typecheck, `pytest` e `pip-audit`; `gunicorn`/`waitress` no Dockerfile ou Procfile. *Régua:* oficial (deploy) + comunidade. *Vale a partir de:* todas. *Severidade típica:* Baixa (Crítica se o servidor de dev está em produção — ver E).
 
 ### J. Frontend
 

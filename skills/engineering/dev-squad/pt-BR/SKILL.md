@@ -168,6 +168,17 @@ Um prompt construído assim é mais longo que uma descrição de missão de uma 
 
 ---
 
+## Diretiva crítica — Diretivas permanentes do usuário vão em todo briefing e em toda revisão
+
+**Modo de falha:** o usuário dá uma regra de processo ou de código uma vez (ex.: "migrations só pelo comando do ORM, nunca escritas à mão"), ela fica numa conversa antiga ou num documento que o subagente não lê, e o Dev faz exatamente o que foi proibido. O Tech Lead não pega porque o checklist dele não tem a regra. O usuário descobre no review semanas depois.
+
+1. O Orquestrador mantém uma lista das **diretivas permanentes** do usuário para o projeto (na constituição/`CLAUDE.md`/README do repositório, numa nota de modo de trabalho do projeto ou na memória do agente), cada uma com a citação literal e a data.
+2. **Todo** prompt de Dev, Tech Lead e QA inclui as diretivas que se aplicam à missão, com o texto literal — não um resumo, não um link — no slot `DIRETIVAS_PERMANENTES` do template (a lista fica em `diretivas_permanentes` no estado; ver `orchestrator/state.md`).
+3. O Tech Lead confere cada diretiva aplicável no `revisar_codigo` (passo próprio no template, com saída em `DIRETIVAS_CONFERIDAS`) e o QA no relatório (mesmo campo); violação bloqueia a aprovação.
+4. Diretiva que pode ser checada por máquina vira ferramenta (regra de lint, hook, teste, verificação no CI) assim que aparecer violação — a segunda violação da mesma regra é falha de processo, não do agente.
+
+---
+
 ## Diretiva crítica — Novos pedidos no meio do ciclo
 
 Um ciclo `/dev-squad` pode durar bastante (subagentes paralelos, lotes de vários itens, execução em background). Enquanto está em andamento, o usuário pode enviar uma nova mensagem com um novo pedido de feature ou mudança — muitas vezes explicitamente sinalizada como "não deixe isso interromper o que você está fazendo". Trate isso como a expectativa padrão mesmo quando não declarado:
@@ -205,6 +216,8 @@ Toda vez que o time decidir que o comportamento do produto precisa ser diferente
 2. **Refletir nos critérios de aceite/BDD** das histórias afetadas: a regra nova vira cenário testável; o cenário antigo é removido ou marcado como substituído.
 3. **Se o protótipo tem documentos que carregam a regra** (jornadas de usuário, BDD, README, regras de negócio, changelog), **alterá-los também**, com um comentário curto e datado do PO ou do Tech Lead no trecho alterado (formato sugerido: "Decisão do PO em AAAA-MM-DD: o que mudou e por quê. Substitui: comportamento anterior."). Alterar o protótipo em si segue a skill de prototipagem, se existir; alterar só a documentação do protótipo não exige criar documento novo.
 4. O Orquestrador **não encerra o ciclo** (nem declara a entrega) enquanto a divergência não estiver registrada nos três lugares; o QA confere isso como item de aceite.
+
+---
 
 ## Diretiva crítica — Bloqueio de segurança exige modelo de ameaça, não reflexo
 
@@ -261,6 +274,7 @@ Liste apenas as skills e ferramentas relevantes para a missão:
 - [ ] Ler `agents/dev-senior.md`, `agents/tech-lead.md`, `agents/qa.md`
 - [ ] Ler `orchestrator/flow.md`
 - [ ] Ler `orchestrator/state.md`
+- [ ] Carregar no estado (`diretivas_permanentes`) as diretivas permanentes do usuário para o projeto — constituição/`CLAUDE.md`/README, nota de modo de trabalho, memória do agente —, cada uma com o texto literal e a data.
 - [ ] Inicializar o estado interno com `task_ref`, `task_context` e `fase_atual = investigacao`
 - [ ] Iniciar a missão de investigação do Dev Sênior.
 
