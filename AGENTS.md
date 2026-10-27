@@ -91,6 +91,16 @@ Skills focadas em código: construir, revisar, depurar e operar sistemas.
 
 ---
 
+## service-code-review
+
+**Arquivo:** `skills/engineering/service-code-review/pt-BR/SKILL.md`
+
+**Descrição:** Review geral de um serviço inteiro (backend, frontend, worker): arquitetura e camadas (nomeando e explicando o padrão), estrutura de pastas, qualidade, dados, segurança, integrações, testes, processo e escolhas técnicas contra a documentação oficial. Evidência `arquivo:linha`, régua declarada (regras do projeto → documentação oficial da versão usada → comunidade), verificação adversarial dos achados altos, relatório em formato fixo (`REVIEW-REPORT.md`) e triagem separada por quem tem o contexto (`TRIAGE.md`). Guias por linguagem, framework, ORM e banco em `stacks/`, com tabela de versões e data de verificação; `scripts/detect_stack.py` detecta a stack e aponta guias velhos ou ausentes. Modo subagente em `REVIEWER-PROMPT.md`; crescimento dos guias em `maintaining-guides.md` + `STACK-GUIDE-FORMAT.md`.
+
+**Quando usar:** "review geral do backend", "review completo do serviço", "auditoria do código", "avaliar a arquitetura deste repositório", "qual padrão de arquitetura é este e por quê", "o projeto segue as boas práticas do framework?", ou criar/atualizar um guia de stack. Para um diff ou PR, usar `code-review`.
+
+---
+
 ## codebase-deep-dive
 
 **Arquivo:** `skills/engineering/codebase-deep-dive/pt-BR/SKILL.md`

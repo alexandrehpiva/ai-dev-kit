@@ -13,6 +13,7 @@ Skills focadas em código: construir, revisar, depurar e operar sistemas.
 | [`task-context`](task-context/pt-BR/SKILL.md) | Ler uma subtask e montar visão completa da feature (épico, irmãs, contratos, código) antes de implementar |
 | [`task-writing`](task-writing/pt-BR/SKILL.md) | Escrever tasks/US no padrão `US-FORMAT.md` (BDD só com comportamento testável por QA; checklist de entregáveis nos demais casos) |
 | [`code-review`](code-review/pt-BR/SKILL.md) | Revisar um diff/PR: bugs + reuso/simplificação (`RECURRING-CHECKS.md`) |
+| [`service-code-review`](service-code-review/pt-BR/SKILL.md) | Review geral de um serviço inteiro: arquitetura e camadas, estrutura, qualidade, dados, segurança, integrações, testes e processo, com evidência, régua declarada, triagem e guias por linguagem/framework/ORM/banco versionados (`stacks/`, `scripts/detect_stack.py`) |
 | [`codebase-deep-dive`](codebase-deep-dive/pt-BR/SKILL.md) | Estudar um repositório de ponta a ponta (arquitetura, dados, infra, configs, convenções), registrar na base de notas do usuário e conduzir percurso de aprendizado guiado até o domínio do repo (`REPO-STUDY-CHECKLIST.md`) |
 | [`dev-squad`](dev-squad/pt-BR/SKILL.md) | Orquestrador multi-agente (Dev Sênior, Tech Lead, QA, PO proxy) sobre tracker conectado, backlog Markdown ou contexto inline; skills `dev-*` como recomendação |
 | [`security-verification`](security-verification/pt-BR/SKILL.md) | Varredura de segredos com Gitleaks, segredo vs PII e remediação segura (rotação + `git filter-repo`; `purgar-historico.md`) |

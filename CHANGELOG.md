@@ -9,6 +9,16 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.39.0] — 2026-10-27
+
+### Added
+
+- `engineering/service-code-review`: nova skill de **review geral de um serviço inteiro** (backend, frontend, worker), complementar a `code-review` (que fica com diff/PR). Fases: entradas → descoberta sem julgar → avaliação pelas dimensões A–J → verificação adversarial dos achados Críticos/Altos → relatório → **triagem** por quem tem o contexto (fazer agora, adiar com motivo, manter, levar a decisão, descartar). Assets: `METHOD.md` (12 regras: régua declarada — regras do projeto → documentação oficial da versão usada → comunidade —, evidência `arquivo:linha`, contagens com comando, três níveis de regra, sem generalização sem varredura, declarar o que não rodou, não modificar o repositório), `CHECKLIST.md` (A arquitetura e camadas … J frontend, com escala de severidade), `REVIEW-REPORT.md` (formato do relatório, com o padrão de arquitetura explicado), `TRIAGE.md`, `REVIEWER-PROMPT.md` (modo subagente), `STACK-GUIDE-FORMAT.md` e `maintaining-guides.md` (como os guias crescem e envelhecem).
+- 28 guias de stack em `stacks/`, pesquisados ao vivo em documentação oficial, comunidade e fóruns (fontes com data de acesso) e conferidos por verificadores independentes, cada um com tabela de versões e mudanças de convenção, como identificar a versão e o estilo do repositório, checklist com "como checar", régua, "vale a partir de" e severidade, padrões de projeto recomendados, anti-padrões, segurança e ferramentas: linguagens (`typescript-node`, `python`, `go`, `java`, `csharp-dotnet`), frameworks (`nestjs`, `node-http`, `react`, `nextjs`, `angular`, `vue`, `fastapi`, `django`, `flask`, `go-http`, `spring-boot`, `aspnet-core`), dados (`typescript-orm`, `python-sqlalchemy`, `go-sql`, `java-jpa`, `dotnet-efcore`, `relational-schema-design`, `dynamodb`, `mongodb`, `redis`) e arquitetura (`backend-architecture-patterns`, `frontend-architecture`).
+- `scripts/detect_stack.py` (stdlib): lê os manifestos (npm, PyPI, Go, Maven/Gradle, NuGet), aponta os guias que valem, avisa guia com mais de 6 meses, versão do pacote principal fora de `versions_covered` e dependência central sem guia; saída JSON (`ok`, `status`, `data`, `problems`, `questions`). Testes em `scripts/test_detect_stack.py`.
+
+---
+
 ## [0.38.0] — 2026-10-23
 
 ### Added
