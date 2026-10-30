@@ -279,6 +279,16 @@ Skills focadas em código: construir, revisar, depurar e operar sistemas.
 
 ---
 
+## accessibility-review
+
+**Arquivo:** `skills/engineering/accessibility-review/pt-BR/SKILL.md`
+
+**Descrição:** Avalia a acessibilidade de um protótipo ou interface (desktop, tablet e celular) contra a WCAG 2.2 níveis A e AA (55 critérios), critério por critério e com evidência: varredura automatizada com axe-core e Playwright em vários viewports e estados (`scripts/axe-scan.mjs`, cenários com passos, rascunho de percurso de foco), roteiros manuais `M1`…`M12` (teclado, foco, leitor de tela, contraste, alternativas em texto, semântica, formulários, ARIA e mensagens de status, zoom e reflow, toque e gestos, tempo e mídia, consistência), cálculo de contraste (`scripts/contrast.py`) e relatório gerado por `scripts/a11y_report.py` que nunca dá "Passou" sem evidência escrita e separa Falhou, Passou, Não se aplica, Não verificado, Revisar e Conflito. Assets: `METHOD.md` (13 regras e portão para "Passou"), `CRITERIA.md` (tabela dos critérios com regras axe, roteiro e "aplica quando"), `automated-testing.md`, `manual-checks.md`, `form-factors.md`, `A11Y-REPORT.md`. Compõe com `interactive-prototype` (cria as telas), `qa-e2e-testing` (regressão com axe no e2e) e `hallucination-guard`.
+
+**Quando usar:** o usuário pedir "avaliar a acessibilidade", "revisão WCAG", "isso é acessível?", "auditoria de acessibilidade", "checar contraste", "testar com teclado", "testar com leitor de tela" ou "a11y".
+
+---
+
 # Productivity
 
 Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.

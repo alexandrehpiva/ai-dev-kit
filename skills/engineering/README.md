@@ -27,3 +27,4 @@ Skills focadas em código: construir, revisar, depurar e operar sistemas.
 | [`diagnose`](diagnose/pt-BR/SKILL.md) | Depurar via loop de reprodução + hipóteses falsificáveis |
 | [`write-a-dev-stack`](write-a-dev-stack/pt-BR/SKILL.md) | Desenhar/implementar CLI de orquestração de stacks locais (jornada, janelas, health, config em camadas) |
 | [`qa-e2e-testing`](qa-e2e-testing/pt-BR/SKILL.md) | Mapear telas/features, fechar plano de testes com `grill-me` e implementar/rodar e2e cobrindo estado de UI, cenários adversos e comportamento por tier de plano |
+| [`accessibility-review`](accessibility-review/pt-BR/SKILL.md) | Avaliar acessibilidade de protótipos e interfaces (desktop, tablet e celular) pela WCAG 2.2 A/AA: varredura axe-core + Playwright, roteiros manuais (teclado, foco, leitor de tela, contraste, formulários, ARIA, toque) e relatório por critério que nunca dá "Passou" sem evidência |

@@ -9,6 +9,20 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.41.0] — 2026-10-28
+
+### Added
+
+- `engineering/accessibility-review`: nova skill de **avaliação de acessibilidade** de protótipos e interfaces em desktop, tablet e celular, pela WCAG 2.2 níveis A e AA (55 critérios: 31 A e 24 AA; o 4.1.1 fica de fora por ter sido removido da 2.2). Princípio: critério por critério e com evidência — "sem achado na ferramenta" não é "acessível" e "não verificado" nunca é "passou". Fases: escopo → varredura automatizada → verificação manual → relatório → correção e novo teste (um achado por vez).
+- Assets: `METHOD.md` (13 regras, portão para "Passou", anti-padrões como "selo de conformidade" e "axe verde = pronto"), `CRITERIA.md` (tabela única dos critérios, lida pelo gerador de relatório: verificação parcial/manual, regras axe, roteiro e "aplica quando"), `automated-testing.md` (axe-core, Playwright e Lighthouse, versões fixadas, cenários com estados, armadilhas das tags e da ordem de `options()`/`withTags()`), `manual-checks.md` (roteiros `M1`…`M12`), `form-factors.md` (o que muda por dispositivo), `A11Y-REPORT.md` (formato do relatório e do `evidencias.json`).
+- Scripts: `axe-scan.mjs` (axe via Playwright em vários viewports e estados por cenário JSON, liga à força as regras desligadas por padrão que cobrem A/AA como `target-size`, rascunho do percurso de foco com `--keyboard-trace`, evidência de rolagem horizontal em 320 px; ferramentas instaladas em cache fora da skill; Node ≥ 22.12), `a11y_report.py` (relatório Markdown/JSON: nunca emite "Passou" sem evidência escrita, marca "Conflito" quando a evidência contradiz o axe, avisa critério desconhecido), `contrast.py` (razão de contraste 1.4.3/1.4.11, trunca em vez de arredondar). Testes: 21 em Python (`scripts/tests`) e 11 em `node --test` (os 2 de navegador real são ignorados sem as ferramentas).
+
+### Changed
+
+- `productivity/interactive-prototype` 2.2.1: `SKILL.md` (linha de roteamento), `UX-REVIEW.md` e `ux-ui-principles.md` §7 passam a deixar claro que o checklist de acessibilidade é o **piso de criação** e apontam para `accessibility-review` quando é preciso **avaliar**. Só texto de asset: sem entrada em `MIGRATIONS.md`; protótipos existentes aparecem como desatualizados e recebem apenas o passo `version-bump`.
+
+---
+
 ## [0.40.0] — 2026-10-27
 
 ### Changed

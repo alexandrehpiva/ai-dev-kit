@@ -102,6 +102,8 @@ O estado visual de um controle tem que refletir o estado real dos dados (mesma r
 - Mensagens de status dinâmicas anunciadas (`aria-live="polite"`) — erro de formulário, toast, carregamento concluído.
 - `alt` descritivo em imagem informativa; `alt=""` em decorativa.
 
+Estas regras são o piso ao **criar**. Para **avaliar** a acessibilidade de um protótipo (os 55 critérios A e AA da WCAG 2.2, com varredura automatizada, roteiros manuais e relatório com evidência), usar a skill `accessibility-review`.
+
 ## 8. Beleza — o que faz uma tela parecer cuidada
 
 Beleza aqui é consequência de sistema e detalhe, não de enfeite:
