@@ -1,0 +1,6 @@
+{
+  "scans": [
+    { "name": "inicial", "url": "bad.html", "viewports": ["desktop"] },
+    { "name": "depois-do-clique", "url": "bad.html", "viewports": ["mobile"], "steps": [ { "click": "#erro" }, { "wait": 100 } ] }
+  ]
+}

@@ -1,7 +1,7 @@
 ---
 name: interactive-prototype
 description: Cria e evolui protótipos navegáveis em HTML/CSS/JS: gera o repositório completo (scaffold com estrutura em camadas, build para arquivo único, hot reload, design system, README, badge/changelog, jornadas), com direção estética distintiva, fundamentos de UX/UI, versionamento aprovado antes do commit, documentação e PDF de jornadas e modo opcional de trabalho em grupo. Usar quando o usuário pedir "criar protótipo novo", "repositório do protótipo", "protótipo navegável", criar/editar/redesenhar tela, fluxo ou landing page; "direção visual", "isso parece genérico"; "design system"; "subir/servir o protótipo"; "versionar/commitar o protótipo"; "jornadas de usuário", "PDF das jornadas"; "isso está responsivo?"; "modo grupo", "sincronizar o protótipo", "versão beta", "publicar para o cliente", "preview para comparar".
-version: 2.2.0
+version: 2.2.1
 dependencies:
   - productivity/grill-me
   - productivity/hallucination-guard
@@ -36,6 +36,7 @@ Antes de **qualquer** outra ação, sem exceção e mesmo que consuma mais token
 | Criar componente/peça compartilhável, regra de negócio, `docs/` do protótipo | [`components-and-docs.md`](components-and-docs.md) — obrigatório |
 | Fechar etapa crítica (ativação, fim de rodada, compartilhar, promover, migrar, vetar pessoa) | [`checklists.md`](checklists.md) |
 | Antes de entregar qualquer rodada | [`UX-REVIEW.md`](UX-REVIEW.md) |
+| **Avaliar** a acessibilidade (critério por critério, com evidência e relatório) — "isso é acessível?", "revisão WCAG" | skill `accessibility-review` (o checklist do `UX-REVIEW.md` e o §7 do `ux-ui-principles.md` são só o piso de criação) |
 
 Pedido típico de ajuste numa tela já existente: design system do projeto → `aesthetic-direction.md`/`ux-ui-principles.md` conforme o tema → implementar nos arquivos-fonte → rebuild → `UX-REVIEW.md` → changelog `Pendente` → relatório e aguardar aprovação de commit.
 
