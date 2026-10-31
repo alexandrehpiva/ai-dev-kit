@@ -389,6 +389,16 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 
 ---
 
+## session-limit-guard
+
+**Arquivo:** `skills/productivity/session-limit-guard/pt-BR/SKILL.md`
+
+**Descrição:** Detecta compactação de contexto (`compact_boundary`, `isCompactSummary`, hook `SessionStart`), lê o uso do limite de 5 horas/semanal (statusLine `rate_limits`) e, ao estourar o limite, agenda a retomada automática da mesma sessão após o reset (launchd + `claude -p --resume`), parando antes de lançar mais subagentes. Inclui script stdlib com testes e guia de instalação dos hooks.
+
+**Quando usar:** sessão longa, autônoma ou com subagentes em background; "vou dormir", "deixa rodando", "não quero que trave quando acabar o limite", "monitora os tokens", "a sessão foi compactada", "o limite estourou".
+
+---
+
 ## recall-directives
 
 **Arquivo:** `skills/productivity/recall-directives/pt-BR/SKILL.md`

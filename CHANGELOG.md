@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.42.0] — 2026-10-31
+
+### Added
+
+- `productivity/session-limit-guard` 1.0.0: detecta compactação de contexto e o limite de uso do Claude Code e retoma sozinha a sessão após o reset (hooks `StopFailure`/`SessionStart`, job launchd com `claude -p --resume`, subcomando `watch` para sessões sem hooks). Script stdlib com 11 testes. Limites declarados na skill: sem aviso prévio do limite fora da statusline, comportamento do resume com a janela do app aberta não verificado.
+
+---
+
 ## [0.41.0] — 2026-10-28
 
 ### Added
