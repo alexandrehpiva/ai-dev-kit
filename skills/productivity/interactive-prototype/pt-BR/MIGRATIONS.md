@@ -44,3 +44,9 @@ Não exige alterar o protótipo: sem entrada de migração, `migrate.py` aplica 
 Não exige alterar o protótipo: sem entrada de migração, `migrate.py` aplica só o passo `version-bump`. A comunicação do time nasce **desligada**; o bloco `comms` do `prototype.config.json` é opcional e só passa a existir quando um promoter roda `scripts/comms-setup.py --enable`. Novidades: `comms-setup/send/inbox/ack/hook/watch` (ver `group-comms.md`) e a linha `.claude/settings.local.json` no `.gitignore` (os hooks de cada pessoa ficam só na máquina dela).
 
 **Verificação:** `skill-status.py` → `UP_TO_DATE`; `config-validate.py` → `VALID`.
+
+## 2.2.x → 2.3.0 — inteligência de design (sem mudança de arquivos; vale a partir de 2.2.0 ou 2.2.1)
+
+Não exige alterar o protótipo: sem entrada de migração, `migrate.py` aplica só o passo `version-bump`. Novidades: `design-md-standard.md` (DESIGN.md do awesome-design-md como padrão de referência, buscado na hora) e `design-research.md` (pesquisa de referências quando falta direção ou o usuário está indeciso).
+
+**Verificação:** `skill-status.py` → `UP_TO_DATE`.

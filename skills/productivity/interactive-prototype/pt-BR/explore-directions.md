@@ -21,7 +21,7 @@ Sem essa disciplina, o agente tende a: (1) produzir um único mockup e apresent�
 <fluxo>
 1. **Intake** — antes de gerar, levante três coisas (pergunte se não vierem no pedido):
    - Vibe/sensação desejada (adjetivos, direção emocional).
-   - Referências visuais (produtos/sites reais como inspiração), se houver.
+   - Referências visuais (produtos/sites reais como inspiração), se houver. **Sem referência, ou usuário indeciso:** rodar antes [`design-research.md`](design-research.md) e partir das direções que ele escolheu; marca citada: [`design-md-standard.md`](design-md-standard.md).
    - Ação principal que a tela precisa servir.
 2. **Gerar 2-3 variantes contrastantes** — cada uma com um *stance* de design diferente (densidade, ênfase, layout, tom visual). Evite diferenças cosméticas (só cor/fonte); a divergência tem que ser estrutural.
 3. **Construir HTML real** por variante — CSS inline, fontes de sistema, conteúdo realista (nunca `lorem ipsum` genérico), e interatividade mínima: uma ação clicável com resposta visível, uma transição de estado, feedback de hover.

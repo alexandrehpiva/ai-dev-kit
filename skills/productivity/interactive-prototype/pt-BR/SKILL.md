@@ -1,11 +1,11 @@
 ---
 name: interactive-prototype
-description: Cria e evolui protótipos navegáveis em HTML/CSS/JS: gera o repositório completo (scaffold com estrutura em camadas, build para arquivo único, hot reload, design system, README, badge/changelog, jornadas), com direção estética distintiva, fundamentos de UX/UI, versionamento aprovado antes do commit, documentação e PDF de jornadas e modo opcional de trabalho em grupo. Usar quando o usuário pedir "criar protótipo novo", "repositório do protótipo", "protótipo navegável", criar/editar/redesenhar tela, fluxo ou landing page; "direção visual", "isso parece genérico"; "design system"; "subir/servir o protótipo"; "versionar/commitar o protótipo"; "jornadas de usuário", "PDF das jornadas"; "isso está responsivo?"; "modo grupo", "sincronizar o protótipo", "versão beta", "publicar para o cliente", "preview para comparar".
-version: 2.2.1
+description: Cria e evolui protótipos navegáveis em HTML/CSS/JS: gera o repositório completo (scaffold com estrutura em camadas, build para arquivo único, hot reload, design system, README, badge/changelog, jornadas), com direção estética distintiva, fundamentos de UX/UI, versionamento aprovado antes do commit, documentação e PDF de jornadas e modo opcional de trabalho em grupo. Usar quando o usuário pedir "criar protótipo novo", "repositório do protótipo", "protótipo navegável", criar/editar/redesenhar tela, fluxo ou landing page; "direção visual", "isso parece genérico", "não sei como quero o visual", "usa o estilo do X", "pesquisa referências de design"; "design system"; "subir/servir o protótipo"; "versionar/commitar o protótipo"; "jornadas de usuário", "PDF das jornadas"; "isso está responsivo?"; "modo grupo", "sincronizar o protótipo", "versão beta", "publicar para o cliente", "preview para comparar".
+version: 2.3.0
 dependencies:
   - productivity/grill-me
   - productivity/hallucination-guard
-license: Apache License 2.0 (ver LICENSE.txt) para aesthetic-direction.md, adaptado de anthropics/skills (skills/frontend-design); explore-directions.md adaptado de "HTML Mockup Sketcher" (Nous Research); demais conteúdo e assets de autoria de Alexandre Piva.
+license: Apache License 2.0 (ver LICENSE.txt) para aesthetic-direction.md, adaptado de anthropics/skills (skills/frontend-design); explore-directions.md adaptado de "HTML Mockup Sketcher" (Nous Research); design-md-standard.md referencia (sem copiar) VoltAgent/awesome-design-md, MIT; demais conteúdo e assets de autoria de Alexandre Piva.
 ---
 
 # Interactive Prototype
@@ -20,6 +20,8 @@ Antes de **qualquer** outra ação, sem exceção e mesmo que consuma mais token
 
 | Se o pedido envolve… | Ler |
 |---|---|
+| Usuário indeciso, sem referência de layout, "me dá ideias", "algo moderno" | [`design-research.md`](design-research.md) — pesquisa na web antes de propor opções |
+| Usuário cita marca/produto/"estilo X" como referência, ou falta base para o design system | [`design-md-standard.md`](design-md-standard.md) — DESIGN.md (awesome-design-md), buscado na hora |
 | Direção visual ainda indefinida / "compare opções" / "esboça umas telas" | [`explore-directions.md`](explore-directions.md) |
 | Criar ou redesenhar UI (paleta, tipo, layout, hero, copy) | [`aesthetic-direction.md`](aesthetic-direction.md) |
 | UX, estados, formulários, responsividade, acessibilidade, acabamento | [`ux-ui-principles.md`](ux-ui-principles.md) |
@@ -39,6 +41,14 @@ Antes de **qualquer** outra ação, sem exceção e mesmo que consuma mais token
 | **Avaliar** a acessibilidade (critério por critério, com evidência e relatório) — "isso é acessível?", "revisão WCAG" | skill `accessibility-review` (o checklist do `UX-REVIEW.md` e o §7 do `ux-ui-principles.md` são só o piso de criação) |
 
 Pedido típico de ajuste numa tela já existente: design system do projeto → `aesthetic-direction.md`/`ux-ui-principles.md` conforme o tema → implementar nos arquivos-fonte → rebuild → `UX-REVIEW.md` → changelog `Pendente` → relatório e aguardar aprovação de commit.
+
+## Ordem das fontes de direção visual
+
+1. Design system / marca do projeto ou do cliente (se existir) — vence tudo.
+2. Referência indicada pelo usuário — se for marca de mercado, buscar o DESIGN.md dela na hora ([`design-md-standard.md`](design-md-standard.md)).
+3. Sem nenhuma das duas, ou usuário indeciso: pesquisar ([`design-research.md`](design-research.md)), trazer 2-3 direções com evidência e recomendação, e só então variantes ([`explore-directions.md`](explore-directions.md)) e plano ([`aesthetic-direction.md`](aesthetic-direction.md)).
+
+Informação visual vem sempre da fonte consultada **nesta rodada** (com URL e data), nunca de memória.
 
 ## Projeto com design system versionado — consultar antes de mudar
 

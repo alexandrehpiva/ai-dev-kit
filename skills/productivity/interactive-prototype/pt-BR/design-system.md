@@ -18,6 +18,7 @@ Não invente valor. Todo token do design system vem de uma fonte inspecionável:
 - Código-fonte da referência (CSS/tokens/tema, componentes compartilhados) quando acessível.
 - Inspeção visual direta (DevTools do browser, extração de cor de screenshot) quando só há o produto rodando, sem acesso ao código.
 - Documentação de marca formal, se existir.
+- `DESIGN.md` público da marca/estilo de referência (coleção awesome-design-md), buscado na hora, com URL e data: [`design-md-standard.md`](design-md-standard.md).
 
 Registre a fonte de cada bloco de token (ex.: "extraído de `client/src/index.css` do repo X" ou "inspecionado via DevTools em <url> em <data>") — isso importa quando a referência mudar e for preciso saber o que re-sincronizar.
 

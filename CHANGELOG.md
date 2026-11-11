@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.44.0] — 2026-11-11
+
+### Added
+
+- `productivity/interactive-prototype` 2.3.0: inteligência de design. `design-md-standard.md` passa a tratar o `DESIGN.md` do repositório VoltAgent/awesome-design-md (MIT, referenciado e nunca copiado) como padrão de referência visual, sempre buscado na hora com URL e data, mapeado para `docs/design-system.md` e `tokens.css`, sem importar identidade de terceiros. `design-research.md` define a pesquisa na web (produtos reais, galerias e busca de imagens, DESIGN.md, artigos recentes, fontes de acessibilidade) quando o usuário está indeciso ou não traz referência: níveis leve/padrão/fundo, tendência só com 2 fontes, 2-3 direções contrastantes com evidência e recomendação. `SKILL.md` ganha a ordem das fontes de direção visual (design system do projeto > referência do usuário > pesquisa) e novos gatilhos. Migração 2.2.x → 2.3.0 só `version-bump`.
+
+---
+
 ## [0.43.0] — 2026-11-11
 
 ### Added
