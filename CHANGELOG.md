@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.45.0] — 2026-11-11
+
+### Added
+
+- `productivity/playwright-mcp`: nova skill, dona da instalação e configuração do Playwright MCP (`@playwright/mcp` 0.0.85) em macOS, Windows e Linux com o navegador Chromium padrão. Modo extensão e modo **headless com dados logados** por cópia do perfil (`clone_profile.py`), `storageState` + `--isolated`, sessionStorage via `--init-script` (`make_init_script.py`) e CDP; registro por harness (`configure_mcp.py`, escopo local real no Claude Code, `--output-dir` fora do projeto), `check_setup.py` por modo, `detect_browser.py` com perfis. Achado central documentado: o Playwright injeta `--use-mock-keychain` (macOS) e `--password-store=basic` (Linux), que deixam a cópia deslogada e estragam seus cookies; `ignoreDefaultArgs` no `--config` resolve. Verificado ao vivo em macOS (Brave, Chrome, Edge; Gmail, LinkedIn, LinkedIn Recruiter, claude.ai, Bitbucket e GitHub logados em headless) e Linux em Docker (Ubuntu 24.04, Debian 12, arm64); Windows não verificado. 183 testes stdlib; E2E com sessão nova do Claude Code usando só a skill.
+
+---
+
 ## [0.44.0] — 2026-11-11
 
 ### Added

@@ -1,0 +1,9 @@
+{
+  "browser": {
+    "browserName": "chromium",
+    "launchOptions": {
+      "headless": true,
+      "ignoreDefaultArgs": ["--use-mock-keychain"]
+    }
+  }
+}

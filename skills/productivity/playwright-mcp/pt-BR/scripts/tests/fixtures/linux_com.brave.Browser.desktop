@@ -1,0 +1,7 @@
+[Desktop Entry]
+Version=1.0
+Name=Brave Web Browser
+Exec=/usr/bin/flatpak run --branch=stable --arch=x86_64 --command=brave --file-forwarding com.brave.Browser @@u %U @@
+Type=Application
+Categories=Network;WebBrowser;
+X-Flatpak=com.brave.Browser

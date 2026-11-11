@@ -1,0 +1,9 @@
+{
+  "browser": {
+    "browserName": "chromium",
+    "launchOptions": {
+      "headless": true,
+      "ignoreDefaultArgs": ["--password-store=basic"]
+    }
+  }
+}

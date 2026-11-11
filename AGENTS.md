@@ -485,6 +485,16 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 
 ---
 
+## playwright-mcp
+
+**Arquivo:** `skills/productivity/playwright-mcp/pt-BR/SKILL.md`
+
+**Descrição:** Dona da instalação e configuração do Playwright MCP (`@playwright/mcp` 0.0.85) em macOS, Windows e Linux, com o navegador Chromium padrão do sistema (Brave, Chrome, Edge, Chromium). Cobre o modo extensão (navegador real logado, token guardado fora do repositório; wrapper de Chaveiro no macOS) e o **headless com dados logados**: cópia do perfil (`clone_profile.py`: backup SQLite dos cookies em modo somente leitura, níveis minimal/light/full, destino padrão seguro fora de git e de pastas sincronizadas, `ignoreDefaultArgs` por SO para não perder a chave dos cookies, `--profile-directory`), `storageState` exportado gravado direto em arquivo + `--isolated`, sessionStorage via `--init-script` (`make_init_script.py`) e CDP numa cópia. Registro por harness com `configure_mcp.py` (Claude Code com escopo local real, Cursor, VS Code, Codex, Gemini; executável amarrado ao navegador da cópia; `--output-dir` fora do projeto), `check_setup.py` por modo e `detect_browser.py` com listagem de perfis sem dados pessoais. Instalação completa por SO (Node 20+, deps de Linux, arm64, sandbox como root, Windows), diagnóstico de "abriu deslogado" (incl. Chrome + Google `confirmidentifier`), segurança e troubleshooting. Verificado ao vivo em macOS (Brave/Chrome/Edge) e Linux em Docker; Windows marcado como não verificado.
+
+**Quando usar:** "configura o Playwright MCP", "instala o playwright mcp", "usa meu navegador logado", "headless logado", "headless com meus cookies", "exporta a sessão/cookies", "o MCP abriu deslogado", "Brave/Edge/Chrome com Playwright", "playwright mcp no Windows/Linux".
+
+---
+
 ## google-forms
 
 **Arquivo:** `skills/productivity/google-forms/pt-BR/SKILL.md`
