@@ -1,0 +1,189 @@
+# MODELO 5 — Quiz / avaliação com gabarito e feedback (style-guide.md, padrão 5).
+# ADAPTAR: tema, perguntas, gabarito, pontos e feedback. Confirme cada resposta correta com quem domina o conteúdo.
+# Este modelo é um exercício de autoavaliação, sem identificação: nenhum dado pessoal.
+# Para avaliar pessoas (nota por aluno): colete e-mail, preencha privacy.* (pending_owner) e decida a
+# liberação das notas (quiz.release: after_manual_review) e se o gabarito aparece (UX-J8).
+spec_version: 1
+version: 1
+status: draft
+approved_at: null
+
+meta:
+  title: "Quiz: fórmulas básicas de planilhas"
+  description: >
+    Teste rápido para conferir o que você aprendeu na Oficina de Planilhas. São 5 perguntas com pontos
+    (7 no total) e um campo opcional de dúvidas. Leva cerca de 5 minutos. Você vê a nota logo depois de enviar,
+    com o gabarito e uma explicação de cada resposta. Não coletamos nome nem e-mail.
+  language: pt-BR
+  document_title: "2027-03-12 Quiz - Fórmulas básicas de planilhas"   # ADAPTAR
+  owner_notes: >
+    MODELO. Exercício de aprendizagem (não seleciona pessoas): gabarito visível e nota imediata (UX-J8, UX-J6).
+    Sem cronômetro nativo no Forms [não verificado]: o texto não promete limite de tempo (UX-F6).
+    Quase tudo obrigatório porque pergunta em branco vale 0 ponto e distorce a nota; só a q6 (dúvidas, sem pontos)
+    é opcional (UX-E1). A posição da resposta correta varia entre as perguntas (UX-J4); as opções têm tamanho parecido.
+    q3 (resposta curta) tem correção automática por texto exato: aceite só o número "60" e explique o formato na ajuda.
+    Edição após envio desligada (UX-E7): quem edita refaz a prova.
+
+brief:
+  goal: "Dar à pessoa uma checagem imediata do que aprendeu na oficina e mostrar o que revisar, sem depender de correção manual."
+  audience: "Participantes da oficina; externo; ~40; sem menores."
+  channel: "Link no material pós-oficina."
+  account_type: personal
+  estimated_minutes: 5
+
+build:
+  path: ui                 # quiz com feedback e liberação de nota é pela UI
+  test_name_prefix: null
+
+privacy:
+  personal_data: none
+  inventory: []
+  # Sem identificação. Se coletar e-mail ou nome para registrar a nota, mude personal_data, preencha
+  # o inventário e marque base legal, controlador, contato, retenção e compartilhamento como pending_owner.
+  legal_basis: []
+  controller: null
+  contact: null
+  retention: null
+  sharing: null
+  decided_by: owner
+
+settings:
+  collect_email: none
+  send_copy: never
+  allow_edit: false
+  limit_one_response: false
+  progress_bar: false      # 2 seções
+  shuffle_questions: false # a ordem é do conteúdo (do simples ao composto)
+  confirmation_message: >
+    Respostas enviadas. Sua nota e a explicação de cada resposta ficam disponíveis a partir desta página.
+    Para revisar o conteúdo, use o material da oficina.
+  show_summary: false
+  disable_autosave: false
+  accepting_responses: true
+  close:
+    at: null
+    response_limit: null
+
+quiz:
+  enabled: true
+  release: immediately
+  respondent_sees:
+    missed_questions: true
+    correct_answers: true  # exercício de estudo; desligue se o quiz selecionar pessoas
+    point_values: true
+
+theme:
+  header_image: null
+  color: "#673ab7"
+  background_color: null
+  font: null
+
+publish:
+  published: true
+  audience: anyone_with_link
+  responders: []
+  notify_responders: false
+
+responses:
+  sheet: none
+  sheet_ref: null
+  sheet_access: "ADAPTAR: só o instrutor vê a aba Respostas."
+
+sections:
+  - id: s1
+    title: null
+    description: null
+    after_section: next
+    items:
+      - id: q1
+        type: multiple_choice
+        title: "Qual fórmula soma os valores das células A1 a A10?"
+        required: true
+        use: "Verificar se a pessoa sabe somar um intervalo."
+        points: 1
+        answer_key: ["=SOMA(A1:A10)"]
+        feedback:
+          right: "Isso. O dois-pontos indica o intervalo inteiro."
+          wrong: "Ainda não. Revise a seção 2 do material: o dois-pontos indica intervalo; o ponto e vírgula separa células avulsas."
+        options:
+          - {value: "=SOMA(A1;A10)"}
+          - {value: "=SOMA(A1:A10)"}
+          - {value: "=MÉDIA(A1:A10)"}
+          - {value: "=CONT.VALORES(A1:A10)"}
+        shuffle_options: false
+      - id: q2
+        type: multiple_choice
+        title: "Na fórmula =B2*$D$1, o que o cifrão ($) faz com a referência D1?"
+        required: true
+        use: "Verificar se a pessoa entende referência absoluta."
+        points: 1
+        answer_key: ["Mantém a referência fixa ao copiar a fórmula"]
+        feedback:
+          right: "Isso. Com $, a coluna e a linha não mudam ao copiar a fórmula."
+          wrong: "Ainda não. Revise a seção 3 do material: o $ fixa a referência quando a fórmula é copiada para outras células."
+        options:
+          - {value: "Mantém a referência fixa ao copiar a fórmula"}
+          - {value: "Mostra o valor de D1 como moeda"}
+          - {value: "Impede que D1 seja editada"}
+          - {value: "Soma o valor de D1 ao de B2"}
+        shuffle_options: false
+      - id: q3
+        type: short_text
+        title: "Se A1 vale 10, A2 vale 20 e A3 vale 30, qual é o resultado de =SOMA(A1:A3)?"
+        description: "Digite só o número."
+        required: true
+        use: "Verificar se a pessoa consegue calcular o resultado de uma soma de intervalo."
+        points: 2
+        answer_key: ["60"]
+        feedback:
+          general: "O resultado é 60: 10 + 20 + 30. O intervalo A1:A3 inclui as três células."
+
+  - id: s2
+    title: "Funções e erros"
+    description: "As próximas perguntas tratam de funções e de mensagens de erro."
+    after_section: submit
+    items:
+      - id: q4
+        type: checkboxes
+        title: "Quais destas funções resumem um intervalo de células em um único número? Marque todas as corretas."
+        required: true
+        use: "Verificar se a pessoa reconhece funções de resumo numérico."
+        points: 2
+        answer_key: ["=SOMA(A1:A10)", "=MÉDIA(A1:A10)", "=MÁXIMO(A1:A10)"]
+        feedback:
+          right: "Isso. SOMA, MÉDIA e MÁXIMO resumem o intervalo em um número."
+          wrong: "Ainda não. Revise a seção 4 do material: HOJE e SE não resumem um intervalo em um número."
+        options:
+          - {value: "=SOMA(A1:A10)"}
+          - {value: "=HOJE()"}
+          - {value: "=MÉDIA(A1:A10)"}
+          - {value: "=SE(A1>0;\"sim\";\"não\")"}
+          - {value: "=MÁXIMO(A1:A10)"}
+        shuffle_options: false
+      - id: q5
+        type: multiple_choice
+        title: "O que causa o erro #DIV/0! em uma fórmula?"
+        required: true
+        use: "Verificar se a pessoa sabe diagnosticar o erro de divisão mais comum."
+        points: 1
+        answer_key: ["Divisão por zero ou por uma célula vazia"]
+        feedback:
+          right: "Isso. Dividir por zero ou por célula vazia gera #DIV/0!."
+          wrong: "Ainda não. Revise a seção 5 do material: #DIV/0! aparece quando o divisor é zero ou está vazio."
+        options:
+          - {value: "Referência a uma célula apagada"}
+          - {value: "Texto no lugar de um número"}
+          - {value: "Divisão por zero ou por uma célula vazia"}
+          - {value: "Nome de função escrito errado"}
+        shuffle_options: false
+      - id: q6
+        type: paragraph
+        title: "Ficou alguma dúvida sobre o conteúdo? (opcional)"
+        description: "Não vale pontos. Não inclua dados pessoais."
+        required: false
+        use: "Levantar dúvidas para o instrutor preparar a revisão da oficina."
+        validation:
+          kind: length
+          rule: max_chars
+          value: 500
+          error: "Use até 500 caracteres."

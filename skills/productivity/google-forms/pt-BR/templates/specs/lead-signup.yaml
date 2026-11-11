@@ -1,0 +1,158 @@
+# MODELO 4 — Cadastro / captação de contato (lead) (style-guide.md, padrão 4).
+# ADAPTAR: o que a pessoa recebe (aqui, um guia), os assuntos da q1 e os trechos "PREENCHER".
+# Peça só o que o próximo contato exige: o telefone (q3) só fica se houver uso real; senão, corte.
+# BASE LEGAL pending_owner DE PROPÓSITO: o dono decide uma por finalidade (enviar o guia, contato
+# comercial, novidades). O agente não preenche nem sugere.
+spec_version: 1
+version: 1
+status: draft
+approved_at: null
+
+meta:
+  title: "Receba o guia de planilhas"
+  description: >
+    Preencha para receber por e-mail o guia gratuito de planilhas. Leva cerca de 1 minuto.
+    Usamos nome e e-mail para enviar o guia. Guardamos os dados por [PREENCHER: prazo de guarda].
+    Responsável pelos dados: [PREENCHER: controlador]. Compartilhamos com [PREENCHER: com quem, ou "ninguém"].
+    Para pedir acesso ou exclusão: [PREENCHER: contato do titular].
+  language: pt-BR
+  document_title: "2026-12-01 Cadastro - Guia de planilhas"   # ADAPTAR
+  owner_notes: >
+    MODELO. E-mail coletado só pelas Configurações ("Entrada do participante", que já valida o formato):
+    não há pergunta de e-mail (UX-A4). Marketing (q4) é opcional, desmarcado e separado do envio do guia (UX-H5).
+    O telefone é opcional e só entra com uso declarado (UX-H2); a regex é tolerante (espaços, parênteses,
+    hífen, +55) e deve ser testada na visão do respondente antes de publicar (UX-E5).
+    Edição após envio ligada (default do agente para cadastro): a pessoa pode corrigir o telefone.
+    A entrega do guia por e-mail é automação fora do Forms: confirme que existe antes de prometer prazo.
+
+brief:
+  goal: "Enviar o guia gratuito por e-mail e, para quem aceitar, formar a lista de contatos de quem se interessa por cada assunto."
+  audience: "Público externo adulto; ~300 pessoas; sem menores."
+  channel: "Link na página do guia e no e-mail de divulgação."
+  account_type: personal
+  estimated_minutes: 1
+
+build:
+  path: ui
+  test_name_prefix: null
+
+privacy:
+  personal_data: personal
+  inventory:
+    - item: collect_email
+      data: "e-mail (coletado pelas Configurações)"
+      purpose: "Enviar o guia."
+    - item: q2
+      data: "nome"
+      purpose: "Personalizar o e-mail com o guia."
+    - item: q3
+      data: "telefone (opcional)"
+      purpose: "Contato por mensagem sobre o guia, só para quem preferir."
+    - item: q4
+      data: "aceite de receber conteúdos (vinculado ao e-mail)"
+      purpose: "Enviar conteúdos periódicos sobre o assunto de interesse."
+  legal_basis:             # o DONO escolhe; finalidades distintas, bases possivelmente distintas
+    - purpose: "Enviar o guia solicitado"
+      basis: pending_owner
+    - purpose: "Contato por telefone sobre o guia (opcional)"
+      basis: pending_owner
+    - purpose: "Enviar conteúdos periódicos (opcional)"
+      basis: pending_owner
+  controller: pending_owner
+  contact: pending_owner
+  retention: pending_owner
+  sharing: pending_owner
+  decided_by: owner
+
+settings:
+  collect_email: responder_input
+  send_copy: never
+  allow_edit: true
+  limit_one_response: false
+  progress_bar: false      # 2 seções
+  shuffle_questions: false
+  confirmation_message: >
+    Pronto. O guia chega no e-mail que você informou em poucos minutos. Se não chegar, confira a caixa de spam
+    ou escreva para contato@example.com.
+  show_summary: false
+  disable_autosave: false
+  accepting_responses: true
+  close:
+    at: null
+    response_limit: null
+
+quiz:
+  enabled: false
+
+theme:
+  header_image: null
+  color: "#3f51b5"
+  background_color: null
+  font: null
+
+publish:
+  published: true
+  audience: anyone_with_link
+  responders: []
+  notify_responders: false
+
+responses:
+  sheet: new
+  sheet_ref: null
+  sheet_access: "ADAPTAR: dono e 1 pessoa de marketing (editora). Contém e-mail e telefone."
+
+sections:
+  - id: s1
+    title: null
+    description: null
+    after_section: next
+    items:
+      - id: q1
+        type: multiple_choice
+        title: "Qual assunto mais interessa a você?"
+        required: true
+        use: "Segmentar o envio de conteúdos pelo assunto de interesse."
+        options:
+          - {value: "Fórmulas e funções"}
+          - {value: "Gráficos e painéis"}
+          - {value: "Automação de tarefas"}
+        other: true
+        shuffle_options: false
+
+  - id: s2
+    title: "Seus dados"
+    description: "Pedimos só o necessário para enviar o guia."
+    after_section: submit
+    items:
+      - id: q2
+        type: short_text
+        title: "Nome"
+        description: "Como você quer ser chamado(a) no e-mail."
+        required: true
+        use: "Personalizar o e-mail de envio do guia."
+        personal: true
+        validation:
+          kind: length
+          rule: max_chars
+          value: 80
+          error: "Use até 80 caracteres."
+      - id: q3
+        type: short_text
+        title: "Telefone (opcional)"
+        description: "Com DDD. Ex.: 11 91234-5678"
+        required: false
+        use: "Permitir contato por mensagem sobre o guia, para quem preferir."
+        personal: true
+        validation:
+          kind: regex
+          rule: matches
+          value: '^\+?[0-9 ()-]{10,20}$'
+          error: "Use só números, com DDD. Ex.: 11 91234-5678"
+      - id: q4
+        type: checkboxes
+        title: "Conteúdos por e-mail (opcional)"
+        required: false
+        use: "Formar a lista opcional de conteúdos periódicos, com consentimento separado do envio do guia."
+        personal: true
+        options:
+          - value: "Aceito receber conteúdos por e-mail. Posso cancelar quando quiser."

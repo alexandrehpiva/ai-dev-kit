@@ -1,0 +1,217 @@
+# MODELO 6 — Pesquisa acadêmica com TCLE / consentimento (style-guide.md, padrão 6).
+# ADAPTAR: pesquisador, instituição, tema, blocos temáticos e os trechos "PREENCHER".
+# O TEXTO e a FORMA do consentimento dependem do comitê de ética da instituição: confirme com o
+# orientador ou o comitê antes de publicar [não verificado nesta skill]. Os textos de riscos e
+# benefícios abaixo são exemplo, não recomendação.
+# BASE LEGAL pending_owner DE PROPÓSITO: quem decide é o pesquisador responsável (e o encarregado/DPO
+# da instituição, se houver). O agente não escolhe nem sugere. Pesquisa sobre saúde, religião etc. ou com
+# menores muda o nível de privacy.personal_data (sensitive/minors) e exige decisão própria do dono.
+spec_version: 1
+version: 1
+status: draft
+approved_at: null
+
+meta:
+  title: "Pesquisa: uso de IA nos estudos"
+  description: >
+    Convite para uma pesquisa da Universidade Exemplo sobre o uso de ferramentas de inteligência artificial
+    nos estudos. Para maiores de 18 anos. Leva cerca de 6 minutos. A participação é voluntária e não coletamos
+    nome nem e-mail. As informações completas, inclusive sobre seus dados, estão logo abaixo: você só responde
+    se concordar.
+  language: pt-BR
+  document_title: "2027-03-01 Pesquisa - Uso de IA nos estudos"   # ADAPTAR
+  owner_notes: >
+    MODELO. Bateria Likert declarada na q6 (concordância; UX-C3). Consentimento por ramificação (UX-B4):
+    "Sim" segue para o questionário; "Não" vai direto para o envio, e a mensagem de confirmação é a mesma
+    nos dois caminhos, por isso é neutra. Como não há nome nem e-mail, a pessoa não consegue retirar a resposta
+    depois do envio: o TCLE (q2) diz isso. personal_data está "personal" por cautela, porque faixa etária e
+    nível de ensino combinados podem identificar em turma pequena; se o pesquisador/comitê entender que são
+    dados anonimizados, a decisão é dele e vai para o registro. Nome e número do parecer do comitê vão em q3.
+    Barra de progresso ligada (3 seções); a decisão de não concordar também termina no envio.
+
+brief:
+  goal: "Descrever como estudantes de graduação e pós usam IA nos estudos e quanto confiam nela, para o capítulo de resultados da dissertação."
+  audience: "Estudantes universitários maiores de 18 anos; externo; ~200; sem menores."
+  channel: "Link por e-mail das coordenações e grupos de mensagens das turmas."
+  account_type: personal
+  estimated_minutes: 6
+
+build:
+  path: ui
+  test_name_prefix: null
+
+privacy:
+  personal_data: personal
+  inventory:
+    - item: q7
+      data: "texto livre sobre experiência de estudo (pode conter dado pessoal sem querer)"
+      purpose: "Análise qualitativa de exemplos de uso."
+    - item: q8
+      data: "faixa etária"
+      purpose: "Descrever o perfil da amostra."
+    - item: q9
+      data: "nível de ensino"
+      purpose: "Descrever o perfil da amostra e comparar níveis."
+  legal_basis:             # o PESQUISADOR RESPONSÁVEL escolhe; o agente não preenche
+    - purpose: "Realizar a pesquisa e analisar as respostas (formulário, perfil e texto livre)"
+      basis: pending_owner
+    - purpose: "Registrar o aceite de participação (q4)"
+      basis: pending_owner
+  controller: pending_owner
+  contact: pending_owner
+  retention: pending_owner
+  sharing: pending_owner
+  decided_by: owner
+
+settings:
+  collect_email: none
+  send_copy: never
+  allow_edit: false
+  limit_one_response: false
+  progress_bar: true
+  shuffle_questions: false
+  confirmation_message: >
+    Resposta enviada. Obrigado pelo seu tempo. Se você não concordou em participar,
+    nada além dessa escolha foi registrado.
+  show_summary: false
+  disable_autosave: false
+  accepting_responses: true
+  close:
+    at: "2027-04-30T23:59:00-03:00"   # ADAPTAR: fim da coleta
+    response_limit: null
+
+quiz:
+  enabled: false
+
+theme:
+  header_image: null
+  color: "#3f51b5"
+  background_color: null
+  font: null
+
+publish:
+  published: true
+  audience: anyone_with_link
+  responders: []
+  notify_responders: false
+
+responses:
+  sheet: none
+  sheet_ref: null
+  sheet_access: "ADAPTAR: só a pesquisadora e o orientador acessam a aba Respostas."
+
+sections:
+  - id: s1
+    title: null
+    description: null
+    # sem after_section: a pergunta q4 desvia por resposta
+    items:
+      - id: q1
+        type: title_description
+        title: "Sobre a pesquisa"
+        description: >
+          Esta pesquisa é conduzida pela Pesquisadora Exemplo, da Universidade Exemplo, com orientação do
+          Prof. Orientador Exemplo. O objetivo é entender como estudantes usam ferramentas de inteligência
+          artificial nos estudos. Responder leva cerca de 6 minutos.
+      - id: q2
+        type: title_description
+        title: "Participação, riscos e benefícios"
+        description: >
+          A participação é voluntária e você pode parar a qualquer momento antes de enviar. Depois do envio não
+          conseguimos identificar a sua resposta para retirá-la, porque não coletamos nome nem e-mail. Os riscos
+          são mínimos: algum desconforto ao refletir sobre os seus estudos. Não há pagamento; o benefício é
+          contribuir com um estudo sobre o tema.
+      - id: q3
+        type: title_description
+        title: "Seus dados e contato"
+        description: >
+          Coletamos faixa etária e nível de ensino, sem nome nem e-mail. Usamos as respostas só nesta pesquisa e em
+          publicações com resultados agrupados. Guardamos as respostas por [PREENCHER: prazo de guarda].
+          Responsável pelos dados: [PREENCHER: controlador]. Compartilhamos com [PREENCHER: com quem, ou "ninguém"].
+          Dúvidas ou pedidos sobre seus dados: [PREENCHER: contato do titular]. Pesquisa aprovada pelo comitê de ética:
+          [PREENCHER: nome do comitê e número do parecer].
+      - id: q4
+        type: multiple_choice
+        title: "Você leu as informações acima e concorda em participar da pesquisa?"
+        required: true
+        use: "Registrar o consentimento de participação e encerrar a coleta de quem não concorda."
+        options:
+          - {value: "Sim, concordo em participar", go_to: s2}
+          - {value: "Não concordo", go_to: submit}
+
+  - id: s2
+    title: "Sobre o uso de IA nos estudos"
+    description: "Responda pensando na sua experiência recente."
+    after_section: s3
+    items:
+      - id: q5
+        type: multiple_choice
+        title: "Nos últimos 30 dias, em quantos dias você usou ferramentas de IA para estudar?"
+        required: true
+        use: "Medir a frequência de uso e separar usuários frequentes de eventuais."
+        options:
+          - {value: "Nenhum dia"}
+          - {value: "1 a 5 dias"}
+          - {value: "6 a 15 dias"}
+          - {value: "16 dias ou mais"}
+        shuffle_options: false
+      - id: q6
+        type: mc_grid
+        title: "Quanto você concorda com cada frase?"
+        description: "Responda só as linhas que se aplicam a você."
+        required: false
+        use: "Medir autonomia, confiança, verificação e orientação docente em relação à IA (bateria Likert)."
+        grid:
+          rows:
+            - "Consigo estudar com autonomia usando ferramentas de IA"
+            - "Confio nas respostas que as ferramentas de IA me dão"
+            - "Confiro as respostas das ferramentas de IA em outras fontes"
+            - "Meus professores orientam o uso de ferramentas de IA"
+          columns: ["Discordo totalmente", "Discordo", "Não concordo nem discordo", "Concordo", "Concordo totalmente"]
+          one_per_column: false
+          shuffle_rows: false
+      - id: q7
+        type: paragraph
+        title: "Descreva uma situação recente em que ferramentas de IA fizeram diferença nos seus estudos. (opcional)"
+        description: "Não inclua nomes de pessoas nem dados pessoais."
+        required: false
+        use: "Coletar exemplos concretos para a análise qualitativa dos resultados."
+        personal: true
+        validation:
+          kind: length
+          rule: max_chars
+          value: 1000
+          error: "Use até 1000 caracteres."
+
+  - id: s3
+    title: "Sobre você (opcional)"
+    description: "Perguntamos só para descrever o grupo que respondeu. Você pode pular."
+    after_section: submit
+    items:
+      - id: q8
+        type: multiple_choice
+        title: "Qual sua faixa etária?"
+        required: false
+        use: "Descrever o perfil etário da amostra."
+        personal: true
+        options:
+          - {value: "18 a 24 anos"}
+          - {value: "25 a 34 anos"}
+          - {value: "35 a 44 anos"}
+          - {value: "45 a 54 anos"}
+          - {value: "55 anos ou mais"}
+          - {value: "Prefiro não responder"}
+        shuffle_options: false
+      - id: q9
+        type: multiple_choice
+        title: "Qual seu nível de ensino atual?"
+        required: false
+        use: "Comparar o uso de IA entre graduação e pós-graduação."
+        personal: true
+        options:
+          - {value: "Graduação"}
+          - {value: "Especialização ou MBA"}
+          - {value: "Mestrado"}
+          - {value: "Doutorado"}
+          - {value: "Prefiro não responder"}
+        shuffle_options: false

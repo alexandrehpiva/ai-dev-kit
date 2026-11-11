@@ -1,0 +1,166 @@
+# MODELO 3 — Feedback interno anônimo (style-guide.md, padrão 3).
+# ADAPTAR: equipe, janela de tempo (4 semanas), as linhas da grade da q1 e a pessoa que lê as respostas.
+# Anonimato real: sem e-mail, sem login obrigatório, sem upload e sem área/cargo/tempo de casa
+# (em time pequeno, essas perguntas identificam). Se algum desses entrar, troque "anônimo" por "confidencial" (UX-H8).
+spec_version: 1
+version: 1
+status: draft
+approved_at: null
+
+meta:
+  title: "Feedback do time: últimas 4 semanas"
+  description: >
+    Queremos ouvir você sobre as últimas 4 semanas no time para decidir o que ajustar. Leva cerca de 4 minutos.
+    As respostas são anônimas: não coletamos nome nem e-mail e não perguntamos área nem cargo.
+    Evite citar nomes de pessoas ou detalhes que identifiquem você.
+  language: pt-BR
+  document_title: "2026-12-01 Feedback - Time de Produto"   # ADAPTAR
+  owner_notes: >
+    MODELO. Link compartilhado como "qualquer pessoa com o link" e divulgado só em canal interno: restringir
+    ao domínio exigiria login do respondente, e então "anônimo" deixaria de ser verdade (UX-H8). Se o dono
+    preferir restringir ao domínio, troque o texto para "confidenciais" e diga quem lê as respostas.
+    Texto livre pode identificar: avise para não citar pessoas (UX-H10); mantenha show_summary desligado (UX-H9).
+    Pesquisa qualitativa declarada (UX-C9): 3 das 6 perguntas são abertas (começar, parar, continuar), por desenho.
+    Obrigatórias só q2 e q3 (sempre se aplicam a todos); o resto é opcional para reduzir desistência (UX-E1).
+    Se o time tiver poucas pessoas, avalie se mesmo assim o texto livre expõe alguém antes de prometer anonimato.
+
+brief:
+  goal: "Decidir 2 ou 3 ajustes de rotina do time no próximo ciclo, a partir da percepção de quem vive o trabalho."
+  audience: "Pessoas do time de Produto; interno; ~25; sem menores."
+  channel: "Link no canal interno do time."
+  account_type: workspace
+  estimated_minutes: 4
+
+build:
+  path: ui
+  test_name_prefix: null
+
+privacy:
+  personal_data: none
+  inventory: []
+  # Sem coleta de identificador. Se o dono passar a coletar e-mail, nome ou perfil, mude personal_data,
+  # preencha o inventário e marque os campos abaixo como pending_owner (decisão dele, não do agente).
+  legal_basis: []
+  controller: null
+  contact: null
+  retention: null
+  sharing: null
+  decided_by: owner
+
+settings:
+  collect_email: none
+  send_copy: never
+  allow_edit: false
+  limit_one_response: false   # ligar exigiria login e quebraria o anonimato
+  progress_bar: false         # 2 seções
+  shuffle_questions: false
+  confirmation_message: >
+    Obrigado. Vamos apresentar o resumo das respostas ao time na reunião de ciclo, sem expor textos individuais.
+  show_summary: false
+  disable_autosave: false
+  accepting_responses: true
+  close:
+    at: "2026-12-12T18:00:00-03:00"   # ADAPTAR: formulário esquecido aberto continua coletando
+    response_limit: null
+
+quiz:
+  enabled: false
+
+theme:
+  header_image: null
+  color: "#673ab7"
+  background_color: null
+  font: null
+
+publish:
+  published: true
+  audience: anyone_with_link
+  responders: []
+  notify_responders: false
+
+responses:
+  sheet: none
+  sheet_ref: null
+  sheet_access: "ADAPTAR: só a pessoa de People que consolida o resumo lê a aba Respostas."
+
+sections:
+  - id: s1
+    title: null
+    description: null
+    after_section: next
+    items:
+      - id: q1
+        type: mc_grid
+        title: "Nas últimas 4 semanas, com que frequência isto aconteceu?"
+        description: "Responda só as linhas que se aplicam a você."
+        required: false
+        use: "Medir quatro condições de trabalho do time para escolher onde agir primeiro."
+        grid:
+          rows:
+            - "Tive as informações de que precisava para trabalhar"
+            - "Recebi retorno sobre o meu trabalho"
+            - "Concluí as tarefas dentro do prazo combinado"
+            - "Pude pedir ajuda quando precisei"
+          columns: ["Nunca", "Raramente", "Às vezes", "Frequentemente", "Sempre"]
+          one_per_column: false
+          shuffle_rows: false
+      - id: q2
+        type: multiple_choice
+        title: "Como você descreveria a sua carga de trabalho nas últimas 4 semanas?"
+        required: true
+        use: "Detectar sobrecarga ou ociosidade para redistribuir tarefas."
+        options:
+          - {value: "Muito baixa"}
+          - {value: "Baixa"}
+          - {value: "Adequada"}
+          - {value: "Alta"}
+          - {value: "Muito alta"}
+        shuffle_options: false
+      - id: q3
+        type: multiple_choice
+        title: "Como você avalia o clima do time nas últimas 4 semanas?"
+        required: true
+        use: "Acompanhar o clima do time de um ciclo para o outro."
+        options:
+          - {value: "Muito ruim"}
+          - {value: "Ruim"}
+          - {value: "Nem bom nem ruim"}
+          - {value: "Bom"}
+          - {value: "Muito bom"}
+        shuffle_options: false
+
+  - id: s2
+    title: "Sugestões para o time (opcional)"
+    description: "As três perguntas abaixo são opcionais. Não cite nomes de pessoas."
+    after_section: submit
+    items:
+      - id: q4
+        type: paragraph
+        title: "O que devemos começar a fazer?"
+        required: false
+        use: "Colher ideias de novas práticas para o próximo ciclo."
+        validation:
+          kind: length
+          rule: max_chars
+          value: 600
+          error: "Use até 600 caracteres."
+      - id: q5
+        type: paragraph
+        title: "O que devemos parar de fazer?"
+        required: false
+        use: "Identificar práticas que atrapalham, para cortar do próximo ciclo."
+        validation:
+          kind: length
+          rule: max_chars
+          value: 600
+          error: "Use até 600 caracteres."
+      - id: q6
+        type: paragraph
+        title: "O que devemos continuar fazendo?"
+        required: false
+        use: "Proteger o que já funciona ao decidir as mudanças."
+        validation:
+          kind: length
+          rule: max_chars
+          value: 600
+          error: "Use até 600 caracteres."

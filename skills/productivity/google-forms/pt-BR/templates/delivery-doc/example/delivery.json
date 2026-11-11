@@ -1,0 +1,355 @@
+{
+  "schema_version": 1,
+  "meta": {
+    "form_title": "Inscrição na Oficina de Planilhas",
+    "version": "1.0",
+    "date": "2026-11-11",
+    "owner": "Equipe de Eventos",
+    "subtitle": "Manual de uso, referência e histórico do formulário",
+    "approved_by": "Coordenação de Eventos",
+    "approved_at": "2026-11-10",
+    "confidentiality": "Uso interno",
+    "form_status": "publicado",
+    "links": {
+      "respondent_url": "https://docs.google.com/forms/d/e/EXEMPLO/viewform",
+      "edit_url": "https://docs.google.com/forms/d/EXEMPLO/edit",
+      "responses_url": "https://docs.google.com/forms/d/EXEMPLO/edit#responses",
+      "sheet_url": "https://docs.google.com/spreadsheets/d/EXEMPLO/edit"
+    },
+    "ux_verdict": {
+      "verdict": "APROVADO COM RESSALVAS",
+      "reviewed_at": "2026-11-10",
+      "reviewer": "revisão independente",
+      "accepted_caveats": [
+        "A pergunta de observação é longa para o celular; o dono decidiu mantê-la como opcional."
+      ],
+      "pending_decisions": [],
+      "not_verified": [
+        "Leitura com leitor de tela não foi testada."
+      ]
+    }
+  },
+  "sections": [
+    {
+      "id": "visao-geral",
+      "title": "Visão geral",
+      "body_md": "A Oficina de Planilhas é um treinamento de meio período, em 12 de março de 2027. Este formulário recebe as inscrições e pergunta o setor de cada pessoa para mostrar, só ao Financeiro, duas perguntas extras.\n\n| Item | Em resumo |\n|---|---|\n| Objetivo | Reservar vagas e saber quantas pessoas de cada setor vão participar |\n| Público | Colaboradores da empresa (interno); cerca de 80 pessoas, para 60 vagas |\n| Prazo | Sem data de encerramento; a Equipe de Eventos fecha o formulário quando as vagas acabarem |\n| Tempo de preenchimento | Cerca de 3 minutos: 3 perguntas obrigatórias e 3 opcionais |\n| Idioma | Português do Brasil |\n| Coleta dado pessoal | Sim: nome e e-mail ([Pergunta 1](#item-q1) e [Pergunta 2](#item-q2)) |\n| Precisa de conta Google | Não: qualquer pessoa com o link consegue responder |\n\n> [!IMPORTANT]\n> **O que ainda não foi conferido.** A leitura do formulário com um leitor de tela não foi testada. Se alguém da equipe depende desse recurso, peça um teste antes de divulgar o link.\n\n## O que mudou desde o pedido {#visao-mudancas}\n\nNada mudou além do pedido original. As datas e as pessoas que aprovaram cada versão estão no [Histórico](#historico).\n\n## Como usar este documento {#visao-como-usar}\n\nQuem vai divulgar o formulário começa em [Acesso e links](#acesso-e-links). Quem vai analisar as respostas começa em [Respostas](#respostas). Quem vai editar o formulário começa em [Editar e manter](#editar-e-manter)."
+    },
+    {
+      "id": "acesso-e-links",
+      "title": "Acesso e links",
+      "body_md": "Este formulário está publicado e aceita respostas. A [Figura 1](#fig-01-editor-publicar-desktop) mostra a janela do editor onde o acesso foi conferido; só o dono e os editores veem essa janela. Se alguém clicar em «Despublicar», o formulário fica [Despublicado](#termo-despublicado) e o link deixa de aceitar respostas.\n\n![Janela «Publicar» do editor: acesso «Qualquer pessoa com o link» e botão para copiar o link](capturas/01-editor-publicar-desktop.png)\n\n## Link para divulgar {#acesso-divulgar}\n\nO [Link do respondente](#termo-link-do-respondente) é o único endereço que você envia aos colaboradores:\n\n[{{links.respondent_url}}]({{links.respondent_url}})\n\nQualquer pessoa com esse link pode responder, sem entrar em conta nenhuma. Quem receber o link e repassá-lo também poderá responder, então divulgue só nos canais internos da empresa.\n\n## Link de edição {#acesso-edicao}\n\n> [!WARNING]\n> O [Link de edição](#termo-link-de-edicao) dá poder de mudar e apagar o formulário. Não o divulgue.\n\n[{{links.edit_url}}]({{links.edit_url}})\n\nHoje têm acesso de edição duas pessoas da Equipe de Eventos. Se alguém mais precisar editar, o dono deve adicioná-la pelo menu de compartilhamento do editor.\n\n## Onde estão as respostas {#acesso-respostas}\n\n- No próprio formulário, na aba «Respostas»: [{{links.responses_url}}]({{links.responses_url}}).\n- Na [Planilha vinculada](#termo-planilha-vinculada), que recebe uma linha por resposta: [{{links.sheet_url}}]({{links.sheet_url}}). Têm acesso de leitura as duas pessoas da Equipe de Eventos e a analista de dados.\n\nPara ver e interpretar as respostas, vá para [Respostas](#respostas).\n\n## Como compartilhar com segurança {#acesso-seguranca}\n\n1. Aos colaboradores, envie só o link para divulgar. Nunca o link de edição.\n2. À analista de dados, dê acesso de leitura à planilha, não de edição ao formulário.\n3. Para encurtar o endereço ou gerar um QR code, use o link para divulgar. Nunca coloque nome ou e-mail dentro do link: veja [Privacidade](#privacidade).\n\n## Texto de divulgação sugerido {#acesso-texto}\n\n> [!TIP]\n> Oficina de Planilhas, 12 de março de 2027, das 9h às 12h. São 60 vagas. Leva cerca de 3 minutos para se inscrever pelo link: {{links.respondent_url}}. Pedimos só o seu nome e o seu e-mail, para confirmar a vaga."
+    },
+    {
+      "id": "passo-a-passo-respondente",
+      "title": "Passo a passo para quem responde",
+      "body_md": "Você vai passar por três telas. A segunda só aparece para quem escolhe «Financeiro» na [Pergunta 3 — Qual é o seu setor?](#item-q3). Cada tela tem uma figura no computador e outra no celular.\n\n## Tela 1 — Sobre você {#passo-tela-1}\n\nAo abrir o link, você vê o título, uma frase sobre o uso dos seus dados e três perguntas ([Figura 2](#fig-02-respondente-tela1-desktop) e [Figura 3](#fig-03-respondente-tela1-celular)). O asterisco vermelho marca as perguntas obrigatórias.\n\n::: screens-pair\n![Tela 1 no computador: título da oficina, nome, e-mail e setor](capturas/02-respondente-tela1-desktop.png)\n![Tela 1 no celular: as mesmas três perguntas, uma abaixo da outra](capturas/03-respondente-tela1-celular.png)\n:::\n\n::: step Escreva o seu nome\nNa [Pergunta 1 — Nome completo](#item-q1), digite o nome completo. Exemplo: «Pessoa Teste».\n:::\n\n::: step Escreva o seu e-mail\nNa [Pergunta 2 — E-mail](#item-q2), digite um e-mail válido. Exemplo: «teste@exemplo.com».\n:::\n\n::: step Escolha o seu setor\nNa [Pergunta 3 — Qual é o seu setor?](#item-q3), marque uma opção: «Financeiro», «Comercial» ou «Outro setor». Exemplo: «Financeiro».\n:::\n\n::: step Avance\nClique em «Próxima».\n:::\n\nPara onde você vai depende da escolha do setor. Quem marca «Financeiro» vai para a [Tela 2](#passo-tela-2). Quem marca «Comercial» ou «Outro setor» vai direto para a [Tela 3](#passo-tela-3).\n\n## Tela 2 — Detalhes do financeiro {#passo-tela-2}\n\nSó quem escolheu «Financeiro» vê esta tela, com duas perguntas opcionais ([Figura 4](#fig-04-respondente-tela2-desktop) e [Figura 5](#fig-05-respondente-tela2-celular)).\n\n::: screens-pair\n![Tela 2 no computador: rotinas em planilhas e número de participantes](capturas/04-respondente-tela2-desktop.png)\n![Tela 2 no celular: as mesmas duas perguntas](capturas/05-respondente-tela2-celular.png)\n:::\n\n::: step Marque as suas rotinas\nNa [Pergunta 4 — Quais rotinas você faz em planilhas?](#item-q4), marque quantas opções quiser. Exemplo: «Conciliação bancária» e «Fechamento mensal».\n:::\n\n::: step Diga quantas pessoas vão\nNa [Pergunta 5 — Quantas pessoas da sua equipe vão participar?](#item-q5), digite um número de 1 a 10. Exemplo: «3».\n:::\n\n::: step Avance\nClique em «Próxima». Se mudar de ideia, clique em «Voltar»: o que você marcou nesta tela continua preenchido.\n:::\n\n## Tela 3 — Para finalizar {#passo-tela-3}\n\nTodos chegam a esta tela, que tem uma pergunta opcional e o botão de envio ([Figura 6](#fig-06-respondente-tela3-desktop) e [Figura 7](#fig-07-respondente-tela3-celular)).\n\n::: screens-pair\n![Tela 3 no computador: campo de observação e botão Enviar](capturas/06-respondente-tela3-desktop.png)\n![Tela 3 no celular: o mesmo campo e o botão Enviar](capturas/07-respondente-tela3-celular.png)\n:::\n\n::: step Escreva uma observação, se quiser\nNa [Pergunta 6 — Alguma observação para a organização?](#item-q6), escreva até 300 caracteres. Exemplo: «Prefiro a turma da manhã.»\n:::\n\n::: step Envie\nClique em «Enviar».\n:::\n\n## Quando algo dá errado {#passo-erros}\n\nSe o e-mail estiver incompleto, a tela avisa embaixo do campo e não deixa avançar ([Figura 8](#fig-08-respondente-erro-email-desktop)). Exemplo: «teste@» mostra «Informe um e-mail válido, como nome@exemplo.com.» A regra se chama [Validação de resposta](#termo-validacao).\n\n![Aviso de e-mail inválido, em vermelho, embaixo do campo](capturas/08-respondente-erro-email-desktop.png)\n\nSe você deixar em branco uma pergunta com [Resposta obrigatória](#termo-resposta-obrigatoria), a tela mostra «Esta pergunta é obrigatória.» e leva você de volta ao campo ([Figura 9](#fig-09-respondente-obrigatoria-desktop)).\n\n![Aviso de pergunta obrigatória em branco no campo de nome](capturas/09-respondente-obrigatoria-desktop.png)\n\n## Tela final — Confirmação {#passo-confirmacao}\n\nDepois de «Enviar», aparece a mensagem «Sua resposta foi registrada.» e o link «Enviar outra resposta» ([Figura 10](#fig-10-respondente-confirmacao-desktop) e [Figura 11](#fig-11-respondente-confirmacao-celular)). Esta tela foi vista em uma resposta de teste, que depois foi excluída.\n\n::: screens-pair\n![Confirmação no computador](capturas/10-respondente-confirmacao-desktop.png)\n![Confirmação no celular](capturas/11-respondente-confirmacao-celular.png)\n:::\n\n## Mapa de caminhos {#passo-mapa}\n\n| Se o respondente escolhe… | Vê… | Termina em… |\n|---|---|---|\n| «Financeiro» | [Tela 1](#passo-tela-1), [Tela 2](#passo-tela-2) e [Tela 3](#passo-tela-3) | [Confirmação](#passo-confirmacao) |\n| «Comercial» | [Tela 1](#passo-tela-1) e [Tela 3](#passo-tela-3) | [Confirmação](#passo-confirmacao) |\n| «Outro setor» | [Tela 1](#passo-tela-1) e [Tela 3](#passo-tela-3) | [Confirmação](#passo-confirmacao) |"
+    },
+    {
+      "id": "funcionalidades",
+      "title": "Funcionalidades",
+      "body_md": "O formulário tem três telas, que o Google Forms chama de [Seção](#termo-secao), e usa quatro recursos. Para cada um, abaixo estão o que faz, onde está neste formulário, um exemplo e quem percebe o efeito.\n\n## Ramificação pelo setor {#func-ramificacao}\n\nA [Ramificação](#termo-ramificacao) muda a tela seguinte conforme a resposta. Aqui ela está na [Pergunta 3 — Qual é o seu setor?](#item-q3): «Financeiro» leva à [Seção 2 — Detalhes do financeiro](#secao-s2); «Comercial» e «Outro setor» pulam direto para a [Seção 3 — Para finalizar](#secao-s3). Exemplo: quem escolhe «Comercial» nunca vê as perguntas sobre rotinas em planilhas. O respondente nota só que o formulário é mais curto. O dono precisa lembrar disso ao editar (veja [Editar e manter](#editar-e-manter)).\n\n## Validação de resposta {#func-validacao}\n\nA [Validação de resposta](#termo-validacao) recusa uma resposta fora do formato esperado e explica o motivo. Há três neste formulário:\n\n| Pergunta | Regra | Mensagem que o respondente vê |\n|---|---|---|\n| [Pergunta 2 — E-mail](#item-q2) | Deve ser um e-mail | «Informe um e-mail válido, como nome@exemplo.com.» |\n| [Pergunta 5 — Quantas pessoas da sua equipe vão participar?](#item-q5) | Número de 1 a 10 | «Digite um número de 1 a 10.» |\n| [Pergunta 6 — Alguma observação para a organização?](#item-q6) | No máximo 300 caracteres | «Use no máximo 300 caracteres.» |\n\nExemplo: se alguém digitar «teste@» na pergunta de e-mail, aparece a mensagem e o formulário não avança ([Figura 8](#fig-08-respondente-erro-email-desktop)).\n\n## Perguntas obrigatórias {#func-obrigatorias}\n\nTrês perguntas têm [Resposta obrigatória](#termo-resposta-obrigatoria): [Pergunta 1 — Nome completo](#item-q1), [Pergunta 2 — E-mail](#item-q2) e [Pergunta 3 — Qual é o seu setor?](#item-q3). As outras três podem ficar em branco. Exemplo: quem deixa o nome vazio vê «Esta pergunta é obrigatória.» ([Figura 9](#fig-09-respondente-obrigatoria-desktop)). O dono nota que nome, e-mail e setor sempre chegam preenchidos na planilha.\n\n## Barra de progresso {#func-progresso}\n\nCada tela mostra «Página 1 de 3», «Página 2 de 3» e «Página 3 de 3» com uma barra. Quem não passa pela Tela 2 vê a contagem pular da página 1 para a 3; isso é normal do Google Forms e não indica erro."
+    },
+    {
+      "id": "particularidades",
+      "title": "Particularidades",
+      "body_md": "Estes são comportamentos do Google Forms que não são óbvios e que afetam este formulário.\n\n## Renomear uma opção do setor pode quebrar o caminho {#part-renomear}\n\nO destino da ramificação é guardado por opção. Se você renomear «Financeiro» na [Pergunta 3 — Qual é o seu setor?](#item-q3), confira na mesma pergunta se a opção ainda leva à Tela 2. O que fazer: depois de qualquer mudança, responda uma vez por caminho (veja [Editar e manter](#editar-e-manter)).\n\n## Caixas de seleção chegam em uma célula só {#part-caixas}\n\nNa [Pergunta 4 — Quais rotinas você faz em planilhas?](#item-q4), quem marca duas rotinas gera uma célula com os dois valores separados por vírgula, por exemplo «Conciliação bancária, Fechamento mensal». Para contar cada rotina, a analista precisa separar a coluna. O que fazer: veja a tabela de colunas em [Respostas](#respostas).\n\n## O e-mail só tem o formato conferido {#part-email}\n\nA [Pergunta 2 — E-mail](#item-q2) confere que o texto parece um e-mail («nome@exemplo.com»), mas não prova que a pessoa é dona do endereço nem que a caixa existe. Para lembretes, trate os e-mails como informados pela própria pessoa.\n\n## Sem limite de respostas por pessoa {#part-duplicadas}\n\nComo o acesso é «Qualquer pessoa com o link» e não pede login, alguém pode enviar a inscrição duas vezes. O que fazer: na planilha, procure e-mails repetidos antes de fechar a lista de presença.\n\n## Resposta excluída não volta {#part-excluir}\n\nUma resposta excluída no editor não pode ser recuperada. Já um formulário excluído vai para a lixeira do Google Drive, que guarda os arquivos por até 30 dias, segundo a Ajuda do Drive. Não conte com essa recuperação."
+    },
+    {
+      "id": "respostas",
+      "title": "Respostas",
+      "body_md": "Esta seção é para quem vai ler as respostas. Nenhuma resposta real aparece neste documento.\n\n## Onde ver {#resp-onde}\n\nAbra o formulário pelo [Link de edição](#termo-link-de-edicao) e clique na aba «Respostas». Ela tem três visões:\n\n- «Resumo»: gráficos e contagens por pergunta.\n- «Pergunta»: todas as respostas de uma pergunta de cada vez.\n- «Individual»: uma pessoa por vez.\n\nCada resposta também vira uma linha na [Planilha vinculada](#termo-planilha-vinculada). Para criar ou trocar essa planilha, use o botão [Link para as Planilhas](#termo-link-planilhas) da aba «Respostas».\n\n## Como exportar {#resp-exportar}\n\n1. Na aba «Respostas», clique no menu de três pontos.\n2. Escolha «Fazer download das respostas (.csv)».\n3. Guarde o arquivo em uma pasta com acesso restrito: ele contém nomes e e-mails.\n\n## Como ler cada coluna {#resp-colunas}\n\n| Coluna | O que aparece | Como interpretar |\n|---|---|---|\n| [Carimbo de data/hora](#termo-carimbo) | Dia e hora do envio | Mostra quando a pessoa enviou; use para achar duplicados e testes |\n| [Pergunta 1 — Nome completo](#item-q1) | Texto digitado | Nome informado pela pessoa; pode vir com erro de digitação |\n| [Pergunta 2 — E-mail](#item-q2) | Texto digitado | E-mail informado; só o formato foi conferido |\n| [Pergunta 3 — Qual é o seu setor?](#item-q3) | «Financeiro», «Comercial» ou «Outro setor» | Base para contar as vagas por setor |\n| [Pergunta 4 — Quais rotinas você faz em planilhas?](#item-q4) | Valores separados por vírgula | Só aparece preenchida para o Financeiro; separe a coluna para contar |\n| [Pergunta 5 — Quantas pessoas da sua equipe vão participar?](#item-q5) | Número de 1 a 10 | Só aparece preenchida para o Financeiro |\n| [Pergunta 6 — Alguma observação para a organização?](#item-q6) | Texto livre | Pode ficar vazia |\n\nO formulário ainda não recebeu respostas reais. A tabela abaixo usa dados fictícios, só para mostrar como a planilha fica:\n\n| Carimbo de data/hora | Nome completo | E-mail | Setor | Rotinas | Pessoas | Observação |\n|---|---|---|---|---|---|---|\n| 12/03/2027 14:05 | Ana Exemplo | ana@exemplo.com | Financeiro | Conciliação bancária, Fechamento mensal | 3 | Prefiro a turma da manhã. |\n| 12/03/2027 14:20 | Bruno Exemplo | bruno@exemplo.com | Comercial | (vazio) | (vazio) | (vazio) |\n| 12/03/2027 15:02 | Carla Exemplo | carla@exemplo.com | Outro setor | (vazio) | (vazio) | Posso levar um colega? |\n\n## Cuidados de interpretação {#resp-cuidados}\n\n- O total de uma pergunta opcional pode ser menor que o total de respostas: quem não a respondeu não conta.\n- Descarte as respostas de teste: elas têm nome «Pessoa Teste» ou e-mail «teste@exemplo.com».\n- O link aberto não garante que respondam todos os grupos de forma igual; com poucas respostas, descreva em vez de generalizar.\n\n## Quem vê e como excluir {#resp-excluir}\n\nVeem as respostas as duas pessoas da Equipe de Eventos e, na planilha, a analista de dados. Para excluir uma resposta, abra a visão «Individual», localize a pessoa e use o ícone de lixeira. A decisão é da Equipe de Eventos e não tem volta."
+    },
+    {
+      "id": "editar-e-manter",
+      "title": "Editar e manter",
+      "body_md": "Antes de mexer, saiba que quem responde vê as mudanças na hora. A tabela mostra o que fazer em cada caso.\n\n| Quero… | Faça… | Cuidado |\n|---|---|---|\n| Corrigir o texto de uma pergunta | Abra o [Link de edição](#termo-link-de-edicao), clique na pergunta e edite o texto | Mudança de sentido mistura respostas de antes e depois |\n| Adicionar uma opção em [Pergunta 4 — Quais rotinas você faz em planilhas?](#item-q4) | Clique na pergunta e em «Adicionar opção» | A opção nova não tem ramificação definida; confira o destino |\n| Renomear ou remover uma opção de [Pergunta 3 — Qual é o seu setor?](#item-q3) | Clique na pergunta, edite a opção e confira o destino dela na ramificação | Remover uma opção pode deixar um caminho sem saída |\n| Reordenar as telas | Use as setas da seção no editor | Muda a tela «seguinte» padrão e pode quebrar o mapa de caminhos |\n| Fechar o formulário | Aba «Respostas», desligue «Aceitando respostas» | Quem abrir o link verá uma mensagem de formulário fechado |\n| Mudar quem pode responder | Janela «Publicar» ([Figura 1](#fig-01-editor-publicar-desktop)) | Restringir impede a divulgação por link aberto |\n\nDepois de qualquer mudança, teste de novo: responda uma vez em cada caminho do [mapa de caminhos](#passo-mapa), exclua as respostas de teste e registre a mudança no [Histórico](#historico). Se a mudança alterar os dados coletados, avise a Equipe de Eventos e quem analisa as respostas, e revise a [Privacidade](#privacidade)."
+    },
+    {
+      "id": "privacidade",
+      "title": "Privacidade",
+      "body_md": "Esta seção registra o que o dono decidiu. A base legal e a retenção foram definidas pela Equipe de Eventos em 2026-11-09.\n\n## O que é coletado e por quê {#priv-coletado}\n\n| Dado | Pergunta | Para que serve |\n|---|---|---|\n| Nome completo | [Pergunta 1 — Nome completo](#item-q1) | Confirmar a vaga e montar a lista de presença |\n| E-mail | [Pergunta 2 — E-mail](#item-q2) | Enviar a confirmação e o lembrete da oficina |\n| Data e hora do envio | Registrada pelo Google, sem pergunta | Identificar duplicados e testes |\n\nO setor, as rotinas e o número de pessoas não identificam ninguém sozinhos; servem para montar a turma.\n\n## Base legal, responsável e prazos {#priv-base}\n\n- **Base legal:** «consentimento do titular, para confirmar a inscrição e enviar o lembrete da oficina». Decidido pela Equipe de Eventos em 2026-11-09.\n- **Controlador:** Empresa Exemplo Ltda. **Canal do titular:** privacidade@exemplo.com.\n- **Retenção:** as respostas são apagadas até 13 de abril de 2027 (30 dias depois da oficina) pela Equipe de Eventos.\n- **Compartilhamento:** só com a Equipe de Eventos e a analista de dados; nada é enviado a terceiros.\n\n## O aviso que o respondente vê {#priv-aviso}\n\nNa descrição de abertura aparece: «Usamos seu nome e e-mail só para confirmar a inscrição.» (veja a [Figura 2](#fig-02-respondente-tela1-desktop))."
+    },
+    {
+      "id": "perguntas-frequentes",
+      "title": "Perguntas frequentes",
+      "body_md": "## Posso responder do celular?\n\nSim. O formulário se ajusta à tela pequena e mostra as mesmas perguntas, como na [Figura 3](#fig-03-respondente-tela1-celular). O passo a passo está em [Passo a passo para quem responde](#passo-a-passo-respondente).\n\n## Posso corrigir a inscrição depois de enviar?\n\nNão por este formulário: ele não permite editar a resposta depois do envio. Para corrigir, envie outra resposta com os dados certos e avise a Equipe de Eventos, que apaga a antiga (veja [Quem vê e como excluir](#resp-excluir)).\n\n## Por que não consigo abrir o link?\n\nConfira se copiou o [Link do respondente](#termo-link-do-respondente) inteiro, sem o final cortado. Se a mensagem disser que o formulário não aceita mais respostas, as vagas acabaram e a Equipe de Eventos fechou a inscrição (veja [Editar e manter](#editar-e-manter)).\n\n## Por que algumas pessoas não veem a Tela 2?\n\nPorque ela só aparece para quem escolhe «Financeiro». É a ramificação descrita em [Ramificação pelo setor](#func-ramificacao).\n\n## Como sei quantas pessoas se inscreveram?\n\nAbra a aba «Respostas»: o número aparece no topo. Os detalhes estão em [Onde ver](#resp-onde).\n\n## Como apago uma resposta de teste?\n\nNa visão «Individual» da aba «Respostas», localize a resposta e use o ícone de lixeira. Respostas de teste têm o nome «Pessoa Teste» ([Cuidados de interpretação](#resp-cuidados)).\n\n## Quem pode ver os nomes e e-mails?\n\nSó a Equipe de Eventos e a analista de dados. A lista completa e o prazo para apagar estão em [Base legal, responsável e prazos](#priv-base)."
+    },
+    {
+      "id": "referencia",
+      "title": "Referência do formulário",
+      "body_md": "Cada pergunta e cada seção do formulário tem uma ficha, na ordem em que o respondente as vê. Em cada ficha, «Citada em» leva de volta aos trechos deste documento que a mencionam."
+    }
+  ],
+  "form_sections": [
+    {
+      "id": "s1",
+      "title": "Sobre você",
+      "description": "Preencha para reservar sua vaga na oficina de 12 de março de 2027. Leva cerca de 3 minutos. Usamos seu nome e e-mail só para confirmar a inscrição.",
+      "after": "Depende do setor: Financeiro vai para a seção 2; os demais vão para a seção 3"
+    },
+    {
+      "id": "s2",
+      "title": "Detalhes do financeiro",
+      "description": "Conte como você usa planilhas hoje. Isso ajuda a montar os exemplos da oficina.",
+      "after": "Ir para a próxima seção"
+    },
+    {
+      "id": "s3",
+      "title": "Para finalizar",
+      "description": "Falta só uma pergunta opcional. Depois é só enviar.",
+      "after": "Enviar o formulário"
+    }
+  ],
+  "items": [
+    {
+      "id": "q1",
+      "section": "s1",
+      "number": 1,
+      "type_label": "Resposta curta",
+      "title": "Nome completo",
+      "required": true,
+      "use": "Confirma a vaga e monta a lista de presença. É dado pessoal (veja [Privacidade](#privacidade)).",
+      "personal_data": true
+    },
+    {
+      "id": "q2",
+      "section": "s1",
+      "number": 2,
+      "type_label": "Resposta curta",
+      "title": "E-mail",
+      "description": "Exemplo: nome@exemplo.com",
+      "required": true,
+      "validation": {
+        "rule": "Deve ser um e-mail válido",
+        "error": "Informe um e-mail válido, como nome@exemplo.com."
+      },
+      "use": "Recebe a confirmação e o lembrete da oficina. É dado pessoal (veja [Privacidade](#privacidade)).",
+      "personal_data": true
+    },
+    {
+      "id": "q3",
+      "section": "s1",
+      "number": 3,
+      "type_label": "Múltipla escolha",
+      "title": "Qual é o seu setor?",
+      "required": true,
+      "options": [
+        {
+          "label": "Financeiro",
+          "goes_to": "s2"
+        },
+        {
+          "label": "Comercial",
+          "goes_to": "s3"
+        },
+        {
+          "label": "Outro setor",
+          "goes_to": "s3"
+        }
+      ],
+      "use": "Define se a pessoa vê as perguntas do Financeiro e permite contar as vagas por setor."
+    },
+    {
+      "id": "q4",
+      "section": "s2",
+      "number": 4,
+      "type_label": "Caixas de seleção",
+      "title": "Quais rotinas você faz em planilhas?",
+      "required": false,
+      "options": [
+        "Conciliação bancária",
+        "Fechamento mensal",
+        "Orçamento anual",
+        "Outra"
+      ],
+      "use": "Ajuda a escolher os exemplos usados na oficina."
+    },
+    {
+      "id": "q5",
+      "section": "s2",
+      "number": 5,
+      "type_label": "Resposta curta",
+      "title": "Quantas pessoas da sua equipe vão participar?",
+      "description": "Digite um número de 1 a 10.",
+      "required": false,
+      "validation": {
+        "rule": "Número entre 1 e 10",
+        "error": "Digite um número de 1 a 10."
+      },
+      "use": "Estima quantas vagas o Financeiro vai ocupar."
+    },
+    {
+      "id": "q6",
+      "section": "s3",
+      "number": 6,
+      "type_label": "Parágrafo",
+      "title": "Alguma observação para a organização?",
+      "description": "Até 300 caracteres.",
+      "required": false,
+      "validation": {
+        "rule": "No máximo 300 caracteres",
+        "error": "Use no máximo 300 caracteres."
+      },
+      "use": "Recebe pedidos como a preferência por turma."
+    }
+  ],
+  "glossary": [
+    {
+      "slug": "secao",
+      "term": "Seção",
+      "definition": "Cada tela do formulário. O respondente passa de uma seção a outra com os botões «Próxima» e «Voltar»."
+    },
+    {
+      "slug": "ramificacao",
+      "term": "Ramificação",
+      "definition": "Quando a resposta a uma pergunta muda qual tela você vê em seguida."
+    },
+    {
+      "slug": "resposta-obrigatoria",
+      "term": "Resposta obrigatória",
+      "definition": "Pergunta marcada com asterisco vermelho; o formulário não avança enquanto ela estiver em branco."
+    },
+    {
+      "slug": "validacao",
+      "term": "Validação de resposta",
+      "definition": "Regra que confere o formato do que foi digitado (um e-mail, um número) e mostra uma mensagem quando não confere."
+    },
+    {
+      "slug": "link-do-respondente",
+      "term": "Link do respondente",
+      "definition": "Endereço que se divulga para que as pessoas respondam. Não permite editar o formulário."
+    },
+    {
+      "slug": "link-de-edicao",
+      "term": "Link de edição",
+      "definition": "Endereço que abre o editor. Só o dono e os editores devem tê-lo."
+    },
+    {
+      "slug": "planilha-vinculada",
+      "term": "Planilha vinculada",
+      "definition": "Planilha que recebe uma linha por resposta, criada a partir da aba «Respostas»."
+    },
+    {
+      "slug": "link-planilhas",
+      "term": "Link para as Planilhas",
+      "definition": "Botão da aba «Respostas» que cria ou escolhe a planilha vinculada."
+    },
+    {
+      "slug": "carimbo",
+      "term": "Carimbo de data/hora",
+      "definition": "Primeira coluna da planilha: o dia e a hora em que a resposta foi enviada."
+    },
+    {
+      "slug": "despublicado",
+      "term": "Despublicado",
+      "definition": "Formulário que existe mas não aceita respostas pelo link. Fica assim até alguém clicar em «Publicar»."
+    }
+  ],
+  "history": [
+    {
+      "version": "0.9",
+      "date": "2026-11-09",
+      "change": "Versão de teste. A pergunta de telefone foi retirada porque não era necessária.",
+      "requested_by": "Equipe de Eventos",
+      "approved_by": "Equipe de Eventos"
+    },
+    {
+      "version": "1.0",
+      "date": "2026-11-10",
+      "change": "Primeira versão entregue, com a ramificação pelo setor e a base legal registrada.",
+      "requested_by": "Equipe de Eventos",
+      "approved_by": "Coordenação de Eventos"
+    }
+  ],
+  "captures": [
+    {
+      "file": "capturas/01-editor-publicar-desktop.png",
+      "taken_at": "2026-11-10T16:10:00-03:00",
+      "viewport": "1280x800",
+      "form_version": "1.0",
+      "source": "formulario-real",
+      "masked": true
+    },
+    {
+      "file": "capturas/02-respondente-tela1-desktop.png",
+      "taken_at": "2026-11-10T16:11:00-03:00",
+      "viewport": "1280x800",
+      "form_version": "1.0",
+      "source": "formulario-real",
+      "masked": true
+    },
+    {
+      "file": "capturas/03-respondente-tela1-celular.png",
+      "taken_at": "2026-11-10T16:12:00-03:00",
+      "viewport": "390x844",
+      "form_version": "1.0",
+      "source": "formulario-real",
+      "masked": true
+    },
+    {
+      "file": "capturas/04-respondente-tela2-desktop.png",
+      "taken_at": "2026-11-10T16:13:00-03:00",
+      "viewport": "1280x800",
+      "form_version": "1.0",
+      "source": "formulario-real",
+      "masked": true
+    },
+    {
+      "file": "capturas/05-respondente-tela2-celular.png",
+      "taken_at": "2026-11-10T16:14:00-03:00",
+      "viewport": "390x844",
+      "form_version": "1.0",
+      "source": "formulario-real",
+      "masked": true
+    },
+    {
+      "file": "capturas/06-respondente-tela3-desktop.png",
+      "taken_at": "2026-11-10T16:15:00-03:00",
+      "viewport": "1280x800",
+      "form_version": "1.0",
+      "source": "formulario-real",
+      "masked": true
+    },
+    {
+      "file": "capturas/07-respondente-tela3-celular.png",
+      "taken_at": "2026-11-10T16:16:00-03:00",
+      "viewport": "390x844",
+      "form_version": "1.0",
+      "source": "formulario-real",
+      "masked": true
+    },
+    {
+      "file": "capturas/08-respondente-erro-email-desktop.png",
+      "taken_at": "2026-11-10T16:17:00-03:00",
+      "viewport": "1280x800",
+      "form_version": "1.0",
+      "source": "formulario-real",
+      "masked": true
+    },
+    {
+      "file": "capturas/09-respondente-obrigatoria-desktop.png",
+      "taken_at": "2026-11-10T16:18:00-03:00",
+      "viewport": "1280x800",
+      "form_version": "1.0",
+      "source": "formulario-real",
+      "masked": true
+    },
+    {
+      "file": "capturas/10-respondente-confirmacao-desktop.png",
+      "taken_at": "2026-11-10T16:19:00-03:00",
+      "viewport": "1280x800",
+      "form_version": "1.0",
+      "source": "formulario-real",
+      "masked": true
+    },
+    {
+      "file": "capturas/11-respondente-confirmacao-celular.png",
+      "taken_at": "2026-11-10T16:20:00-03:00",
+      "viewport": "390x844",
+      "form_version": "1.0",
+      "source": "formulario-real",
+      "masked": true
+    }
+  ]
+}

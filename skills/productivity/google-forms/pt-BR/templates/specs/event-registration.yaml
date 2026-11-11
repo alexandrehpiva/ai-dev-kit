@@ -1,0 +1,175 @@
+# MODELO 2 — Inscrição em evento (style-guide.md, padrão 2).
+# ADAPTAR: evento, datas, turmas, vagas (response_limit), mensagem de encerramento e os trechos "PREENCHER".
+# Dados pessoais: este modelo coleta nome, e-mail e, opcionalmente, recurso de acessibilidade.
+# A BASE LEGAL, o controlador, o contato, a retenção e o compartilhamento ficam pending_owner
+# DE PROPÓSITO: quem decide é o dono do formulário (e o encarregado/DPO, se houver). O agente não preenche.
+# A q5 (avisos de próximos eventos, opcional) é OUTRA finalidade: tem finalidade e base legal próprias
+# (pending_owner separado, em privacy.legal_basis). Por isso o aviso de abertura só promete o uso do e-mail
+# para a vaga e o material; o uso para novidades é informado e aceito à parte, na seção 3.
+spec_version: 1
+version: 1
+status: draft
+approved_at: null
+
+meta:
+  title: "Inscrição: Oficina de Planilhas"
+  description: >
+    Inscreva-se na Oficina de Planilhas, em 12 ou 19 de março. Leva cerca de 2 minutos. Vagas limitadas.
+    Usamos seu nome e e-mail para confirmar a vaga e enviar o material da oficina. Guardamos os dados por
+    [PREENCHER: prazo de guarda]. Responsável pelos dados: [PREENCHER: controlador]. Compartilhamento dos
+    dados com terceiros: [PREENCHER: com quem, ou "nenhum"]. Para pedir acesso ou exclusão:
+    [PREENCHER: contato do titular].
+  language: pt-BR
+  document_title: "2027-03-12 Inscrição - Oficina de Planilhas"   # ADAPTAR: AAAA-MM-DD do evento
+  owner_notes: >
+    MODELO. Defaults do agente (troque se quiser): edição após envio ligada (a pessoa pode trocar a turma),
+    barra de progresso ligada (3 seções), e-mail coletado só pelas Configurações (sem pergunta repetida, UX-A4).
+    A q4 pode revelar dado de saúde ou deficiência (sensível): mantenha só com decisão explícita do dono;
+    se o dono não quiser, exclua a q4 (o id não é reaproveitado) e baixe privacy.personal_data para "personal".
+    Mensagem de encerramento (Forms > Respostas > "Mensagem para participantes quando o formulário não aceita
+    respostas", UX-I9): "As inscrições encerraram. Para a lista de espera, escreva para eventos@example.com."
+    Com envios simultâneos, o limite de respostas pode ser ultrapassado (relato de comunidade): reserve margem.
+
+brief:
+  goal: "Fechar a lista de presença das duas turmas (40 vagas) e preparar o local e o material."
+  audience: "Público externo adulto; ~60 interessados; sem menores."
+  channel: "Link por e-mail e QR code no cartaz."
+  account_type: personal
+  estimated_minutes: 2
+
+build:
+  path: ui
+  test_name_prefix: null
+
+privacy:
+  personal_data: sensitive   # o nível mais alto presente (q4 pode trazer dado de saúde)
+  inventory:
+    - item: collect_email
+      data: "e-mail (coletado pelas Configurações)"
+      purpose: "Confirmar a vaga e enviar o material e os avisos da oficina."
+    - item: q3
+      data: "nome completo"
+      purpose: "Montar a lista de presença e o crachá."
+    - item: q4
+      data: "necessidade de acessibilidade (texto livre; pode revelar dado sensível)"
+      purpose: "Preparar o local antes da oficina."
+    - item: q5
+      data: "aceite de receber novidades (vinculado ao e-mail)"
+      purpose: "Avisar sobre próximos eventos."
+  legal_basis:             # o DONO escolhe, uma por finalidade distinta; não copie nada daqui sem decisão dele
+    - purpose: "Confirmar a vaga, montar a lista de presença e enviar o material"
+      basis: pending_owner
+    - purpose: "Preparar o local com os recursos de acessibilidade informados (dado possivelmente sensível)"
+      basis: pending_owner
+    - purpose: "Avisar sobre próximos eventos (opcional)"
+      basis: pending_owner
+  controller: pending_owner
+  contact: pending_owner
+  retention: pending_owner
+  sharing: pending_owner
+  decided_by: owner
+
+settings:
+  collect_email: responder_input   # "Entrada do participante": já valida o formato; use "verified" só em Workspace e avise do login
+  send_copy: never
+  allow_edit: true
+  limit_one_response: false
+  progress_bar: true
+  shuffle_questions: false
+  confirmation_message: >
+    Inscrição recebida. Você recebe a confirmação da vaga por e-mail em até 2 dias úteis.
+    Dúvidas: eventos@example.com.
+  show_summary: false
+  disable_autosave: false
+  accepting_responses: true
+  close:                   # um critério só: aqui, limite de vagas
+    at: null
+    response_limit: 40     # ADAPTAR: vagas totais (as duas turmas somam)
+
+quiz:
+  enabled: false
+
+theme:
+  header_image: null
+  color: "#3f51b5"         # Índigo: contraste 6,87 com branco
+  background_color: null
+  font: null
+
+publish:
+  published: true
+  audience: anyone_with_link
+  responders: []
+  notify_responders: false
+
+responses:
+  sheet: new
+  sheet_ref: null
+  sheet_access: "ADAPTAR: dono e 1 organizador (editor). Contém nome e e-mail: não compartilhe mais amplamente."
+
+sections:
+  - id: s1
+    title: null
+    description: null
+    after_section: next
+    items:
+      - id: q1
+        type: multiple_choice
+        title: "Em qual turma você quer participar?"
+        required: true
+        use: "Distribuir as inscrições entre as duas turmas e fechar a lista de presença."
+        options:
+          - {value: "12/03, das 14h às 16h"}
+          - {value: "19/03, das 9h às 11h"}
+      - id: q2
+        type: multiple_choice
+        title: "Como você usa planilhas hoje?"
+        required: false
+        use: "Ajustar o nível do conteúdo de cada turma."
+        options:
+          - {value: "Nunca usei"}
+          - {value: "Uso de vez em quando"}
+          - {value: "Uso no dia a dia"}
+
+  - id: s2
+    title: "Seus dados"
+    description: "Usamos só o necessário para confirmar a sua vaga."
+    after_section: next
+    items:
+      - id: q3
+        type: short_text
+        title: "Nome completo"
+        description: "Como deve aparecer no crachá."
+        required: true
+        use: "Montar a lista de presença e imprimir o crachá."
+        personal: true
+        validation:
+          kind: length
+          rule: max_chars
+          value: 80
+          error: "Use até 80 caracteres. Abrevie nomes do meio, se precisar."
+      - id: q4
+        type: paragraph
+        title: "Você precisa de algum recurso de acessibilidade para participar? (opcional)"
+        description: "Perguntamos para preparar o local. Você pode pular. Descreva só o recurso (ex.: rampa), não o motivo."
+        required: false
+        use: "Preparar o local e os materiais antes da oficina."
+        personal: true
+        validation:
+          kind: length
+          rule: max_chars
+          value: 300
+          error: "Use até 300 caracteres."
+
+  - id: s3
+    title: "Novidades (opcional)"
+    description: "Só marque se quiser. Não afeta a sua inscrição."
+    after_section: submit
+    items:
+      - id: q5
+        type: checkboxes
+        title: "Avisos de próximos eventos (opcional)"
+        required: false
+        use: "Formar a lista opcional de avisos sobre novas oficinas, com consentimento separado."
+        personal: true
+        options:
+          - value: "Aceito receber por e-mail avisos sobre próximos eventos. Posso cancelar quando quiser."

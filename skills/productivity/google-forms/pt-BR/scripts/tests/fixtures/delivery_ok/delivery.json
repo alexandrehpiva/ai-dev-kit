@@ -1,0 +1,177 @@
+{
+  "schema_version": 1,
+  "meta": {
+    "form_title": "Inscrição no workshop \"de\" IA",
+    "version": "1.2",
+    "date": "2026-11-11",
+    "owner": "Maria Exemplo",
+    "confidentiality": "Uso interno",
+    "form_status": "publicado",
+    "links": {
+      "respondent_url": "https://docs.google.com/forms/d/e/EXEMPLO/viewform",
+      "edit_url": "https://docs.google.com/forms/d/EXEMPLO/edit",
+      "responses_url": null,
+      "sheet_url": null
+    },
+    "ux_verdict": {
+      "verdict": "APROVADO COM RESSALVAS",
+      "reviewed_at": "2026-11-10",
+      "reviewer": "revisão independente",
+      "accepted_caveats": [
+        "A pergunta 3 é longa."
+      ],
+      "not_verified": [
+        "Leitor de tela."
+      ]
+    }
+  },
+  "sections": [
+    {
+      "id": "visao-geral",
+      "title": "Visão geral",
+      "body_md": "Este formulário coleta inscrições para o workshop. Veja o [passo a passo](#passo-a-passo-respondente) e a [Pergunta 1 — Qual é o seu setor?](#item-q1).\n\nResponsável: {{meta.owner}}. Use [[Ctrl]] + [[P]] para imprimir."
+    },
+    {
+      "id": "acesso-e-links",
+      "title": "Acesso e links",
+      "body_md": "Link do respondente: [{{links.respondent_url}}]({{links.respondent_url}}).\n\n> [!WARNING]\n> Não divulgue o link de edição."
+    },
+    {
+      "id": "passo-a-passo-respondente",
+      "title": "Passo a passo para quem responde",
+      "body_md": "## Tela 1 — Sobre você {#passo-tela-1}\n\nVeja [Figura 1](#fig-01-respondente-desktop) e [Figura 2](#fig-02-respondente-celular).\n\n::: screens-pair\n![Figura: Tela 1 no computador](capturas/01-respondente-desktop.png)\n![Tela 1 no celular](capturas/02-respondente-celular.png)\n:::\n\n::: step Escolha o setor\nNa [Pergunta 1 — Qual é o seu setor?](#item-q1), escolha «Financeiro». Veja o termo [ramificação](#termo-ramificacao).\n:::\n\n::: step Envie\nClique em «Enviar».\n:::\n\n### Se escolher outro setor\n\n- Vai para o fim\n  - detalhe aninhado\n- Termina\n\n1. Primeiro\n2. Segundo"
+    },
+    {
+      "id": "funcionalidades",
+      "title": "Funcionalidades",
+      "body_md": "A [Seção 1 — Sobre você](#secao-s1) usa **ramificação** e *validação*.\n\n| Recurso | Onde |\n|---|:--:|\n| Ramificação | [Pergunta 1](#item-q1) |"
+    },
+    {
+      "id": "particularidades",
+      "title": "Particularidades",
+      "body_md": "Nada especial além do `Enviar`."
+    },
+    {
+      "id": "respostas",
+      "title": "Respostas",
+      "body_md": "As respostas ficam na aba «Respostas»."
+    },
+    {
+      "id": "editar-e-manter",
+      "title": "Editar e manter",
+      "body_md": "Edite pelo link de edição. Registre no [Histórico](#historico)."
+    },
+    {
+      "id": "privacidade",
+      "title": "Privacidade",
+      "body_md": "O formulário não coleta dado pessoal. Contato de exemplo: ana@exemplo.com."
+    },
+    {
+      "id": "perguntas-frequentes",
+      "title": "Perguntas frequentes",
+      "body_md": "## Posso responder do celular?\n\nSim, veja [Figura 2](#fig-02-respondente-celular)."
+    },
+    {
+      "id": "referencia",
+      "title": "Referência do formulário",
+      "body_md": "Cada pergunta tem uma ficha."
+    },
+    {
+      "id": "glossario",
+      "title": "Glossário",
+      "body_md": ""
+    },
+    {
+      "id": "historico",
+      "title": "Histórico",
+      "body_md": ""
+    }
+  ],
+  "form_sections": [
+    {
+      "id": "s1",
+      "title": "Sobre você",
+      "description": "Conte quem você é.",
+      "after": "Enviar o formulário"
+    },
+    {
+      "id": "s2",
+      "title": "Detalhes",
+      "description": "Mais detalhes."
+    }
+  ],
+  "items": [
+    {
+      "id": "q1",
+      "section": "s1",
+      "number": 1,
+      "kind": "question",
+      "type_label": "Múltipla escolha",
+      "title": "Qual é o seu setor?",
+      "required": true,
+      "options": [
+        {
+          "label": "Financeiro",
+          "goes_to": "s2"
+        },
+        {
+          "label": "Outro",
+          "goes_to": "submit"
+        }
+      ],
+      "validation": null,
+      "quiz": null,
+      "use": "Define se a pessoa vê os [detalhes](#secao-s2).",
+      "personal_data": false
+    },
+    {
+      "id": "q2",
+      "section": "s2",
+      "number": 2,
+      "kind": "question",
+      "type_label": "Resposta curta",
+      "title": "Qual é o seu CEP?",
+      "required": false,
+      "options": [],
+      "validation": {
+        "rule": "Exatamente 8 dígitos",
+        "error": "Informe um CEP com 8 dígitos."
+      },
+      "use": "Localiza a unidade."
+    }
+  ],
+  "glossary": [
+    {
+      "slug": "ramificacao",
+      "term": "Ramificação",
+      "definition": "Quando a resposta muda a tela seguinte."
+    }
+  ],
+  "history": [
+    {
+      "version": "1.2",
+      "date": "2026-11-10",
+      "change": "Retirada a pergunta de telefone.",
+      "requested_by": "Maria Exemplo",
+      "approved_by": "Maria Exemplo"
+    }
+  ],
+  "captures": [
+    {
+      "file": "capturas/01-respondente-desktop.png",
+      "taken_at": "2026-11-11T10:42:00-03:00",
+      "viewport": "1280x800",
+      "form_version": "1.2",
+      "source": "formulario-real",
+      "masked": true
+    },
+    {
+      "file": "capturas/02-respondente-celular.png",
+      "taken_at": "2026-11-11T10:43:00-03:00",
+      "viewport": "390x844",
+      "form_version": "1.2",
+      "source": "formulario-real",
+      "masked": true
+    }
+  ]
+}

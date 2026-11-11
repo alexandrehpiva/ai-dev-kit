@@ -485,6 +485,16 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 
 ---
 
+## google-forms
+
+**Arquivo:** `skills/productivity/google-forms/pt-BR/SKILL.md`
+
+**Descrição:** Cria, edita, publica, testa e revisa formulários do Google Forms operando o navegador Chromium padrão do usuário (Chrome, Edge, Brave e outros) já logado no Google, via Playwright MCP em modo extensão (sem automatizar login nem copiar cookies). Passo 0 com `scripts/check_setup.py` e instalação guiada para macOS, Windows e Linux (`setup.md`, `detect_browser.py`, `configure_mcp.py` para Claude Code, Cursor, Codex e outros harnesses, com segredos redigidos na saída). Fluxo em fases com checklist: especificação YAML aprovada pelo dono (`FORM-SPEC.md`, 7 modelos em `templates/specs/`, `validate_spec.py` com 74 regras e `pending_owner` para decisões de LGPD), revisão de UX independente do spec e do formulário real (`ux-review.md` com 77 itens e `UX-REVIEW-REPORT.md`), construção pela interface (`ui-operations.md`, regras do operador e receitas verificadas ao vivo) ou por Apps Script para formulários grandes (`spec_to_gs.py` gera o `build-form.gs`; exportação e limpeza em `.gs`), verificação item a item, respostas e distribuição (`responses.md`), testes e limpeza só do que a sessão criou (`testing-and-cleanup.md`) e **documento de entrega em PDF** para humanos (`DELIVERY-DOC.md`, modelo em `templates/delivery-doc/` com exemplo completo, `build_delivery_doc.py` que valida âncoras, links, imagens, conteúdo mínimo e citações sem link). Scripts stdlib com testes. `forms-api.md` e a regra de confirmar toda escrita adaptados da skill google-forms de byungkyu (ClawHub, MIT-0). Dependência hard: `generate-pdf-report`.
+
+**Quando usar:** "cria um Google Forms", "monta um formulário de inscrição/pesquisa/feedback/quiz", "edita meu formulário", "publica o form", "pega as respostas do formulário", "revisa a UX desse form", "configura o Playwright MCP com meu navegador", "gera a documentação/manual do formulário", ou um link docs.google.com/forms.
+
+---
+
 ## generate-pdf-report
 
 **Arquivo:** `skills/productivity/generate-pdf-report/pt-BR/SKILL.md`

@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.43.0] — 2026-11-11
+
+### Added
+
+- `productivity/google-forms` 1.0.0: cria, edita, publica, testa e revisa formulários do Google Forms pelo navegador Chromium padrão do usuário já logado, via Playwright MCP 0.0.85 em modo extensão. Instalação guiada para macOS, Windows e Linux com `check_setup.py`, `detect_browser.py` e `configure_mcp.py` (Claude Code, Cursor, Codex e outros; segredos redigidos). Spec YAML aprovado e validado (`validate_spec.py`, 7 modelos), revisão de UX independente (77 itens), construção pela interface com receitas verificadas ao vivo ou por Apps Script (`spec_to_gs.py`), respostas e distribuição, testes e limpeza restritos ao que a sessão criou, e documento de entrega em PDF para humanos (sumário, passo a passo com capturas mascaradas, links internos validados; `build_delivery_doc.py` e modelo visual com exemplo completo). 333 testes stdlib. Verificado ao vivo em macOS + Brave + conta Workspace; Windows, Linux e conta pessoal não verificados. `forms-api.md` adaptado da skill google-forms de byungkyu (ClawHub, MIT-0). Depende de `productivity/generate-pdf-report`.
+
+---
+
 ## [0.42.0] — 2026-10-31
 
 ### Added

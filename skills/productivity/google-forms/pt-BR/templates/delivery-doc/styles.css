@@ -1,0 +1,446 @@
+/* =========================================================================
+   Documento de entrega do formulário — folha de estilo de impressão (A4)
+   Renderizado por Chrome/Chromium headless (html_to_pdf.py, --no-pdf-header-footer).
+   Sem fonte, imagem ou script externo. Contraste: texto normal >= 4,5:1 (WCAG 2.2 AA).
+   Âncora de cor: Índigo #3f51b5 (6,87:1 sobre branco) e Roxo #673ab7 (7,33:1).
+   ========================================================================= */
+
+/* ---------- Tokens ---------- */
+:root {
+  --ink: #1f2430;          /* texto: 15,6:1 sobre branco */
+  --muted: #4b5263;        /* texto secundário: 7,6:1 */
+  --line: #d9dce8;
+  --line-soft: #e8eaf2;
+  --paper: #ffffff;
+  --zebra: #f6f7fc;
+
+  --indigo: #3f51b5;       /* destaque principal */
+  --indigo-dark: #283593;
+  --indigo-tint: #eef0fb;
+  --purple: #673ab7;
+  --purple-tint: #f3eefb;
+
+  --ok: #176b36;           --ok-tint: #e8f5ec;
+  --warn: #7a4a00;         --warn-tint: #fff4df;
+  --bad: #a61e17;          --bad-tint: #fdebea;
+
+  --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Roboto, "Noto Sans", Arial, sans-serif;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+  --doc-title: "Guia do formulário"; /* o build redefine (template.html) */
+}
+
+html {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* ---------- Página ---------- */
+@page {
+  size: A4;
+  margin: 20mm 17mm 22mm 17mm;
+  /* Chrome 131+ aceita caixas de margem; o html_to_pdf.py só desliga o cabeçalho/rodapé nativo. */
+  @bottom-left   { content: var(--doc-title); font: 8pt var(--font); color: #4b5263; vertical-align: top; padding-top: 6mm; }
+  @bottom-right  { content: "Página " counter(page) " de " counter(pages); font: 8pt var(--font); color: #4b5263; vertical-align: top; padding-top: 6mm; }
+}
+@page cover {
+  margin: 0;
+  @bottom-left { content: none; }
+  @bottom-right { content: none; }
+}
+
+/* ---------- Base ---------- */
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  font-size: 10.5pt;
+  line-height: 1.58;
+  color: var(--ink);
+  background: var(--paper);
+  orphans: 3;
+  widows: 3;
+  counter-reset: figure;
+  font-variant-numeric: lining-nums;
+}
+
+p { margin: 0 0 3.2mm; break-inside: avoid; }   /* parágrafo não se parte entre páginas (são curtos: até 4 frases) */
+ul, ol { margin: 0 0 3.5mm; padding-left: 6mm; }
+li { margin-bottom: 1.2mm; }
+li > ul, li > ol { margin-top: 1.2mm; margin-bottom: 0; }
+strong, b { font-weight: 650; }
+em { font-style: italic; }
+hr { border: 0; border-top: 1px solid var(--line); margin: 6mm 0; }
+
+code {
+  font-family: var(--mono);
+  font-size: 0.9em;
+  background: var(--indigo-tint);
+  color: var(--indigo-dark);
+  padding: 0.2mm 1.3mm;
+  border-radius: 1mm;
+  overflow-wrap: anywhere;
+}
+pre {
+  font-family: var(--mono); font-size: 8.8pt; line-height: 1.5;
+  background: #f4f5fa; border: 1px solid var(--line); border-radius: 2mm;
+  padding: 3.5mm 4mm; margin: 0 0 4mm; white-space: pre-wrap; overflow-wrap: anywhere;
+  break-inside: avoid;
+}
+pre code { background: none; padding: 0; color: inherit; font-size: inherit; }
+
+/* Links: cor + sublinhado sutil (visíveis em tela e no papel). */
+a {
+  color: var(--indigo);
+  text-decoration: underline;
+  text-decoration-color: rgba(63, 81, 181, 0.42);
+  text-decoration-thickness: 0.06em;
+  text-underline-offset: 0.18em;
+}
+a[href^="http"] { overflow-wrap: anywhere; }
+
+/* ---------- Títulos ---------- */
+h2, h3, h4 { break-after: avoid-page; break-inside: avoid; line-height: 1.25; color: var(--ink); }
+/* keep-with-next: título nunca fica sozinho no fim da página; o parágrafo que apresenta uma figura,
+   tabela ou lista acompanha o que apresenta; negrito de abertura de bloco também. */
+p:has(+ figure), p:has(+ .screens-pair), p:has(+ table), p:has(+ .callout), p:has(+ ol), p:has(+ ul),
+p:has(+ .step), p:has(+ blockquote) { break-after: avoid; }
+p:has(> strong:only-child) { break-after: avoid; }
+li { break-inside: avoid; }
+
+h2 {
+  font-size: 21pt;
+  font-weight: 750;
+  letter-spacing: -0.01em;
+  margin: 0 0 2mm;
+  padding: 0 0 3.2mm;
+  background: linear-gradient(90deg, var(--indigo) 0, var(--purple) 42mm, var(--line) 42mm, var(--line) 100%) no-repeat left bottom / 100% 1.1mm;
+}
+h2 + p, h2 + .lead { margin-top: 5mm; }
+
+h3 {
+  font-size: 14pt;
+  font-weight: 700;
+  color: var(--indigo-dark);
+  margin: 8mm 0 2.5mm;
+}
+h4 {
+  font-size: 11.2pt;
+  font-weight: 700;
+  margin: 5.5mm 0 1.8mm;
+}
+
+.lead { font-size: 12pt; line-height: 1.55; color: #2b3040; }
+
+/* ---------- Seções principais ---------- */
+/* Só começam página nova as seções que abrem com bloco grande (visão geral, passo a passo, fichas).
+   As demais seguem o fluxo: evita página quase vazia no fim de uma seção curta. */
+.doc-section { break-before: auto; margin-top: 12mm; }
+#referencia { break-before: page; margin-top: 0; }
+.doc-section.flow { break-before: auto; margin-top: 10mm; }
+.doc-section > h2[id], .doc-section[id] { scroll-margin-top: 12mm; }
+
+/* ---------- Capa ---------- */
+.cover {
+  page: cover;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 296.6mm;               /* A4 = 297mm; folga evita página em branco */
+  break-after: page;
+  overflow: hidden;
+  background: #fff;
+}
+.cover-top {
+  position: relative;
+  flex: 0 0 63%;
+  padding: 30mm 22mm 18mm 22mm;
+  color: #fff;
+  background:
+    radial-gradient(circle at 88% 14%, rgba(255,255,255,0.16) 0, rgba(255,255,255,0) 46mm),
+    radial-gradient(circle at 96% 70%, rgba(255,255,255,0.10) 0, rgba(255,255,255,0) 62mm),
+    linear-gradient(135deg, #3f51b5 0%, #4b49b8 55%, #673ab7 100%);
+  display: flex; flex-direction: column; justify-content: flex-end;
+}
+.cover-top::before {                 /* marca gráfica discreta: cantos de um "formulário" */
+  content: ""; position: absolute; top: 24mm; left: 22mm; width: 14mm; height: 1.4mm;
+  background: #fff; border-radius: 1mm; box-shadow: 0 3.4mm 0 -0.1mm rgba(255,255,255,0.55), 0 6.8mm 0 -0.1mm rgba(255,255,255,0.3);
+}
+.cover-kicker {
+  margin: 0 0 5mm; font-size: 11pt; font-weight: 650; letter-spacing: 0.16em; text-transform: uppercase;
+  color: #fff; opacity: 0.95;
+}
+.cover-title {
+  margin: 0 0 6mm; font-size: 36pt; line-height: 1.12; font-weight: 800; letter-spacing: -0.015em;
+  color: #fff; overflow-wrap: break-word; hyphens: manual;
+}
+.cover-subtitle { margin: 0; font-size: 13.5pt; line-height: 1.45; color: #fff; max-width: 150mm; }
+.cover-bottom { flex: 1; padding: 14mm 22mm 16mm; display: flex; flex-direction: column; justify-content: space-between; }
+.cover-meta {
+  margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 7mm 10mm;
+}
+.cover-meta > div { border-left: 1.1mm solid var(--indigo); padding-left: 4mm; break-inside: avoid; }
+.cover-meta > div:nth-child(2n) { border-left-color: var(--purple); }
+.cover-meta dt { font-size: 8.5pt; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 1mm; }
+.cover-meta dd { margin: 0; font-size: 13pt; font-weight: 600; color: var(--ink); overflow-wrap: anywhere; }
+.cover-note { margin: 0; font-size: 9.5pt; color: var(--muted); max-width: 140mm; }
+
+/* Veredito de UX: texto sempre presente (cor é só reforço). */
+.verdict {
+  display: inline-flex; align-items: center; gap: 2mm;
+  font-size: 11.5pt; font-weight: 700; padding: 1.2mm 3.6mm 1.2mm 3mm;
+  border-radius: 10mm; border: 1.2px solid var(--indigo); background: var(--indigo-tint); color: var(--indigo-dark);
+}
+.verdict::before { content: ""; width: 2.6mm; height: 2.6mm; border-radius: 50%; background: currentColor; flex: none; }
+.verdict.ok        { background: var(--ok-tint);   border-color: var(--ok);   color: var(--ok); }
+.verdict.attention { background: var(--warn-tint); border-color: var(--warn); color: var(--warn); }
+.verdict.attention::before { border-radius: 0.4mm; transform: rotate(45deg); }
+.verdict.fail      { background: var(--bad-tint);  border-color: var(--bad);  color: var(--bad); }
+.verdict.fail::before { border-radius: 0.4mm; }
+
+/* ---------- Sumário ---------- */
+.toc { break-before: page; break-after: auto; padding-top: 2mm; }   /* a 1ª seção segue o sumário se ele sobrar poucas linhas */
+.toc-title {
+  font-size: 24pt; font-weight: 800; margin: 0 0 2mm; padding-bottom: 3.2mm;
+  background: linear-gradient(90deg, var(--indigo) 0, var(--purple) 42mm, var(--line) 42mm, var(--line) 100%) no-repeat left bottom / 100% 1.1mm;
+}
+.toc-hint { color: var(--muted); font-size: 9.5pt; margin: 3mm 0 4mm; }
+.toc-list { list-style: none; margin: 0; padding: 0; }
+.toc-list li { display: flex; align-items: baseline; gap: 2.5mm; margin: 0; padding: 0.55mm 0; break-inside: avoid; }
+.toc-list li::after {            /* pontilhado de condução até a margem (ou até o número, se houver) */
+  content: ""; order: 2; flex: 1 1 8mm; min-width: 8mm; border-bottom: 1.4px dotted #8a91ab; transform: translateY(-0.5mm);
+}
+.toc-list li > a { order: 1; text-decoration: none; color: var(--ink); }
+.toc-list li > .toc-page { order: 3; font-variant-numeric: tabular-nums; color: var(--muted); }
+.toc-list li.l1 { margin-top: 1.4mm; }
+.toc-list li.l1 > a { font-size: 11.5pt; font-weight: 700; color: var(--indigo-dark); }
+.toc-list li.l1 > a::before { content: ""; display: inline-block; width: 2.2mm; height: 2.2mm; border-radius: 0.6mm; background: var(--indigo); margin-right: 2.6mm; vertical-align: 0.1mm; }
+.toc-list li.l2 { padding-left: 8mm; }
+.toc-list li.l2 > a { font-size: 9.4pt; font-weight: 500; }
+.toc-list li.l3 { padding-left: 15mm; }
+.toc-list li.l3 > a { font-size: 9.5pt; color: var(--muted); }
+.toc-list li > a:hover { text-decoration: underline; }
+
+/* ---------- Voltar ao sumário ---------- */
+.backlink { margin: 6mm 0 0; text-align: right; font-size: 8.8pt; break-before: avoid; }
+.backlink a { color: var(--muted); text-decoration-color: rgba(75, 82, 99, 0.45); }
+
+/* ---------- Callouts: ícone + rótulo + cor (não só cor) ---------- */
+.callout {
+  --c: var(--indigo-dark); --bg: var(--indigo-tint); --bar: var(--indigo);
+  --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='9.2' fill='%233f51b5'/%3E%3Crect x='9' y='8.6' width='2' height='6' rx='1' fill='white'/%3E%3Ccircle cx='10' cy='5.8' r='1.25' fill='white'/%3E%3C/svg%3E");
+  margin: 5mm 0; padding: 3.4mm 5mm 3.4mm 5.2mm;
+  background: var(--bg); border-left: 1.4mm solid var(--bar); border-radius: 0 2.2mm 2.2mm 0;
+  break-inside: avoid;
+}
+.callout::before {
+  content: "Nota";
+  display: block; margin: 0 0 1.5mm; padding-left: 6.4mm; min-height: 4.6mm; line-height: 4.6mm;
+  background: var(--icon) no-repeat left center / 4.6mm 4.6mm;
+  font-size: 8.8pt; font-weight: 800; letter-spacing: 0.09em; text-transform: uppercase; color: var(--c);
+}
+.callout > :last-child { margin-bottom: 0; }
+.callout > ul, .callout > ol { margin-top: 0; }
+.callout.note { }
+.callout.tip {
+  --c: var(--ok); --bg: var(--ok-tint); --bar: #2e9a52;
+  --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Ccircle cx='10' cy='10' r='9.2' fill='%23176b36'/%3E%3Cpath d='M5.6 10.4l3 3 5.9-6.4' fill='none' stroke='white' stroke-width='2.1' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+}
+.callout.tip::before { content: "Dica"; }
+.callout.warning {
+  --c: var(--warn); --bg: var(--warn-tint); --bar: #d98a00;
+  --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M10 1.8L19.2 18H.8z' fill='%237a4a00' stroke='%237a4a00' stroke-width='1.2' stroke-linejoin='round'/%3E%3Crect x='9' y='7.4' width='2' height='5.4' rx='1' fill='white'/%3E%3Ccircle cx='10' cy='15' r='1.1' fill='white'/%3E%3C/svg%3E");
+}
+.callout.warning::before { content: "Atenção"; }
+.callout.important {
+  --c: var(--bad); --bg: var(--bad-tint); --bar: #c9362d;
+  --icon: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Crect x='1' y='1' width='18' height='18' rx='4.5' fill='%23a61e17'/%3E%3Crect x='9' y='4.6' width='2' height='7.2' rx='1' fill='white'/%3E%3Ccircle cx='10' cy='14.8' r='1.25' fill='white'/%3E%3C/svg%3E");
+}
+.callout.important::before { content: "Importante"; }
+
+/* ---------- Capturas de tela ---------- */
+/* Uma captura por linha, em tamanho legível: o recorte já vem só da área relevante da tela,
+   então a imagem ocupa até 150 mm de largura e 200 mm de altura (fora de um par desktop + celular, nunca lado a lado). */
+figure.screenshot {
+  counter-increment: figure;
+  margin: 5mm 0; padding: 0;
+  break-inside: avoid;
+  text-align: center;
+}
+figure.screenshot img {
+  display: block; margin: 0 auto;
+  width: auto; height: auto; max-width: 150mm; max-height: 200mm; object-fit: contain;
+  background: #fff;
+  border: 1px solid #cfd3e3; border-radius: 2mm;
+  box-shadow: 0 0.4mm 1.2mm rgba(25, 32, 70, 0.16), 0 2mm 5mm rgba(25, 32, 70, 0.08);
+}
+figure.screenshot figcaption {
+  margin: 2.6mm auto 0; max-width: 150mm; font-size: 8.8pt; line-height: 1.4; color: var(--muted); text-align: center;
+}
+figure.screenshot figcaption::before {
+  content: "Figura " counter(figure) " \2014  ";
+  font-weight: 700; color: var(--indigo-dark);
+}
+
+/* Capturas do editor (nome do arquivo «NN-editor-…»): recortes largos e baixos, um pouco menores para caberem em sobras de página. */
+figure.screenshot[id*="-editor-"] img { max-width: 138mm; }
+figure.screenshot { margin: 4mm 0; }
+
+/* Par desktop + celular: lado a lado (computador à esquerda, celular à direita, 52 mm), alinhados pelo topo.
+   Cada tela ocupa meia página em vez de uma, o que mantém o guia curto. O par não se parte entre páginas. */
+.screens-pair { display: flex; gap: 6mm; align-items: flex-start; justify-content: center; margin: 4mm 0; break-inside: avoid; }
+.screens-pair > figure.screenshot { margin: 0; min-width: 0; }
+.screens-pair > figure.screenshot.desktop { flex: 1 1 0; }
+.screens-pair > figure.screenshot.mobile { flex: 0 0 52mm; }
+.screens-pair figure.screenshot img { width: 100%; max-width: 100%; max-height: none; }
+.screens-pair figure.screenshot.mobile img { border-radius: 3.5mm; border-width: 1.5px; border-color: #b9bed4; }
+.screens-pair figure.screenshot figcaption { max-width: none; }
+
+/* ---------- Passo a passo ---------- */
+.doc-section, .steps { counter-reset: step; }
+.step {
+  position: relative; counter-increment: step;
+  display: grid; grid-template-columns: 13mm minmax(0, 1fr); column-gap: 5mm;
+  margin: 0; padding-bottom: 7mm; break-inside: avoid;
+}
+.step::before {
+  content: counter(step);
+  grid-column: 1; grid-row: 1 / span 20;
+  align-self: start; justify-self: center;
+  width: 13mm; height: 13mm; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--indigo); color: #fff; font-size: 16pt; font-weight: 800; line-height: 1;
+  border: 1.1mm solid var(--indigo-tint); background-clip: padding-box;
+}
+.step[data-n]::before { content: attr(data-n); }
+.step:has(+ .step)::after {          /* fio ligando um passo ao próximo */
+  content: ""; position: absolute; left: 6.25mm; top: 14.6mm; bottom: 1.2mm; width: 0.5mm; background: var(--line); border-radius: 1mm;
+}
+.step > * { grid-column: 2; min-width: 0; }
+.step > .step-title, .step > h3, .step > h4 { margin: 0.6mm 0 2mm; font-size: 12.5pt; color: var(--ink); }
+.step > p:last-child, .step > ul:last-child { margin-bottom: 0; }
+.step figure.screenshot { margin: 3mm 0 0; text-align: left; }
+.step .screens-pair figure.screenshot { margin: 0; }
+.step figure.screenshot img { max-height: 150mm; margin: 0; }
+.step figure.screenshot figcaption { margin-left: 0; text-align: left; }
+.step .screens-pair { margin: 3mm 0 0; }
+
+/* ---------- Badges ---------- */
+.badge {
+  display: inline-block; vertical-align: 0.1em;
+  font-size: 7.6pt; font-weight: 750; letter-spacing: 0.05em; text-transform: uppercase; line-height: 1;
+  padding: 1mm 2.2mm; border-radius: 10mm; border: 1px solid currentColor; white-space: nowrap;
+  color: var(--muted); background: #f1f2f7;
+}
+.badge.required,    .badge.obrigatoria { color: var(--bad);         background: var(--bad-tint); }
+.badge.optional,    .badge.opcional    { color: #3b4254;            background: #eceef4; border-style: dashed; }
+.badge.branch,      .badge.ramificacao { color: var(--purple);      background: var(--purple-tint); }
+.badge.quiz                            { color: var(--warn);        background: var(--warn-tint); }
+.badge.validation,  .badge.validacao   { color: var(--indigo-dark); background: var(--indigo-tint); }
+.badges { display: inline-flex; flex-wrap: wrap; gap: 1.6mm; align-items: center; }
+
+/* ---------- Ficha da pergunta ---------- */
+.item-card {
+  margin: 0 0 5.5mm; background: #fff;
+  border: 1px solid var(--line); border-top: 1.2mm solid var(--indigo); border-radius: 0 0 2.4mm 2.4mm;
+  break-inside: avoid; overflow: hidden;
+  box-shadow: 0 0.3mm 1mm rgba(25, 32, 70, 0.08);
+}
+.item-card.long { break-inside: auto; }
+.item-card.section-card { border-top-color: var(--purple); }
+.item-head {
+  display: flex; align-items: center; gap: 3mm; flex-wrap: wrap;
+  padding: 3mm 4.5mm; background: var(--indigo-tint); border-bottom: 1px solid var(--line);
+  break-after: avoid;
+}
+.section-card .item-head { background: var(--purple-tint); }
+.item-id {
+  font-family: var(--mono); font-size: 9pt; font-weight: 700; color: #fff; background: var(--indigo);
+  padding: 0.9mm 2.4mm; border-radius: 1.2mm; letter-spacing: 0.03em;
+}
+.section-card .item-id { background: var(--purple); }
+.item-title { margin: 0; flex: 1 1 60mm; font-size: 11.5pt; font-weight: 700; line-height: 1.3; color: var(--ink); }
+.item-head .badges { margin-left: auto; }
+.item-fields { margin: 0; padding: 1.5mm 4.5mm 2mm; display: grid; grid-template-columns: 31mm minmax(0, 1fr); column-gap: 4mm; }
+.item-fields dt, .item-fields dd { padding: 2mm 0; border-bottom: 1px solid var(--line-soft); margin: 0; }
+.item-fields dt:last-of-type, .item-fields dd:last-of-type { border-bottom: 0; }
+.item-fields dt { font-size: 8.4pt; font-weight: 750; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding-top: 2.6mm; }
+.item-fields dd { font-size: 10pt; }
+.item-fields dd > :last-child { margin-bottom: 0; }
+.item-fields dd ul, .item-fields dd ol { margin: 0; padding-left: 5mm; }
+.item-fields dd li { margin-bottom: 0.6mm; }
+.item-fields dd p { margin-bottom: 1.5mm; }
+.item-use {
+  margin: 0; padding: 3mm 4.5mm 3.2mm; background: var(--zebra); border-top: 1px solid var(--line);
+  font-size: 10pt;
+}
+.item-use > strong:first-child { color: var(--indigo-dark); }
+.item-card .backlink { margin: 0; padding: 0 4.5mm 2.6mm; background: var(--zebra); }
+
+/* ---------- Tecla ---------- */
+.kbd, kbd {
+  display: inline-block; font-family: var(--font); font-size: 0.82em; font-weight: 650; line-height: 1.15;
+  color: var(--ink); background: #f4f5fa; border: 1px solid #b7bccf; border-bottom-width: 2px; border-radius: 1.2mm;
+  padding: 0.3mm 1.9mm; white-space: nowrap; margin: 0 0.4mm;
+}
+
+/* ---------- Tabelas ---------- */
+table.data {
+  width: 100%; border-collapse: separate; border-spacing: 0; margin: 4.5mm 0 6mm;
+  font-size: 9.4pt; line-height: 1.42;
+  border: 1px solid var(--line); border-radius: 2mm; overflow: hidden;
+}
+table.data caption { caption-side: top; text-align: left; font-weight: 700; font-size: 9.5pt; color: var(--muted); padding: 0 0 2mm; }
+table.data thead { display: table-header-group; }          /* repete o cabeçalho na quebra de página */
+table.data tfoot { display: table-footer-group; }
+table.data { break-inside: avoid; }      /* tabela curta não quebra no meio (se passar de uma página, quebra por linha) */
+table.data tr { break-inside: avoid; }
+table.data th, table.data td { padding: 2.3mm 3mm; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line-soft); }
+table.data thead th {
+  background: var(--indigo); color: #fff; font-weight: 700; font-size: 8.8pt; letter-spacing: 0.04em;
+  border-bottom: 0;
+}
+table.data tbody tr:nth-child(even) td, table.data tbody tr:nth-child(even) th { background: var(--zebra); }
+table.data tbody tr:last-child td, table.data tbody tr:last-child th { border-bottom: 0; }
+table.data tbody th { font-weight: 700; }
+table.data td > :last-child { margin-bottom: 0; }
+table.data td ul, table.data td ol { margin: 0; padding-left: 4.5mm; }
+
+/* ---------- Blocos auxiliares ---------- */
+.facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3.5mm; margin: 5mm 0 6mm; }
+.facts > div { padding: 3mm 3.8mm; border: 1px solid var(--line); border-top: 1mm solid var(--indigo); border-radius: 0 0 2mm 2mm; background: #fff; break-inside: avoid; }
+.facts > div:nth-child(2n) { border-top-color: var(--purple); }
+.facts dt { font-size: 8pt; font-weight: 750; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 1mm; }
+.facts dd { margin: 0; font-size: 11pt; font-weight: 650; }
+
+.ref-intro { color: var(--muted); }
+.section-tag {
+  display: inline-block; font-size: 8pt; font-weight: 750; letter-spacing: 0.08em; text-transform: uppercase;
+  color: #fff; background: var(--purple); border-radius: 1.2mm; padding: 0.8mm 2.2mm; margin-right: 2.5mm; vertical-align: 0.15em;
+}
+
+dl.glossary { margin: 4mm 0 0; }
+dl.glossary dt { font-weight: 750; font-size: 11pt; color: var(--indigo-dark); margin-top: 3.4mm; break-after: avoid; }
+dl.glossary dd { margin: 0.8mm 0 0; padding-left: 4mm; border-left: 0.9mm solid var(--line); break-inside: avoid; }
+
+.faq h3 { font-size: 12pt; color: var(--ink); margin: 6mm 0 1.6mm; }
+.faq h3::before { content: "P"; display: inline-block; width: 6mm; height: 6mm; line-height: 6mm; margin-right: 2.4mm; text-align: center; font-size: 9pt; color: #fff; background: var(--purple); border-radius: 50%; vertical-align: 0.1mm; }
+
+.colophon { margin-top: 12mm; padding-top: 4mm; border-top: 1px solid var(--line); font-size: 8.8pt; color: var(--muted); break-inside: avoid; }
+.colophon p { margin: 0 0 1mm; }
+.colophon-small { font-size: 8.2pt; }
+
+/* ---------- Pré-visualização em tela (abrir o HTML no navegador) ---------- */
+@media screen {
+  html { background: #e9ebf3; }
+  body { max-width: 210mm; margin: 0 auto; box-shadow: 0 2mm 8mm rgba(25, 32, 70, 0.18); }
+  .toc, .doc-section, .colophon { padding-left: 17mm; padding-right: 17mm; }
+  .doc-section { padding-top: 14mm; padding-bottom: 8mm; }
+  .toc { padding-top: 16mm; }
+  .colophon { margin-left: 17mm; margin-right: 17mm; padding-left: 0; padding-right: 0; margin-bottom: 14mm; }
+}
+@media print {
+  .doc-section, .toc { padding: 0; }
+  a { color: var(--indigo); }
+}

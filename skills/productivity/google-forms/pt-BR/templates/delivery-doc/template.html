@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="generator" content="skill google-forms (delivery-doc)">
+<title>{{form_title}} — Guia do formulário</title>
+<style>
+/* BUILD: o conteúdo de styles.css entra aqui (CSS inline; nada externo). */
+{{inline_css}}
+</style>
+<style>
+/* BUILD: título no rodapé de cada página (string CSS já escapada: aspas e barras invertidas). */
+:root { --doc-title: "{{form_title_css}}"; }
+</style>
+</head>
+<body>
+
+<!-- CAPA (id reservado: capa) -->
+<header class="cover" id="capa">
+  <div class="cover-top">
+    <p class="cover-kicker">Guia do formulário</p>
+    <h1 class="cover-title">{{form_title}}</h1>
+    <p class="cover-subtitle">{{cover_subtitle}}</p>
+  </div>
+  <div class="cover-bottom">
+    <dl class="cover-meta">
+      <div><dt>Versão</dt><dd>{{version}}</dd></div>
+      <div><dt>Data</dt><dd>{{date}}</dd></div>
+      <div><dt>Responsável</dt><dd>{{owner}}</dd></div>
+      <div><dt>Avaliação de experiência</dt><dd><span class="verdict {{ux_verdict_class}}">{{ux_verdict}}</span></dd></div>
+    </dl>
+    <p class="cover-note">{{cover_note}}</p>
+  </div>
+</header>
+
+<!-- SUMÁRIO (id reservado: sumario). {{toc}} = <ol class="toc-list"> com <li class="l1|l2|l3"><a href="#id">Texto</a></li> -->
+<nav class="toc" id="sumario" aria-label="Sumário">
+  <h2 class="toc-title">Sumário</h2>
+  <p class="toc-hint">Toque ou clique em qualquer título para ir direto à seção.</p>
+  {{toc}}
+</nav>
+
+<!-- CORPO: cada seção principal é <section class="doc-section" id="..."><h2>…</h2> … <p class="backlink">…</p></section> -->
+<main>
+{{sections}}
+</main>
+
+<footer class="colophon">
+  <p>{{colophon}}</p>
+  <p class="colophon-small">Gerado em {{generated_at}}.</p>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,169 @@
+# MODELO 1 — Pesquisa de satisfação / NPS, anônima (style-guide.md, padrão 1).
+# ADAPTAR: "Loja Exemplo", o objeto avaliado, brief.goal e os canais da q6.
+# Corte toda pergunta cujo `use` você não consegue justificar. Todos os dados abaixo são fictícios.
+spec_version: 1
+version: 1
+status: draft            # só vira "approved" depois do "aprovado" explícito do dono
+approved_at: null
+
+meta:
+  title: "Como foi seu atendimento?"
+  description: >
+    Queremos saber como foi seu atendimento na Loja Exemplo para melhorar o que for preciso.
+    Leva cerca de 2 minutos. As respostas são anônimas: não coletamos nome nem e-mail.
+    Não inclua dados pessoais nos campos de texto.
+  language: pt-BR
+  document_title: "2026-12-01 Pesquisa - Satisfação do atendimento"   # ADAPTAR: data e assunto
+  owner_notes: >
+    MODELO. A q1 (NPS) é pergunta de previsão por desenho da métrica: exceção declarada ao
+    UX-C4 e escala 0-10 permitida pelo UX-D6. A promessa de anonimato é verdadeira só enquanto
+    collect_email: none, limit_one_response: false, sem upload e sem pergunta que identifique;
+    se mudar qualquer um, troque "anônimas" por "confidenciais" e explique quem vê as respostas (UX-H8).
+    As escalas de q3 e q4 vão do negativo para o positivo, na mesma direção (UX-D5).
+
+brief:
+  goal: "Acompanhar o NPS e a satisfação com o atendimento a cada trimestre e priorizar as melhorias que mais pesam na nota."
+  audience: "Clientes atendidos nos últimos 30 dias; externo; ~500 pessoas; sem menores."
+  channel: "Link por e-mail após o atendimento e QR code no balcão."
+  account_type: personal
+  estimated_minutes: 2
+
+build:
+  path: ui                 # tema (cor) só existe pela UI
+  test_name_prefix: null   # use "[TESTE] " enquanto construir e testar
+
+privacy:
+  personal_data: none      # não há nome, e-mail, login nem upload; texto livre traz o aviso de não incluir dados
+  inventory: []
+  # Sem dado pessoal, não há base legal a registrar. Se o dono passar a coletar e-mail ou nome:
+  # mude personal_data, preencha o inventário e marque cada campo abaixo como pending_owner
+  # (quem decide base legal, retenção e controlador é o dono, nunca o agente).
+  legal_basis: []
+  controller: null
+  contact: null
+  retention: null
+  sharing: null
+  decided_by: owner
+
+settings:
+  collect_email: none
+  send_copy: never
+  allow_edit: false        # pesquisa: a pessoa não edita depois de enviar
+  limit_one_response: false   # ligar exigiria login e quebraria o anonimato
+  progress_bar: false      # 2 seções: a barra só ajuda com 3 ou mais
+  shuffle_questions: false
+  confirmation_message: >
+    Obrigado. Vamos compartilhar o resumo das respostas com a equipe da loja até o fim do mês.
+  show_summary: false      # exporia os textos livres de outras pessoas
+  disable_autosave: false
+  accepting_responses: true
+  close:
+    at: null
+    response_limit: null
+
+quiz:
+  enabled: false
+
+theme:
+  header_image: null
+  color: "#673ab7"         # Roxo: contraste 7,33 com branco. Só Roxo e Índigo passam 4,5:1 na paleta do Forms
+  background_color: null
+  font: null
+
+publish:
+  published: true
+  audience: anyone_with_link
+  responders: []
+  notify_responders: false
+
+responses:
+  sheet: none              # só a aba Respostas do Forms; planilha é mais uma cópia com permissões próprias
+  sheet_ref: null
+  sheet_access: "ADAPTAR: só o dono e a gerência de atendimento (2 pessoas) veem a aba Respostas."
+
+sections:
+  - id: s1
+    title: null            # a 1ª seção usa meta.title/description como cabeçalho
+    description: null
+    after_section: next
+    items:
+      - id: q1
+        type: linear_scale
+        title: "Em uma escala de 0 a 10, qual a probabilidade de você recomendar a Loja Exemplo a um colega?"
+        required: true
+        use: "Calcular o NPS trimestral (promotores menos detratores)."
+        scale: {low: 0, high: 10, low_label: "Nada provável", high_label: "Extremamente provável"}
+      - id: q2
+        type: paragraph
+        title: "O que mais influenciou a sua nota? (opcional)"
+        description: "Não inclua dados pessoais."
+        required: false
+        use: "Entender os motivos por trás da nota e priorizar melhorias."
+        validation:
+          kind: length
+          rule: max_chars
+          value: 500
+          error: "Use até 500 caracteres."
+      - id: q3
+        type: multiple_choice
+        title: "Qual seu nível de satisfação com o atendimento que você recebeu?"
+        required: true
+        use: "Medir o CSAT do atendimento, separado do NPS da loja."
+        options:
+          - {value: "Muito insatisfeito"}
+          - {value: "Insatisfeito"}
+          - {value: "Nem satisfeito nem insatisfeito"}
+          - {value: "Satisfeito"}
+          - {value: "Muito satisfeito"}
+        shuffle_options: false   # ordem de escala nunca embaralha (UX-B6)
+      - id: q4
+        type: multiple_choice
+        title: "Como foi resolver a sua solicitação?"
+        required: true
+        use: "Medir o esforço do cliente (facilidade) para achar onde o processo trava."
+        options:
+          - {value: "Muito difícil"}
+          - {value: "Difícil"}
+          - {value: "Nem fácil nem difícil"}
+          - {value: "Fácil"}
+          - {value: "Muito fácil"}
+        shuffle_options: false
+      - id: q5
+        type: multiple_choice
+        title: "Nos últimos 30 dias, quantas vezes você foi atendido na loja?"
+        required: true
+        use: "Separar a opinião de quem vai pouco da de quem vai sempre à loja."
+        options:
+          - {value: "1 vez"}
+          - {value: "2 a 4 vezes"}
+          - {value: "5 vezes ou mais"}
+        shuffle_options: false
+
+  - id: s2
+    title: "Para finalizar (opcional)"
+    description: "As duas perguntas abaixo são opcionais."
+    after_section: submit
+    items:
+      - id: q6
+        type: multiple_choice
+        title: "Por qual canal você foi atendido?"
+        required: false
+        use: "Comparar a satisfação entre os canais de atendimento."
+        options:
+          - {value: "Na loja"}
+          - {value: "Por telefone"}
+          - {value: "Pelo aplicativo"}
+          - {value: "Pelo site"}
+        other: true          # "Outros" nativo, com campo de texto (UX-D1)
+        shuffle_options: false
+      - id: q7
+        type: paragraph
+        title: "Algo mais que você queira nos contar? (opcional)"
+        description: "Não inclua dados pessoais nem de outras pessoas."
+        required: false
+        use: "Captar ideias e problemas que as perguntas fechadas não cobrem."
+        validation:
+          kind: length
+          rule: max_chars
+          value: 1000
+          error: "Use até 1000 caracteres."

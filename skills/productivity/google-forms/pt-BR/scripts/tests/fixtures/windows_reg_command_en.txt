@@ -1,0 +1,4 @@
+
+HKEY_CLASSES_ROOT\ChromeHTML\shell\open\command
+    (Default)    REG_SZ    "C:\Program Files\Google\Chrome\Application\chrome.exe" --single-argument %1
+

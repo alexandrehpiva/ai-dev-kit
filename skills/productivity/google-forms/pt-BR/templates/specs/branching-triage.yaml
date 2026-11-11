@@ -1,0 +1,309 @@
+# MODELO 7 — Triagem de solicitação com ramificação complexa (4 caminhos, 8 seções).
+# Mapa do fluxo (confira no resumo ao dono e percorra os 4 caminhos na revisão do formulário real):
+#   A  Acesso:      s1 -> s2 -> s8 -> enviar
+#   B  Equipamento: s1 -> s3 -> (s4 novo | s5 defeito) -> s8 -> enviar     (2º nível de ramificação)
+#   C  Reembolso:   s1 -> s6 -> s8 -> enviar
+#   D  Dúvida:      s1 -> s7 -> enviar                                     (não passa por s8)
+# Regras do esquema aplicadas: 1 pergunta com go_to por seção (s1 e s3) e essas seções sem after_section;
+# todo go_to/after_section aponta para frente, nunca para s1; sem ciclo; toda seção é alcançável.
+# ADAPTAR: os 4 tipos de pedido, os sistemas e equipamentos, e os trechos "PREENCHER".
+# BASE LEGAL pending_owner DE PROPÓSITO: o dono (e o encarregado/DPO) decide; o agente não preenche.
+spec_version: 1
+version: 1
+status: draft
+approved_at: null
+
+meta:
+  title: "Central de solicitações"
+  description: >
+    Peça acesso a um sistema, um equipamento ou um reembolso, ou tire uma dúvida. Leva de 2 a 4 minutos,
+    conforme o pedido. Você precisa entrar com sua conta corporativa Google: usamos seu e-mail para responder
+    e, no reembolso, o comprovante que você anexar. Guardamos os dados por [PREENCHER: prazo de guarda],
+    compartilhamos com [PREENCHER: com quem] e o responsável é [PREENCHER: controlador].
+    Para pedir acesso ou exclusão dos seus dados: [PREENCHER: contato do titular].
+  language: pt-BR
+  document_title: "2026-12-01 Solicitações - Central interna"   # ADAPTAR
+  owner_notes: >
+    MODELO. Caminho de construção "ui" porque a q13 é upload de arquivo (a API não cria; o Apps Script não tem).
+    Upload e e-mail verificado exigem login Google: por isso o público é só o domínio e a descrição avisa (UX-E6).
+    Barra de progresso ligada (UX-B3: 3+ seções em 3 dos 4 caminhos); confirme na visão do respondente como ela se
+    comporta nos desvios. Edição após envio desligada para manter o pedido como foi feito; troque para true se
+    quiser permitir correção. Obrigatórias: só o que a triagem precisa em cada caminho (UX-E1, UX-B5); nenhuma
+    obrigatória fica fora do caminho em que se aplica. q16 é opcional (padrão: e-mail).
+    "Cópia da resposta ao respondente" em "when_requested" para o solicitante ter protocolo.
+    A q13 pede comprovante: o aviso diz para cobrir CPF e dados desnecessários (minimização, UX-H2).
+
+brief:
+  goal: "Encaminhar cada pedido interno à fila certa (acessos, equipamentos, financeiro, atendimento geral) já com a informação que a fila precisa."
+  audience: "Colaboradores da organização; interno; ~150; sem menores."
+  channel: "Link fixado no canal interno e na intranet."
+  account_type: workspace
+  estimated_minutes: 4
+
+build:
+  path: ui
+  test_name_prefix: null
+
+privacy:
+  personal_data: personal
+  inventory:
+    - item: collect_email
+      data: "e-mail corporativo verificado (Configurações)"
+      purpose: "Identificar quem pede e devolver a resposta da solicitação."
+    - item: q13
+      data: "comprovante de despesa (arquivo; pode conter dados de terceiros e do solicitante)"
+      purpose: "Comprovar a despesa para o reembolso."
+  legal_basis:             # o DONO escolhe, por finalidade; o agente não preenche
+    - purpose: "Atender e acompanhar a solicitação (acesso, equipamento, dúvida)"
+      basis: pending_owner
+    - purpose: "Processar o reembolso com o comprovante anexado"
+      basis: pending_owner
+  controller: pending_owner
+  contact: pending_owner
+  retention: pending_owner
+  sharing: pending_owner
+  decided_by: owner
+
+settings:
+  collect_email: verified
+  send_copy: when_requested
+  allow_edit: false
+  limit_one_response: false
+  progress_bar: true
+  shuffle_questions: false
+  confirmation_message: >
+    Solicitação recebida. Você recebe a resposta por e-mail em até 2 dias úteis. Dúvidas: ti@example.com.
+  show_summary: false
+  disable_autosave: false
+  accepting_responses: true
+  close:
+    at: null
+    response_limit: null
+
+quiz:
+  enabled: false
+
+theme:
+  header_image: null
+  color: "#673ab7"
+  background_color: null
+  font: null
+
+publish:
+  published: true
+  audience: domain         # só com account_type: workspace
+  responders: []
+  notify_responders: false
+
+responses:
+  sheet: new
+  sheet_ref: null
+  sheet_access: "ADAPTAR: equipe de TI e do financeiro (editores). Contém e-mail e comprovantes."
+
+sections:
+  - id: s1
+    title: null
+    description: null
+    # sem after_section: a q1 desvia por resposta
+    items:
+      - id: q1
+        type: multiple_choice
+        title: "Do que você precisa?"
+        required: true
+        use: "Encaminhar o pedido ao caminho e à fila certos."
+        options:
+          - {value: "Acesso a um sistema", go_to: s2}
+          - {value: "Equipamento", go_to: s3}
+          - {value: "Reembolso de despesa", go_to: s6}
+          - {value: "Tirar uma dúvida", go_to: s7}
+
+  - id: s2
+    title: "Acesso a um sistema"
+    description: "Nunca informe senhas neste formulário."
+    after_section: s8
+    items:
+      - id: q2
+        type: multiple_choice
+        title: "A qual sistema você precisa de acesso?"
+        required: true
+        use: "Direcionar o pedido ao dono do sistema."
+        options:
+          - {value: "Sistema financeiro"}
+          - {value: "Painel de vendas"}
+          - {value: "Repositório de documentos"}
+        other: true
+      - id: q3
+        type: multiple_choice
+        title: "Que tipo de acesso?"
+        required: true
+        use: "Saber se a ação é criar, alterar ou remover, que têm filas e prazos diferentes."
+        options:
+          - {value: "Criar um acesso novo"}
+          - {value: "Alterar permissões"}
+          - {value: "Remover um acesso"}
+      - id: q4
+        type: paragraph
+        title: "Por que você precisa desse acesso?"
+        description: "Uma frase basta."
+        required: true
+        use: "Dar ao dono do sistema a justificativa para aprovar a permissão."
+        validation:
+          kind: length
+          rule: max_chars
+          value: 400
+          error: "Use até 400 caracteres."
+
+  - id: s3
+    title: "Equipamento"
+    description: null
+    # sem after_section: a q5 desvia por resposta
+    items:
+      - id: q5
+        type: multiple_choice
+        title: "O que você precisa?"
+        required: true
+        use: "Separar pedido de equipamento novo de reparo, que seguem filas diferentes."
+        options:
+          - {value: "Um equipamento novo", go_to: s4}
+          - {value: "Resolver um problema no meu equipamento", go_to: s5}
+
+  - id: s4
+    title: "Equipamento novo"
+    description: null
+    after_section: s8
+    items:
+      - id: q6
+        type: multiple_choice
+        title: "Qual equipamento você precisa?"
+        required: true
+        use: "Saber o item a comprar ou separar do estoque."
+        options:
+          - {value: "Notebook"}
+          - {value: "Monitor"}
+          - {value: "Teclado e mouse"}
+        other: true
+      - id: q7
+        type: paragraph
+        title: "Para que você vai usar?"
+        description: "Uma frase basta."
+        required: true
+        use: "Dimensionar a especificação e justificar a compra."
+        validation:
+          kind: length
+          rule: max_chars
+          value: 400
+          error: "Use até 400 caracteres."
+
+  - id: s5
+    title: "Problema no equipamento"
+    description: null
+    after_section: s8
+    items:
+      - id: q8
+        type: multiple_choice
+        title: "Qual equipamento está com problema?"
+        required: true
+        use: "Encaminhar ao técnico certo."
+        options:
+          - {value: "Notebook"}
+          - {value: "Monitor"}
+          - {value: "Teclado e mouse"}
+        other: true
+      - id: q9
+        type: paragraph
+        title: "O que está acontecendo?"
+        description: "Diga o que aparece na tela ou o que deixou de funcionar."
+        required: true
+        use: "Permitir o diagnóstico inicial sem nova conversa."
+        validation:
+          kind: length
+          rule: max_chars
+          value: 600
+          error: "Use até 600 caracteres."
+
+  - id: s6
+    title: "Reembolso de despesa"
+    description: "Você precisa anexar o comprovante. Antes de enviar, cubra o CPF e outros dados que não sejam necessários."
+    after_section: s8
+    items:
+      - id: q10
+        type: paragraph
+        title: "Descreva a despesa que você quer reembolsar"
+        description: "O que foi comprado e para que foi usado."
+        required: true
+        use: "Verificar se a despesa se enquadra na política de reembolso."
+        validation:
+          kind: length
+          rule: max_chars
+          value: 400
+          error: "Use até 400 caracteres."
+      - id: q11
+        type: short_text
+        title: "Qual o valor da despesa, em reais?"
+        description: "Só números. Ex.: 125,90"
+        required: true
+        use: "Definir a alçada de aprovação e o valor a pagar."
+        validation:
+          kind: number
+          rule: gt
+          value: 0
+          error: "Informe um valor maior que zero, só com números. Ex.: 125,90"
+      - id: q12
+        type: date
+        title: "Em que data você pagou?"
+        required: true
+        use: "Conferir o prazo da política para pedir reembolso."
+        date: {include_year: true, include_time: false}
+      - id: q13
+        type: file_upload
+        title: "Anexe o comprovante"
+        description: "PDF ou imagem, de até 10 MB."
+        required: true
+        use: "Comprovar a despesa para o financeiro pagar."
+        personal: true
+        file_upload:
+          types: [pdf, image]
+          max_files: 1
+          max_size: 10MB
+
+  - id: s7
+    title: "Sua dúvida"
+    description: null
+    after_section: submit    # o caminho D termina aqui, sem passar por s8
+    items:
+      - id: q14
+        type: paragraph
+        title: "Qual é a sua dúvida?"
+        description: "Se puder, cite o sistema, o equipamento ou o processo envolvido."
+        required: true
+        use: "Encaminhar a dúvida à pessoa que sabe responder."
+        validation:
+          kind: length
+          rule: max_chars
+          value: 600
+          error: "Use até 600 caracteres."
+
+  - id: s8
+    title: "Prazo e retorno"
+    description: null
+    after_section: submit
+    items:
+      - id: q15
+        type: multiple_choice
+        title: "Qual a urgência do pedido?"
+        required: true
+        use: "Ordenar a fila de atendimento por urgência."
+        options:
+          - {value: "Posso aguardar"}
+          - {value: "Preciso nesta semana"}
+          - {value: "Está bloqueando meu trabalho agora"}
+        shuffle_options: false
+      - id: q16
+        type: multiple_choice
+        title: "Como você prefere receber o retorno? (opcional)"
+        required: false
+        use: "Responder pelo canal que a pessoa realmente acompanha; sem resposta, usamos o e-mail."
+        options:
+          - {value: "Por e-mail"}
+          - {value: "Pelo chat corporativo"}
+        shuffle_options: false

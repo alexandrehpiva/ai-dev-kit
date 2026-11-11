@@ -1,0 +1,5 @@
+
+HKEY_CURRENT_USER\Software\Microsoft\Windows\Shell\Associations\UrlAssociations\https\UserChoice
+    ProgId    REG_SZ    BraveHTML
+    Hash    REG_SZ    q1w2e3r4t5Y=
+

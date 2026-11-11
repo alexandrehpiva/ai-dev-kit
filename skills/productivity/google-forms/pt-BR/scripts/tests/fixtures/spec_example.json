@@ -1,0 +1,238 @@
+{
+  "spec_version": 1,
+  "version": 2,
+  "status": "approved",
+  "approved_at": "2026-11-11",
+  "meta": {
+    "title": "Inscrição: Workshop de Introdução à Análise de Dados",
+    "description": "Inscreva-se para o workshop presencial de 6 de dezembro. Leva cerca de 3 minutos. Usamos seu nome e e-mail só para confirmar a inscrição, enviar avisos do evento e, se você pedir, emitir o certificado. As respostas são apagadas 90 dias após o evento. Quem coleta: Organização Exemplo. Dúvidas ou pedidos sobre seus dados: privacidade@example.org.\n",
+    "language": "pt-BR",
+    "document_title": "2026-12-06 Inscrição - Workshop Análise de Dados",
+    "owner_notes": "v2: dono trocou a escala de 1-10 para 1-5. Defaults do agente: sem imagem de cabeçalho, barra de progresso ligada (3 seções), confirmação escrita pelo agente.\n"
+  },
+  "brief": {
+    "goal": "Fechar a lista de presença (30 vagas), montar as turmas por disponibilidade e emitir certificados.",
+    "audience": "Público externo adulto, ~60 interessados; sem menores.",
+    "channel": "Link por e-mail e QR code no cartaz.",
+    "account_type": "personal",
+    "estimated_minutes": 3
+  },
+  "build": {
+    "path": "ui",
+    "test_name_prefix": null
+  },
+  "privacy": {
+    "personal_data": "personal",
+    "inventory": [
+      {
+        "item": "q1",
+        "data": "nome",
+        "purpose": "Lista de presença"
+      },
+      {
+        "item": "collect_email",
+        "data": "e-mail (coletado pelas Configurações)",
+        "purpose": "Confirmar inscrição e avisos do evento"
+      },
+      {
+        "item": "q5",
+        "data": "nome completo para o certificado",
+        "purpose": "Emitir o certificado"
+      },
+      {
+        "item": "q9",
+        "data": "aceite de receber novidades (vinculado ao e-mail)",
+        "purpose": "Divulgar próximos workshops"
+      }
+    ],
+    "legal_basis": [
+      {
+        "purpose": "Lista de presença, confirmação, avisos e certificado",
+        "basis": "Procedimentos preliminares a pedido do titular (art. 7º V) — decidido pelo dono"
+      },
+      {
+        "purpose": "Divulgar próximos workshops",
+        "basis": "Consentimento (art. 7º I), opcional e revogável — decidido pelo dono"
+      }
+    ],
+    "controller": "Organização Exemplo",
+    "contact": "privacidade@example.org",
+    "retention": "Respostas apagadas 90 dias após o evento; lista de novidades até a revogação.",
+    "sharing": "Ninguém fora da equipe organizadora.",
+    "decided_by": "owner"
+  },
+  "settings": {
+    "collect_email": "responder_input",
+    "send_copy": "never",
+    "allow_edit": true,
+    "limit_one_response": false,
+    "progress_bar": true,
+    "shuffle_questions": false,
+    "confirmation_message": "Inscrição recebida. Você vai receber a confirmação da vaga por e-mail até 28 de novembro.\n",
+    "show_summary": false,
+    "disable_autosave": false,
+    "accepting_responses": true,
+    "close": {
+      "at": null,
+      "response_limit": 60
+    }
+  },
+  "quiz": {
+    "enabled": false
+  },
+  "theme": {
+    "header_image": null,
+    "color": "#3f51b5",
+    "background_color": null,
+    "font": null
+  },
+  "publish": {
+    "published": true,
+    "audience": "anyone_with_link",
+    "responders": [
+
+    ],
+    "notify_responders": false
+  },
+  "responses": {
+    "sheet": "new",
+    "sheet_ref": null,
+    "sheet_access": "Só o dono e 1 organizadora (editora)."
+  },
+  "sections": [
+    {
+      "id": "s1",
+      "title": null,
+      "description": null,
+      "items": [
+        {
+          "id": "q1",
+          "type": "short_text",
+          "title": "Como você quer ser chamado(a)?",
+          "required": true,
+          "use": "Identificar a pessoa na lista de presença das 30 vagas.",
+          "personal": true
+        },
+        {
+          "id": "q3",
+          "type": "linear_scale",
+          "title": "Qual é a sua experiência com planilhas e análise de dados?",
+          "required": true,
+          "use": "Montar as turmas por nível de experiência.",
+          "scale": {
+            "low": 1,
+            "high": 5,
+            "low_label": "Nunca usei",
+            "high_label": "Uso no dia a dia"
+          }
+        },
+        {
+          "id": "q4",
+          "type": "multiple_choice",
+          "title": "Vai precisar de certificado de participação?",
+          "required": true,
+          "use": "Decidir quem recebe a seção de dados do certificado e quantos certificados emitir.",
+          "options": [
+            {
+              "value": "Sim",
+              "go_to": "s2"
+            },
+            {
+              "value": "Não",
+              "go_to": "s3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "Dados do certificado",
+      "description": "O certificado é enviado por e-mail em até 10 dias após o workshop.",
+      "after_section": "s3",
+      "items": [
+        {
+          "id": "q5",
+          "type": "short_text",
+          "title": "Nome completo como deve aparecer no certificado",
+          "required": true,
+          "use": "Imprimir o nome no certificado.",
+          "personal": true,
+          "validation": {
+            "kind": "length",
+            "rule": "max_chars",
+            "value": 80,
+            "error": "Use até 80 caracteres. Abrevie nomes do meio, se precisar."
+          }
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "Disponibilidade",
+      "description": "Vamos montar as turmas com base nestas respostas.",
+      "after_section": "submit",
+      "items": [
+        {
+          "id": "q6",
+          "type": "checkbox_grid",
+          "title": "Em quais períodos você pode participar?",
+          "description": "Marque todos os que servem. Se não puder em um dia, marque \"Não posso\" naquela linha.",
+          "required": true,
+          "use": "Montar as turmas por período de disponibilidade.",
+          "grid": {
+            "rows": [
+              "Sábado",
+              "Domingo"
+            ],
+            "columns": [
+              "Manhã",
+              "Tarde",
+              "Não posso"
+            ],
+            "one_per_column": false,
+            "shuffle_rows": false
+          }
+        },
+        {
+          "id": "q7",
+          "type": "date",
+          "title": "A partir de que data você consegue começar?",
+          "required": false,
+          "use": "Definir a data de início da turma de cada pessoa.",
+          "date": {
+            "include_year": true,
+            "include_time": false
+          }
+        },
+        {
+          "id": "q8",
+          "type": "paragraph",
+          "title": "Algo que precisamos saber para receber você bem? (opcional)",
+          "description": "Ex.: necessidade de acessibilidade. Não inclua dados de saúde ou de outras pessoas.",
+          "required": false,
+          "use": "Preparar a recepção (acessibilidade) antes do evento.",
+          "validation": {
+            "kind": "length",
+            "rule": "max_chars",
+            "value": 500,
+            "error": "Use até 500 caracteres."
+          }
+        },
+        {
+          "id": "q9",
+          "type": "checkboxes",
+          "title": "Novidades (opcional)",
+          "required": false,
+          "use": "Formar a lista opcional de avisos de próximos workshops.",
+          "personal": true,
+          "options": [
+            {
+              "value": "Quero receber por e-mail avisos de próximos workshops. Posso cancelar quando quiser."
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
