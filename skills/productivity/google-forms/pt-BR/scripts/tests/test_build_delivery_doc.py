@@ -638,9 +638,54 @@ class PdfHelpersTests(unittest.TestCase):
         self.assertEqual(os.path.realpath(path), os.path.realpath(target))
 
 
+class DetectBrowserFromPlaywrightMcpTests(unittest.TestCase):
+    """O build não carrega detect_browser próprio: usa o da skill playwright-mcp, achada como no check_setup."""
+
+    def _fake_pm(self):
+        tmp = tempfile.mkdtemp(prefix="gforms-pm-")
+        self.addCleanup(shutil.rmtree, tmp, True)
+        os.makedirs(os.path.join(tmp, "scripts"))
+        with open(os.path.join(tmp, "scripts", "check_setup.py"), "w") as fh:
+            fh.write("")
+        return tmp
+
+    def test_carrega_o_modulo_da_pasta_apontada_pela_variavel(self):
+        """Dado GFORMS_PLAYWRIGHT_MCP_DIR com um detect_browser.py, então o build carrega esse módulo."""
+        pm = self._fake_pm()
+        with open(os.path.join(pm, "scripts", "detect_browser.py"), "w") as fh:
+            fh.write("MARCA = 'falso'\n")
+        module, why = bd.load_detect_browser({"GFORMS_PLAYWRIGHT_MCP_DIR": pm})
+        self.assertIsNone(why)
+        self.assertEqual(module.MARCA, "falso")
+
+    def test_variavel_invalida_vira_motivo_legivel(self):
+        """Dado GFORMS_PLAYWRIGHT_MCP_DIR vazio de conteúdo, então não carrega e cita a variável."""
+        module, why = bd.load_detect_browser({"GFORMS_PLAYWRIGHT_MCP_DIR": self._fake_pm() + "-nao-existe"})
+        self.assertIsNone(module)
+        self.assertIn("GFORMS_PLAYWRIGHT_MCP_DIR", why)
+
+    def test_render_sem_playwright_mcp_nem_pdf_irmao_avisa_e_falha_sem_travar(self):
+        """Dado nenhuma skill irmã, quando renderiza, então devolve None com aviso sobre a playwright-mcp."""
+        tmp = tempfile.mkdtemp(prefix="gforms-render-")
+        self.addCleanup(shutil.rmtree, tmp, True)
+        html_path = os.path.join(tmp, "a.html")
+        with open(html_path, "w") as fh:
+            fh.write("<html></html>")
+        old = bd.SKILL_DIR
+        bd.SKILL_DIR = os.path.join(tmp, "isolado", "google-forms", "pt-BR")
+        try:
+            renderer, problems, usage = bd.render_pdf(html_path, os.path.join(tmp, "a.pdf"), {})
+        finally:
+            bd.SKILL_DIR = old
+        self.assertEqual((renderer, usage), (None, False))
+        self.assertTrue(any("playwright-mcp" in p for p in problems), problems)
+
+
 def _chromium_for_render():
     """Há um Chromium que não seja o Brave (o Brave headless trava no --print-to-pdf no macOS)?"""
-    import detect_browser
+    detect_browser, _ = bd.load_detect_browser()
+    if detect_browser is None:
+        return False
     try:
         payload = detect_browser.detect(detect_browser.SystemEnv())[1]
     except Exception:  # noqa: BLE001

@@ -1,35 +1,31 @@
 # Solução de problemas
 
-Cada entrada segue: **sintoma → causa provável → correção**. Antes de qualquer correção, rode, da raiz do projeto do usuário, `python3 <pasta-da-skill>/scripts/check_setup.py --harness auto --server-name playwright-browser` (Windows: `py -3 <pasta-da-skill>\scripts\check_setup.py ...`; ou rode de outra pasta com `--project-dir <raiz>`). `<pasta-da-skill>` é a pasta onde está o `SKILL.md` e leia `status` e `problems`. Corrija a causa; não pule para uma alternativa (setup.md, Etapa 6) sem diagnosticar.
+Cada entrada segue: **sintoma → causa provável → correção**. Antes de qualquer correção, rode, da raiz do projeto do usuário, `python3 <pasta-da-skill>/scripts/check_setup.py --harness auto --server-name playwright-browser` (Windows: `py -3 <pasta-da-skill>\scripts\check_setup.py ...`; ou rode de outra pasta com `--project-dir <raiz>`). `<pasta-da-skill>` é a pasta onde está o `SKILL.md`; leia `status` e `problems`. Corrija a causa; não pule para outro modo do MCP sem diagnosticar.
 
-## Instalação e conexão
+Este arquivo trata só do que é **do Forms**: a conta Google e a operação do editor. Problemas do **Playwright MCP em si** (instalação, token, registro, navegador, abas, `browser_navigate` sem conteúdo, Windows, Linux, WSL) estão no `troubleshooting.md` da skill `playwright-mcp`; o mapa abaixo diz onde cada sintoma mora.
+
+## Conexão e conta Google
 
 | Sintoma | Causa provável | Correção |
 |---|---|---|
-| A ferramenta do navegador "trava" sem erro | Modo extensão **sem token**: o servidor espera aprovação manual sem prazo | Peça ao usuário para olhar a aba `connect.html` aberta no navegador e aprovar; depois configure `PLAYWRIGHT_MCP_EXTENSION_TOKEN` (setup.md, Etapa 3.3) e reinicie o harness |
-| `Playwright extension did not connect within 30s ...` | Token errado/ausente no ambiente do harness, perfil errado, extensão desativada, ou **referência `${VAR}` não expandida no escopo user do Claude Code** [não verificado] | Confirme que o token é do perfil certo; defina `--profile-dir-name "<Default\|Profile N>"` (ver `chrome://version`); confira que a extensão está ativa; reabra o harness para herdar a variável. Para a causa `${VAR}`: confira o salvo com `claude mcp get playwright-browser` (não reexiba valores de `env` no chat; basta ver se a referência `${...}` ficou literal, sinal de que não expandiu); registre **sem `env`** para o processo herdar a variável do shell, ou use um arquivo `.mcp.json`/`--mcp-config` (o caminho verificado em 2026-11-11) |
-| `Playwright Extension not found in "..."` | Extensão não instalada naquele perfil, ou navegador não é Chrome/Edge e falta `--executable-path` | Instale a extensão (link no setup.md, Etapa 3.1); em Brave/Vivaldi/Opera/Arc use `--executable-path` |
-| `check_setup` = `token_missing` | A variável não chega ao processo do harness (apps gráficos não herdam o shell; Windows `setx` só vale em processos novos) | Abra o harness pelo terminal depois do `export`, ou reinicie o app; no Windows, feche e reabra tudo. Nunca cole o token no chat |
-| `check_setup` = `mcp_not_registered` | O servidor não está no arquivo do harness ou está sob outro nome | `configure_mcp.py` (plano, revisão, `--apply`); confira `--server-name` |
-| `check_setup` = `node_missing` / `node_too_old` | Node ausente ou < 20 | setup.md, Etapa 2; reabra o terminal depois |
-| `configure_mcp` = `conflict` | Já há servidor com o mesmo nome e conteúdo diferente | Não sobrescreva; use `--server-name` diferente ou deixe o usuário decidir |
-| MCP aparece mas falha ao iniciar na primeira vez | O primeiro `npx` baixa o pacote e estoura o timeout do cliente (Codex: 10 s) | Aumente `startup_timeout_sec` (60) ou rode `npx -y @playwright/mcp@0.0.85 --version` uma vez antes |
-| `npx` com "Connection closed" no Windows | O cliente inicia o processo sem shell e o `npx` do Windows é `npx.cmd` [comunidade] | Use `"command": "cmd", "args": ["/c", "npx", ...]`; confira o salvo com `claude mcp get <nome>` (bug histórico `/c` virando `C:/`) |
-| `@latest` resolve versão antiga | Registro com idade mínima de pacote (ex.: safe-chain) | Use o pin `@playwright/mcp@0.0.85`; compare `npm view @playwright/mcp dist-tags` |
-| Snapshot mostra "Fazer login" / `accounts.google.com` | O navegador conectado não tem a conta Google | Confirme perfil (`--profile-dir-name`); na alternativa 1 (setup.md, Etapa 6) peça login manual. **Nunca** digite credenciais |
+| Snapshot mostra "Fazer login" / `accounts.google.com` | O navegador conectado não tem a conta Google | Confirme com o usuário o perfil (`--profile-dir-name`, ver `harnesses.md` da `playwright-mcp`); se o perfil certo não puder ser usado, o login manual do usuário é a saída (`setup.md`). **Nunca** digite credenciais |
 | "Este navegador ou app pode não ser seguro" | O Google detectou automação no navegador lançado pelo Playwright | Pare. Volte ao modo extensão (navegador real). Sem stealth, sem captcha |
 | Aparece captcha ou verificação em duas etapas | Verificação de segurança do Google | Pare e peça ao usuário para resolver na janela; depois continue |
-| `debugger detached` / aba indisponível | Outra extensão injeta iframe em toda página (gerenciador de senhas) | Ajuste o acesso dela ao site para "Ao clicar" ou use perfil sem ela |
-| Perfil dedicado "Browser is already in use" / não abre | Outro processo usa a mesma pasta (SingletonLock) | Use uma pasta por cliente; peça ao usuário para fechar **a janela dedicada**, nunca o navegador pessoal |
-| A porta CDP não responde | `--remote-debugging-port` com perfil padrão é ignorado no Chrome 136+ | Use `--user-data-dir` dedicado; confira `http://localhost:9222/json/version` |
-| Linux: Brave/Chrome snap ou flatpak não abre pelo MCP | Confinamento impede o Playwright de lançar o binário | Instale Chrome ou Brave por `.deb`/`.rpm` (setup.md, Etapa 1) |
-| Linux: abre sem janela (headless, sem `$DISPLAY`) | Sem `$DISPLAY` (SSH, WSL sem WSLg) | Rode numa sessão gráfica; login manual não é possível headless |
-| WSL: `--executable-path` para `chrome.exe` ignorado | Regressão conhecida (issue #1590) | Rode o harness no Windows nativo |
-| `browser_navigate` não retorna o conteúdo | Em 0.0.85 o snapshot vai para `.playwright-mcp/page-*.yml` | Chame `browser_snapshot` |
-| Refs do snapshot "obsoletas" | A página mudou depois do snapshot | Tire novo `browser_snapshot` e use os refs novos (detalhes na seção abaixo) |
 | Interface do Google em outro idioma | Rótulos diferem do pt-BR esperado | Use papéis ARIA e a tabela pt-BR/en do `ui-operations.md`; não dependa do texto exato |
 
-Quando nenhuma entrada resolver, pare e reporte ao usuário: o que foi tentado, a mensagem exata de erro (sem token nem cookie), o `status` do `check_setup` e a pergunta que falta responder. Não declare a conexão como funcionando sem a prova da Etapa 5.
+### Problemas do Playwright MCP: onde ler
+
+Leia na skill `playwright-mcp` (pasta `<pasta-do-playwright-mcp>`, definida no Passo 0 do `SKILL.md`):
+
+| Sintoma ou `status` do check | Onde |
+|---|---|
+| Ferramenta do navegador "trava" sem erro; `Playwright extension did not connect within 30s`; `Playwright Extension not found`; `token_missing`; `debugger detached` / aba indisponível | `troubleshooting.md` seção 5 e `extension-mode.md` |
+| `node_missing` / `node_too_old`; `npx` com "Connection closed" no Windows; primeira execução estoura o tempo; `@latest` resolve versão antiga; Linux (snap, flatpak, sem `DISPLAY`, sandbox); WSL | `troubleshooting.md` seções 3 e 4 e `setup.md` |
+| `mcp_not_registered`; conflito de nome; `${VAR}` literal; servidor só aparece em sessão nova; `browser_navigate` não traz o conteúdo (chame `browser_snapshot`) | `troubleshooting.md` seção 8 e `harnesses.md` |
+| `browser_issue`; "Browser is already in use"; porta CDP não responde | `troubleshooting.md` seções 2 e 3 e `setup.md` |
+| `playwright_mcp_missing` / `playwright_mcp_error` | `setup.md` desta skill, tabela "Como instalar ou consertar" |
+
+Quando nenhuma entrada resolver, pare e reporte ao usuário: o que foi tentado, a mensagem exata de erro (sem token nem cookie), o `status` do `check_setup` e a pergunta que falta responder. Não declare a conexão como funcionando sem a verificação final do `setup.md`.
 
 ## Operação do editor
 

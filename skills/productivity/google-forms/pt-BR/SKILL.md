@@ -1,8 +1,9 @@
 ---
 name: google-forms
-description: Cria, edita, publica, testa e revisa formulários do Google Forms operando o navegador Chromium padrão do usuário (Chrome, Edge, Brave e outros Chromium) já logado no Google, via Playwright MCP em modo extensão — com instalação guiada e scripts para macOS, Windows e Linux, especificação aprovada antes de construir, revisão de UX independente a cada formulário, caminho Apps Script para formulários grandes ou em lote, exportação de respostas e documento de entrega em PDF (sumário, passo a passo com capturas, links internos). Usar quando o usuário pedir "cria um Google Forms", "monta um formulário de inscrição/pesquisa/feedback/quiz", "edita meu formulário", "publica o form", "pega as respostas do formulário", "revisa a UX desse form", "configura o Playwright MCP com meu navegador", "gera a documentação/manual do formulário", ou colar um link docs.google.com/forms.
+description: Cria, edita, publica, testa e revisa formulários do Google Forms operando o navegador Chromium padrão do usuário (Chrome, Edge, Brave e outros Chromium) já logado no Google, via Playwright MCP em modo extensão (instalar, registrar e diagnosticar o Playwright MCP é da skill `playwright-mcp`), com especificação aprovada antes de construir, revisão de UX independente a cada formulário, caminho Apps Script para formulários grandes ou em lote, exportação de respostas e documento de entrega em PDF (sumário, passo a passo com capturas, links internos). Usar quando o usuário pedir "cria um Google Forms", "monta um formulário de inscrição/pesquisa/feedback/quiz", "edita meu formulário", "publica o form", "pega as respostas do formulário", "revisa a UX desse form", "gera a documentação/manual do formulário", ou colar um link docs.google.com/forms.
 dependencies:
   - productivity/generate-pdf-report
+  - productivity/playwright-mcp
 license: Autoral, exceto forms-api.md e a regra "leitura por padrão, confirmar toda escrita" das Regras de segurança, adaptados da skill google-forms de byungkyu (ClawHub, v1.2.5, MIT-0) — ver "Origem" em forms-api.md.
 ---
 
@@ -22,13 +23,15 @@ Quando uma instrução explícita do usuário contradisser algo aqui, prevalece 
 
 ## Passo 0 — a cada acionamento
 
-0. Defina `<pasta-da-skill>`: a pasta onde está este `SKILL.md` (a mesma que contém `scripts/` e `templates/`), por exemplo `.claude/skills/google-forms` ou `.cursor/skills/google-forms` no projeto. Use o mesmo valor em todos os comandos. Em todo comando `python3 …` do Windows, use `py -3 …` (e `\` nos caminhos); `python3` lá costuma ser o atalho da Microsoft Store.
-1. Da raiz do projeto do usuário (não da pasta da skill), rode `python3 <pasta-da-skill>/scripts/check_setup.py` (Windows: `py -3 <pasta-da-skill>\scripts\check_setup.py`) e aja pelo `status`:
+0. Defina `<pasta-da-skill>`: a pasta onde está este `SKILL.md` (a mesma que contém `scripts/` e `templates/`), por exemplo `.claude/skills/google-forms` ou `.cursor/skills/google-forms` no projeto. Defina também `<pasta-do-playwright-mcp>`: a pasta irmã `playwright-mcp` no mesmo diretório de skills (`.claude/skills/playwright-mcp` ou `.cursor/skills/playwright-mcp`; no Codex e em outros harnesses, onde a skill estiver instalada). Use os mesmos valores em todos os comandos. Em todo comando `python3 …` do Windows, use `py -3 …` (e `\` nos caminhos); `python3` lá costuma ser o atalho da Microsoft Store.
+1. Da raiz do projeto do usuário (não da pasta da skill), rode `python3 <pasta-da-skill>/scripts/check_setup.py` (Windows: `py -3 <pasta-da-skill>\scripts\check_setup.py`) e aja pelo `status`. É um adaptador: roda o `check_setup.py` da `playwright-mcp` em modo extensão e devolve o mesmo JSON, com os acréscimos do Forms.
 
 | status | Ação |
 |---|---|
 | `ready` | Siga para a fase 1. |
-| `node_missing`, `node_too_old`, `mcp_not_registered`, `token_missing`, `browser_issue` | Leia [`setup.md`](setup.md) — obrigatório — e conduza a instalação com o usuário; depois rode o check de novo. |
+| `node_missing`, `node_too_old`, `mcp_not_registered`, `token_missing`, `browser_issue` | Leia [`setup.md`](setup.md) — obrigatório; ele manda para os assets da skill `playwright-mcp` em `<pasta-do-playwright-mcp>`, que conduz a instalação com o usuário; depois rode o check de novo. |
+| `playwright_mcp_missing` | A skill `playwright-mcp` não está ao lado desta. Instale-a (o `next_steps` traz o comando) ou, se ela já está em outro lugar, exporte `GFORMS_PLAYWRIGHT_MCP_DIR=<pasta-do-playwright-mcp>`; rode o check de novo. |
+| `playwright_mcp_error` | O `check_setup.py` da `playwright-mcp` não rodou ou não devolveu JSON: rode-o direto (`python3 <pasta-do-playwright-mcp>/scripts/check_setup.py --mode extension`), leia o erro e siga o `troubleshooting.md` dela. |
 | `usage_error` | Corrija a chamada (pasta de execução, flags) e rode de novo. |
 
    O `check_setup.py` também avisa (sem mudar o `status`) quando falta o PyYAML: `data.optional.pyyaml: false` e um `next_step` — instale com `python3 -m pip install --user pyyaml` (Windows: `py -3 -m pip install --user pyyaml`). Se o pip recusar por ambiente gerenciado (erro `externally-managed-environment`), crie um venv (`python3 -m venv .venv && .venv/bin/pip install pyyaml`; Windows: `.venv\Scripts\pip`) e rode o `validate_spec.py` com o `python` do venv. Ou escreva o spec em JSON. Sem isso o `validate_spec.py` recusa `.yaml`.
@@ -104,13 +107,14 @@ Exclua formulários, planilhas e projetos Apps Script de teste que **esta sessã
 
 - **Leitura por padrão.** Abrir, listar e ler respostas não precisa de confirmação; criar, editar, publicar, despublicar, excluir formulário e excluir respostas precisa. Exceção: formulários de teste com o prefixo `[TESTE] ` registrados no inventário desta sessão (`testing-and-cleanup.md`) dispensam confirmação só para criar, editar e excluir o próprio teste (e suas respostas de teste) — **nunca para publicar**, que abre a coleta ao público e sempre pede autorização.
 - **Login, captcha, verificação em duas etapas e telas de autorização OAuth são do usuário.** O agente para e pede; nunca clica em "Permitir" de escopos por conta própria.
-- **Nunca** leia, exporte ou copie cookies, tokens ou arquivos do perfil do navegador (o `check_setup.py` só confere se a pasta da extensão existe); nunca grave o token da extensão em arquivo versionado nem o mostre no chat — nem reexiba valores de `env` lidos de arquivos de configuração MCP.
+- **Nunca** leia, exporte ou copie cookies, tokens ou arquivos do perfil do navegador (o `check_setup.py`, pela `playwright-mcp`, só confere se a pasta da extensão existe); nunca grave o token da extensão em arquivo versionado nem o mostre no chat — nem reexiba valores de `env` lidos de arquivos de configuração MCP.
 - **Dados pessoais:** colete o mínimo do spec aprovado; base legal, controlador e retenção são decididos pelo usuário. Formulário que pede senha, token, código de verificação ou dado de cartão não é construído.
 - **Respostas reais** são dados de terceiros: não as cole no chat além do necessário e não as envie a outro serviço sem pedido explícito.
 - Erros de conexão, refs obsoletas e comportamentos estranhos do editor: [`troubleshooting.md`](troubleshooting.md).
 
 ## Composição
 
+- **`playwright-mcp`** (dependência obrigatória) — dona do Playwright MCP: instalação, extensão do navegador, token, registro por harness e problemas genéricos do MCP. Esta skill só exige o MCP em modo extensão e opera o Forms por ele.
 - **`subagent-orchestration`** (se instalada) — despachar o revisor de UX independente e, em lote, um operador por formulário.
 - **`ask-with-context`** (se instalada) — formato das perguntas da entrevista e das decisões de LGPD levadas ao usuário.
 - **`hallucination-guard`** (se instalada) — antes de declarar entregue numa sessão longa ou compactada.

@@ -1,2 +1,0 @@
-# Saída real do reg.exe: manter CRLF para o teste cobrir o parser do Windows
-windows_*.txt -text

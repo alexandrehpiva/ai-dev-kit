@@ -1,4 +1,0 @@
-
-HKEY_CLASSES_ROOT\BraveHTML\shell\open\command
-    (Padrão)    REG_SZ    "C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe" --single-argument %1
-

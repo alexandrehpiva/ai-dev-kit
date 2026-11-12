@@ -1,7 +1,7 @@
 ---
 name: playwright-mcp
 description: Dona da instalação e configuração do Playwright MCP (@playwright/mcp) em macOS, Windows e Linux: instala requisitos, registra o servidor em cada harness (Claude Code, Cursor, VS Code, Codex, Gemini) e opera com o navegador Chromium padrão do sistema (Brave, Chrome, Edge, Chromium) — no modo extensão (navegador real já logado, com tela) e no modo headless com dados logados (cópia do perfil, storageState, CDP) — com diagnóstico de "abriu deslogado". Usar quando o usuário pedir "configura o Playwright MCP", "instala o playwright mcp", "usa meu navegador logado", "headless logado", "headless com meus cookies", "exporta a sessão/cookies", "o MCP abriu deslogado", "Brave/Edge/Chrome com Playwright", "playwright mcp no Windows/Linux". Outras skills que precisem do Playwright MCP (ex.: Google Forms) dependem desta para o setup.
-license: Conteúdo autoral; nenhum texto de terceiros foi copiado. Os scripts de detecção e configuração nascem dos da skill google-forms deste kit. Fontes externas aparecem com link e data de acesso.
+license: Conteúdo autoral; nenhum texto de terceiros foi copiado. Os scripts de detecção e configuração nasceram de cópias da skill google-forms deste kit; desde a google-forms 1.1.0 esta skill é a dona deles e a google-forms depende dela. Fontes externas aparecem com link e data de acesso.
 ---
 
 # playwright-mcp
@@ -127,6 +127,6 @@ Uma navegação por vez nos sites do usuário, só leitura quando possível. **C
 
 ## Composição
 
-- **`google-forms`** (se instalada) — usa este MCP em modo extensão para Google Forms; reaproveita `detect_browser.py` e `configure_mcp.py`.
+- **`google-forms`** (se instalada) — depende desta skill: usa este MCP em modo extensão para Google Forms e consome daqui o `check_setup.py` (pelo adaptador próprio dela) e o `detect_browser.py` (para achar o Chromium que gera o PDF de entrega). Instalar, registrar e diagnosticar o MCP é sempre desta skill.
 - **`secure-credentials`** (se instalada) — coletar o token da extensão sem passar pelo chat.
 - **`hallucination-guard`** (se instalada) — antes de gravar como fato algo que só foi lido, não testado.

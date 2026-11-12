@@ -115,6 +115,7 @@ import base64
 import datetime
 import glob
 import html
+import importlib.util
 import json
 import mimetypes
 import os
@@ -1408,6 +1409,34 @@ def find_sister_script(environ=None):
     return None, None
 
 
+def load_detect_browser(environ=None):
+    """Carrega o detect_browser.py da skill playwright-mcp (dona da detecção de navegador).
+
+    Devolve (módulo|None, motivo|None). A pasta é achada pelo mesmo caminho do check_setup.py
+    (GFORMS_PLAYWRIGHT_MCP_DIR, pasta irmã ou layout do repositório).
+    """
+    environ = os.environ if environ is None else environ
+    sys.path.insert(0, HERE)
+    try:
+        import check_setup
+    finally:
+        sys.path.pop(0)
+    pm_dir, err, _ = check_setup.find_playwright_mcp(environ, SKILL_DIR)
+    if not pm_dir:
+        return None, err or ("a skill playwright-mcp não foi encontrada ao lado desta skill; instale-a "
+                             "(%s)." % check_setup.INSTALL_HINT)
+    path = os.path.join(pm_dir, "scripts", "detect_browser.py")
+    if not os.path.isfile(path):
+        return None, "%s não existe." % path
+    spec = importlib.util.spec_from_file_location("playwright_mcp_detect_browser", path)
+    module = importlib.util.module_from_spec(spec)
+    try:
+        spec.loader.exec_module(module)
+    except Exception as exc:  # noqa: BLE001 - qualquer falha de carga vira motivo legível
+        return None, "não consegui carregar %s (%s)." % (path, exc)
+    return module, None
+
+
 def inspect_pdf(path):
     """Devolve dict(valid, pages, links). Conta também dentro de streams comprimidos."""
     try:
@@ -1463,16 +1492,15 @@ def render_pdf(html_path, pdf_path, environ=None, timeout=120):
             os.remove(pdf_path)
     else:
         problems.append("html_to_pdf.py da skill generate-pdf-report não encontrado; usando o Chromium detectado.")
-    sys.path.insert(0, HERE)
-    try:
-        import detect_browser
-        payload = detect_browser.detect(detect_browser.SystemEnv())[1]
-    finally:
-        sys.path.pop(0)
+    detect_browser, why = load_detect_browser(environ)
+    if detect_browser is None:
+        problems.append("Sem o detect_browser.py da skill playwright-mcp não há como achar um Chromium: %s" % why)
+        return None, problems, False
+    payload = detect_browser.detect(detect_browser.SystemEnv())[1]
     pdata = payload.get("data") or {}
     cands = []
     if str(pdata.get("source", "")).startswith("env:") and (pdata.get("default") or {}).get("executable"):
-        cands.append(pdata["default"])  # GFORMS_BROWSER_PATH explícito vale primeiro
+        cands.append(pdata["default"])  # PWMCP_BROWSER_PATH explícito vale primeiro
     order = ["chrome", "msedge", "chromium", "chrome-beta", "msedge-beta", "vivaldi", "brave"]
     inst = [e for e in pdata.get("installed", []) if e.get("chromium") and e.get("executable")]
     inst.sort(key=lambda e: order.index(e.get("id")) if e.get("id") in order else 50)
@@ -1618,7 +1646,7 @@ def main(argv=None, env=None):
     if renderer is None:
         return finish("render_failed", False, 1, data, issues,
                       ["O HTML foi gravado em %s. Instale/aponte um Chrome (CHROME_PATH ou "
-                       "GFORMS_BROWSER_PATH) e rode de novo." % html_path])
+                       "PWMCP_BROWSER_PATH) e rode de novo." % html_path])
     info = inspect_pdf(pdf_path)
     data.update({"pdf": pdf_path, "renderer": renderer, "pages": info["pages"],
                  "link_annotations": info["links"], "size_kb": round(os.path.getsize(pdf_path) / 1024.0)})

@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.46.0] — 2026-11-12
+
+### Changed
+
+- `productivity/google-forms` 1.1.0: passa a depender de `productivity/playwright-mcp`, que já é dona da instalação, do registro por harness, do token da extensão e do diagnóstico do Playwright MCP. Os scripts duplicados `detect_browser.py` e `configure_mcp.py` e os testes e fixtures deles saem da skill; o `check_setup.py` vira um adaptador fino que localiza o da `playwright-mcp` (variável `GFORMS_PLAYWRIGHT_MCP_DIR`, pasta irmã ou layout do repositório), roda-o em modo extensão com `-I -B` e devolve o mesmo contrato, acrescentando o aviso de PyYAML e a verificação final na lista do Forms; status novos `playwright_mcp_missing` e `playwright_mcp_error`. `setup.md` e `troubleshooting.md` ficam só com o que é do Forms e apontam, pelo nome, os assets da `playwright-mcp`. A descrição deixa de disputar o gatilho "configura o Playwright MCP". O PDF de entrega passa a achar o Chromium pelo `detect_browser.py` da `playwright-mcp` (variável `PWMCP_BROWSER_PATH`, no lugar de `GFORMS_BROWSER_PATH`). Suíte da skill: 333 → 284 testes (5 ignorados sem PyYAML). Migração 1.0.0 → 1.1.0: instale `playwright-mcp` junto (o CLI resolve a dependência).
+
+---
+
 ## [0.45.0] — 2026-11-11
 
 ### Added

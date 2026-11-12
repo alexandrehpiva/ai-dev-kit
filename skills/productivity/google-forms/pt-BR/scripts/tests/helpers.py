@@ -1,15 +1,17 @@
 # -*- coding: utf-8 -*-
-"""Apoio dos testes: ambiente falso (arquivos, PATH, comandos e registro simulados).
+"""Apoio dos testes: caminhos, captura do JSON dos scripts e uma skill playwright-mcp falsa.
 
-As fixtures em fixtures/ são sintéticas: seguem os formatos descritos no relatório R6
-(plist do LaunchServices conferido no macOS; saída de `reg query` e arquivos .desktop no
-formato documentado pela comunidade/freedesktop — [não verificado] em Windows/Linux reais).
+Os testes do check_setup.py nunca leem perfil, configuração de harness nem token reais: usam uma
+skill playwright-mcp FALSA em diretório temporário (um check_setup.py que devolve o JSON combinado)
+e um ambiente mínimo montado aqui.
 """
 
 import io
 import json
 import os
+import shutil
 import sys
+import tempfile
 from contextlib import redirect_stdout
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -18,70 +20,74 @@ FIXTURES = os.path.join(HERE, "fixtures")
 if SCRIPTS not in sys.path:
     sys.path.insert(0, SCRIPTS)
 
-import detect_browser as db  # noqa: E402
+# check_setup.py de mentira: grava como foi chamado e devolve o que o teste combinou em response.json.
+FAKE_CHECK_SETUP = '''# -*- coding: utf-8 -*-
+import json, os, sys
+here = os.path.dirname(os.path.abspath(__file__))
+spec = json.load(open(os.path.join(here, "response.json")))
+with open(os.path.join(here, "called.json"), "w") as fh:
+    json.dump({"argv": sys.argv[1:], "isolated": sys.flags.isolated, "dont_write_bytecode": sys.dont_write_bytecode,
+               "cwd": os.getcwd(), "token_visible": "PLAYWRIGHT_MCP_EXTENSION_TOKEN" in os.environ}, fh)
+if "raw_stdout" in spec:
+    sys.stdout.write(spec["raw_stdout"])
+else:
+    sys.stdout.write(json.dumps(spec["payload"], ensure_ascii=False))
+sys.exit(spec.get("exit", 0))
+'''
 
 
-def fixture(name, binary=True):
-    with open(os.path.join(FIXTURES, name), "rb") as fh:
-        data = fh.read()
-    return data if binary else data.decode("utf-8")
+def pm_payload(status, problems=None, next_steps=None, data=None):
+    """JSON no contrato do check_setup.py da skill playwright-mcp."""
+    return {"ok": status == "ready", "status": status, "data": data or {"mode": "extension"},
+            "problems": problems or [], "next_steps": next_steps or []}
 
 
-class FakeEnv(db.SystemEnv):
-    """Sistema simulado. Nada toca o disco real nem roda processos."""
+def make_fake_pm(root, payload=None, exit_code=0, raw_stdout=None, rel=("playwright-mcp",)):
+    """Cria <root>/<rel...>/scripts/check_setup.py falso e devolve a pasta da skill falsa."""
+    pm = os.path.join(root, *rel)
+    os.makedirs(os.path.join(pm, "scripts"))
+    with open(os.path.join(pm, "scripts", "check_setup.py"), "w") as fh:
+        fh.write(FAKE_CHECK_SETUP)
+    set_response(pm, payload, exit_code, raw_stdout)
+    return pm
 
-    def __init__(self, os_name="macos", environ=None, files=None, dirs=None, which=None, run=None,
-                 reg=None):
-        super(FakeEnv, self).__init__(os_name=os_name, environ=environ or {})
-        self.files = {}
-        for k, v in (files or {}).items():
-            self.files[k] = v.encode("utf-8") if isinstance(v, str) else v
-        self.dirs = set(dirs or [])
-        for f in list(self.files) + list(self.dirs):
-            d = self.path.dirname(f)
-            while d and d not in self.dirs and d != self.path.dirname(d):
-                self.dirs.add(d)
-                d = self.path.dirname(d)
-        self.which_map = which or {}
-        self.run_map = run or {}
-        self.reg_map = reg
-        self.calls = []
-        self.reads = []  # caminhos lidos (permite provar que um arquivo NÃO foi lido)
 
-    def exists(self, p):
-        return p in self.files or p in self.dirs
+def set_response(pm, payload=None, exit_code=0, raw_stdout=None):
+    spec = {"exit": exit_code}
+    if raw_stdout is not None:
+        spec["raw_stdout"] = raw_stdout
+    else:
+        spec["payload"] = payload if payload is not None else pm_payload("ready")
+    with open(os.path.join(pm, "scripts", "response.json"), "w") as fh:
+        json.dump(spec, fh)
 
-    def isfile(self, p):
-        return p in self.files
 
-    def isdir(self, p):
-        return p in self.dirs
+def called(pm):
+    with open(os.path.join(pm, "scripts", "called.json")) as fh:
+        return json.load(fh)
 
-    def listdir(self, p):
-        out = set()
-        for item in list(self.files) + list(self.dirs):
-            if self.path.dirname(item) == p:
-                out.add(self.path.basename(item))
-        return sorted(out)
 
-    def read_bytes(self, p):
-        self.reads.append(p)
-        return self.files.get(p)
+def clean_environ(**extra):
+    """Ambiente mínimo: só o necessário para o Python rodar; sem PYTHONPATH, sem token, sem HOME real."""
+    env = {}
+    for key in ("PATH", "SYSTEMROOT", "TEMP", "TMP", "TMPDIR", "LANG", "LC_ALL"):
+        if os.environ.get(key):
+            env[key] = os.environ[key]
+    env.update(extra)
+    return env
 
-    def which(self, name):
-        return self.which_map.get(name)
 
-    def run(self, cmd, timeout=5):
-        self.calls.append(list(cmd))
-        r = self.run_map.get(tuple(cmd))
-        if r is None:
-            return None, ""
-        return r
+class Sandbox(object):
+    """Pasta temporária com limpeza explícita."""
 
-    def reg_get(self, hive, subkey, value_name):
-        if self.reg_map is None:
-            return super(FakeEnv, self).reg_get(hive, subkey, value_name)
-        return self.reg_map.get((hive, subkey, value_name))
+    def __init__(self, prefix="gforms-cs-"):
+        self.root = os.path.realpath(tempfile.mkdtemp(prefix=prefix))
+
+    def path(self, *parts):
+        return os.path.join(self.root, *parts)
+
+    def cleanup(self):
+        shutil.rmtree(self.root, ignore_errors=True)
 
 
 def run_main(main, argv, env):
