@@ -11,7 +11,7 @@ related: relational-schema-design, dynamodb, mongodb, nosql-access-patterns
 
 # Redis (e Valkey)
 
-Cobre o uso de Redis/Valkey num serviço: cache (cache-aside, TTL, stampede, invalidação), sessões, rate limiting, locks distribuídos, filas e streams, escolha de estrutura, nomenclatura de chaves, memória e eviction, comandos perigosos, persistência, cluster e hash tags, licença. **Não cobre** busca vetorial nem o código da linguagem; de Redis Search/Valkey Search, cobre só o uso em listas (paginação, ordenação, total) (cliente injetado, tratamento de erro): veja o guia do framework. Quando o Redis é a **fonte da verdade** de dados de negócio, compare com `relational-schema-design`/`dynamodb`/`mongodb`.
+Cobre o uso de Redis/Valkey num serviço: cache (cache-aside, TTL, stampede, invalidação), sessões, rate limiting, locks distribuídos, filas e streams, escolha de estrutura, nomenclatura de chaves, memória e eviction, comandos perigosos, persistência, cluster e hash tags, licença. **Não cobre** busca vetorial nem o código da linguagem (cliente injetado, tratamento de erro): veja o guia do framework. De Redis Search/Valkey Search, cobre só o uso em listas (paginação, ordenação, total). Quando o Redis é a **fonte da verdade** de dados de negócio, compare com `relational-schema-design`/`dynamodb`/`mongodb`.
 
 ## Versões e mudanças de convenção
 
