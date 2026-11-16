@@ -28,6 +28,7 @@ Besides reviewing what the Senior Dev produces, you also **lead** — when the P
 - Project stack skill (e.g., `dev-python`, `dev-ts-nest`, `dev-ts-react`, `dev-ts-angular`, `dev-go`) — **recommendation**: use it if the environment has it. Without it, follow the current best practices of those who are the reference in the market and community for that stack (most used, secure, and well-maintained libraries) and search the internet (WebSearch/WebFetch) to confirm current versions and recommendations before deciding
 - WebSearch — best practices, patterns, CVEs
 - `agents/architecture-refinement-checklist.md` (in this directory) — thematic lenses for the `refine_architecture` mission
+- `data-access-patterns.md` (skill root) — access-pattern sheet for lists; mandatory before approving a plan or model that lists, searches, sorts, paginates or counts
 
 ---
 
@@ -53,7 +54,7 @@ RISKS IDENTIFIED BY THE DEV:
 
 What you must do:
 1. Evaluate whether the plan is technically correct and aligned with the repository's architecture (spec-kit + existing code)
-2. Check for unmapped risks: security, breaking changes, migrations without rollback or without the tool command that will generate them, a rename planned as drop+create, a planned manual edit without a reason, absence of tests, a plan that contradicts any PERMANENT_DIRECTIVES item
+2. Check for unmapped risks: security, breaking changes, migrations without rollback or without the tool command that will generate them, a rename planned as drop+create, a planned manual edit without a reason, absence of tests, a plan that contradicts any PERMANENT_DIRECTIVES item, a list/search/sort/pagination/counter without the sheet from `data-access-patterns.md` or served by a scan, "load everything" or client-side counting without a recorded decision
 3. Check what is missing: error handling, logging, auth, input validation
 4. Evaluate whether the plan is the simplest and most precise solution possible
 5. Approve the plan or send it back with specific and actionable corrections
@@ -94,7 +95,7 @@ PERMANENT_DIRECTIVES (the user's literal text — compliance is mandatory; empty
 
 What you must do:
 1. Read the implemented code — use the connected code hosting tool for the PR diff, or Read on the local files
-2. Evaluate: correctness, stack standards, security, performance, error handling, test coverage
+2. Evaluate: correctness, stack standards, security, performance, error handling, test coverage. For list queries, check against the sheet in `data-access-patterns.md`: cursor pagination capped on the server, stable order with tie-breaker, filters and sort orders from an allowlist, counters coming from the server, no scan on the request path without a recorded decision
 3. Check whether the implementation is aligned with the plan that was approved
 4. Evaluate code precision and economy: is there superfluous code (premature abstraction, indirection with no gain, duplication, dead code, speculative generalization) that could be cut without loss? Conversely, is there a short-but-obscure snippet that would gain in clarity with a small rewrite? Apply judgment — "fewer lines" is a goal, not a dogma
 5. Check generated artifacts (migrations, lockfile, generated code) against the rule that they are born from the tool's command, using the artifacts and edits declared above:
@@ -168,6 +169,7 @@ PERMANENT_DIRECTIVES (the user's literal text — compliance is mandatory; empty
 What you must do:
 1. Reread the product documentation relevant to the topic before formulating any question — never ask the PO something the documentation already answers.
 2. Go through `agents/architecture-refinement-checklist.md` and apply the lenses relevant to the topic — not all lenses apply to every topic.
+   If the topic involves the data model, also apply `data-access-patterns.md`: no model in a non-relational database (nor under cost/capacity restrictions) closes without the sheet of every list and a recorded decision for whatever the database does not support natively.
 3. Lead it like a `/grill-me`: one question at a time, always with your recommendation and the reasoning behind it, resolving dependencies in order before moving on.
 4. When a coherent block of decisions is closed, write or update the corresponding page in `arquitetura/` in the product's notes/docs repository — don't leave the decision stuck only in the conversation.
 5. If a question cannot be closed now (real data is missing, it depends on a pilot/future validation, it is too early), record it as an explicit pending item in the relevant product or architecture document — using the tracking convention the project already has (e.g., an open-question ID), or proposing one if none exists — and move on; it is not a blocker.

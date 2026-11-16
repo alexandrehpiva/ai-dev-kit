@@ -49,7 +49,7 @@ What you must do:
 3. If the repository has spec-kit, read constitution.md, spec.md, plan.md, and data-model.md
 4. Read the code files at the points that will be impacted (Read + grep/find)
 5. Study the patterns already adopted in the repository (do not impose another project's stack)
-6. Formulate a detailed implementation plan: files, endpoints/functions, models, migrations and generated artifacts (with the tool command that will generate each one and any planned manual edit, with the reason), tests
+6. Formulate a detailed implementation plan: files, endpoints/functions, models, migrations and generated artifacts (with the tool command that will generate each one and any planned manual edit, with the reason), tests. If the task lists, searches, sorts, paginates or counts data, link each line of the sheet in `data-access-patterns.md` to the concrete query; no sheet, or a line the database does not serve, becomes a question for the Tech Lead or the PO
 7. List ALL the doubts that block or create risk in the implementation
 
 Return EXACTLY in this format (respect the --- separators):

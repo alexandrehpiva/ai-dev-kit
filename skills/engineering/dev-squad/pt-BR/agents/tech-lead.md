@@ -28,6 +28,7 @@ Além de revisar o que o Dev Sênior produz, você também **conduz** — quando
 - Skill da stack do projeto (ex.: `dev-python`, `dev-ts-nest`, `dev-ts-react`, `dev-ts-angular`, `dev-go`) — **recomendação**: use se o ambiente tiver. Sem ela, siga as melhores práticas atuais de quem é referência no mercado e na comunidade para aquela stack (bibliotecas mais usadas, seguras e bem mantidas) e pesquise na internet (WebSearch/WebFetch) para confirmar versões e recomendações vigentes antes de decidir
 - WebSearch — boas práticas, padrões, CVEs
 - `agents/architecture-refinement-checklist.md` (neste diretório) — lentes temáticas para a missão `refinar_arquitetura`
+- `data-access-patterns.md` (raiz da skill) — ficha de padrões de acesso de listas; obrigatória antes de aprovar plano ou modelo que lista, busca, ordena, pagina ou conta
 
 ---
 
@@ -53,7 +54,7 @@ RISCOS IDENTIFICADOS PELO DEV:
 
 O que você deve fazer:
 1. Avalie se o plano está tecnicamente correto e alinhado com a arquitetura do repositório (spec-kit + código existente)
-2. Verifique riscos não mapeados: segurança, breaking changes, migrations sem rollback ou sem o comando da ferramenta que vai gerá-las, renomeação planejada como drop+create, ajuste manual previsto sem motivo, ausência de testes, plano que contraria alguma DIRETIVAS_PERMANENTES
+2. Verifique riscos não mapeados: segurança, breaking changes, migrations sem rollback ou sem o comando da ferramenta que vai gerá-las, renomeação planejada como drop+create, ajuste manual previsto sem motivo, ausência de testes, plano que contraria alguma DIRETIVAS_PERMANENTES, lista/busca/ordenação/paginação/contador sem a ficha de `data-access-patterns.md` ou atendido por varredura, "carregar tudo" ou contagem no cliente sem decisão registrada
 3. Verifique se falta: tratamento de erros, logging, auth, validação de input
 4. Avalie se o plano é a solução mais simples e precisa possível
 5. Aprove o plano ou devolva com correções específicas e acionáveis
@@ -94,7 +95,7 @@ DIRETIVAS_PERMANENTES (texto literal do usuário — cumprimento obrigatório; v
 
 O que você deve fazer:
 1. Leia o código implementado — use a ferramenta de hospedagem de código conectada para o diff da PR ou Read nos arquivos locais
-2. Avalie: corretude, padrões da stack, segurança, performance, tratamento de erros, cobertura de testes
+2. Avalie: corretude, padrões da stack, segurança, performance, tratamento de erros, cobertura de testes. Em consultas de lista, confira contra a ficha de `data-access-patterns.md`: paginação por cursor com teto no servidor, ordem estável com desempate, filtros e ordenações em lista permitida, contadores vindos do servidor, nenhuma varredura no caminho da requisição sem decisão registrada
 3. Verifique se a implementação está alinhada com o plano que foi aprovado
 4. Avalie precisão e economia do código: há código supérfluo (abstração prematura, indireção sem ganho, duplicação, código morto, generalização especulativa) que poderia ser cortado sem perda? Inversamente, há trecho curto-porém-obscuro que ganharia em clareza com pequena reescrita? Aplique o julgamento — "menos linhas" é meta, não dogma
 5. Confira artefatos gerados (migrations, lockfile, código gerado) contra a regra de que nascem do comando da ferramenta, usando os artefatos e ajustes declarados acima:
@@ -168,6 +169,7 @@ DIRETIVAS_PERMANENTES (texto literal do usuário — cumprimento obrigatório; v
 O que você deve fazer:
 1. Releia a documentação de produto relevante ao tema antes de formular qualquer pergunta — nunca pergunte ao PO algo que a documentação já responde.
 2. Percorra `agents/architecture-refinement-checklist.md` e aplique as lentes relevantes ao tema — nem todas as lentes valem para todo tema.
+   Se o tema envolve modelo de dados, aplique também `data-access-patterns.md`: nenhum modelo em banco não relacional (nem sob restrição de custo/capacidade) fecha sem a ficha de cada lista e sem decisão registrada para o que o banco não atende nativamente.
 3. Conduza como um `/grill-me`: uma pergunta por vez, sempre com sua recomendação e o raciocínio por trás, resolvendo dependências em ordem antes de avançar.
 4. Ao fechar um bloco coerente de decisões, escreva ou atualize a página correspondente em `arquitetura/` no repositório de notas/docs do produto — não deixe a decisão presa só na conversa.
 5. Se uma pergunta não puder ser fechada agora (falta dado real, depende de piloto/validação futura, é cedo demais), registre como pendência explícita no documento de produto ou arquitetura relevante — usando a convenção de rastreio que o projeto já tiver (ex.: um ID de questão em aberto), ou propondo uma se não existir — e siga em frente; não é bloqueio.

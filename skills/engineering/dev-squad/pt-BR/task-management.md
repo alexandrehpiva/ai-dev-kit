@@ -77,7 +77,7 @@ criado_em: {YYYY-MM-DD}
 
 ## Detalhes técnicos
 
-{Arquivos, endpoints, schemas, env vars, decisões já tomadas.}
+{Arquivos, endpoints, schemas, env vars, decisões já tomadas. Em task de lista: link para a ficha de padrões de acesso e para a decisão de dados (`data-access-patterns.md`).}
 
 ## Notas de desenvolvimento
 

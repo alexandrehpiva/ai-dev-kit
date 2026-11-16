@@ -114,6 +114,18 @@ Every item here is about **design**, not operational execution (deploy, live mon
 
 ---
 
+## 9 — Data access patterns and list screens (if the database is non-relational, or cost/capacity restrict queries)
+
+**Failure mode it prevents:** the data model is closed with only "write" and "read by id"; search, sorting, pagination and counters show up at the end and the database no longer serves them without a scan, a read of everything or one more service.
+
+- Does every list screen and endpoint have the sheet from `data-access-patterns.md` answered (filters, text search, sort orders, pagination, counters, volume in 12 and 24 months, freshness)?
+- Does each line of the sheet point to a native database operation (key, index) with an estimated cost? Does whatever does not have a recorded decision with options, cost and risk?
+- Were the database's constraints checked with numbers: scans forbidden or expensive, capacity, size per response, index quota, consistency of secondary indexes, free tier, budget, dedicated search service allowed or not?
+- Does "load everything" have a numeric ceiling, a review trigger and an already-paginated API contract?
+- Does the requested text search (prefix, word, typo tolerance) fit the chosen option, and does the PO know its limit?
+
+---
+
 ## See also
 
 - Existing product and architecture documentation **of the project being refined** — always the primary source, not this generic checklist.

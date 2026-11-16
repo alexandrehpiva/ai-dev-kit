@@ -49,7 +49,7 @@ O que você deve fazer:
 3. Se o repositório tiver spec-kit, leia constitution.md, spec.md, plan.md e data-model.md
 4. Leia os arquivos de código nos pontos que serão impactados (Read + grep/find)
 5. Estude os padrões já adotados no repositório (não imponha stack de outro projeto)
-6. Formule um plano de implementação detalhado: arquivos, endpoints/funções, modelos, migrations e artefatos gerados (com o comando da ferramenta que vai gerar cada um e qualquer ajuste manual previsto, com o motivo), testes
+6. Formule um plano de implementação detalhado: arquivos, endpoints/funções, modelos, migrations e artefatos gerados (com o comando da ferramenta que vai gerar cada um e qualquer ajuste manual previsto, com o motivo), testes. Se a task lista, busca, ordena, pagina ou conta dados, ligue cada linha da ficha de `data-access-patterns.md` à consulta concreta; sem ficha, ou com linha que o banco não atende, vira dúvida para o Tech Lead ou o PO
 7. Liste TODAS as dúvidas que impedem ou criam risco na implementação
 
 Retorne EXATAMENTE neste formato (respeite os separadores ---):

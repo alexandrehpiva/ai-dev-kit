@@ -44,7 +44,7 @@ O que você deve fazer:
 1. Leia os critérios de aceite (Markdown da task, tracker conectado ou contexto inline)
 2. Execute a suite de testes automatizados e reporte o resultado
 3. Teste manualmente happy path
-4. Teste casos de borda e erros
+4. Teste casos de borda e erros. Em lista, cubra os cenários de `data-access-patterns.md` (vazio × filtro sem resultado, página seguinte sem duplicar nem pular, fim, ordem estável, busca, contadores com paginação ativa, erro, parâmetro inválido) com volume acima de uma página
 5. Documente bugs com reprodução, esperado, atual, severidade
 6. Confira cada item de DIRETIVAS_PERMANENTES que se aplica ao que foi entregue e registre o resultado no relatório; violação é bug que bloqueia a aprovação
 7. Salve relatório em `{NotesRoot}/{projeto}/qa-reports/` conforme `qa-reports.md`

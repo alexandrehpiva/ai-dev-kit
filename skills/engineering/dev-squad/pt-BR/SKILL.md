@@ -27,6 +27,7 @@ Leia os assets conforme se tornarem relevantes:
 | Antes de criar, reestruturar ou vincular tasks num task tracker conectado | `tracker-hierarchy.md` |
 | Antes de aprovar o QA | `qa-reports.md` |
 | Antes de o Tech Lead conduzir um refinamento profundo de arquitetura (missão `refinar_arquitetura`) | `agents/architecture-refinement-checklist.md` |
+| Antes de especificar uma tela ou endpoint de lista (filtros, busca, ordenação, paginação, contadores), antes de escolher ou fechar o modelo de dados e antes de testar uma lista | `data-access-patterns.md` |
 
 ---
 
@@ -55,6 +56,7 @@ dev-squad/
 ├── task-management.md              ← formato do backlog Markdown local
 ├── tracker-hierarchy.md            ← formato épico/US/subtask e vínculos no tracker
 ├── qa-reports.md                   ← formato do relatório de QA local
+├── data-access-patterns.md         ← ficha de padrões de acesso de listas (busca, ordenação, paginação, contadores) antes do modelo de dados
 ├── agents/
 │   ├── dev-senior.md               ← papel Dev Sênior, missões, prompts
 │   ├── tech-lead.md                ← papel Tech Lead, missões, prompts
@@ -232,6 +234,14 @@ Antes de classificar algo como bloqueio de segurança ou de privacidade, escreva
 
 ---
 
+## Diretiva crítica — Padrões de acesso a dados antes do modelo
+
+**Modo de falha:** a tela de lista entra na spec como "lista de itens"; busca de texto, ordenação por coluna, paginação no backend e contadores só aparecem no fim do desenvolvimento, quando o banco escolhido (sobretudo não relacional, com custo ou capacidade restritos) já não responde a essas perguntas. Sai lista carregada inteira, ordem fixa, contador calculado no navegador que quebra com paginação e busca sem solução.
+
+Antes de fechar a spec de qualquer tela ou endpoint de lista, e antes de o Tech Lead escolher ou fechar o modelo de dados, preencha a **ficha de padrões de acesso** de `data-access-patterns.md`: o PO responde (filtros, busca, ordenações, paginação, contadores, volume, frescor), a UX confere os estados da lista no protótipo, o Tech Lead valida contra as restrições do banco e registra decisão com opções, custo e risco para o que não é nativo, e a história leva os critérios de aceite de lista que o QA testa. Volume pequeno também exige decisão registrada com teto e gatilho de revisão.
+
+---
+
 ## Ciclo de vida
 
 ```
@@ -285,6 +295,7 @@ O planejamento começa com o PO definindo épicos de alto nível. O Orquestrador
 - Critérios de aceite mensuráveis.
 - Arquivos e módulos impactados, quando conhecidos.
 - Decisões técnicas já tomadas.
+- Para telas e endpoints de lista: a ficha de padrões de acesso e os critérios de aceite de lista (`data-access-patterns.md`).
 - Estimativa de complexidade: pequena, média ou grande.
 
 O Orquestrador cria ou atualiza os arquivos de backlog Markdown seguindo `task-management.md` e pede ao PO que aprove o refinamento antes de a implementação começar.

@@ -7,6 +7,7 @@ Use this protocol when:
 - The Orchestrator needs a business decision to continue
 - Review cycles exceeded the limit and the PO needs to step in
 - There is an external blocker with no possible technical resolution
+- A list screen or endpoint does not have the access-pattern sheet answered (`data-access-patterns.md`): ask field by field, with a recommendation and the cost of each answer in the chosen database
 
 ---
 

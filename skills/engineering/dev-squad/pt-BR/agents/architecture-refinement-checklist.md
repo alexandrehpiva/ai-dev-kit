@@ -114,6 +114,18 @@ Todo item aqui é sobre **desenho**, não sobre execução operacional (deploy, 
 
 ---
 
+## 9 — Padrões de acesso a dados e telas de lista (se o banco é não relacional, ou custo/capacidade restringem consultas)
+
+**Modo de falha que previne:** o modelo de dados é fechado só com "gravar" e "ler por id"; busca, ordenação, paginação e contadores aparecem no fim e o banco já não os atende sem varredura, leitura de tudo ou um serviço a mais.
+
+- Toda tela e endpoint de lista tem a ficha de `data-access-patterns.md` respondida (filtros, busca de texto, ordenações, paginação, contadores, volume em 12 e 24 meses, frescor)?
+- Cada linha da ficha aponta para uma operação nativa do banco (chave, índice) com custo estimado? O que não aponta tem decisão registrada com opções, custo e risco?
+- As restrições do banco foram confrontadas com números: varredura proibida ou cara, capacidade, tamanho por resposta, cota de índices, consistência dos índices secundários, faixa gratuita, orçamento, serviço de busca permitido ou não?
+- "Carregar tudo" tem teto numérico, gatilho de revisão e contrato de API já paginado?
+- A busca de texto pedida (prefixo, palavra, tolerância a erro) cabe na opção escolhida, e o PO sabe o limite dela?
+
+---
+
 ## Ver também
 
 - Documentação de produto e de arquitetura já existente **do projeto em refinamento** — sempre a fonte primária, não este checklist genérico.

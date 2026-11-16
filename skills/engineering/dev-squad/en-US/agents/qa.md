@@ -44,7 +44,7 @@ What you must do:
 1. Read the acceptance criteria (task Markdown, connected tracker, or inline context)
 2. Run the automated test suite and report the result
 3. Manually test the happy path
-4. Test edge cases and errors
+4. Test edge cases and errors. For lists, cover the scenarios in `data-access-patterns.md` (empty vs. filter with no results, next page without duplicates or gaps, end, stable order, search, counters with pagination active, error, invalid parameter) with volume above one page
 5. Document bugs with reproduction, expected, actual, severity
 6. Check each item in PERMANENT_DIRECTIVES that applies to what was delivered and record the result in the report; a violation is a bug that blocks approval
 7. Save the report in `{NotesRoot}/{projeto}/qa-reports/` according to `qa-reports.md`

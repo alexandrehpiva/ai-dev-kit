@@ -77,7 +77,7 @@ created_at: {YYYY-MM-DD}
 
 ## Technical details
 
-{Files, endpoints, schemas, env vars, decisions already made.}
+{Files, endpoints, schemas, env vars, decisions already made. For a list task: link to the access-pattern sheet and to the data decision (`data-access-patterns.md`).}
 
 ## Development notes
 

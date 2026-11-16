@@ -27,6 +27,7 @@ Read the assets as they become relevant:
 | Before creating, restructuring, or linking tasks in a connected task tracker | `tracker-hierarchy.md` |
 | Before approving QA | `qa-reports.md` |
 | Before the Tech Lead conducts deep architecture refinement (mission `refine_architecture`) | `agents/architecture-refinement-checklist.md` |
+| Before specifying a list screen or endpoint (filters, search, sorting, pagination, counters), before choosing or closing the data model, and before testing a list | `data-access-patterns.md` |
 
 ---
 
@@ -55,6 +56,7 @@ dev-squad/
 ├── task-management.md              ← local Markdown backlog format
 ├── tracker-hierarchy.md            ← epic/US/subtask shape and linking in the tracker
 ├── qa-reports.md                   ← local QA report format
+├── data-access-patterns.md         ← access-pattern sheet for lists (search, sorting, pagination, counters) before the data model
 ├── agents/
 │   ├── dev-senior.md               ← Senior Developer role, missions, prompts
 │   ├── tech-lead.md                ← Tech Lead role, missions, prompts
@@ -232,6 +234,14 @@ Before classifying something as a security or privacy block, write the **threat 
 
 ---
 
+## Critical directive — Data access patterns before the model
+
+**Failure mode:** the list screen enters the spec as "list of items"; text search, column sorting, backend pagination and counters only show up late in development, when the chosen database (especially a non-relational one with restricted cost or capacity) can no longer answer those questions. The result is a list loaded whole, a fixed order, a counter computed in the browser that breaks with pagination, and search with no solution.
+
+Before closing the spec of any list screen or endpoint, and before the Tech Lead chooses or closes the data model, fill in the **access-pattern sheet** in `data-access-patterns.md`: the PO answers (filters, search, sort orders, pagination, counters, volume, freshness), UX checks the list states in the prototype, the Tech Lead validates against the database's constraints and records a decision with options, cost and risk for whatever is not native, and the story carries the list acceptance criteria that QA tests. Small volume also requires a recorded decision with a ceiling and a review trigger.
+
+---
+
 ## Lifecycle
 
 ```
@@ -285,6 +295,7 @@ Planning starts with the PO defining high-level epics. The Orchestrator, in Tech
 - Measurable acceptance criteria.
 - Impacted files and modules when known.
 - Technical decisions already made.
+- For list screens and endpoints: the access-pattern sheet and the list acceptance criteria (`data-access-patterns.md`).
 - Complexity estimate: small, medium, or large.
 
 The Orchestrator creates or updates Markdown backlog files following `task-management.md` and asks the PO to approve the refinement before implementation begins.

@@ -7,6 +7,7 @@ Usar este protocolo quando:
 - O Orquestrador precisar de decisão de negócio para continuar
 - Ciclos de revisão excederam o limite e o PO precisa intervir
 - Há bloqueio externo sem resolução técnica possível
+- Uma tela ou endpoint de lista não tem a ficha de padrões de acesso respondida (`data-access-patterns.md`): pergunte campo a campo, com recomendação e o custo de cada resposta no banco escolhido
 
 ---
 
