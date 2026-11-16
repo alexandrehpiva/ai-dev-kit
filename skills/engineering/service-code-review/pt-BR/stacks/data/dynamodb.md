@@ -6,7 +6,7 @@ language: any
 detect: npm:@aws-sdk/client-dynamodb, npm:@aws-sdk/lib-dynamodb, pypi:boto3, go:github.com/aws/aws-sdk-go-v2/service/dynamodb, npm:electrodb, npm:dynamodb-toolbox
 versions_covered: "serviço gerenciado; recursos até 2026-10 (GSI com chave multiatributo de 2025-11, preço on-demand de 2024-11)"
 last_verified: 2026-10-27
-related: relational-schema-design, redis
+related: relational-schema-design, redis, nosql-access-patterns
 ---
 
 # Amazon DynamoDB
@@ -27,6 +27,7 @@ DynamoDB é serviço gerenciado sem versão de motor. O que muda o review são *
 | Redução de preço on-demand | 2024-11-01 | On-demand ficou 50% mais barato; a AWS passa a tratá-lo como modo padrão e recomendado para a maioria das cargas | Provisionado deixa de ser "o econômico" por padrão; exigir justificativa | AWS What's New 2024-11 |
 | PITR com período configurável | [data não confirmada] | `RecoveryPeriodInDays` de 1 a 35 (padrão 35) | Conferir que PITR está ligado e o período atende a política | Doc PITR |
 | GSI com chave multiatributo | 2025-11-19 | GSI aceita até 4 atributos na partition key e 4 na sort key, sem concatenar chave sintética; consulta da sort key da esquerda para a direita, desigualdade só no último | Em GSI novo, chave sintética `A#B#C` deixa de ser necessária; **só GSI**, tabela base continua com 1+1 atributos | AWS What's New 2025-11; doc GSI |
+| Integração zero-ETL com OpenSearch Service | [data não confirmada] | Plugin do OpenSearch Ingestion copia a tabela (exportação para S3) e replica mudanças pelo Streams; exige PITR e Streams com imagens nova e antiga; não consome capacidade da tabela | Caminho oficial para busca de texto livre; é outro serviço com custo fixo e consistência eventual | doc zero-ETL OpenSearch |
 | Índices vetoriais | [não confirmado a data] | Índices vetoriais contam na cota de 20 GSIs por tabela | Somar ao inventário de GSIs | Doc Service Quotas |
 
 ## Como identificar a versão e o estilo do repositório
@@ -93,6 +94,14 @@ Aqui "estrutura" é **modelagem**.
 - **Backups: PITR ligado e deletion protection em produção** — PITR dá até 35 dias com granularidade de segundo; restaura para **tabela nova**. *Como checar:* `PointInTimeRecoverySpecification`, `DeletionProtectionEnabled`, AWS Backup. *Régua:* oficial. *Vale a partir de:* deletion protection: 2023-03. *Severidade típica:* Alta.
 - **DAX só para leitura repetida eventualmente consistente** — DAX não cacheia leitura forte nem `TransactGetItems`; adiciona cluster para operar. *Como checar:* DAX com `ConsistentRead` predominante ou carga majoritariamente de escrita. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Média.
 
+**Listas, busca e contadores** (conceitos gerais e opções em `nosql-access-patterns`)
+
+- **Cada ordenação de tela tem uma chave de ordenação que a sustenta** — `Query` devolve sempre na ordem da sort key (`ScanIndexForward` só inverte); ordenar por outra coluna exige outro GSI (cota de 20 por tabela) ou ordenar no servidor um conjunto já limitado. *Como checar:* ordenações oferecidas na tela/API × sort keys da tabela e dos GSIs no IaC; `.sort(` sobre o resultado de um `Query`/`Scan` no handler. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Média; Alta se a ordenação exige ler tudo a cada requisição.
+- **Contagem de tela sem `Select: COUNT` em varredura** — `COUNT` consome a mesma capacidade que ler os itens e respeita o teto de 1 MB por chamada (precisa paginar para somar); `ItemCount` do `DescribeTable` é atualizado a cada ~6 horas e não serve como contador de tela. *Como checar:* `Select: "COUNT"`/`Select="COUNT"` em handler de lista; `ItemCount` exibido ao usuário. Correção: contador mantido na escrita (`ADD` atômico na mesma transação/condição da mudança de estado). *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Alta em `Scan` por requisição; Média em `Query` de partição pequena.
+- **Busca de texto: `begins_with` só na sort key; `contains` só como filtro** — `begins_with` vale na condição de chave (não em sort key Number); `contains` só existe em `FilterExpression`, que é aplicada **depois** da leitura: busca por "contém" lê e cobra tudo o que a condição de chave alcança. *Como checar:* `contains(` em `FilterExpression` de endpoint de busca; termo de busca sem normalização (minúsculas, sem acento) gravado na chave. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Alta quando a busca está em requisito e roda sobre `Scan`; Média sobre `Query` de partição limitada.
+- **Busca livre via zero-ETL com OpenSearch dimensionada e monitorada** — exige PITR e Streams (`NEW_AND_OLD_IMAGES`); ~1 MB/s de escrita por OCU em pipeline simples; interrupção acima de 24 h perde atualizações e pede reindexação; conta nos leitores do stream. *Como checar:* `StreamViewType`, PITR e pipeline no IaC; DLQ do pipeline; outros consumidores do mesmo stream. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Média.
+- **Lista sob faixa gratuita ou capacidade mínima dimensionada em unidades de leitura** — a faixa gratuita da página de preços dá 25 WCU, 25 RCU e 25 GB por região e conta pagadora [se vale para on-demand: não confirmado nesta revisão]; uma lista que lê a tabela inteira por requisição esgota isso com pouco tráfego. *Como checar:* `ReturnConsumedCapacity: "TOTAL"` em teste com volume realista × requisições esperadas; `BillingMode`/`ProvisionedThroughput`. *Régua:* oficial (preços). *Vale a partir de:* todas. *Severidade típica:* Média; Alta se o estrangulamento atinge o caminho de escrita.
+
 ### E. Segurança e privacidade
 
 - **IAM de menor privilégio por tabela e ação** — `dynamodb:*` em `Resource: *` dá ao serviço poder de apagar tudo. *Como checar:* políticas no IaC; `dynamodb:LeadingKeys` para restringir por partition key em multi-tenant. *Régua:* oficial (IAM; `LeadingKeys` exige `ForAllValues` e não restringe `Scan` — não conceda `Scan` nessa política). *Vale a partir de:* todas. *Severidade típica:* Alta.
@@ -152,7 +161,8 @@ Ver dimensão E. Configurações perigosas: política IAM com `dynamodb:*`/`Reso
 - **NoSQL Workbench** (oficial) para validar o modelo contra os padrões de acesso.
 - **CloudWatch Contributor Insights** para chaves mais acessadas/estranguladas.
 - **Testes de integração** com `amazon/dynamodb-local` — passou = suíte verde contra schema criado do IaC.
-- **`grep` de sinais:** `Scan`, `ConsistentRead` com `IndexName`, batch sem `Unprocessed`, `Query` sem `LastEvaluatedKey`.
+- **`grep` de sinais:** `Scan`, `ConsistentRead` com `IndexName`, batch sem `Unprocessed`, `Query` sem `LastEvaluatedKey`, `Select: "COUNT"` em handler, `contains(` em `FilterExpression`, `.sort(`/`.slice(` sobre resultado de `Query`.
+- **Capacidade de uma lista:** teste com `ReturnConsumedCapacity: "TOTAL"` e comparação `ScannedCount` × `Count` — passou = razão próxima de 1 e capacidade por chamada compatível com o orçamento.
 
 ## Fontes
 
@@ -173,4 +183,8 @@ Ver dimensão E. Configurações perigosas: política IAM com `dynamodb:*`/`Reso
 - Paginating table query results — https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Query.Pagination.html — oficial — acessado em 2026-10-27
 - Using IAM policy conditions for fine-grained access control — https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/specifying-conditions.html — oficial — acessado em 2026-10-27
 - Announcing end-of-support for AWS SDK for JavaScript v2 — https://aws.amazon.com/blogs/developer/announcing-end-of-support-for-aws-sdk-for-javascript-v2 — oficial — acessado em 2026-10-27
+- Query — API Reference (Select COUNT, Limit, FilterExpression, ScanIndexForward, begins_with) — https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_Query.html — oficial — acessado em 2026-11-16
+- TableDescription — API Reference (ItemCount a cada ~6 h) — https://docs.aws.amazon.com/amazondynamodb/latest/APIReference/API_TableDescription.html — oficial — acessado em 2026-11-16
+- DynamoDB zero-ETL integration with Amazon OpenSearch Service — https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/OpenSearchIngestionForDynamoDB.html — oficial — acessado em 2026-11-16
+- Amazon DynamoDB pricing (faixa gratuita) — https://aws.amazon.com/dynamodb/pricing/ — oficial — acessado em 2026-11-16
 - An in-depth comparison of the most popular DynamoDB wrappers — https://dev.to/kumo/an-in-depth-comparison-of-the-most-popular-dynamodb-wrappers-4bog — comunidade (opinião do autor do DynamoDB-Toolbox) — acessado em 2026-10-27

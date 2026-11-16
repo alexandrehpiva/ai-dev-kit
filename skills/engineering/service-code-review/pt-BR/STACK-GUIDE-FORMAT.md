@@ -75,4 +75,6 @@ Guias `kind: architecture` não têm versão de pacote: usam `## Evolução do c
 1. Releia o guia inteiro e as fontes listadas.
 2. Consulte as fontes oficiais ao vivo (notas de versão, guia de migração, style guide) desde `last_verified`.
 3. Acrescente a linha nova na tabela de versões e ajuste os itens cujo `Vale a partir de` mudou; não apague o histórico de versões antigas ainda em uso.
-4. Atualize `last_verified`, `versions_covered` e as datas de acesso das fontes consultadas.
+4. Atualize `versions_covered` e as datas de acesso das fontes consultadas.
+5. **`last_verified` só avança quando o guia inteiro foi reconferido** (todas as afirmações de versão, data e "recomendação oficial" contra as fontes, ao vivo). Atualização parcial (itens novos, uma seção revisada) **mantém** o `last_verified` anterior e registra a data de acesso só nas fontes consultadas; assim o script continua avisando quando o resto do guia envelhece. Guia novo nasce com `last_verified` = data da pesquisa.
+6. Rode `python3 scripts/detect_stack.py --list` e `python3 scripts/test_detect_stack.py`.

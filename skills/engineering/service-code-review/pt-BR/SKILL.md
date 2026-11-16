@@ -31,7 +31,7 @@ Guias de stack (um nível abaixo de `stacks/`; o script diz quais valem para o r
 
 - `languages/` — `typescript-node`, `python`, `go`, `java`, `csharp-dotnet`
 - `frameworks/` — `nestjs`, `node-http` (Express/Fastify/Hono), `react`, `nextjs`, `angular`, `vue`, `fastapi`, `django`, `flask`, `go-http`, `spring-boot`, `aspnet-core`
-- `data/` — `typescript-orm`, `python-sqlalchemy`, `go-sql`, `java-jpa`, `dotnet-efcore`, `relational-schema-design`, `dynamodb`, `mongodb`, `redis`
+- `data/` — `typescript-orm`, `python-sqlalchemy`, `go-sql`, `java-jpa`, `dotnet-efcore`, `relational-schema-design`, `dynamodb`, `mongodb`, `redis`, `nosql-access-patterns` (listas, busca, ordenação, paginação e contadores em qualquer banco não relacional)
 - `architecture/` — `backend-architecture-patterns`, `frontend-architecture` (sempre)
 
 ## Fluxo

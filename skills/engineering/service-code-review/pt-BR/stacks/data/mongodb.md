@@ -6,7 +6,7 @@ language: any
 detect: npm:mongodb, npm:mongoose, pypi:pymongo, pypi:motor, go:go.mongodb.org/mongo-driver
 versions_covered: "MongoDB 7.0 – 9.0 (minors 8.2, 8.3); Mongoose 7 – 9"
 last_verified: 2026-10-27
-related: relational-schema-design, redis
+related: relational-schema-design, redis, nosql-access-patterns
 ---
 
 # MongoDB (e Mongoose)
@@ -26,6 +26,7 @@ Modelo de versões a partir de 2025: **majors** a cada 2 anos com 5 anos de cicl
 | 8.1 / 8.2 | 2025-06 / 2025-09 | Minors; a partir da 8.2, novo esquema de versões | 8.1 EOL 2025-09-30; 8.2 EOL 2026-07-31: repositório parado em minor velha é achado | lifecycles; versioning |
 | 8.3 | 2026-05 | Minor | EOL 2029-10-31 | lifecycles |
 | 9.0 | 2026-09-28 | Novo nível de validação `constraint` (garante que **todo** documento satisfaz o validador); limite de memória por operação (1 GB ou 20% da RAM); limite padrão de 10.000 transações multi-documento abertas (`TooManyOpenTransactions`); `$queryStats` ligado por padrão; Queryable Encryption com prefixo/sufixo/substring GA; `mongocryptd` depreciado; JavaScript no servidor (`$where`, `$function`, `$accumulator`) reabilitado via WebAssembly | Agregação pesada sem `allowDiskUse` pode falhar; JS no servidor volta a existir, mas `$where` com dado do usuário continua injeção | release notes 9.0 |
+| MongoDB Search na Community Edition | prévia 2025-10; GA anunciado em 2026-06-30 | Busca de texto e vetorial auto-gerenciada pelo processo `mongot` (SSPL), a partir do 8.2 | Self-managed ≥ 8.2 tem busca nativa com `$search`; `$text` deixa de ser a única opção fora do Atlas | MongoDB product update; release notes do mongot |
 | Mongoose 7 | — | Callbacks removidos; `strictQuery` passa a `false` (campos fora do schema chegam ao MongoDB) | Filtro com campo não declarado não é mais removido silenciosamente | Mongoose migrating_to_7 |
 | Mongoose 9 | 2025-11-21 | Driver Node v7; `pre` sem `next()`; pipelines de update proibidos sem `updatePipeline: true`; `new`/`returnOriginal` depreciados em favor de `returnDocument`; opção de índice `background` removida; UUID vira `bson.UUID`; Node ≥ 20.19 | Código com `next()` em hooks e `{ new: true }` é dívida em 9.x | Mongoose migrating_to_9; newreleases |
 | Mongoose (CVE-2026-42334) | 2026 | `sanitizeFilter` podia ser contornado via `$nor`; corrigido em 6.13.9, 7.8.9, 8.22.1, 9.1.6 | Versão abaixo dessas com `sanitizeFilter` = proteção falsa | GitLab Advisory |
@@ -69,6 +70,9 @@ Aqui "estrutura" é **modelagem**.
 - **Projeção nas consultas** — buscar o documento inteiro para usar dois campos infla rede e memória. *Como checar:* `find(` sem `projection`/`.select(`. *Régua:* oficial (bloated documents). *Vale a partir de:* todas. *Severidade típica:* Baixa.
 - **Atualizações atômicas com operadores (`$set`, `$inc`, `$push` com `$slice`)** em vez de ler-modificar-salvar o documento inteiro — evita perda de atualização concorrente. *Como checar:* `findOne` → alteração em memória → `save()`/`replaceOne` em caminho concorrente. *Régua:* oficial (atomicidade por documento). *Vale a partir de:* todas. *Severidade típica:* Alta.
 - **Paginação por chave (range em `_id`/campo indexado), não `skip` grande** — `skip` percorre e descarta. *Como checar:* `.skip(page * size)` em listas grandes. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
+- **Ordenação de lista com desempate em `_id`** — `sort({ createdAt: -1 })` sem `_id` deixa empates em ordem indefinida entre páginas. *Como checar:* `sort(` de endpoint paginado sem `_id` no fim e índice composto correspondente (ESR). *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Média.
+- **Contagem de tela barata** — `countDocuments({})` sem filtro faz varredura da coleção; com filtro, roda uma agregação (`$match` + `$group`) que usa índice se houver; total sem filtro aproximado pode vir de `estimatedDocumentCount()` (metadados). Contagem por aba a cada requisição em coleção grande pede contador mantido (Computed Pattern) ou `$searchMeta`. *Como checar:* `countDocuments({})`/`countDocuments()` em handler; contagens por situação somadas em laço. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Média.
+- **Busca de texto com o mecanismo certo** — `$regex` só usa o índice como intervalo quando é prefixo ancorado (`^abc`) e sensível a maiúsculas; índice com collation case-insensitive não ajuda `$regex`; `$text` permite **um** índice de texto por coleção e a doc recomenda `$search`/`$searchMeta` (MongoDB Search: Atlas, ou Community/Enterprise ≥ 8.2 com `mongot`). *Como checar:* `$regex` sem `^` ou com opção `i` em endpoint de busca; `$text` em projeto que já pode usar Search; `explain` com `COLLSCAN`. *Régua:* oficial. *Vale a partir de:* Search em self-managed: 8.2. *Severidade típica:* Alta se a busca está em requisito e faz `COLLSCAN` em coleção sem teto; Média caso contrário.
 - **Mongoose: `lean()` em leituras que não alteram o documento** — documentos hidratados são ~3x maiores; `lean` perde getters, virtuals, defaults, validação e `save()`. *Como checar:* endpoints GET sem `.lean()`; `.lean()` seguido de `save()` ou uso de virtual. *Régua:* oficial (Mongoose). *Vale a partir de:* todas. *Severidade típica:* Baixa (desempenho), Média (bug se usa virtual).
 - **Mongoose: `populate` sem N+1** — `populate` faz **uma consulta por caminho** com `$in`; N+1 aparece quando se chama `populate`/`findById` dentro de laço, ou com `perDocumentLimit` (uma consulta por documento). *Como checar:* `for`/`map` com `await Model.find*` dentro; `perDocumentLimit`. *Régua:* oficial (Mongoose). *Vale a partir de:* todas. *Severidade típica:* Média.
 - **Mongoose 9: sem `next()` em `pre`, `returnDocument` no lugar de `new`** — *Como checar:* `pre(\w+, function (next)`, `{ new: true }`. *Régua:* oficial. *Vale a partir de:* Mongoose 9. *Severidade típica:* Baixa (depreciação) / Alta (hook quebrado).
@@ -186,5 +190,10 @@ Ver dimensão E. Configurações perigosas: `strictQuery: false` (padrão desde 
 - Mongoose: Migrating from 8.x to 9.x — https://mongoosejs.com/docs/migrating_to_9.html — oficial — acessado em 2026-10-27
 - mongoose 9.0.0 release — https://newreleases.io/project/npm/mongoose/release/9.0.0 — comunidade (agregador do changelog) — acessado em 2026-10-27
 - What's new in Mongoose 6: sanitizeFilter — https://thecodebarbarian.com/whats-new-in-mongoose-6-sanitizefilter.html — comunidade (mantenedor do Mongoose) — acessado em 2026-10-27
+- Text Indexes on Self-Managed Deployments — https://www.mongodb.com/docs/manual/core/link-text-indexes/ — oficial — acessado em 2026-11-16
+- $regex (uso de índice) — https://www.mongodb.com/docs/manual/reference/operator/query/regex/ — oficial — acessado em 2026-11-16
+- db.collection.countDocuments() — https://www.mongodb.com/docs/manual/reference/method/db.collection.countDocuments/ — oficial — acessado em 2026-11-16
+- Now GA: MongoDB Search and Vector Search for Community Edition — https://www.mongodb.com/products/updates/now-ga-mongodb-search-and-vector-search-for-community-edition/ — oficial — acessado em 2026-11-16
+- MongoDB Search self-managed release notes — https://www.mongodb.com/docs/search/self-managed/current/release-notes/ — oficial — acessado em 2026-11-16
 - CVE-2026-42334 (mongoose sanitizeFilter bypass via $nor) — https://advisories.gitlab.com/npm/mongoose/CVE-2026-42334/ — oficial (advisory) — acessado em 2026-10-27
 - CVE-2026-73562 (mongoose prototype pollution, GHSA-664h-wqgq-64gw) — https://github.com/advisories/GHSA-664h-wqgq-64gw — oficial (advisory) — acessado em 2026-10-27

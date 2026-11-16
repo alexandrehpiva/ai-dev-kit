@@ -147,6 +147,19 @@ class DetectStackTest(unittest.TestCase):
         self.assertIn("spring-boot", self.ids(r))
         self.assertNotIn("java-jpa", self.ids(r))
 
+    def test_given_nosql_driver_when_detect_real_guides_then_bank_and_access_patterns(self):
+        for deps, bank in (({"mongoose": "^9.7.2"}, "mongodb"), ({"@aws-sdk/client-dynamodb": "^3.700.0"}, "dynamodb"),
+                           ({"ioredis": "^5.4.1"}, "redis")):
+            with self.subTest(bank=bank):
+                write(self.repo, "package.json", json.dumps({"dependencies": deps}))
+                r = ds.detect(self.repo, ds.STACKS_DIR, TODAY)
+                self.assertTrue({bank, "nosql-access-patterns"} <= self.ids(r), r)
+
+    def test_given_relational_only_when_detect_real_guides_then_no_nosql_access_patterns(self):
+        write(self.repo, "requirements.txt", "sqlalchemy==2.0.30\npsycopg2==2.9.9\n")
+        r = ds.detect(self.repo, ds.STACKS_DIR, TODAY)
+        self.assertNotIn("nosql-access-patterns", self.ids(r))
+
     def test_real_guides_checklist_items_have_required_fields(self):
         marks = ("*Como checar:*", "*Régua:*", "*Vale a partir de:*", "*Severidade típica:*")
         missing = []

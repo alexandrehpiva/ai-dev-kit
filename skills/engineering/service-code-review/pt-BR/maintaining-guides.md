@@ -30,9 +30,10 @@ Esta skill cresce com o uso: guias novos para stacks que ainda não existem e at
 1. Leia `STACK-GUIDE-FORMAT.md` e um guia existente do mesmo `kind` como referência de nível.
 2. Pesquise ao vivo: documentação oficial (notas das últimas versões, guia de migração, style guide), 2 a 4 fontes recentes de comunidade de qualidade e, se houver convenção disputada, uma discussão de fórum de qualidade. Para muitas stacks de uma vez, delegue a subagentes com o mesmo briefing de pesquisa e lotes disjuntos de arquivos.
 3. Escreva ou atualize o guia; preencha `detect` com as chaves que o script reconhece (ver o contrato).
-4. Rode `python3 scripts/detect_stack.py --list` e confira que o guia aparece com `id`, `kind` e `detect` corretos; rode `python3 scripts/test_detect_stack.py`.
-5. Verificação independente: peça a outro agente (ou faça você mesmo, do zero) a conferência de uma amostra de afirmações de versão e de "recomendação oficial" contra as fontes listadas. Corrija ou marque `[não confirmado]` o que não bater.
-6. Se o guia for publicado num repositório público, faça a varredura de dados sensíveis do repositório antes do commit.
+4. Datas: guia novo leva `last_verified` = data da pesquisa; guia atualizado só em parte mantém o `last_verified` e ganha datas de acesso novas nas fontes consultadas (regra completa em `STACK-GUIDE-FORMAT.md`, "Atualizar um guia existente").
+5. Rode `python3 scripts/detect_stack.py --list` e confira que o guia aparece com `id`, `kind` e `detect` corretos; rode `python3 scripts/test_detect_stack.py`.
+6. Verificação independente: peça a outro agente (ou faça você mesmo, do zero) a conferência de uma amostra de afirmações de versão e de "recomendação oficial" contra as fontes listadas. Corrija ou marque `[não confirmado]` o que não bater.
+7. Se o guia for publicado num repositório público, faça a varredura de dados sensíveis do repositório antes do commit.
 
 ## Podar
 

@@ -41,7 +41,8 @@ Para cada item, marque **Conforme**, **Parcial**, **Não conforme** ou **Não ve
 - [ ] Migrations versionadas e revisáveis, **criadas pelo comando da ferramenta** (`migration:generate`, `migrate dev`, `alembic revision --autogenerate`, `dotnet ef migrations add`, `goose create`…), nunca com nome ou carimbo escritos à mão; onde a ferramenta gera o conteúdo a partir do modelo, o conteúdo gerado foi revisado, não reescrito (ajuste manual só com motivo, ex.: renomear em vez de apagar e recriar, carga de dados fixos). Evidência: em ferramentas com carimbo de data, compare o carimbo com a data do commit que introduziu o arquivo (`git log --diff-filter=A --format='%h %ad' -- <arquivo>`) — carimbo no futuro ou fora de ordem faz a ordem de aplicação divergir entre banco novo e bancos existentes; em ferramentas com cadeia de revisões (Alembic) ou versão sequencial (Flyway), confira cadeia única sem ramo nem lacuna (`alembic heads`, `flyway info`). Compatíveis com a versão anterior do código (expand/contract) quando há deploy sem parada; verificação de drift no CI.
 - [ ] Retenção e dados pessoais: o que é guardado, por quanto tempo, cifrado ou mascarado, e como é excluído.
 - [ ] Consultas: N+1, ausência de paginação, transações longas, I/O externo (HTTP, fila) dentro de transação ou de trava.
-- [ ] NoSQL: modelagem orientada aos padrões de acesso, chaves de partição de alta cardinalidade, índices secundários justificados, itens/documentos sem crescimento ilimitado (ver `stacks/data/`).
+- [ ] NoSQL: modelagem orientada aos padrões de acesso **documentados** (cada tela de lista com filtros, busca, ordenações, paginação, contadores, volume e frescor), chaves de partição de alta cardinalidade, índices secundários justificados, itens/documentos sem crescimento ilimitado (ver `stacks/data/`, `nosql-access-patterns` e o guia do banco).
+- [ ] Listas e busca (qualquer banco; peso maior em NoSQL): paginação no servidor por cursor, com teto de página e ordem estável (desempate único); nenhuma varredura nem "ler tudo e filtrar" no caminho de uma requisição de usuário; filtro pós-leitura proporcional (itens lidos ≈ devolvidos); contadores vindos do servidor quando há paginação; busca de texto com estratégia declarada (prefixo em índice, índice invertido, diretório compacto com teto, busca nativa, serviço de busca) e não `contains`/regex sobre tudo. "Volume pequeno" só passa com teto numérico, decisão registrada e gatilho de revisão — sem isso é achado, com isso é Observação. Evidência: grep da operação de varredura e de `filter`/`sort`/`slice`/`length` sobre a resposta inteira (backend e frontend), e teste com volume acima de uma página comparando itens lidos × devolvidos.
 
 ## E. Segurança e privacidade
 
@@ -90,6 +91,7 @@ Tabela: `Escolha | O que a documentação oficial (na versão usada) e a comunid
 - [ ] Desempenho: tamanho do bundle e divisão por rota, imagens, Core Web Vitals medidos ou orçados.
 - [ ] Segurança no cliente: XSS (HTML cru), segredos em variáveis públicas de build, tokens em armazenamento acessível a script, CSP.
 - [ ] Contrato com o backend tipado (cliente gerado do OpenAPI ou tipos compartilhados) e tratamento uniforme de erro, carregamento e vazio.
+- [ ] Listas: o cliente pede página e cursor ao servidor; filtro, ordenação e contadores (abas, badges, totais) não são calculados sobre a resposta inteira, salvo decisão de volume pequeno registrada; vazio sem dados distinto de filtro sem resultado.
 
 ## Severidade
 
@@ -100,3 +102,5 @@ Tabela: `Escolha | O que a documentação oficial (na versão usada) e a comunid
 | **Média** | Dívida estrutural que encarece mudanças (módulo concentrado, acoplamento, duplicação de fonte da verdade). |
 | **Baixa** | Polimento, legibilidade, convenção não imposta. |
 | **Observação** | Decisão consciente e coerente, registrada só para ciência. |
+
+Calibração para listas e busca: lista sem paginação ou com varredura no caminho de usuário e volume **sem teto** → Alta; contador do cliente coexistindo com paginação (número errado na tela) → Alta; busca de texto exigida por história ou protótipo sem estratégia → Alta; a mesma situação com teto declarado mas sem decisão registrada → Média; com teto, decisão e gatilho de revisão → Observação. Ausência da documentação de padrões de acesso → Média (processo).

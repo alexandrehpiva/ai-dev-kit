@@ -6,12 +6,12 @@ language: any
 detect: npm:redis, npm:ioredis, pypi:redis, go:github.com/redis/go-redis
 versions_covered: "Redis 7.2 – 8.10 (8.12 em RC); Valkey 8.0 – 9.1"
 last_verified: 2026-10-27
-related: relational-schema-design, dynamodb, mongodb
+related: relational-schema-design, dynamodb, mongodb, nosql-access-patterns
 ---
 
 # Redis (e Valkey)
 
-Cobre o uso de Redis/Valkey num serviço: cache (cache-aside, TTL, stampede, invalidação), sessões, rate limiting, locks distribuídos, filas e streams, escolha de estrutura, nomenclatura de chaves, memória e eviction, comandos perigosos, persistência, cluster e hash tags, licença. **Não cobre** busca vetorial/RediSearch nem o código da linguagem (cliente injetado, tratamento de erro): veja o guia do framework. Quando o Redis é a **fonte da verdade** de dados de negócio, compare com `relational-schema-design`/`dynamodb`/`mongodb`.
+Cobre o uso de Redis/Valkey num serviço: cache (cache-aside, TTL, stampede, invalidação), sessões, rate limiting, locks distribuídos, filas e streams, escolha de estrutura, nomenclatura de chaves, memória e eviction, comandos perigosos, persistência, cluster e hash tags, licença. **Não cobre** busca vetorial nem o código da linguagem; de Redis Search/Valkey Search, cobre só o uso em listas (paginação, ordenação, total) (cliente injetado, tratamento de erro): veja o guia do framework. Quando o Redis é a **fonte da verdade** de dados de negócio, compare com `relational-schema-design`/`dynamodb`/`mongodb`.
 
 ## Versões e mudanças de convenção
 
@@ -27,7 +27,7 @@ Cobre o uso de Redis/Valkey num serviço: cache (cache-aside, TTL, stampede, inv
 | Valkey 9.0 | 2025-10-21 | Migração atômica de slots; expiração por campo de hash | — | valkey.io/blog |
 | Redis 8.4 | 2025-11 | `DELEX key IFEQ value` (remove só se o valor bater — libera lock sem Lua); `MSETEX` | Em ≥ 8.4, script Lua de liberação de lock pode virar `DELEX`; abaixo disso, Lua continua obrigatório | doc distributed locks; release notes |
 | Redis 8.6 | 2026-02 | Políticas de eviction `allkeys-lrm`/`volatile-lrm` (menos recentemente **modificada**) | Nova opção para cache de leitura intensa | doc eviction |
-| Valkey 9.1 | 2026-05-19 (9.1.3 em 2026-10-26) | ACL por database, melhorias de memória | — | valkey.io |
+| Valkey 9.1 | 2026-05-19 (9.1.3 em 2026-10-26) | ACL por database, melhorias de memória; anunciado junto com Valkey Search 1.2 (texto, filtro numérico, tags, vetores) | Busca em Valkey passa a ser opção para listas [versão exata em que o texto completo entrou: não confirmada na doc oficial do Valkey] | valkey.io; Linux Foundation |
 | Redis 8.8 / 8.10 | 2026-05 / 2026-07 | 8.10: família `BACKUP` (backup online consistente sem parar escrita) | Em ≥ 8.10, preferir `BACKUP` a copiar AOF à mão | doc persistência |
 | Redis 8.12 | 2026-10 (RC) | Expiração por membro de set (`SEXPIRE`…), `BLESS` (protege chave da eviction), bitmaps compactados | RC não é para produção | release notes 8.12 |
 
@@ -97,6 +97,11 @@ Política de suporte do Redis Open Source por versão: [não confirmado] — nã
 - **Consumidor idempotente** — entrega é at-least-once. *Como checar:* handler de `xreadgroup`/job sem chave de deduplicação (id da mensagem ou chave de negócio registrada com `SET NX`/constraint única) antes do efeito colateral. *Régua:* oficial + comunidade. *Vale a partir de:* todas. *Severidade típica:* Alta.
 - **Pub/Sub não usado onde perda importa** — mensagens não são armazenadas. *Como checar:* `publish` para eventos de negócio sem outro registro. *Régua:* comunidade. *Vale a partir de:* todas. *Severidade típica:* Alta.
 - **Fila em lista com padrão confiável** — `BRPOP` remove a mensagem antes de processar; o padrão confiável da doc move para uma lista de processamento com `LMOVE`/`BLMOVE` (6.2+, substitui o depreciado `RPOPLPUSH`) e remove com `LREM` ao terminar. Bibliotecas (BullMQ, Celery) já resolvem — conferir as opções de retry/remoção. *Como checar:* `brpop`/`rpop` seguido de processamento sem lista de processamento; `rpoplpush` em código novo; ausência de `lrem` ao concluir. *Régua:* oficial (padrão reliable queue do `LMOVE`). *Vale a partir de:* `LMOVE`/`BLMOVE`: 6.2. *Severidade típica:* Média.
+
+**Listas, ordenação e busca** (conceitos gerais e opções em `nosql-access-patterns`)
+- **`SCAN` não é paginação de tela** — a doc garante só a iteração completa: um elemento pode voltar mais de uma vez, `COUNT` é dica de trabalho por chamada e não há ordem. *Como checar:* cursor de `SCAN`/`SSCAN`/`HSCAN`/`ZSCAN` devolvido ao cliente como "próxima página". Correção: sorted set ordenado pela coluna da tela, ou índice de busca. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Média.
+- **Lista ordenada em sorted set com intervalo e `LIMIT`** — paginar por score/valor a partir do último visto (`ZRANGE ... BYSCORE`/`BYLEX` com `LIMIT`) em vez de `LRANGE 0 -1`/`ZRANGE 0 -1` e fatiar na aplicação; `LIMIT` com offset grande percorre o offset (até O(N)), então o cursor é o último score visto, não o número da página; prefixo normalizado com `BYLEX` (todos com o mesmo score) serve busca "começa com". *Como checar:* leitura do conjunto inteiro seguida de `slice`/`filter`; `LIMIT <página*tamanho>`. *Régua:* oficial (doc do ZRANGE). *Vale a partir de:* `BYSCORE`/`BYLEX`/`REV`/`LIMIT` no `ZRANGE`: 6.2. *Severidade típica:* Média.
+- **Redis/Valkey Search com ordem determinística e total consciente** — `FT.SEARCH` devolve 10 por padrão (`LIMIT 0 10`); `LIMIT` sem `SORTBY` é não determinístico (duplica ou perde entre páginas) — usar `SORTBY` em campo único ou `FT.AGGREGATE ... WITHCURSOR`; campo de `SORTBY` declarado `SORTABLE` (custa memória); com `DIALECT 4`/`WITHOUTCOUNT` o total vem limitado à janela, e `WITHCOUNT` dá o exato com custo. *Como checar:* `FT.SEARCH` paginado sem `SORTBY`; `SORTBY` em campo não `SORTABLE` no `FT.CREATE`; total exibido vindo de consulta com otimização de contagem. *Régua:* oficial. *Vale a partir de:* Redis Search no Redis Open Source: 8.0. *Severidade típica:* Média.
 
 **Persistência e cluster**
 - **Persistência coerente com o papel** — cache puro pode ficar sem persistência; dado importante pede RDB + AOF (`appendfsync everysec` é o padrão recomendado e perde até ~1 s). AOF sozinho é desencorajado pela doc. *Como checar:* `appendonly`, `appendfsync`, `save` na config. *Régua:* oficial. *Vale a partir de:* todas. *Severidade típica:* Alta quando há dado de negócio.
@@ -184,6 +189,11 @@ Ver dimensão E. Configurações perigosas: `protected-mode no` com `bind 0.0.0.
 - Redis Streams — https://redis.io/docs/latest/develop/data-types/streams/ — oficial — acessado em 2026-10-27
 - ioredis README — https://github.com/redis/ioredis — oficial — acessado em 2026-10-27
 - Valkey — https://valkey.io/ — oficial — acessado em 2026-10-27
+- ZRANGE — https://redis.io/docs/latest/commands/zrange/ — oficial — acessado em 2026-11-16
+- SCAN (garantias) — https://redis.io/docs/latest/commands/scan/ — oficial — acessado em 2026-11-16
+- FT.SEARCH — https://redis.io/docs/latest/commands/ft.search/ — oficial — acessado em 2026-11-16
+- Redis Search — https://redis.io/docs/latest/develop/ai/search-and-query/ — oficial — acessado em 2026-11-16
+- Valkey 9.1 release announcement (Valkey Search 1.2) — https://www.linuxfoundation.org/press/valkey-enhances-efficiency-security-and-modular-performance-with-9.1-release-and-new-ecosystem-integrations — oficial (fundação mantenedora) — acessado em 2026-11-16
 - Valkey blog (releases) — https://valkey.io/blog/ — oficial — acessado em 2026-10-27
 - Redis 8.0 Released: Now Tri-Licensed With AGPLv3 — https://www.phoronix.com/news/Redis-8.0-Goes-AGPLv3 — comunidade — acessado em 2026-10-27
 - How to do distributed locking (Martin Kleppmann, 2016) — https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html — comunidade (autor reconhecido) — acessado em 2026-10-27
