@@ -9,6 +9,15 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.47.0] — 2026-11-16
+
+### Changed
+
+- `engineering/dev-squad` (pt-BR e en-US): novo asset `data-access-patterns.md` — ficha de padrões de acesso por tela de lista (filtros, busca de texto, ordenações, paginação, contadores, volume, frescor) obrigatória antes de escolher ou fechar o modelo de dados em banco não relacional ou sob restrição de custo/capacidade; papéis de PO, UX, Tech Lead, Dev e QA; opções para o que o banco não atende (prefixo em índice, índice invertido, diretório compacto com teto, busca nativa, serviço de busca, contador mantido na escrita) com custo e ponto de quebra; regra de "volume pequeno também é decisão" (teto, gatilho, contrato paginado); registro de decisão; cenários Given/When/Then de lista; testes e checklist. `SKILL.md` ganha a diretiva crítica e a linha de roteamento; Tech Lead (`revisar_plano`, `revisar_codigo`, `refinar_arquitetura`, lente 9 do checklist de refinamento), Dev Sênior (`investigar`), QA, template de task e PO proxy apontam para a ficha.
+- `engineering/service-code-review`: novo guia `stacks/data/nosql-access-patterns.md` (listas, busca, ordenação, paginação por cursor, contadores e busca de texto em qualquer banco não relacional, com severidade calibrada e como verificar), detectado pelos clientes de DynamoDB, MongoDB, Redis, Firestore, Cosmos DB e Cassandra. Guias `dynamodb`, `mongodb` e `redis` ganham itens de lista e busca conferidos na documentação oficial em 2026-11-16 (`last_verified` mantido: só parte de cada guia foi reconferida). `CHECKLIST.md`: item NoSQL exige padrões de acesso documentados, novos itens de listas e busca (D e J) e calibração de severidade. `STACK-GUIDE-FORMAT.md`/`maintaining-guides.md`: `last_verified` só avança quando o guia inteiro foi reconferido. Testes do `detect_stack.py`: 15 → 17.
+
+---
+
 ## [0.46.0] — 2026-11-12
 
 ### Changed
