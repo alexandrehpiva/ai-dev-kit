@@ -1,0 +1,203 @@
+{
+  "document": {
+    "title": "Chamados de infraestrutura para homologação: recursos base e o serviço",
+    "file_title": "Chamados de infraestrutura HML - Acme Orders - p1",
+    "subtitle": "Acme Orders · pedidos para abrir · preparado por Ana Exemplo (Fornecedora Exemplo)",
+    "environment": "hml",
+    "theme": { "accent": "#1f4e79", "accent_soft": "#e8eef6" }
+  },
+  "intro": [
+    { "label": "Onde abrir", "text": "Portal de serviços > Infraestrutura > Cloud > \"Criação, remoção ou alteração de recursos\". Uma tarefa no rastreador para cada chamado (o link é obrigatório)." },
+    { "label": "Solicitante em todos", "text": "Ana Exemplo, usuário de rede U000000, ana.exemplo@example.com." },
+    { "label": "Conta", "text": "acme-hml (111122223333), região us-east-1. Só homologação." },
+    { "label": "Esta leva", "text": "Não depende de chamados anteriores. O chamado do serviço (INF-08) cita as chaves e o banco desta leva." }
+  ],
+  "before_opening": [
+    "O que ainda não se sabe aparece [A CONFIRMAR: em amarelo] e se combina dentro do próprio chamado. Se você já tiver o valor, troque antes de abrir.",
+    "Se a infra preferir um chamado só, os textos podem ir juntos, um abaixo do outro."
+  ],
+  "closing_note": "Os chamados estão na ordem de abertura. Em cada um, basta copiar o \"Texto para colar\".",
+  "summary_columns": ["Código", "Recurso", "O que pede"],
+  "requester": { "name": "Ana Exemplo", "network_user": "U000000", "email": "ana.exemplo@example.com" },
+  "tickets": [
+    {
+      "code": "INF-01",
+      "title": "Banco PostgreSQL 16 gerenciado",
+      "order": "1º a abrir",
+      "kind": "new",
+      "case": "relational-database",
+      "summary": "Banco PostgreSQL",
+      "summary_request": "Instância de homologação, usuário do serviço em segredo",
+      "card": [
+        { "label": "Para que serve", "text": "É o banco principal do produto." },
+        { "label": "Onde é usado", "text": "Guarda os pedidos e o andamento de cada um." },
+        { "label": "Por que primeiro", "text": "Não depende de nada, o serviço não sobe sem ele e passa pelo DBA." }
+      ],
+      "paste": {
+        "lead": "Solicito um banco PostgreSQL 16 gerenciado para homologação.",
+        "sections": [
+          {
+            "title": "Configuração",
+            "items": [
+              "Instância: `acme-orders-db-hml`. Banco: `orders`.",
+              "Classe: `db.t4g.small`, instância única. Se o DBA recomendar outro tamanho, vale o dele.",
+              "Armazenamento: 20 GB em gp3, sem crescimento automático.",
+              "Rede: sub-rede privada, na VPC do cluster de homologação, sem acesso público.",
+              "Security group: entrada TCP 5432 a partir do security group dos nodes do cluster e da faixa da VPN. Nenhuma outra origem.",
+              "Criptografia em repouso no padrão de vocês. Se for com chave própria, me digam qual, para eu deixar documentado.",
+              "Sem backup automático: só dados de teste."
+            ]
+          },
+          {
+            "title": "Usuários e acesso",
+            "items": [
+              "Usuário e senha do serviço num segredo criado por vocês (sugestão: `acme-orders/hml/database`). Sugestão de usuário: `acme_orders_app`.",
+              "O usuário do serviço precisa criar e alterar tabelas no schema `public` do banco `orders`."
+            ]
+          },
+          {
+            "title": "Preciso de volta",
+            "items": ["Endpoint e porta, e o nome do segredo com o usuário e a senha do serviço."]
+          },
+          {
+            "title": "Tags",
+            "items": [
+              "Project=acme-orders, Environment=hml, Component=database, DataClassification=confidencial, CostCenter=[A CONFIRMAR: centro de custo do projeto].",
+              "Se vocês já têm um padrão de tags, vale o de vocês."
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "code": "INF-02",
+      "title": "Chaves KMS e bucket de documentos",
+      "order": "2º",
+      "kind": "new",
+      "case": "encryption-keys",
+      "summary": "KMS e S3 de documentos",
+      "summary_request": "Duas chaves e o bucket cifrado com uma delas",
+      "card": [
+        { "label": "Para que serve", "text": "Proteger os documentos enviados pelos clientes com chaves da própria empresa." },
+        { "label": "Por que num chamado só", "text": "O bucket é cifrado com uma das chaves; pedindo os dois juntos, nenhum pedido espera o outro." }
+      ],
+      "paste": {
+        "lead": "Solicito duas chaves KMS e um bucket S3 para documentos, em homologação.",
+        "sections": [
+          {
+            "title": "Chaves KMS",
+            "items": [
+              "Duas chaves simétricas, na mesma região do bucket de documentos.",
+              "`alias/acme-orders-documents-hml`: cifra os documentos guardados no bucket de documentos, pedido neste mesmo chamado (logo abaixo).",
+              "`alias/acme-orders-pii-hml`: o serviço cifra os dados pessoais antes de gravar no banco.",
+              "Política das chaves: a padrão da conta, com a administração por vocês. O uso pela role do serviço será concedido por política IAM, no chamado do serviço."
+            ]
+          },
+          {
+            "title": "Bucket de documentos",
+            "items": [
+              "Nome: `acme-orders-documents-hml`. Guarda por pouco tempo os documentos enviados pelo cliente (dados pessoais).",
+              "Privado: bloqueio de acesso público nas quatro opções; Object Ownership em BucketOwnerEnforced.",
+              "Criptografia padrão: SSE-KMS com a chave `alias/acme-orders-documents-hml` e Bucket Key ligado.",
+              {
+                "group": "Ciclo de vida",
+                "items": [
+                  "Qualquer objeto expira em 8 dias. Prazo de homologação; o definitivo virá da segurança.",
+                  { "code": "{\n  \"Rules\": [\n    {\n      \"ID\": \"expire-any\",\n      \"Status\": \"Enabled\",\n      \"Filter\": {},\n      \"Expiration\": { \"Days\": 8 },\n      \"NoncurrentVersionExpiration\": { \"NoncurrentDays\": 1 }\n    }\n  ]\n}" }
+                ]
+              }
+            ]
+          },
+          {
+            "title": "Preciso de volta",
+            "items": ["O ARN das duas chaves."]
+          },
+          {
+            "title": "Tags",
+            "items": [
+              "Nas chaves: Project=acme-orders, Environment=hml, Component=kms, DataClassification=confidencial.",
+              "No bucket: Project=acme-orders, Environment=hml, Component=documents, DataClassification=confidencial."
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "code": "INF-08",
+      "title": "Serviço no Kubernetes: API e worker",
+      "order": "3º",
+      "kind": "new",
+      "case": "kubernetes-deploy",
+      "summary": "Deploy no EKS",
+      "summary_request": "Dois Deployments da mesma imagem, identidade e exposição interna",
+      "card": [
+        { "label": "Para que serve", "text": "Colocar o sistema para rodar no cluster." },
+        { "label": "Por que agora", "text": "Depende do banco (INF-01) e das chaves (INF-02), que a role do serviço cita." }
+      ],
+      "paste": {
+        "lead": "Solicito o deploy do serviço no cluster EKS de homologação, no namespace `acme-orders` (sugestão).",
+        "sections": [
+          {
+            "title": "Build e deploy",
+            "items": [
+              "Repositório: um só, para a API e o worker: `https://git.example.com/acme/acme-orders-backend`.",
+              "Dockerfile: na raiz do repositório, sem argumentos de build.",
+              "Uma imagem, usada pelos dois Deployments com a mesma tag.",
+              "Entrypoint: o da imagem, igual nos dois. Não sobrescrever `command`/`args`.",
+              {
+                "group": "O que muda entre os Deployments (só variáveis)",
+                "items": [
+                  "`acme-orders-api-hml`: `CONSUMERS_ENABLED=false`, `MIGRATIONS_ON_BOOT=apply`.",
+                  "`acme-orders-worker-hml`: `CONSUMERS_ENABLED=true`, `MIGRATIONS_ON_BOOT=wait`."
+                ]
+              },
+              "Deploy disparado pelo merge na branch `homolog` (produção: `main`). Branches de feature não disparam deploy.",
+              "Um pipeline atualiza os dois Deployments juntos, em rolling update, com `maxUnavailable: 0` na API."
+            ]
+          },
+          {
+            "title": "Probes e encerramento",
+            "items": [
+              "Startup probe em `GET /health` nos dois (periodSeconds 10, failureThreshold 36).",
+              "Liveness em `GET /health`; readiness em `GET /health/ready`.",
+              "terminationGracePeriodSeconds de pelo menos 120."
+            ]
+          },
+          {
+            "title": "Permissões do serviço (IRSA)",
+            "items": [
+              "Role `acme-orders-hml-role`, ligada à ServiceAccount `acme-orders-hml` no namespace do projeto, para os dois Deployments.",
+              "No JSON, troquem `<ARN_KMS_PII_HML>` pelo ARN da chave `alias/acme-orders-pii-hml` (INF-02).",
+              { "code": "{\n  \"Version\": \"2012-10-17\",\n  \"Statement\": [\n    {\n      \"Sid\": \"Kms\",\n      \"Effect\": \"Allow\",\n      \"Action\": [\"kms:GenerateDataKey\", \"kms:Decrypt\"],\n      \"Resource\": \"<ARN_KMS_PII_HML>\"\n    }\n  ]\n}" }
+            ]
+          },
+          {
+            "title": "Preciso de volta",
+            "items": ["ARN e tipo do listener do balanceador interno (o chamado do API Gateway usa)."]
+          },
+          {
+            "title": "Tags",
+            "items": ["Project=acme-orders, Environment=hml, Component=api (worker: Component=worker). Também como labels do namespace e dos pods."]
+          }
+        ]
+      }
+    },
+    {
+      "code": "PEND",
+      "title": "Pendências que não são chamado",
+      "kind": "note",
+      "card": [
+        { "label": "Situação", "text": "O acesso ao banco por túnel depende de passos com a infra, sem chamado novo." }
+      ],
+      "sections": [
+        {
+          "title": "Próximos passos",
+          "items": [
+            "Receber a senha do usuário nominal por canal seguro e guardar no cofre de senhas.",
+            "Confirmar com a infra como é o túnel (VPN direto no endpoint ou bastion)."
+          ]
+        }
+      ]
+    }
+  ]
+}

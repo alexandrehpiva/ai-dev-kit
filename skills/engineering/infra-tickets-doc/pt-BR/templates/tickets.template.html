@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>{{file_title}}</title>
+<style>
+  /* Tema neutro. Troque as variáveis para outra cor; não use marca do cliente sem pedido. */
+  @page { size: A4; margin: 18mm 16mm 18mm 16mm; }
+  :root {
+    --accent: {{accent}};
+    --accent-soft: {{accent_soft}};
+    --muted: #5b6472;
+    --border: #d5dbe5;
+    --text: #1f2430;
+    --pending: #fff3bf;
+    --optional: #1d7a4f;
+    --adjustment: #8a5a00;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif; color: var(--text); font-size: 10.5pt; line-height: 1.45; margin: 0; background: #fff; }
+  h1 { font-size: 20pt; color: var(--accent); margin: 0 0 4px; }
+  .sub { color: var(--muted); margin: 0 0 18px; }
+  h2 { font-size: 13.5pt; color: var(--accent); margin: 0; }
+  h3 { font-size: 10.5pt; margin: 12px 0 4px; text-transform: uppercase; letter-spacing: .04em; }
+  .box { border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; background: #fafbfd; }
+  .intro p { margin: 4px 0; }
+  .intro ul { margin: 2px 0 6px 18px; padding: 0; }
+  table.summary { width: 100%; border-collapse: collapse; margin: 10px 0 0; font-size: 9.8pt; }
+  table.summary th, table.summary td { border: 1px solid var(--border); padding: 5px 7px; text-align: left; vertical-align: top; }
+  table.summary th { background: var(--accent-soft); }
+  table.summary tr { break-inside: avoid; }
+  .ticket { page-break-before: always; }
+  .head { display: flex; align-items: baseline; gap: 10px; border-bottom: 2px solid var(--accent); padding-bottom: 6px; margin-bottom: 8px; }
+  .code { background: var(--accent); color: #fff; font-weight: 700; border-radius: 4px; padding: 2px 8px; font-size: 11pt; white-space: nowrap; }
+  .kind-optional .code { background: var(--optional); }
+  .kind-adjustment .code { background: var(--adjustment); }
+  .kind-note .code { background: var(--muted); }
+  .order { color: var(--muted); font-size: 9.5pt; margin-left: auto; white-space: nowrap; }
+  .card { background: var(--accent-soft); border-left: 4px solid var(--accent); padding: 8px 12px; border-radius: 4px; margin: 8px 0; }
+  .card p { margin: 3px 0; }
+  .label { font-size: 9pt; color: var(--muted); margin: 10px 0 3px; }
+  .paste { border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; }
+  .paste p { margin: 5px 0; }
+  .paste ul { margin: 4px 0 4px 18px; padding: 0; }
+  .paste li { margin: 2px 0; }
+  .paste h4 { font-size: 9.8pt; color: var(--accent); margin: 10px 0 2px; break-after: avoid; }
+  .paste .group { margin: 2px 0 4px 6px; padding-left: 12px; border-left: 3px solid var(--accent-soft); }
+  .paste h5 { font-size: 9.4pt; color: var(--muted); margin: 8px 0 2px; break-after: avoid; }
+  .signature { margin-top: 10px; break-inside: avoid; }
+  .paste li, .card p { break-inside: avoid; }
+  pre { font-family: Menlo, Consolas, monospace; font-size: 8.6pt; background: #f3f5f9; border: 1px solid var(--border); border-radius: 4px; padding: 7px 9px; white-space: pre-wrap; word-break: break-all; margin: 6px 0; }
+  code { font-family: Menlo, Consolas, monospace; font-size: 9pt; background: #f3f5f9; padding: 0 3px; border-radius: 3px; }
+  .pend { background: var(--pending); border-radius: 3px; padding: 0 3px; }
+  .note { color: var(--muted); font-size: 9.3pt; }
+</style>
+</head>
+<body>
+{{body}}
+</body>
+</html>

@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.52.0] — 2026-11-18
+
+### Added
+
+- `engineering/infra-tickets-doc`: nova skill que produz o lote de chamados de infraestrutura que o time de produto entrega ao cliente para abrir junto à infra (ServiceNow ou outro catálogo): um chamado por recurso com "Texto para colar" escrito para o SRE, ordem de abertura e dependências em levas, contraparte de produção por mudança formal (GMUD/CAB), lacunas `[A CONFIRMAR]`, HTML e PDF (via `generate-pdf-report`), revisão com revisor SRE cego e conferência contra o código, e acompanhamento com chamados de ajuste. Chamado de deploy exige a seção "Build e deploy". 15 assets por caso em `cases/`, pares antes/depois, template HTML neutro, `build_tickets_html.py` e `lint_tickets.py` com 26 testes stdlib.
+
+---
+
 ## [0.51.0] — 2026-11-18
 
 ### Added

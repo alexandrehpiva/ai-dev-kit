@@ -172,6 +172,17 @@ Skills focadas em código: construir, revisar, depurar e operar sistemas.
 
 ---
 
+## infra-tickets-doc
+
+**Arquivo:** `skills/engineering/infra-tickets-doc/pt-BR/SKILL.md`
+
+**Descrição:** Produz o lote de chamados de infraestrutura que o time de produto ou fornecedor entrega ao cliente para abrir junto à infra, SRE, DBA ou DevOps (ServiceNow ou outro catálogo): um chamado por recurso, cada um com "Texto para colar" escrito para quem cria o recurso (tópicos curtos, sem regra interna da aplicação nem padrão do provedor, com "Preciso de volta" e tags), ordem de abertura e dependências em levas, versão de homologação e contraparte de produção por mudança formal (GMUD/CAB), lacunas `[A CONFIRMAR]` em destaque, HTML e PDF, revisão e acompanhamento até o atendimento. Chamado de deploy sempre com a seção "Build e deploy" (repositórios, Dockerfile, imagens, entrypoint, variáveis por Deployment, branch por ambiente, rollout conjunto). Assets: `discovery.md` (catálogo, padrões do cliente, perguntas em lotes), `ordering-and-dependencies.md`, `writing-rules.md`, `DOCUMENT-STRUCTURE.md` (quadro de abertura, cartão por chamado, especificação JSON), `production-change.md`, `review.md` (lint, revisor SRE cego, conferência contra o código, checklist do PDF), `follow-up.md` (leva congelada, comentário x chamado de ajuste, código e chamado em sincronia); 15 casos em `cases/` (banco, filas, bucket, chaves, segredos, identidade da carga, esteira, deploy em Kubernetes, CDN, API Gateway, cache, saída de rede, DNS/WAF, acessos humanos, observabilidade); pares antes/depois em `examples/`; template HTML neutro; `scripts/build_tickets_html.py` (JSON para HTML) e `scripts/lint_tickets.py` (aspas angulares, "Build e deploy", JSON, curingas, segredos, frases de bastidor, outro ambiente) com testes. PDF pela `generate-pdf-report`.
+
+**Quando usar:** o usuário pedir "chamados de infra", "abrir chamados no ServiceNow", "pedir recursos à infra do cliente", "texto para o SRE", "lote de chamados", "leva de chamados", "PDF dos chamados", "ordem de abertura dos chamados", "chamado de ajuste", "chamado de acesso", "preparar GMUD" ou disser que "o SRE não entendeu o chamado".
+
+---
+
+
 ## architecture-docs
 
 **Arquivo:** `skills/engineering/architecture-docs/pt-BR/SKILL.md`

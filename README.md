@@ -3,7 +3,7 @@
 Kit de desenvolvimento assistido por agentes de IA — **skills**, agentes e o CLI
 `ai-dev-kit` (ver [`cli/`](cli/README.md)) que os instala nos projetos via symlinks.
 
-> **Status:** 🚧 em construção. Versão atual do CLI: **0.51.0**.
+> **Status:** 🚧 em construção. Versão atual do CLI: **0.52.0**.
 
 ## O que é
 
@@ -50,7 +50,7 @@ ai-dev-kit/
 
 ## Skills disponíveis
 
-**[engineering/](skills/engineering/README.md)** — `technical-refinement`, `architecture-diagrams`, `bpmn-flow-diagrams`, `c4-diagrams`, `architecture-docs`, `infosec-review-doc`, `pentest-readiness-doc`, `task-context`, `task-writing`, `code-review`, `service-code-review`, `code-naming-conventions`, `codebase-deep-dive`,
+**[engineering/](skills/engineering/README.md)** — `technical-refinement`, `architecture-diagrams`, `bpmn-flow-diagrams`, `c4-diagrams`, `architecture-docs`, `infosec-review-doc`, `pentest-readiness-doc`, `infra-tickets-doc`, `task-context`, `task-writing`, `code-review`, `service-code-review`, `code-naming-conventions`, `codebase-deep-dive`,
 `commit-guide`, `dev-python`, `dev-ts-angular`, `dev-ts-nest`, `dev-ts-react`, `dev-go`, `diagnose`, `write-a-dev-stack`, `qa-e2e-testing`, `accessibility-review`, `dev-squad`, `security-verification`
 (`dev-python-fastapi` está deprecated — substituída por `dev-python`)
 
