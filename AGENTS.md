@@ -101,6 +101,16 @@ Skills focadas em código: construir, revisar, depurar e operar sistemas.
 
 ---
 
+## code-naming-conventions
+
+**Arquivo:** `skills/engineering/code-naming-conventions/pt-BR/SKILL.md`
+
+**Descrição:** Aplica e revisa a convenção de língua e nomenclatura do código - nomes de arquivos, pastas, identificadores, tipos e valores internos em inglês; prompts de IA, docstrings, comentários, mensagens de commit e textos para pessoas na língua do projeto; identificadores e tags que se repetem como texto viram enumeradores ou constantes, sem magic strings.
+
+**Quando usar:** ao escrever ou revisar código junto de `dev-squad`, `code-review` ou `service-code-review`; ou quando o usuário disser "padrão de nomenclatura", "nomes misturados em português e inglês", "magic strings", "vira enum", "padronizar os nomes", "/code-naming-conventions".
+
+---
+
 ## codebase-deep-dive
 
 **Arquivo:** `skills/engineering/codebase-deep-dive/pt-BR/SKILL.md`
@@ -396,6 +406,26 @@ Skills agnósticas de workflow: colaboração, planejamento e meta-trabalho.
 **Descrição:** Detecta compactação de contexto (`compact_boundary`, `isCompactSummary`, hook `SessionStart`), lê o uso do limite de 5 horas/semanal (statusLine `rate_limits`) e, ao estourar o limite, agenda a retomada automática da mesma sessão após o reset (launchd + `claude -p --resume`), parando antes de lançar mais subagentes. Inclui script stdlib com testes e guia de instalação dos hooks.
 
 **Quando usar:** sessão longa, autônoma ou com subagentes em background; "vou dormir", "deixa rodando", "não quero que trave quando acabar o limite", "monitora os tokens", "a sessão foi compactada", "o limite estourou".
+
+---
+
+## plan-with-diffs
+
+**Arquivo:** `skills/productivity/plan-with-diffs/pt-BR/SKILL.md`
+
+**Descrição:** Antes de alterar qualquer coisa (código, prompt, configuração, documentação, infraestrutura), apresenta ao usuário um plano por item com o motivo, o mecanismo da mudança, o diff real gerado por ferramenta numa área isolada, o efeito esperado, o risco e como testar, e só aplica depois da aprovação explícita.
+
+**Quando usar:** o usuário disser "me traga o plano com o diff", "mostra o que vai alterar antes", "quero ver o diff antes de aprovar", "como vai corrigir, o que vai fazer?", "só para eu ver que você não está alucinando", "/plan-with-diffs"; ou uma mudança aprovada em termos gerais ainda não foi mostrada em detalhe.
+
+---
+
+## delegate-to-cheaper-agents
+
+**Arquivo:** `skills/productivity/delegate-to-cheaper-agents/pt-BR/SKILL.md`
+
+**Descrição:** O agente orquestrador, que tem o contexto e já fechou as decisões, transforma o trabalho em especificações fechadas e lança um ou mais subagentes em paralelo com modelos mais baratos (Haiku, Sonnet) para executar a parte operacional e ferramental, e depois confere o resultado contra a especificação.
+
+**Quando usar:** o usuário disser "manda um haiku fazer", "usa um modelo mais barato", "lança agentes baratos em paralelo", "o trabalho já está decidido, só executar", "você planeja e um agente executa", "/delegate-to-cheaper-agents"; ou quando o que resta é aplicar, rodar, gerar, copiar ou conferir algo já decidido.
 
 ---
 

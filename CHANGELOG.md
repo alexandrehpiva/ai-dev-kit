@@ -9,6 +9,15 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.50.0] — 2026-11-18
+
+### Added
+
+- Novas skills: plan-with-diffs (plano por item com diff real para aprovação antes de alterar) e delegate-to-cheaper-agents (orquestrador delega trabalho decidido a subagentes mais baratos com spec fechada).
+- Nova skill: code-naming-conventions (código e nomes de arquivo em inglês; prompts, docstrings, comentários e commits na língua do projeto; identificadores e tags em enumeradores, sem magic strings)
+
+---
+
 ## [0.49.0] — 2026-11-18
 
 ### Changed
