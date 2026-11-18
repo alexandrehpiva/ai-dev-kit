@@ -9,6 +9,19 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.51.0] — 2026-11-18
+
+### Added
+
+- `engineering/pentest-readiness-doc`: nova skill que produz o pacote técnico de pré-engajamento do pentest de uma aplicação web (escopo com exclusões, contas de teste por papel, ambientes, nuvem e terceiros, regras de engajamento, contatos de emergência, dados, severidade CVSS v4.0, relatório e reteste), com quem preenche cada seção, padrões com versão/link/data de acesso e `[não confirmado]` no que não foi lido no original. `lint_pentest_doc.py` com 35 testes stdlib.
+- `productivity/analytics-tagging-plan`: nova skill que produz o documento de Analytics (plano de medição, jornadas com pontos de medição, dicionário de eventos GA4/GTM, dataLayer, privacidade/consentimento, QA das tags), com limites do GA4 da documentação oficial e `lint_event_dictionary.py` com 23 testes stdlib.
+
+### Changed
+
+- `engineering/infosec-review-doc`: o gatilho "preparar o documento para o pentest" passa para `pentest-readiness-doc`; a irmã aparece em "Skills vizinhas".
+
+---
+
 ## [0.50.0] — 2026-11-18
 
 ### Added
