@@ -9,6 +9,14 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.49.0] — 2026-11-18
+
+### Changed
+
+- `productivity/google-forms`: o agente grava o spec direto, sem perguntar "posso escrever?"; só pergunta **em qual pasta** quando não há pista. Depois de apresentar o resumo, faz uma única pergunta: revisão de UX independente antes (pode trazer sugestões e perguntas novas) ou construir já, e "construir já" vale como aprovação do spec; a revisão de UX do spec e do formulário real passa a ser opcional (dispensa registrada, lembrete único antes de publicar). Passo 0: a preferência de navegador é sempre o Playwright MCP pela skill `playwright-mcp`; se não está pronto, oferece instalar e configurar e, só se o harness tiver navegador próprio na sessão, pergunta se pode usá-lo (se não tiver, nem menciona); novo trecho "Navegador do harness" em `setup.md`. Novo item no diagnóstico do modo de falha ("pede licença para o óbvio").
+
+---
+
 ## [0.47.0] — 2026-11-16
 
 ### Changed

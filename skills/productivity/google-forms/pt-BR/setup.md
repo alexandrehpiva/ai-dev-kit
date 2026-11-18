@@ -39,6 +39,14 @@ Rode o Passo 0 do `SKILL.md`. Para cada `status` que não seja `ready`, leia o a
 
 O `check_setup.py` desta skill só confere o modo extensão. Se a extensão for impossível (política da empresa, conflito com outra extensão), a `playwright-mcp` tem outros modos (`SKILL.md` dela, "Escolha do modo"), mas para o Google eles são frágeis: leia a linha "Chrome + Google" da seção 1 do `troubleshooting.md` dela antes de propor um, e diga ao usuário que a sessão Google tende a expirar. Em qualquer modo, o login no Google é feito **à mão pelo usuário**: o agente espera e não digita e-mail, senha, código nem resolve captcha. Se aparecer "Este navegador ou app pode não ser seguro", **pare**: nada de stealth; volte ao modo extensão.
 
+## Navegador do harness (só se o usuário aceitar)
+
+Quando o Passo 0 não está `ready` e o harness tem navegador próprio **nesta sessão**, o usuário pode preferir usá-lo em vez de instalar o Playwright MCP. A escolha é dele (Passo 0, item 2); sem a aceitação explícita, não use.
+
+- **Prova de acesso:** abra `https://docs.google.com/forms/u/0/` e confirme a lista de formulários e o avatar da conta, como na verificação final abaixo. Se aparecer login, captcha ou "Fazer login", **pare**: o usuário entra à mão no painel do navegador e você espera; nunca digite e-mail, senha nem código. Perfil isolado costuma abrir deslogado, e o usuário pode preferir voltar ao Playwright MCP.
+- **Operação:** valem os princípios de `ui-operations.md` (ler antes de agir, usar a referência mais recente, localizar por papel e nome acessível, conferir cada valor lendo a página, nunca agir por coordenada de pixel quando houver referência), mas os nomes das ferramentas mudam (leitura da página, busca de elemento, preenchimento de campo e execução de JavaScript no lugar de `browser_snapshot`, `browser_find`, `browser_type` e `browser_evaluate`). As receitas não foram verificadas ao vivo neste caminho: marque `[não verificado]` o que não viu e confira tudo pela leitura do editor e pela prévia.
+- **Não existe `.playwright-mcp/`** neste caminho, mas capturas e textos lidos continuam expondo a conta e as respostas: não os guarde nem os versione.
+
 ## Verificação final (prova real no Forms)
 
 Rode primeiro o diagnóstico automatizado (Passo 0, `status` = `ready`). Sobre a extensão, ele só verifica se a **pasta da extensão existe no perfil** do navegador (não lê arquivos de preferência nem confirma que ela está ativa): a prova real abaixo é o que vale.

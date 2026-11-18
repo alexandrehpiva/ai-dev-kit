@@ -1,6 +1,6 @@
 ---
 name: google-forms
-description: Cria, edita, publica, testa e revisa formulários do Google Forms operando o navegador Chromium padrão do usuário (Chrome, Edge, Brave e outros Chromium) já logado no Google, via Playwright MCP em modo extensão (instalar, registrar e diagnosticar o Playwright MCP é da skill `playwright-mcp`), com especificação aprovada antes de construir, revisão de UX independente a cada formulário, caminho Apps Script para formulários grandes ou em lote, exportação de respostas e documento de entrega em PDF (sumário, passo a passo com capturas, links internos). Usar quando o usuário pedir "cria um Google Forms", "monta um formulário de inscrição/pesquisa/feedback/quiz", "edita meu formulário", "publica o form", "pega as respostas do formulário", "revisa a UX desse form", "gera a documentação/manual do formulário", ou colar um link docs.google.com/forms.
+description: Cria, edita, publica, testa e revisa formulários do Google Forms operando o navegador Chromium padrão do usuário (Chrome, Edge, Brave e outros Chromium) já logado no Google, via Playwright MCP em modo extensão (instalar, registrar e diagnosticar o Playwright MCP é da skill `playwright-mcp`; o navegador do harness só entra se o usuário aceitar), com especificação gravada e aprovada antes de construir, revisão de UX independente quando o dono quiser, caminho Apps Script para formulários grandes ou em lote, exportação de respostas e documento de entrega em PDF (sumário, passo a passo com capturas, links internos). Usar quando o usuário pedir "cria um Google Forms", "monta um formulário de inscrição/pesquisa/feedback/quiz", "edita meu formulário", "publica o form", "pega as respostas do formulário", "revisa a UX desse form", "gera a documentação/manual do formulário", ou colar um link docs.google.com/forms.
 dependencies:
   - productivity/generate-pdf-report
   - productivity/playwright-mcp
@@ -19,6 +19,7 @@ Quando uma instrução explícita do usuário contradisser algo aqui, prevalece 
 - **Declara pronto sem verificar.** O editor salva sozinho e engana: tipo de pergunta trocado pela autodetecção, título digitado no cartão errado, opção sobrescrita. Sem leitura item a item, o erro vai para o respondente.
 - **Autoavalia a UX.** Quem construiu aprova o próprio formulário; pergunta dupla, escala desbalanceada e dado pessoal desnecessário passam.
 - **Força o acesso.** Tenta logar no Google por automação, usa o perfil padrão com depuração remota, copia cookies ou grava o token da extensão no repositório — e é bloqueado, ou vaza credencial.
+- **Pede licença para o óbvio e some com a escolha que é do dono.** Pergunta "posso escrever o spec?" ou usa o navegador do harness sem avisar, e o dono tem de intervir para destravar. O que é do dono é outro: onde gravar o spec quando não há pista, se quer revisão de UX antes ou construção direta, e qual navegador usar quando o preferido não está pronto.
 - **Decide o que não é dele.** Escolhe sozinho coletar e-mail, CPF ou telefone, a base legal da LGPD, quem pode responder, ou apaga respostas reais.
 
 ## Passo 0 — a cada acionamento
@@ -35,7 +36,15 @@ Quando uma instrução explícita do usuário contradisser algo aqui, prevalece 
 | `usage_error` | Corrija a chamada (pasta de execução, flags) e rode de novo. |
 
    O `check_setup.py` também avisa (sem mudar o `status`) quando falta o PyYAML: `data.optional.pyyaml: false` e um `next_step` — instale com `python3 -m pip install --user pyyaml` (Windows: `py -3 -m pip install --user pyyaml`). Se o pip recusar por ambiente gerenciado (erro `externally-managed-environment`), crie um venv (`python3 -m venv .venv && .venv/bin/pip install pyyaml`; Windows: `.venv\Scripts\pip`) e rode o `validate_spec.py` com o `python` do venv. Ou escreva o spec em JSON. Sem isso o `validate_spec.py` recusa `.yaml`.
-2. Confirme que as ferramentas `browser_*` do servidor MCP (padrão `playwright-browser`) estão disponíveis nesta sessão. Se o servidor acabou de ser registrado, o harness pode exigir reiniciar a sessão: diga isso ao usuário em vez de improvisar outro caminho.
+2. **Escolha o navegador. A preferência é sempre o Playwright MCP em modo extensão, pela skill `playwright-mcp`.**
+
+| Situação | Ação |
+|---|---|
+| `status` = `ready` e as ferramentas `browser_*` do servidor (padrão `playwright-browser`) estão na sessão (no Claude Code podem vir deferidas: carregue com ToolSearch antes de concluir que faltam) | Use-as. Não pergunte nada. |
+| Qualquer outro `status`, ou servidor recém-registrado que o harness só mostra em sessão nova | Diga em uma frase o que falta e **ofereça instalar e configurar** pela `playwright-mcp` (se a skill nem existe, ofereça instalá-la primeiro), com plano revisado pelo usuário. Se o harness tem navegador próprio **nesta sessão** (o navegador embutido do Claude Code, do Cowork ou do app desktop), ofereça-o também, perguntando se pode usá-lo. Se o harness não tem, não o mencione. |
+| O usuário aceita o navegador do harness | Siga [`setup.md`](setup.md) › "Navegador do harness". |
+
+   O navegador do harness nunca é usado sem o usuário aceitar: ele tem perfil próprio e costuma abrir sem a sessão Google.
 3. Navegue para `https://docs.google.com/forms/u/0/` e confirme pela página que a conta está logada. Tela de login, captcha ou "verifique que é você": **pare** e peça ao usuário para resolver no navegador dele.
 
 ## O que ler em cada fase (por seção, não o arquivo inteiro)
@@ -68,14 +77,17 @@ Siga em ordem; cada fase fecha com o seu checklist. Ao retomar após compactaç�
 
 ### 1. Especificar
 Leia [`FORM-SPEC.md`](FORM-SPEC.md) — obrigatório. Entreviste o usuário (no máximo 3 perguntas por vez) e escreva o spec em YAML, partindo do modelo mais próximo em [`templates/specs/`](templates/specs/README.md) (NPS, inscrição, feedback anônimo, cadastro, quiz, pesquisa com consentimento, triagem com ramificação). Para tom, textos e estrutura por tipo de formulário, use [`style-guide.md`](style-guide.md). Valide com `python3 <pasta-da-skill>/scripts/validate_spec.py <spec>.yaml` e aja pelo `status`: `invalid` → corrija cada item de `problems` e rode de novo; `pending_owner` → pergunte ao dono cada caminho de `data.pending_owner` (base legal, controlador, contato, retenção e compartilhamento nunca são preenchidos pelo agente); `valid_with_warnings` → julgue cada aviso (heurísticas erram) e leve os `PENDENTE_UI` para a lista de ajustes manuais; `usage_error` → sem PyYAML, siga a conversão para JSON indicada na saída. Depois confira à mão o que o script não cobre (lista em `FORM-SPEC.md`).
-- [ ] Validador em `valid`/`valid_with_warnings`, itens manuais do checklist conferidos, nenhum `pending_owner`.
+**Grave o spec sem pedir licença**: é um arquivo local e reversível. Grave na pasta que o usuário indicou ou que o contexto já aponta (pasta do projeto, do cliente ou do tema do pedido; convenção do projeto). Só quando não houver pista, pergunte **em qual pasta** (sugerindo uma). Nunca pergunte "posso escrever o spec?".
+- [ ] Validador em `valid`/`valid_with_warnings`, itens manuais do checklist conferidos, nenhum `pending_owner`, spec gravado em pasta conhecida.
 
-### 2. Revisar a UX do spec
-Um revisor **independente** aplica [`ux-review.md`](ux-review.md) ao spec e devolve o relatório no formato de [`UX-REVIEW-REPORT.md`](UX-REVIEW-REPORT.md). Com subagentes disponíveis, o revisor é outro agente, que recebe só o spec, a rubrica e o pedido do usuário. Sem subagentes, peça ao usuário que abra uma sessão nova com `ux-review.md` e o spec (ou a URL); se não houver essa opção, troque de papel explicitamente e releia a rubrica, mas o relatório registra "revisão sem independência real" e o veredito não passa de APROVADO COM RESSALVAS. Corrija e repita (máximo 3 rodadas; depois, leve as divergências ao usuário).
-- [ ] Veredito APROVADO ou APROVADO COM RESSALVAS, com as ressalvas aceitas pelo usuário.
+### 2. Revisar a UX do spec (opcional: o dono decide)
+Com o spec gravado e validado, apresente o resumo legível (formato de `FORM-SPEC.md`, "Como apresentar o spec para aprovação") e faça **uma única pergunta**, com o que cada resposta causa: **(a) revisão de UX independente antes**, que pode devolver sugestões e perguntas novas; **(b) construir já**, que vale como aprovação do spec apresentado. Recomende uma delas e diga o porquê. Se o pedido do usuário já respondeu ("faz direto", "revisa antes"), não pergunte: siga.
+Se for (a), um revisor **independente** aplica [`ux-review.md`](ux-review.md) ao spec e devolve o relatório no formato de [`UX-REVIEW-REPORT.md`](UX-REVIEW-REPORT.md). Com subagentes disponíveis, o revisor é outro agente, que recebe só o spec, a rubrica e o pedido do usuário. Sem subagentes, peça ao usuário que abra uma sessão nova com `ux-review.md` e o spec (ou a URL); se não houver essa opção, troque de papel explicitamente e releia a rubrica, mas o relatório registra "revisão sem independência real" e o veredito não passa de APROVADO COM RESSALVAS. Corrija e repita (máximo 3 rodadas; depois, leve as divergências ao usuário).
+Se for (b), registre a dispensa no spec (`owner_notes`) e passe à fase 3 sem repetir a oferta nas fases seguintes.
+- [ ] Revisão feita com veredito APROVADO ou APROVADO COM RESSALVAS aceitas pelo usuário, ou dispensa registrada.
 
 ### 3. Aprovar
-Apresente o spec ao usuário no formato legível descrito em `FORM-SPEC.md` e espere aprovação explícita. Mudança depois da aprovação = nova versão do spec e nova aprovação.
+A escolha "construir já" da fase 2 já é a aprovação explícita do spec apresentado. Depois de uma revisão de UX, reapresente só o que mudou (formato de `FORM-SPEC.md`) e espere nova aprovação explícita. Mudança depois da aprovação = nova versão do spec e nova aprovação.
 - [ ] Aprovação explícita registrada no spec (`status: approved`).
 
 ### 4. Construir
@@ -91,12 +103,12 @@ Confira o formulário real item a item contra o spec, incluindo todas as opçõe
 - [ ] Nenhuma divergência aberta; leitura feita (prévia ou link); se houve publicação autorizada, resposta de teste registrada e depois excluída, e formulário despublicado; o que dependia do envio e não foi visto, anotado como não conferido.
 
 ### 6. Revisar a UX do formulário real
-O mesmo protocolo da fase 2, agora sobre o formulário construído (o revisor abre o form; não aceita o relato do criador). Achados bloqueantes impedem a publicação.
-- [ ] Veredito APROVADO ou APROVADO COM RESSALVAS aceitas pelo usuário.
+O mesmo protocolo da fase 2, agora sobre o formulário construído (o revisor abre o form; não aceita o relato do criador). Achados bloqueantes impedem a publicação. Se o dono dispensou a revisão na fase 2, não a imponha: lembre uma única vez, antes de publicar, que o formulário não foi revisado; se ele recusar, registre e siga.
+- [ ] Veredito APROVADO ou APROVADO COM RESSALVAS aceitas pelo usuário, ou dispensa registrada.
 
 ### 7. Publicar, documentar e entregar
 **Publicar sempre exige autorização explícita do usuário**, também para formulário `[TESTE]`; use o acesso definido no spec (o padrão do Forms ao publicar é "Qualquer pessoa com o link" — ajuste antes se o spec restringe). Sem autorização, o formulário fica despublicado e o documento usa a variante "despublicado" de `DELIVERY-DOC.md`.
-Capture as telas **depois** das correções da fase 6, para retratar o formulário final, pela prévia "Visualizar" (não precisa publicar; não grava resposta), com a conta mascarada conforme `DELIVERY-DOC.md` seção 5. Se a fase 6 mudar algo, refaça as capturas afetadas. A tela de confirmação e o link público só entram se a publicação foi autorizada. Depois gere o **documento de entrega em PDF** — o manual do formulário para quem não viu esta conversa: sumário clicável, passo a passo do respondente com capturas, funcionalidades, particularidades, como ver e exportar respostas, como editar sem quebrar, privacidade e ficha de cada pergunta. Leia [`DELIVERY-DOC.md`](DELIVERY-DOC.md) — obrigatório: estrutura, escrita para humano, links internos, capturas e o `delivery.json`; o visual é o de [`templates/delivery-doc/`](templates/delivery-doc/) e o PDF sai de `python3 <pasta-da-skill>/scripts/build_delivery_doc.py delivery.json --out <arquivo>.pdf`, que recusa âncora, link ou imagem quebrados. Entregue: link do respondente, link de edição, destino das respostas, o PDF, o relatório de UX e o que ficou não verificado. Para ler, exportar, analisar, pré-preencher, distribuir ou excluir respostas depois, use [`responses.md`](responses.md).
+Capture as telas **depois** das correções da fase 6, para retratar o formulário final, pela prévia "Visualizar" (não precisa publicar; não grava resposta), com a conta mascarada conforme `DELIVERY-DOC.md` seção 5. Se a fase 6 mudar algo, refaça as capturas afetadas. A tela de confirmação e o link público só entram se a publicação foi autorizada. Depois gere o **documento de entrega em PDF** — o manual do formulário para quem não viu esta conversa: sumário clicável, passo a passo do respondente com capturas, funcionalidades, particularidades, como ver e exportar respostas, como editar sem quebrar, privacidade e ficha de cada pergunta. Leia [`DELIVERY-DOC.md`](DELIVERY-DOC.md) — obrigatório: estrutura, escrita para humano, links internos, capturas e o `delivery.json`; o visual é o de [`templates/delivery-doc/`](templates/delivery-doc/) e o PDF sai de `python3 <pasta-da-skill>/scripts/build_delivery_doc.py delivery.json --out <arquivo>.pdf`, que recusa âncora, link ou imagem quebrados. Entregue: link do respondente, link de edição, destino das respostas, o PDF, o relatório de UX (se houve) e o que ficou não verificado. Para ler, exportar, analisar, pré-preencher, distribuir ou excluir respostas depois, use [`responses.md`](responses.md).
 - [ ] Nada publicado sem autorização; PDF gerado com o build em `built` e o checklist de QA do `DELIVERY-DOC.md` cumprido; usuário recebeu links, PDF e resumo.
 
 ### 8. Limpar

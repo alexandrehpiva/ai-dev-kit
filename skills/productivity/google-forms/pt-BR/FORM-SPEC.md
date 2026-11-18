@@ -17,14 +17,14 @@ Sem spec, um agente que constrói formulários falha de cinco jeitos previsívei
 1. **Entrevistar** o dono (seção "Entrevista"), no máximo 3 perguntas por vez.
 2. **Escrever** o YAML (seção "Esquema"), com `status: draft`.
 3. **Validar**: rode `python3 <pasta-da-skill>/scripts/validate_spec.py <spec>.yaml` (Windows: `py -3 <pasta-da-skill>\scripts\validate_spec.py <spec>.yaml`; `<pasta-da-skill>` é a pasta onde está o `SKILL.md`; `.yaml` exige PyYAML: `python3 -m pip install --user pyyaml`, ou em ambiente gerenciado um venv com `.venv/bin/pip install pyyaml` e o `python` do venv; sem ele a saída é `usage_error` e o caminho é escrever o spec em JSON) e depois confira à mão o que o script não cobre (lista em "Validação do spec"). Todo item reprovado é corrigido ou vira pergunta ao dono.
-4. **Revisar a UX do spec** com a rubrica de `ux-review.md` (passagem estática: é mais barato corrigir no YAML do que no editor).
-5. **Apresentar** ao dono no formato da seção "Como apresentar o spec para aprovação" e esperar aprovação explícita. Só então `status: approved`, com data.
+4. **Apresentar** ao dono no formato da seção "Como apresentar o spec para aprovação" e perguntar uma vez: revisão de UX independente antes ou construir já. "Construir já" vale como aprovação explícita.
+5. **Revisar a UX do spec** (só se o dono quiser) com a rubrica de `ux-review.md` (passagem estática: é mais barato corrigir no YAML do que no editor); reapresentar o que mudou e esperar nova aprovação. Só então `status: approved`, com data.
 6. **Construir** pelo caminho de `build.path`, sem desviar do spec. Antes de qualquer clique ou script, rode `python3 <pasta-da-skill>/scripts/validate_spec.py <spec> --for-build`; só continue com `ok: true` (`valid` ou `valid_with_warnings`). Se algo do spec se mostrar impossível no caminho escolhido, pare, explique e proponha a alteração; não improvise.
 7. **Verificar** o formulário construído item a item contra o spec e passar à revisão de UX do formulário real, que cita os mesmos `id`s.
 
 Qualquer mudança depois da aprovação gera nova versão (`version` +1), um resumo do que mudou e nova aprovação. Mudança de texto puramente ortográfico pode ser aplicada e informada depois; mudança de pergunta, tipo, obrigatoriedade, ramificação, acesso ou dado pessoal exige aprovação.
 
-Onde salvar: um arquivo `form-spec.yaml` (ou `<nome-do-form>.form-spec.yaml`) na pasta de trabalho que o usuário indicar; sem indicação, na pasta temporária do sistema (`$TMPDIR` no macOS/Linux, `%TEMP%` no Windows). O spec pode conter contato do controlador e descrição de dados pessoais: não o coloque em repositório público.
+Onde salvar: um arquivo `form-spec.yaml` (ou `<nome-do-form>.form-spec.yaml`), gravado direto, sem pedir licença, na pasta que o usuário indicou ou que o contexto já aponta (projeto, cliente ou tema do pedido). Sem pista, pergunte em qual pasta, sugerindo uma (a pasta temporária do sistema, `$TMPDIR` no macOS/Linux ou `%TEMP%` no Windows, só se o usuário preferir não guardar). O spec pode conter contato do controlador e descrição de dados pessoais: não o coloque em repositório público.
 
 ## Entrevista antes de escrever
 
@@ -574,7 +574,7 @@ Por que este exemplo passa no checklist: IDs únicos e em ordem crescente (`q2`,
 
 ## Como apresentar o spec para aprovação
 
-O dono aprova um resumo legível, não o YAML cru. Mostre o resumo no chat, nesta ordem, e ofereça o YAML completo como anexo ou bloco recolhido. Termine com uma pergunta fechada: "Aprova assim? Responda 'aprovado' ou diga o que mudar."
+O dono aprova um resumo legível, não o YAML cru. Mostre o resumo no chat, nesta ordem, e ofereça o YAML completo como anexo ou bloco recolhido. Termine com uma pergunta fechada que junta aprovação e caminho: "Quer a revisão de UX independente antes (pode trazer sugestões e perguntas novas) ou construo já? Construir já aprova o spec como está; diga também o que mudar." Depois de uma revisão de UX, a pergunta volta a ser "Aprova assim? Responda 'aprovado' ou diga o que mudar."
 
 | Bloco do resumo | O que mostrar | Exemplo (spec acima) |
 |---|---|---|
