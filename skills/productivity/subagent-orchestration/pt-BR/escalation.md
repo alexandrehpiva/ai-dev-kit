@@ -18,7 +18,7 @@ Subagente **não** sai do escopo original para "dar um jeito". Se não consegue 
 
 ## Portão para perguntar ao usuário
 
-Pergunte só quando **pelo menos um** for verdadeiro:
+Antes do portão, questione a premissa (a pergunta deveria existir? a fonte ou as diretivas já respondem?) e confira o diagnóstico do subagente contra a fonte (`evaluation.md`). Pergunte só quando **pelo menos um** for verdadeiro:
 
 - risco irreversível sem confirmação (delete em massa sem verify duplo acordado);
 - ambiguidade de requisito que nenhuma inferência segura resolve;

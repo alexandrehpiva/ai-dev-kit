@@ -9,6 +9,22 @@ Versionamento segue [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [0.53.0] — 2026-11-21
+
+### Added
+
+- `productivity/subagent-orchestration`: assets `common-briefing.md` (briefing comum em arquivo lido por todo subagente, com trechos literais do pedido do usuário marcados como palavras dele, diretivas novas reenviadas aos agentes em andamento) e `evaluation.md` (o orquestrador avalia cada entrega antes de aceitar: abre o diff, roda os testes-chave, confere afirmações críticas, reclassifica severidade, pede alterações até ficar bom, recursivamente para subagentes que orquestram outros).
+- `engineering/dev-squad`: assets `orchestrator/squad-briefing.md` e `llm-systems.md` (pt-BR e en-US) para squads que trabalham em sistemas com LLM: interpretação de linguagem natural vai para prompt e contexto, nunca para regex ou lista de palavras (nem dentro do prompt); conhecimento do sistema organizado para o modelo do produto; sem opção inviável nem beco sem saída para o usuário final; QA com repetição de cenários instáveis e critérios de FALHOU para o que o usuário percebe.
+- `engineering/service-code-review`: guia `stacks/architecture/llm-systems.md` (OWASP Top 10 para LLM 2025, padrões de agentes, anti-padrão "palavra-gatilho no prompt") e dimensão K no checklist (sistemas com LLM: prompts como código, decisão de linguagem por regex, conhecimento do sistema, becos sem saída).
+
+### Changed
+
+- `productivity/subagent-orchestration`: novos gatilhos (super-contextualizar, avaliar, pedir alterações, revisão recursiva); modelo por tarefa (padrão intermediário, barato para o mecânico, o mais forte só com julgamento pesado ou pedido, e escolha do usuário ou do projeto prevalece); paralelismo seguro (posse de arquivos, área isolada por agente, sem `git stash`, recursos compartilhados serializados); diagnóstico separado da correção; perguntas ao usuário questionam a premissa antes.
+- `engineering/dev-squad`: templates de briefing ganham os campos de briefing comum, pedido literal do usuário, linhas sensíveis, área isolada e causa adotada; Tech Lead e Dev recusam palavras-gatilho em prompt; QA com severidade mínima por tipo de defeito; PO proxy leva no máximo 3 perguntas por vez.
+- `engineering/service-code-review`: itens novos sobre erro tratado lendo o texto da mensagem, descartes e defaults silenciosos, arredondamento antes de comparar, laços sem orçamento de tempo, lógica duplicada sem teste de paridade e logs com texto livre do usuário.
+
+---
+
 ## [0.52.0] — 2026-11-18
 
 ### Added

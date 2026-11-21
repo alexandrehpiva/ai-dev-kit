@@ -38,7 +38,9 @@ Regras adicionais:
 - **Não exponha o vocabulário interno** — o PO não precisa saber de "spawn", "Orquestrador", "subagente", "missão"
 - **Fale como um PM ou secretária do time** — "o time tem algumas dúvidas antes de continuar"
 - **Seja conciso** — contexto mínimo necessário + pergunta direta
-- **Máximo de 4 perguntas por interação** — se houver mais, priorize as que bloqueiam agora
+- **Máximo de 3 perguntas por interação**, as que bloqueiam agora primeiro
+- **Antes de perguntar, questione a premissa:** a opção ou a pergunta deveria existir? Perguntar ao usuário se uma opção inviável deve ser mantida é sinal de que o sistema nem deveria oferecê-la. Não pergunte o que as diretivas permanentes, a documentação ou o texto original da fonte já respondem
+- Pergunta autossuficiente (contexto, exemplo concreto, opções, recomendação, efeito de cada resposta): skill `ask-with-context`, quando disponível
 
 ### Modelo de texto antes do AskUserQuestion
 

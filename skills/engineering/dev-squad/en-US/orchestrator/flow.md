@@ -23,6 +23,7 @@ If the task is in a connected tracker (Jira, ClickUp, Linear etc.), update the s
 
 ### Steps
 
+0. Before the cycle's first spawn, create the common briefing and prepare the literal excerpts of the request (`orchestrator/squad-briefing.md`; mandatory)
 1. Spawn Senior Dev with mission `investigate` and the full task context, with `permanent_directives` filled in (applies to every Dev, Tech Lead and QA spawn in this flow; see `orchestrator/state.md`)
 2. If the return contains `QUESTIONS_FOR_TECH_LEAD`:
    - Spawn Tech Lead with mission `answer_questions`
@@ -111,12 +112,13 @@ If the project has separate staging/production environments, read
    - `implementation_summary` = summary of what was implemented
    - `permanent_directives` = applicable permanent directives, in literal text
 3. If `FINAL_VERDICT: approved for deploy`:
-   - **Verify** the QA report in `qa-reports/` (local Markdown backlog — `qa-reports.md`)
+   - **Verify** the QA report in `qa-reports/` (local Markdown backlog — `qa-reports.md`) and **evaluate** its content, not only its existence: check the critical claims, reclassify severity QA underestimated and, in a product with an LLM, require the repeated runs (`llm-systems.md`)
    - Update the status to `ready for deploy` / Markdown `done`
    - Notify the PO: summary + **link to the QA report** for manual re-testing
 4. If `FINAL_VERDICT: send back to dev`:
    - Update the status in the tracker to `in development`
-   - Spawn Senior Dev with mission `fix`, passing the QA's `BUGS` with `source: QA`
+   - If the bug's cause is not obvious, first spawn a read-only diagnosis and evaluate the cause (`orchestrator/squad-briefing.md`, separate diagnosis section)
+   - Spawn Senior Dev with mission `fix`, passing the QA's `BUGS` with `source: QA` and the `ADOPTED_CAUSE`
    - After the fix: **return to Phase 3 (Tech Lead reviews)** — do not skip straight to QA
 
 ### Loop rule — QA
@@ -134,6 +136,7 @@ Dispatching the Tech Lead review, the QA and the merge of an approved item is th
 
 ### Steps
 
+0. **Diff audit before the merge:** read the diff and the `SENSITIVE_LINES` looking for what the user vetoed (`orchestrator/squad-briefing.md`, audit section); a finding goes back to the Dev before the merge. With several fixes ready, integrate in batch: suite and environment rebuild once only, and test together.
 1. After the QA report is `approved` and the PO-facing notice is sent, merge the branch into the base branch (locally, or the PR flow the project uses).
 2. **Immediately after the merge**, remove the task's worktree and its local branch, provided nothing is left pending in them. Verify before removing: the worktree has no uncommitted changes and the branch is an ancestor of the base (`git merge-base --is-ancestor <branch> <base>`). Use `git worktree remove <path>` and `git branch -d <branch>` (no `--force`); if either refuses, report why and keep it.
 3. Never remove a worktree or branch that is not merged or has uncommitted work; list it in the delivery notes instead.

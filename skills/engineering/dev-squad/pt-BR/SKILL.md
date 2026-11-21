@@ -21,11 +21,13 @@ Leia os assets conforme se tornarem relevantes:
 | Antes de iniciar o ciclo | `orchestrator/flow.md` |
 | Antes de abrir um PR, quando o projeto tem ambientes separados de staging/produção | `orchestrator/branch-strategy.md` |
 | Entre passagens de bastão de papéis | `orchestrator/state.md` |
+| Antes do primeiro spawn do ciclo, ao receber diretiva nova do usuário, ao avaliar o que um papel entregou, antes do merge | `orchestrator/squad-briefing.md` — obrigatório |
 | Quando um papel tem dúvidas de produto | `po-proxy/protocol.md` |
 | Antes de escrever, revisar ou corrigir documentação de produto (não tasks de backlog) | `po-proxy/product-doc-writing.md` |
 | Antes de criar ou atualizar itens do backlog local | `task-management.md` |
 | Antes de criar, reestruturar ou vincular tasks num task tracker conectado | `tracker-hierarchy.md` |
 | Antes de aprovar o QA | `qa-reports.md` |
+| Task em que o produto contém LLM ou interpreta linguagem natural (especificar, implementar, revisar, testar) | `llm-systems.md` — obrigatório |
 | Antes de o Tech Lead conduzir um refinamento profundo de arquitetura (missão `refinar_arquitetura`) | `agents/architecture-refinement-checklist.md` |
 | Antes de especificar uma tela ou endpoint de lista (filtros, busca, ordenação, paginação, contadores), antes de escolher ou fechar o modelo de dados e antes de testar uma lista | `data-access-patterns.md` |
 
@@ -56,6 +58,7 @@ dev-squad/
 ├── task-management.md              ← formato do backlog Markdown local
 ├── tracker-hierarchy.md            ← formato épico/US/subtask e vínculos no tracker
 ├── qa-reports.md                   ← formato do relatório de QA local
+├── llm-systems.md                  ← produtos com LLM/linguagem natural: camada certa, conhecimento do sistema, QA com repetição, severidade do que o usuário vê
 ├── data-access-patterns.md         ← ficha de padrões de acesso de listas (busca, ordenação, paginação, contadores) antes do modelo de dados
 ├── agents/
 │   ├── dev-senior.md               ← papel Dev Sênior, missões, prompts
@@ -65,6 +68,7 @@ dev-squad/
 ├── orchestrator/
 │   ├── flow.md                     ← fases, transições de estado, limites de loop
 │   ├── state.md                    ← estado interno e protocolo de comunicação
+│   ├── squad-briefing.md           ← briefing comum, trechos literais, diagnóstico x correção, auditoria do diff, recursividade
 │   └── branch-strategy.md          ← separação develop/main para projetos com staging+produção
 └── po-proxy/
     ├── protocol.md                 ← protocolo de repasse de decisões ao usuário
@@ -120,8 +124,8 @@ Mantenha os commits focados. Commite após criar um novo épico, criar ou atuali
 | Papel | Quem é | Autoridade |
 |---|---|---|
 | **Dev Sênior** | Subagente ou papel inline | Investiga, implementa e corrige problemas; pede ao Tech Lead decisões técnicas e ao PO decisões de produto |
-| **Tech Lead** | Subagente ou papel inline | Revisa planos e código; aprova ou devolve o trabalho com correções concretas; é dono das decisões técnicas |
-| **QA** | Subagente ou papel inline | Testa a implementação; valida critérios de aceite; aprova ou reporta bugs com severidade |
+| **Tech Lead** | Subagente ou papel inline | Revisa planos e código; aprova ou devolve o trabalho com correções concretas; é dono das decisões técnicas; não decide produto |
+| **QA** | Subagente ou papel inline | Testa a implementação; valida critérios de aceite; aprova ou reporta bugs com severidade; não altera código |
 | **PO** | Usuário via repasse do Orquestrador | Dono de prioridade, escopo, regras de negócio e decisões finais sobre bloqueios não resolvidos |
 
 A cadeia é: **Dev Sênior → Tech Lead → QA → PO**. Dúvidas técnicas vão ao Tech Lead. Dúvidas de produto e bloqueios não resolvidos vão ao PO através do Orquestrador.
@@ -167,6 +171,8 @@ Subagentes começam do zero — sem memória desta conversa, sem acesso ao que o
 - Informe **quais outros itens estão rodando em paralelo** quando aplicável, e reitere a fronteira de propriedade de arquivos entre eles, para que dois subagentes simultâneos não toquem o mesmo arquivo compartilhado.
 
 Um prompt construído assim é mais longo que uma descrição de missão de uma linha — esse comprimento é o ponto. Ele substitui o contexto compartilhado que um colega humano teria por ter estado na mesma sessão de planejamento.
+
+**Briefing comum e avaliação.** O geral sobre subagentes (briefing autocontido, paralelismo seguro, evidência, limite de uso, perguntas ao dono) está na skill `subagent-orchestration`; consulte-a quando disponível. O específico do squad está em `orchestrator/squad-briefing.md` e é obrigatório: briefing comum em arquivo lido por todo papel, trechos literais do pedido do usuário no prompt, diretiva nova reenviada aos papéis em andamento, diagnóstico separado de correção, integração em lote, auditoria do diff antes do merge, avaliação (não repasse) do que cada papel entrega e a mesma disciplina aplicada recursivamente quando um papel lança subagentes.
 
 ---
 
@@ -285,6 +291,7 @@ Liste apenas as skills e ferramentas relevantes para a missão:
 - [ ] Ler `orchestrator/flow.md`
 - [ ] Ler `orchestrator/state.md`
 - [ ] Carregar no estado (`diretivas_permanentes`) as diretivas permanentes do usuário para o projeto — constituição/`CLAUDE.md`/README, nota de modo de trabalho, memória do agente —, cada uma com o texto literal e a data.
+- [ ] Ler `orchestrator/squad-briefing.md`, criar o briefing comum do ciclo (registrar o caminho em `briefing_comum`) e, se a task envolve LLM ou linguagem natural, ler `llm-systems.md`.
 - [ ] Inicializar o estado interno com `task_ref`, `task_context` e `fase_atual = investigacao`
 - [ ] Iniciar a missão de investigação do Dev Sênior.
 

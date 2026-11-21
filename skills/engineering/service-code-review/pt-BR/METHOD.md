@@ -13,6 +13,8 @@ Um review de repositório inteiro feito por agente falha de jeitos previsíveis:
 - **Recomenda o que a documentação não diz.** Cita "boa prática oficial" que é opinião de blog, ou de uma versão que não é a do repositório.
 - **Infla a severidade.** Vinte achados "Altos" tornam o relatório inútil: quem lê não sabe por onde começar.
 - **Critica o trade-off sem conhecer o motivo.** Vê um desenho que custa algo (transação longa, duplicação, acoplamento) e recomenda o "padrão de livro" sem perceber que o desenho existe para resolver outro problema (escrita dupla inconsistente, concorrência entre réplicas) — e que a alternativa perde essa garantia.
+- **Trata sistema com LLM como código comum.** Aceita regex sobre texto livre como "validação", não vê prompt como artefato revisável e dá por correto um fluxo que passou uma vez. Se o serviço chama um modelo de linguagem, aplique a dimensão K do CHECKLIST.md.
+- **Repassa o relatório de subagente como fato.** O revisor delegado afirma sem evidência ou erra a severidade, e o orquestrador copia. Quem delega abre os achados, confere e pede correção (REVIEWER-PROMPT.md).
 
 ## Regras
 
@@ -35,6 +37,8 @@ Um review de repositório inteiro feito por agente falha de jeitos previsíveis:
     - escolha o veredito: **procede** (o achado fica, com o custo do desenho explicado), **ajusta** (recomendação que preserva a garantia) ou **cai para Observação** (trade-off calculado e coerente).
 
     Achado que critica uma decisão deliberada sem citar a motivação dela é um achado incompleto; registre "motivação não encontrada" quando procurou e não achou.
+14. **Fato x inferência.** Cada achado diz se o que afirma foi visto (arquivo:linha, saída de comando) ou deduzido; o relatório fecha com "o que não verifiquei". Inferência não vira Crítico nem Alto sem uma reprodução (quando possível, rodar a função ou o motor com os dados do caso, sem chamar o modelo).
+15. **Palavras do dono.** Se o dono escreveu o que considera grave ou proibido, o review as cita literalmente e audita contra elas; paráfrase perde a intenção.
 
 ## Quando a pergunta tem mais de uma leitura
 

@@ -38,7 +38,9 @@ Additional rules:
 - **Do not expose internal vocabulary** — the PO does not need to know about "spawn", "Orchestrator", "subagent", "mission"
 - **Speak like a PM or the team's secretary** — "the team has a few questions before continuing"
 - **Be concise** — minimum necessary context + direct question
-- **Maximum of 4 questions per interaction** — if there are more, prioritize the ones that block now
+- **Maximum of 3 questions per interaction**, the ones that block now first
+- **Before asking, question the premise:** should the option or the question exist? Asking the user whether an infeasible option should be kept is a sign the system should not offer it at all. Do not ask what the permanent directives, the documentation or the source's original text already answer
+- Self-contained question (context, concrete example, options, recommendation, effect of each answer): skill `ask-with-context`, when available
 
 ### Text template before AskUserQuestion
 

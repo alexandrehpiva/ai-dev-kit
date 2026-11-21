@@ -8,15 +8,17 @@ Teste do briefing: um agente sem acesso à conversa consegue executar e conferir
 
 ## Itens obrigatórios
 
-1. **Pedido literal** do usuário, entre aspas, sem paráfrase. Se há várias falas relevantes, cite cada uma com a data ou o ponto da conversa.
+0. **Briefing comum em arquivo.** O contexto que vale para todos os agentes (objetivo, onde está o código, comandos, diretivas permanentes, proibições, pegadinhas do ambiente, mapa de posse do que roda em paralelo) mora em um arquivo lido antes de tudo; o prompt cita o caminho e traz só a tarefa específica. Como montar, manter e reenviar diretivas novas aos agentes em andamento: `common-briefing.md`.
+1. **Pedido literal** do usuário, entre aspas e marcado como palavras dele, sem paráfrase, **além** das suas instruções: os trechos que motivam aquela tarefa. Se há várias falas relevantes, cite cada uma com a data ou o ponto da conversa. Regras de escolha dos trechos: `common-briefing.md`.
 2. **Objetivo e fora de escopo.** O que entregar e o que explicitamente não tocar. Critério de pronto verificável.
 3. **Estado verificado hoje**, cada fato com a origem (comando e saída, arquivo, hash, versão, branch). Fato não conferido entra marcado como "não verificado".
 4. **Decidido x em aberto.** O que o usuário já decidiu (com a citação) e o que ainda é pergunta aberta — o subagente não decide o aberto.
 5. **Referências por caminho**, lidas e relevantes: documentos, skills, logs de decisão, registros de conversa. Diga o que procurar em cada uma. Para o histórico da sessão, ver `session-history.md`.
 6. **Regra anti-invenção**, escrita no prompt: não invente; toda afirmação com evidência (comando ou arquivo); marque inferência como inferência e o que não conferiu como "não verifiquei"; se faltar informação, pare e devolva a pergunta completa em vez de supor.
 7. **Limites**: não enviar nada a terceiros, não publicar, não commitar fora do pathspec combinado, não promover versão, não apagar o que não é seu, não ecoar segredos.
-8. **Formato e tamanho do relatório**: seções fixas (feito / bloqueado / dúvidas / evidências), com limite de tamanho e o caminho do arquivo de relatório, se houver.
-9. **Isolamento.** Quem escreve em repositório git trabalha em worktree próprio **do repositório-alvo** (o isolamento da sessão pode apontar para outro lugar); devolve caminho, branch e último hash. Nunca dois agentes no mesmo diretório de trabalho.
+8. **Formato e tamanho do relatório**: seções fixas (feito / bloqueado / dúvidas / evidências / o que não verifiquei), com arquivo:linha ou saída real, FATO separado de INFERÊNCIA, limite de tamanho e o caminho do arquivo de relatório, **gravado incrementalmente** (a sessão pode cair por limite de uso). Se o trabalho adiciona código sensível ao que o usuário vetou (por exemplo, expressão regular sobre texto livre), o agente lista essas linhas com justificativa.
+9. **Isolamento.** Quem escreve em repositório git trabalha em worktree próprio **do repositório-alvo** (o isolamento da sessão pode apontar para outro lugar); devolve caminho, branch e último hash. Nunca dois agentes no mesmo diretório de trabalho, nunca `git stash` (ver `delegation.md`).
+10. **Se o agente puder lançar subagentes**: ele aplica todas estas regras aos seus, passa o briefing comum adiante e responde pelo que eles entregam (ver `evaluation.md`).
 
 ## Ruim / bom
 

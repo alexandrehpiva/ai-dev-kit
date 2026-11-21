@@ -17,6 +17,16 @@ Depois de lançar subagentes, o principal **monitora até conclusão** — não 
 - Se o harness suporta `resume`: continuar o mesmo subagente com instrução adicional **dentro do escopo**.
 - Se travou sem progresso: novo subagente com prompt ajustado, **mesmo lote**, causa raiz documentada — não duplicar trabalho já confirmado OK.
 
+## Diretiva nova com agentes em andamento
+
+Chegou instrução nova do usuário: grave no briefing comum e **reenvie aos agentes que estão rodando** por mensagem de continuação, citando a fala literal; confira no relatório deles que foi aplicada (`common-briefing.md`). Avaliar a entrega e pedir alterações: `evaluation.md`.
+
+## Limite de uso em trabalho autônomo longo
+
+- Antes de deixar rodando, confirme que há mecanismo de retomada após o limite de uso (skill `session-limit-guard`, se instalada) e que o estado está em disco: ledger, relatórios incrementais, briefing comum.
+- Dimensione lotes e concorrência para não consumir a cota compartilhada com baterias grandes de uma vez; perto do limite, pare de lançar agentes novos.
+- Ao retomar, releia o ledger e o briefing comum em vez de confiar na memória da conversa.
+
 ## Falhas recuperáveis (principal ou subagente)
 
 Tratar antes de escalar:

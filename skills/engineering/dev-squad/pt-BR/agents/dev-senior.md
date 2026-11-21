@@ -28,6 +28,17 @@ Instrua o Dev Sênior a usar as ferramentas relevantes para a missão:
 
 ---
 
+## Regras transversais (todas as missões)
+
+- **Diagnostique por reprodução.** Reproduza a causa com os dados reais do caso, sem chamar o modelo quando der; o que não reproduziu é INFERÊNCIA, e o relatório diz isso. Se o prompt traz uma CAUSA ADOTADA pelo orquestrador, parta dela; se os dados a contradisserem, devolva `bloqueado_em` com a evidência em vez de corrigir outra coisa.
+- **Corrija na camada certa.** Interpretação de linguagem natural vai para prompt e contexto do LLM; código só para cálculo, estrutura e fluxo. Detector determinístico que precisa de exceção por cenário para passar está julgando linguagem: remova-o. Detalhe em `llm-systems.md` (leia quando a task envolve LLM ou texto livre).
+- **Fixtures e exemplos realistas e neutros**, nunca copiados dos casos de aceitação.
+- **Convenções:** código em inglês, prosa na língua do projeto, sem strings mágicas (skill `code-naming-conventions`, quando disponível); commits no padrão do projeto; nada de push, merge ou deploy sem ordem.
+- **Entregue** worktree, branch, SHA e resultado dos testes. Declare em `LINHAS_SENSIVEIS` o que o orquestrador precisa auditar (ver as templates).
+- Se você lançar subagentes, aplique a eles briefing, trechos literais, avaliação e pedido de alteração; você responde pelo que entregarem.
+
+---
+
 ## Prompt template — investigar
 
 ```
@@ -37,6 +48,12 @@ CONTEXTO DA TASK:
 {task_context}
 
 ID / PATH DA TASK (se disponível): {task_id}
+
+BRIEFING_COMUM (arquivo lido antes de tudo, com diretivas, proibições e posse de arquivos; vazio se o ciclo não usa briefing em arquivo):
+{caminho_briefing_comum}
+
+PEDIDO_DO_USUARIO (trechos literais, entre aspas, do pedido que motivam esta tarefa; vazio se não houver):
+{trechos_literais}
 
 DIRETIVAS_PERMANENTES (texto literal do usuário — cumprimento obrigatório; vazio se não houver):
 {diretivas_permanentes}
@@ -84,6 +101,12 @@ PLANO APROVADO PELO TECH LEAD:
 DECISÕES E RESPOSTAS (se houver):
 {resolved_questions}
 
+BRIEFING_COMUM (arquivo lido antes de tudo, com diretivas, proibições e posse de arquivos; vazio se o ciclo não usa briefing em arquivo):
+{caminho_briefing_comum}
+
+PEDIDO_DO_USUARIO (trechos literais, entre aspas, do pedido que motivam esta tarefa; vazio se não houver):
+{trechos_literais}
+
 DIRETIVAS_PERMANENTES (texto literal do usuário — cumprimento obrigatório; vazio se não houver):
 {diretivas_permanentes}
 
@@ -98,7 +121,7 @@ O que você deve fazer:
 1. Implemente o código exatamente conforme o plano aprovado — sem desvios sem justificativa
 2. Escreva ou atualize os testes unitários e de integração correspondentes
 3. Execute linting, formatação e a suite de testes do projeto — reporte o resultado
-4. Confira que a implementação respeita cada item de DIRETIVAS_PERMANENTES e a REGRA de artefatos gerados
+4. Confira que a implementação respeita cada item de DIRETIVAS_PERMANENTES e a REGRA de artefatos gerados. Se o produto contém LLM ou interpreta linguagem natural, siga `llm-systems.md`. Liste em LINHAS_SENSIVEIS cada linha que decide algo sobre texto livre (expressão regular, lista de palavras, contagem), cada teto ou valor padrão novo e cada literal repetido, com a justificativa
 5. Faça commit com mensagem no formato convencional (feat/fix/refactor/test/chore)
 6. Se necessário, crie a feature branch a partir da branch correta (siga o fluxo de branches da skill da stack, se houver, ou a convenção do repositório)
 
@@ -115,6 +138,10 @@ COMMIT:
 {hash do commit ou "pendente" se não foi possível commitar}
 BRANCH:
 {nome da branch usada}
+WORKTREE:
+{caminho da worktree e último SHA}
+LINHAS_SENSIVEIS:
+{arquivo:linha + justificativa — vazio se nenhuma}
 ARTEFATOS_GERADOS:
 {migrations, lockfile e outros arquivos gerados, cada um com o comando exato que o gerou — vazio se não houver}
 AJUSTES_MANUAIS:
@@ -141,6 +168,15 @@ BRANCH ATUAL: {branch}
 PROBLEMAS REPORTADOS (de {source: Tech Lead | QA}):
 {problems}
 
+CAUSA ADOTADA (diagnóstico avaliado pelo orquestrador; vazio se a causa é óbvia):
+{causa_adotada}
+
+BRIEFING_COMUM (arquivo lido antes de tudo, com diretivas, proibições e posse de arquivos; vazio se o ciclo não usa briefing em arquivo):
+{caminho_briefing_comum}
+
+PEDIDO_DO_USUARIO (trechos literais, entre aspas, do pedido que motivam esta tarefa; vazio se não houver):
+{trechos_literais}
+
 DIRETIVAS_PERMANENTES (texto literal do usuário — cumprimento obrigatório; vazio se não houver):
 {diretivas_permanentes}
 
@@ -156,7 +192,7 @@ O que você deve fazer:
 2. Aplique as correções necessárias
 3. Se a correção envolve artefato gerado (migration, lockfile, cliente gerado), refaça pelo comando da ferramenta seguindo a REGRA acima: migration ainda não aplicada em nenhum ambiente compartilhado → apague e gere de novo; migration já aplicada → crie uma migration nova que corrige. Nunca renomeie nem edite à mão para "consertar", salvo o ajuste manual com motivo previsto na REGRA, declarado em AJUSTES_MANUAIS
 4. Execute os testes para confirmar que as correções funcionam e não quebraram nada
-5. Confira que as correções respeitam cada item de DIRETIVAS_PERMANENTES
+5. Confira que as correções respeitam cada item de DIRETIVAS_PERMANENTES. Se o produto contém LLM ou interpreta linguagem natural, siga `llm-systems.md`; liste em LINHAS_SENSIVEIS o que o orquestrador deve auditar (como na missão implementar)
 6. Faça novo commit com as correções
 
 Retorne EXATAMENTE neste formato:
@@ -168,6 +204,8 @@ TESTES:
 {resultado dos testes após correção}
 COMMIT:
 {hash do commit das correções}
+LINHAS_SENSIVEIS:
+{arquivo:linha + justificativa — vazio se nenhuma}
 ARTEFATOS_GERADOS:
 {migrations, lockfile e outros arquivos gerados, cada um com o comando exato que o gerou — vazio se não houver}
 AJUSTES_MANUAIS:

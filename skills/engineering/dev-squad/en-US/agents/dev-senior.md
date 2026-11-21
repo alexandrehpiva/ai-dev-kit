@@ -28,6 +28,17 @@ Instruct the Senior Dev to use the tools relevant to the mission:
 
 ---
 
+## Cross-cutting rules (all missions)
+
+- **Diagnose by reproduction.** Reproduce the cause with the case's real data, without calling the model when possible; what you did not reproduce is INFERENCE, and the report says so. If the prompt carries an ADOPTED CAUSE from the orchestrator, start from it; if the data contradicts it, return `blocked_at` with the evidence instead of fixing something else.
+- **Fix at the right layer.** Natural-language interpretation goes to the LLM's prompt and context; code only for calculation, structure and flow. A deterministic detector that needs a per-scenario exception to pass is judging language: remove it. Details in `llm-systems.md` (read it when the task involves an LLM or free text).
+- **Realistic, neutral fixtures and examples**, never copied from the acceptance cases.
+- **Conventions:** code in English, prose in the project's language, no magic strings (skill `code-naming-conventions`, when available); commits in the project's standard; no push, merge or deploy without an order.
+- **Deliver** worktree, branch, SHA and test results. Declare in `SENSITIVE_LINES` what the orchestrator must audit (see the templates).
+- If you launch subagents, apply to them briefing, literal excerpts, evaluation and change requests; you answer for what they deliver.
+
+---
+
 ## Prompt template — investigate
 
 ```
@@ -37,6 +48,12 @@ TASK CONTEXT:
 {task_context}
 
 TASK ID / PATH (if available): {task_id}
+
+COMMON_BRIEFING (file read before anything else, with directives, prohibitions and file ownership; empty if the cycle uses no briefing file):
+{common_briefing_path}
+
+USER_REQUEST (literal excerpts, in quotes, of the request that motivate this task; empty if none):
+{literal_excerpts}
 
 PERMANENT_DIRECTIVES (the user's literal text — compliance is mandatory; empty if none):
 {permanent_directives}
@@ -84,6 +101,12 @@ PLAN APPROVED BY THE TECH LEAD:
 DECISIONS AND ANSWERS (if any):
 {resolved_questions}
 
+COMMON_BRIEFING (file read before anything else, with directives, prohibitions and file ownership; empty if the cycle uses no briefing file):
+{common_briefing_path}
+
+USER_REQUEST (literal excerpts, in quotes, of the request that motivate this task; empty if none):
+{literal_excerpts}
+
 PERMANENT_DIRECTIVES (the user's literal text — compliance is mandatory; empty if none):
 {permanent_directives}
 
@@ -98,7 +121,7 @@ What you must do:
 1. Implement the code exactly as the approved plan — no deviations without justification
 2. Write or update the corresponding unit and integration tests
 3. Run linting, formatting, and the project's test suite — report the result
-4. Check that the implementation complies with every item in PERMANENT_DIRECTIVES and with the GENERATED ARTIFACTS RULE
+4. Check that the implementation complies with every item in PERMANENT_DIRECTIVES and with the GENERATED ARTIFACTS RULE. If the product contains an LLM or interprets natural language, follow `llm-systems.md`. List in SENSITIVE_LINES every line that decides something about free text (regular expression, word list, count), every new cap or default value and every repeated literal, with the justification
 5. Commit with a message in the conventional format (feat/fix/refactor/test/chore)
 6. If necessary, create the feature branch from the correct branch (follow the branch flow of the stack skill, if any, or the repository convention)
 
@@ -115,6 +138,10 @@ COMMIT:
 {commit hash or "pending" if it was not possible to commit}
 BRANCH:
 {name of the branch used}
+WORKTREE:
+{worktree path and last SHA}
+SENSITIVE_LINES:
+{file:line + justification — empty if none}
 GENERATED_ARTIFACTS:
 {migrations, lockfile and other generated files, each with the exact command that generated it — empty if none}
 MANUAL_EDITS:
@@ -141,6 +168,15 @@ CURRENT BRANCH: {branch}
 REPORTED PROBLEMS (from {source: Tech Lead | QA}):
 {problems}
 
+ADOPTED CAUSE (diagnosis evaluated by the orchestrator; empty if the cause is obvious):
+{adopted_cause}
+
+COMMON_BRIEFING (file read before anything else, with directives, prohibitions and file ownership; empty if the cycle uses no briefing file):
+{common_briefing_path}
+
+USER_REQUEST (literal excerpts, in quotes, of the request that motivate this task; empty if none):
+{literal_excerpts}
+
 PERMANENT_DIRECTIVES (the user's literal text — compliance is mandatory; empty if none):
 {permanent_directives}
 
@@ -156,7 +192,7 @@ What you must do:
 2. Apply the necessary fixes
 3. If the fix involves a generated artifact (migration, lockfile, generated client), redo it with the tool's command following the RULE above: migration not yet applied in any shared environment → delete it and generate it again; migration already applied → create a new migration that fixes it. Never rename or hand-edit to "fix" it, except for the manual edit with a reason allowed by the RULE, declared in MANUAL_EDITS
 4. Run the tests to confirm the fixes work and didn't break anything
-5. Check that the fixes comply with every item in PERMANENT_DIRECTIVES
+5. Check that the fixes comply with every item in PERMANENT_DIRECTIVES. If the product contains an LLM or interprets natural language, follow `llm-systems.md`; list in SENSITIVE_LINES what the orchestrator must audit (as in the implement mission)
 6. Make a new commit with the fixes
 
 Return EXACTLY in this format:
@@ -168,6 +204,8 @@ TESTS:
 {test result after the fix}
 COMMIT:
 {hash of the fixes commit}
+SENSITIVE_LINES:
+{file:line + justification — empty if none}
 GENERATED_ARTIFACTS:
 {migrations, lockfile and other generated files, each with the exact command that generated it — empty if none}
 MANUAL_EDITS:

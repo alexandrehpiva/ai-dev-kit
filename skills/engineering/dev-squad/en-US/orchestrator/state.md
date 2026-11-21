@@ -13,6 +13,7 @@ branch: <branch name>
 modified_files: <list of files>
 po_decisions: <list of decisions made by the PO during the cycle>
 permanent_directives: <list of the process and code rules the user has already given for the project, each with the literal text, the date and where it is recorded (constitution/CLAUDE.md/README, working-mode note, agent memory)>
+common_briefing: <path of the cycle's common briefing file (orchestrator/squad-briefing.md)>
 generated_artifacts: <the Dev's accumulated GENERATED_ARTIFACTS (implement + fix), with the exact command>
 manual_edits: <the Dev's accumulated MANUAL_EDITS, with the reason>
 ciclos:
@@ -69,6 +70,7 @@ Every subagent receives in its prompt:
 4. **Available skills and tools** — explicitly list the ones relevant to the mission
 5. **Output contract** — the exact format of what it must return
 6. **Permanent directives** — the template's `PERMANENT_DIRECTIVES` slot filled with the literal text of the directives in `permanent_directives` that apply to the mission (not a summary, not a link); empty only if there are none
+7. **Common briefing and literal request** — the `COMMON_BRIEFING` slot with the path of the file the role reads before anything else and the `USER_REQUEST` slot with the literal excerpts of the user's request that motivate the mission; the recursion clause goes in the briefing (`orchestrator/squad-briefing.md`)
 
 The subagent **returns structured text**, it does not talk directly to the user. The Orchestrator processes it and decides the next step.
 

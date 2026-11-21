@@ -12,4 +12,5 @@ Um único agente levanta, implementa, testa e aprova o próprio trabalho: o erro
 2. **Levantamento antes de implementar.** A primeira fase é só leitura: estado do código, requisitos, riscos, perguntas em aberto. O relatório dela é um arquivo em pasta combinada.
 3. **Leitura antes do despacho.** O orquestrador lê o relatório do levantamento (inteiro, não o resumo do agente) e só então despacha a implementação, já com as correções e decisões que o levantamento exigir. Perguntas abertas do levantamento vão ao usuário (ver `free-conversation.md`) antes de implementar o que depende delas.
 4. **Isolamento por worktree** do repositório-alvo para quem escreve em git; nunca dois agentes no mesmo diretório.
-5. **Revisão e teste sobre a evidência**, não sobre a palavra do implementador: o revisor lê o diff e roda os testes por conta própria.
+5. **Diagnóstico separado da correção** quando a causa não é óbvia: um agente só de leitura reproduz e o orquestrador adota a causa antes de despachar a correção (ver `evaluation.md`).
+6. **Revisão e teste sobre a evidência**, não sobre a palavra do implementador: o revisor lê o diff e roda os testes por conta própria.

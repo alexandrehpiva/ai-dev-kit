@@ -90,6 +90,16 @@ environment: dev | staging | production
 |-------|---------|-----------|
 | ... | ... | pass / fail / N/A |
 
+## Repeated runs and what the user saw
+
+(Only for a product with an LLM or natural language; see `llm-systems.md`.)
+
+| Scenario | Round | Literal the end user saw | Time | Calculated vs. expected value | Result |
+|---------|-------|--------------------------|------|-------------------------------|--------|
+| ... | 1 of 3 | ... | ... | ... | passed / failed |
+
+Unstable scenario: how many rounds passed. A test-tool artifact (not a product defect) is noted separately.
+
 ## Bugs found
 
 (empty if approved)
@@ -98,7 +108,7 @@ environment: dev | staging | production
 
 - **Reproduction:** numbered steps
 - **Expected:** ...
-- **Actual:** ...
+- **Actual:** ... (in a product with an LLM, the literal the end user saw)
 - **Severity:** CRITICAL | SEVERE | MEDIUM | MINOR
 
 ## Pending / blocked scenarios
@@ -137,6 +147,7 @@ git commit -m "qa({project}): report TASK-xx.x — {approved|bugs|partial}"
 ```
 
 6. Link the report in the task's **Development notes** section (`[[qa-reports/...]]`)
+7. In a product with an LLM, the report carries the repeated-runs section and severity respects the floor in `llm-systems.md`
 
 ---
 

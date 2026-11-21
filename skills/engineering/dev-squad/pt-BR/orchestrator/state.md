@@ -13,6 +13,7 @@ branch: <nome da branch>
 arquivos_modificados: <lista de arquivos>
 decisoes_po: <lista de decisões tomadas pelo PO durante o ciclo>
 diretivas_permanentes: <lista das regras de processo e de código que o usuário já deu para o projeto, cada uma com o texto literal, a data e onde está registrada (constituição/CLAUDE.md/README, nota de modo de trabalho, memória do agente)>
+briefing_comum: <caminho do arquivo de briefing comum do ciclo (orchestrator/squad-briefing.md)>
 artefatos_gerados: <ARTEFATOS_GERADOS acumulados do Dev (implementar + corrigir), com o comando exato>
 ajustes_manuais: <AJUSTES_MANUAIS acumulados do Dev, com o motivo>
 ciclos:
@@ -69,6 +70,7 @@ Todo subagente recebe no prompt:
 4. **Skills e tools disponíveis** — liste explicitamente as que são relevantes para a missão
 5. **Contrato de saída** — o formato exato do que deve retornar
 6. **Diretivas permanentes** — o slot `DIRETIVAS_PERMANENTES` do template preenchido com o texto literal das diretivas de `diretivas_permanentes` que se aplicam à missão (não um resumo, não um link); vazio só se não houver nenhuma
+7. **Briefing comum e pedido literal** — o slot `BRIEFING_COMUM` com o caminho do arquivo que o papel lê antes de tudo e o slot `PEDIDO_DO_USUARIO` com os trechos literais do pedido do usuário que motivam a missão; a cláusula de recursividade vai no briefing (`orchestrator/squad-briefing.md`)
 
 O subagente **retorna texto estruturado**, não fala diretamente com o usuário. O Orquestrador processa e decide o próximo passo.
 

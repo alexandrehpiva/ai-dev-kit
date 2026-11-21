@@ -29,7 +29,8 @@ Quem faz a triagem é quem tem **mais contexto** que o revisor (o dono do servi�
 3. **O que for feito vira trabalho rastreável** (história/tarefa com os IDs dos achados e critérios de aceite verificáveis) e passa pelo ciclo normal de desenvolvimento, revisão e QA.
 4. **O que for adiado vai para um lugar que o time lê** (seção "Dívidas conhecidas" do README, backlog), com o ID do achado e o motivo.
 5. **Reviews seguintes leem a triagem anterior** e preenchem a seção "Mudanças desde o review anterior".
-6. **Feche com o painel de situação** (REVIEW-REPORT.md, seção 12): todos os achados por severidade, com situação, problema, solução e próximo passo. Regenere-o depois de cada lote de correções.
+6. **Antes de levar uma pergunta ao dono, questione a premissa.** A opção ou o estado deveria existir? Perguntar se uma opção inviável deve ser mantida é sinal de que o sistema nem deveria oferecê-la: então o achado é corrigir, não decidir. Não pergunte o que as diretivas do dono já respondem. Leve no máximo três decisões por vez, as bloqueantes primeiro, cada uma autossuficiente (contexto, exemplo concreto, opções, recomendação, efeito de cada resposta).
+7. **Feche com o painel de situação** (REVIEW-REPORT.md, seção 12): todos os achados por severidade, com situação, problema, solução e próximo passo. Regenere-o depois de cada lote de correções.
 
 ## Formato (seção 11 do relatório)
 

@@ -38,7 +38,7 @@ Régua: imposta | convenção | prática | oficial (<versão>) | comunidade. IDs
 "Motivação do desenho": quando o achado critica uma decisão de desenho, o problema que ela resolve e a fonte (decisão, README, commit), ou "não encontrada (procurei em …)" — ver METHOD.md, regra 13.
 
 ## 6. Checklist preenchido
-Seções A a J com Conforme / Parcial / Não conforme / Não verificado e evidência curta.
+Seções A a K (K só se o serviço usa LLM) com Conforme / Parcial / Não conforme / Não verificado e evidência curta.
 
 ## 7. Notas por dimensão
 Excelente | Muito boa | Boa | Razoável | Atenção — uma linha de justificativa cada.

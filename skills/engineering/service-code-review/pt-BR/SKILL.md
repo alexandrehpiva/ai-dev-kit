@@ -21,7 +21,7 @@ description: Faz o review geral de um serviço inteiro (backend, frontend, worke
 | Fase / situação | Ler |
 |---|---|
 | Fase 1 em diante (regras do review inteiro) | [`METHOD.md`](METHOD.md) |
-| Fase 2 (o que checar, severidade) | [`CHECKLIST.md`](CHECKLIST.md) + guias indicados pelo script |
+| Fase 2 (o que checar, severidade) | [`CHECKLIST.md`](CHECKLIST.md) + guias indicados pelo script (e `stacks/architecture/llm-systems.md` se há LLM) |
 | Fase 4 (escrever o relatório) | [`REVIEW-REPORT.md`](REVIEW-REPORT.md) |
 | Fase 5 (decidir o que fazer) | [`TRIAGE.md`](TRIAGE.md) |
 | Delegar o review a um subagente | [`REVIEWER-PROMPT.md`](REVIEWER-PROMPT.md) |
@@ -32,7 +32,7 @@ Guias de stack (um nível abaixo de `stacks/`; o script diz quais valem para o r
 - `languages/` — `typescript-node`, `python`, `go`, `java`, `csharp-dotnet`
 - `frameworks/` — `nestjs`, `node-http` (Express/Fastify/Hono), `react`, `nextjs`, `angular`, `vue`, `fastapi`, `django`, `flask`, `go-http`, `spring-boot`, `aspnet-core`
 - `data/` — `typescript-orm`, `python-sqlalchemy`, `go-sql`, `java-jpa`, `dotnet-efcore`, `relational-schema-design`, `dynamodb`, `mongodb`, `redis`, `nosql-access-patterns` (listas, busca, ordenação, paginação e contadores em qualquer banco não relacional)
-- `architecture/` — `backend-architecture-patterns`, `frontend-architecture` (sempre)
+- `architecture/` — `backend-architecture-patterns`, `frontend-architecture` (sempre); `llm-systems` (quando o serviço chama um modelo de linguagem: SDK no manifesto, pasta de prompts ou chamada HTTP a API de modelo; o script só detecta SDKs, então confirme você mesmo)
 
 ## Fluxo
 
@@ -60,7 +60,7 @@ Confirme (ou assuma e declare): repositório, escopo (inteiro, pastas, diff de b
 
 ### Fase 2 — Avaliação
 
-Percorra as dimensões A–J do CHECKLIST.md, somando os itens dos guias de stack na mesma dimensão. Antes de apontar uma decisão de desenho como problema, procure a motivação dela e confira se a alternativa preserva a mesma garantia (METHOD.md, regra 13). Rode o que é barato e seguro (lint, typecheck, testes unitários, auditoria de dependências, ciclos) e guarde os comandos. Nomeie e explique o padrão de arquitetura (guias de `architecture/`).
+Percorra as dimensões A–K (K só se o serviço usa modelo de linguagem) do CHECKLIST.md, somando os itens dos guias de stack na mesma dimensão. Antes de apontar uma decisão de desenho como problema, procure a motivação dela e confira se a alternativa preserva a mesma garantia (METHOD.md, regra 13). Rode o que é barato e seguro (lint, typecheck, testes unitários, auditoria de dependências, ciclos) e guarde os comandos. Nomeie e explique o padrão de arquitetura (guias de `architecture/`).
 
 - [ ] Todo item marcado (Conforme / Parcial / Não conforme / Não verificado) com evidência
 - [ ] Toda contagem com o comando que a produziu
@@ -87,7 +87,7 @@ Quem tem o contexto (o dono do serviço ou o agente que orquestrou) classifica c
 
 ## Modo subagente
 
-Para review longo, delegue as Fases 1–4 a um subagente com o bloco de REVIEWER-PROMPT.md e fique com a triagem. Confira por amostragem os achados antes de aceitá-los.
+Para review longo, delegue as Fases 1–4 a um subagente com o bloco de REVIEWER-PROMPT.md e fique com a triagem. Confira por amostragem os achados antes de aceitá-los; o subagente recebe briefing com os trechos literais do pedido do dono, e a conferência vale também para os subagentes dele (REVIEWER-PROMPT.md).
 
 ## Escapes
 

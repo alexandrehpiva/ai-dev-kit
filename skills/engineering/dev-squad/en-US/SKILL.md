@@ -21,11 +21,13 @@ Read the assets as they become relevant:
 | Before starting the cycle | `orchestrator/flow.md` |
 | Before opening a PR, when the project has separate staging/production environments | `orchestrator/branch-strategy.md` |
 | Between role handoffs | `orchestrator/state.md` |
+| Before the cycle's first spawn, when the user gives a new directive, when evaluating what a role delivered, before the merge | `orchestrator/squad-briefing.md` — mandatory |
 | When a role has product questions | `po-proxy/protocol.md` |
 | Before writing, reviewing, or correcting product documentation (not backlog tasks) | `po-proxy/product-doc-writing.md` |
 | Before creating or updating local backlog items | `task-management.md` |
 | Before creating, restructuring, or linking tasks in a connected task tracker | `tracker-hierarchy.md` |
 | Before approving QA | `qa-reports.md` |
+| Task where the product contains an LLM or interprets natural language (specify, implement, review, test) | `llm-systems.md` — mandatory |
 | Before the Tech Lead conducts deep architecture refinement (mission `refine_architecture`) | `agents/architecture-refinement-checklist.md` |
 | Before specifying a list screen or endpoint (filters, search, sorting, pagination, counters), before choosing or closing the data model, and before testing a list | `data-access-patterns.md` |
 
@@ -56,6 +58,7 @@ dev-squad/
 ├── task-management.md              ← local Markdown backlog format
 ├── tracker-hierarchy.md            ← epic/US/subtask shape and linking in the tracker
 ├── qa-reports.md                   ← local QA report format
+├── llm-systems.md                  ← products with an LLM/natural language: right layer, system knowledge, QA with repetition, severity of what the user sees
 ├── data-access-patterns.md         ← access-pattern sheet for lists (search, sorting, pagination, counters) before the data model
 ├── agents/
 │   ├── dev-senior.md               ← Senior Developer role, missions, prompts
@@ -65,6 +68,7 @@ dev-squad/
 ├── orchestrator/
 │   ├── flow.md                     ← phases, state transitions, loop limits
 │   ├── state.md                    ← internal state and communication protocol
+│   ├── squad-briefing.md           ← common briefing, literal excerpts, diagnosis vs fix, diff audit, recursion
 │   └── branch-strategy.md          ← develop/main split for projects with staging+production
 └── po-proxy/
     ├── protocol.md                 ← user decision relay protocol
@@ -120,8 +124,8 @@ Keep commits focused. Commit after creating a new epic, creating or updating a t
 | Role | Who | Authority |
 |---|---|---|
 | **Senior Developer** | Subagent or inline role | Investigates, implements, and fixes issues; asks the Tech Lead for technical decisions and the PO for product decisions |
-| **Tech Lead** | Subagent or inline role | Reviews plans and code; approves or sends work back with concrete corrections; owns technical decisions |
-| **QA** | Subagent or inline role | Tests implementation; validates acceptance criteria; approves or reports bugs with severity |
+| **Tech Lead** | Subagent or inline role | Reviews plans and code; approves or sends work back with concrete corrections; owns technical decisions; does not decide product |
+| **QA** | Subagent or inline role | Tests implementation; validates acceptance criteria; approves or reports bugs with severity; does not change code |
 | **PO** | User through Orchestrator relay | Owns priority, scope, business rules, and final decisions on unresolved blockers |
 
 The chain is: **Senior Developer → Tech Lead → QA → PO**. Technical questions go to the Tech Lead. Product questions and unresolved blockers go to the PO through the Orchestrator.
@@ -167,6 +171,8 @@ Subagents start cold — no memory of this conversation, no access to what the O
 - State **which other items are running in parallel** when applicable, and reiterate the file-ownership boundary between them, so two simultaneous subagents don't both touch a shared file.
 
 A prompt built this way is longer than a one-line mission description — that length is the point. It substitutes for the shared context a human teammate would have from sitting in the same planning session.
+
+**Common briefing and evaluation.** The general material on subagents (self-contained briefing, safe parallelism, evidence, usage limits, questions to the owner) is in the `subagent-orchestration` skill; consult it when available. The squad-specific part is in `orchestrator/squad-briefing.md` and is mandatory: a common briefing file read by every role, literal excerpts of the user's request in the prompt, a new directive resent to roles already running, diagnosis separate from the fix, batch integration, diff audit before the merge, evaluating (not relaying) what each role delivers, and the same discipline applied recursively when a role launches subagents.
 
 ---
 
@@ -285,6 +291,7 @@ List only the skills and tools relevant to the mission:
 - [ ] Read `orchestrator/flow.md`
 - [ ] Read `orchestrator/state.md`
 - [ ] Load into the state (`permanent_directives`) the user's permanent directives for the project — constitution/`CLAUDE.md`/README, working-mode note, agent memory — each with the literal text and the date.
+- [ ] Read `orchestrator/squad-briefing.md`, create the cycle's common briefing (record the path in `common_briefing`) and, if the task involves an LLM or natural language, read `llm-systems.md`.
 - [ ] Initialize internal state with `task_ref`, `task_context`, and `current_phase = investigation`
 - [ ] Start the Senior Developer investigation mission.
 

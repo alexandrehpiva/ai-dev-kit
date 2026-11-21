@@ -48,7 +48,7 @@ Guias `kind: architecture` não têm versão de pacote: usam `## Evolução do c
 2. **`## Versões e mudanças de convenção`** — tabela `Versão | Data de lançamento | O que mudou na convenção ou no padrão recomendado | Impacto no review | Fonte`. Cubra as versões ainda em uso real (incluindo as fora de suporte que ainda aparecem em repositórios) e diga qual é a versão atual e o calendário de suporte (LTS/EOL) com fonte.
 3. **`## Como identificar a versão e o estilo do repositório`** — arquivos e comandos que revelam versão, modo (ex.: standalone vs NgModule; App Router vs Pages Router; async vs sync) e ferramentas.
 4. **`## Estrutura e arquitetura recomendadas`** — organização de pastas e camadas que a documentação oficial recomenda e o que a comunidade adota, com as variações aceitas e quando cada uma faz sentido. Diga o que é oficial e o que é comunidade.
-5. **`## Checklist de revisão`** — itens agrupados pelas dimensões do checklist núcleo (A Arquitetura, B Estrutura, C Qualidade, D Dados, E Segurança, F Integrações, G Testes, H Processo, J Frontend). Cada item no formato:
+5. **`## Checklist de revisão`** — itens agrupados pelas dimensões do checklist núcleo (A Arquitetura, B Estrutura, C Qualidade, D Dados, E Segurança, F Integrações, G Testes, H Processo, J Frontend, K Sistemas com LLM). Cada item no formato:
 
    ```markdown
    - **<o que checar>** — <por que importa, uma frase>. *Como checar:* <comando, grep, arquivo, sinal>. *Régua:* oficial | comunidade | opinião. *Vale a partir de:* <versão ou "todas">. *Severidade típica:* Crítica | Alta | Média | Baixa.

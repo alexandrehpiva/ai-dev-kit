@@ -23,6 +23,7 @@ Se a task estiver em um tracker conectado (Jira, ClickUp, Linear etc.), atualize
 
 ### Passos
 
+0. Antes do primeiro spawn do ciclo, crie o briefing comum e prepare os trechos literais do pedido (`orchestrator/squad-briefing.md`; obrigatório)
 1. Spawn Dev Sênior com missão `investigar` e o contexto completo da task, com `diretivas_permanentes` preenchido (vale para todo spawn de Dev, Tech Lead e QA deste fluxo; ver `orchestrator/state.md`)
 2. Se o retorno contiver `DUVIDAS_PARA_TECH_LEAD`:
    - Spawn Tech Lead com missão `responder_duvidas`
@@ -111,12 +112,13 @@ Se o projeto tiver ambientes separados de staging/produção, leia
    - `implementation_summary` = resumo do que foi implementado
    - `diretivas_permanentes` = diretivas permanentes aplicáveis, em texto literal
 3. Se `PARECER_FINAL: aprovado para deploy`:
-   - **Verificar** relatório QA em `qa-reports/` (backlog Markdown local — `qa-reports.md`)
+   - **Verificar** relatório QA em `qa-reports/` (backlog Markdown local — `qa-reports.md`) e **avaliar** o conteúdo, não só a existência: conferir as afirmações críticas, reclassificar a severidade que o QA subestimou e, em produto com LLM, exigir as repetições (`llm-systems.md`)
    - Atualizar status para `pronto para deploy` / Markdown `done`
    - Notificar o PO: resumo + **link ao relatório QA** para re-teste manual
 4. Se `PARECER_FINAL: devolver para dev`:
    - Atualizar status no tracker para `em desenvolvimento`
-   - Spawn Dev Sênior com missão `corrigir`, passando os `BUGS` do QA com `source: QA`
+   - Se a causa do bug não é óbvia, faça antes um spawn de diagnóstico só de leitura e avalie a causa (`orchestrator/squad-briefing.md`, seção de diagnóstico separado)
+   - Spawn Dev Sênior com missão `corrigir`, passando os `BUGS` do QA com `source: QA` e a `CAUSA ADOTADA`
    - Após correção: **retornar para Fase 3 (Tech Lead revisa)** — não pula direto para QA
 
 ### Regra de loop — QA
@@ -134,6 +136,7 @@ Despachar a revisão do Tech Lead, o QA e o merge de um item aprovado é o próp
 
 ### Passos
 
+0. **Auditoria do diff antes do merge:** leia o diff e as `LINHAS_SENSIVEIS` procurando o que o usuário vetou (`orchestrator/squad-briefing.md`, seção de auditoria); achado volta ao Dev antes do merge. Com várias correções prontas, integre em lote: suíte e reconstrução do ambiente uma vez só, e teste junto.
 1. Com o relatório de QA `approved` e o aviso ao PO enviado, faça o merge da branch na base (local, ou pelo fluxo de PR do projeto).
 2. **Imediatamente após o merge**, remova o worktree da tarefa e a branch local, desde que não reste nada pendente neles. Confira antes: o worktree sem alterações não commitadas e a branch ancestral da base (`git merge-base --is-ancestor <branch> <base>`). Use `git worktree remove <caminho>` e `git branch -d <branch>` (sem `--force`); se algum recusar, explique o motivo e mantenha.
 3. Nunca remova worktree ou branch não mergeada ou com trabalho não commitado; liste-os nas notas de entrega.

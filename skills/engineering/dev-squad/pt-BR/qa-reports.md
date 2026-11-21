@@ -90,6 +90,16 @@ ambiente: dev | staging | producao
 |-------|---------|-----------|
 | ... | ... | pass / fail / N/A |
 
+## Execuções repetidas e o que o usuário viu
+
+(Só para produto com LLM ou linguagem natural; ver `llm-systems.md`.)
+
+| Cenário | Rodada | Literal que o usuário final viu | Tempo | Valor calculado × esperado | Resultado |
+|---------|--------|----------------------------------|-------|----------------------------|-----------|
+| ... | 1 de 3 | ... | ... | ... | passou / falhou |
+
+Cenário instável: quantas rodadas passaram. Artefato da ferramenta de teste (não do produto) fica anotado à parte.
+
 ## Bugs encontrados
 
 (vazio se aprovado)
@@ -98,7 +108,7 @@ ambiente: dev | staging | producao
 
 - **Reprodução:** passos numerados
 - **Esperado:** ...
-- **Atual:** ...
+- **Atual:** ... (em produto com LLM, o literal que o usuário final viu)
 - **Severidade:** CRITICO | SEVERO | MEDIO | LEVE
 
 ## Cenários pendentes / bloqueados
@@ -137,6 +147,7 @@ git commit -m "qa({projeto}): relatório TASK-xx.x — {aprovado|bugs|parcial}"
 ```
 
 6. Linkar o relatório na seção **Notas de desenvolvimento** da task (`[[qa-reports/...]]`)
+7. Em produto com LLM, o relatório traz a seção de execuções repetidas e a severidade respeita o piso de `llm-systems.md`
 
 ---
 
